@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import Forecast from './pages/Forecast';
 import Aurora from './pages/Aurora';
 import Alerts from './pages/Alerts';
+import Mood from './pages/Mood';
 import Pricing from './pages/Pricing';
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Route path="/forecast" element={<Forecast />} />
           <Route path="/aurora" element={<Aurora />} />
           <Route path="/alerts" element={<Alerts />} />
+          <Route path="/mood" element={<Mood />} />
           <Route path="/pricing" element={<Pricing />} />
         </Routes>
         <Footer />

@@ -12,6 +12,7 @@ const Navigation = () => {
     { to: '/forecast', label: 'Forecast' },
     { to: '/aurora', label: 'Aurora' },
     { to: '/alerts', label: 'Alerts' },
+    { to: '/mood', label: 'Mood' },
     { to: '/pricing', label: 'Pricing' },
   ];
 
