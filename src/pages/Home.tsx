@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Activity, Bell, Satellite } from 'lucide-react';
 import { getKpIndex, getStormStatus } from '../services/noaaApi';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const Home = () => {
+  const { t } = useLanguage();
   const [kpValue, setKpValue] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -76,7 +78,7 @@ const Home = () => {
             )}
 
             <p className="text-xl sm:text-2xl text-gray-300 mb-12">
-              Real-time space weather monitoring & alerts
+              {t('home.hero.subtitle')}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -84,13 +86,13 @@ const Home = () => {
                 to="/dashboard"
                 className="px-8 py-4 bg-[#00ff88] text-[#0a0a1a] rounded-lg font-semibold hover:bg-[#00ff88]/90 transition-colors"
               >
-                View Dashboard
+                {t('home.hero.cta')}
               </Link>
               <Link
                 to="/alerts"
                 className="px-8 py-4 bg-white/10 text-white rounded-lg font-semibold backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-colors"
               >
-                Get Alerts
+                {t('nav.alerts')}
               </Link>
             </div>
           </div>
@@ -103,9 +105,9 @@ const Home = () => {
             <div className="w-12 h-12 bg-[#00ff88]/20 rounded-lg flex items-center justify-center mb-4">
               <Activity className="w-6 h-6 text-[#00ff88]" />
             </div>
-            <h3 className="text-xl font-semibold text-white mb-2">Live Data</h3>
+            <h3 className="text-xl font-semibold text-white mb-2">{t('home.feature1.title')}</h3>
             <p className="text-gray-400">
-              Real-time monitoring of Kp index, solar wind, and X-ray flux from NOAA satellites.
+              {t('home.feature1.desc')}
             </p>
           </div>
 
@@ -113,9 +115,9 @@ const Home = () => {
             <div className="w-12 h-12 bg-[#8b5cf6]/20 rounded-lg flex items-center justify-center mb-4">
               <Bell className="w-6 h-6 text-[#8b5cf6]" />
             </div>
-            <h3 className="text-xl font-semibold text-white mb-2">Push Alerts</h3>
+            <h3 className="text-xl font-semibold text-white mb-2">{t('home.feature2.title')}</h3>
             <p className="text-gray-400">
-              Get instant notifications when geomagnetic storms or solar flares are detected.
+              {t('home.feature2.desc')}
             </p>
           </div>
 
@@ -123,9 +125,9 @@ const Home = () => {
             <div className="w-12 h-12 bg-[#3b82f6]/20 rounded-lg flex items-center justify-center mb-4">
               <Satellite className="w-6 h-6 text-[#3b82f6]" />
             </div>
-            <h3 className="text-xl font-semibold text-white mb-2">Aurora Forecast</h3>
+            <h3 className="text-xl font-semibold text-white mb-2">{t('home.feature3.title')}</h3>
             <p className="text-gray-400">
-              Track aurora visibility predictions and optimal viewing times for your location.
+              {t('home.feature3.desc')}
             </p>
           </div>
         </div>
