@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Smile, Frown, Meh, ThumbsUp, ThumbsDown, Users, TrendingUp } from 'lucide-react';
 import { supabase, getSessionId } from '../lib/supabase';
 import { getKpIndex } from '../services/noaaApi';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface MoodEntry {
   id: string;
@@ -18,6 +19,7 @@ interface MoodStats {
 }
 
 const Mood = () => {
+  const { t } = useLanguage();
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
   const [currentKp, setCurrentKp] = useState<number>(0);
@@ -27,22 +29,22 @@ const Mood = () => {
   const [loading, setLoading] = useState(true);
 
   const moods = [
-    { type: 'great', label: 'Чудесно', icon: ThumbsUp, color: 'bg-green-500', textColor: 'text-green-500' },
-    { type: 'good', label: 'Добре', icon: Smile, color: 'bg-emerald-500', textColor: 'text-emerald-500' },
-    { type: 'okay', label: 'Нормално', icon: Meh, color: 'bg-yellow-500', textColor: 'text-yellow-500' },
-    { type: 'bad', label: 'Лошо', icon: Frown, color: 'bg-orange-500', textColor: 'text-orange-500' },
-    { type: 'terrible', label: 'Ужасно', icon: ThumbsDown, color: 'bg-red-500', textColor: 'text-red-500' },
+    { type: 'great', label: t('mood.great'), icon: ThumbsUp, color: 'bg-green-500', textColor: 'text-green-500' },
+    { type: 'good', label: t('mood.good'), icon: Smile, color: 'bg-emerald-500', textColor: 'text-emerald-500' },
+    { type: 'okay', label: t('mood.okay'), icon: Meh, color: 'bg-yellow-500', textColor: 'text-yellow-500' },
+    { type: 'bad', label: t('mood.bad'), icon: Frown, color: 'bg-orange-500', textColor: 'text-orange-500' },
+    { type: 'terrible', label: t('mood.terrible'), icon: ThumbsDown, color: 'bg-red-500', textColor: 'text-red-500' },
   ];
 
   const symptoms = [
-    'Главоболие',
-    'Замаяност',
-    'Безпокойство',
-    'Безсъние',
-    'Умора',
-    'Раздразнителност',
-    'Липса на концентрация',
-    'Сърцебиене',
+    t('mood.symptom.headache'),
+    t('mood.symptom.dizzy'),
+    t('mood.symptom.anxiety'),
+    t('mood.symptom.insomnia'),
+    t('mood.symptom.fatigue'),
+    t('mood.symptom.irritability'),
+    t('mood.symptom.concentration'),
+    t('mood.symptom.palpitations'),
   ];
 
   useEffect(() => {
@@ -127,7 +129,7 @@ const Mood = () => {
 
     if (error) {
       console.error('Error submitting mood:', error);
-      alert('Грешка при записване. Моля, опитайте отново.');
+      alert(t('mood.error'));
       return;
     }
 
@@ -135,7 +137,7 @@ const Mood = () => {
     setSelectedMood(null);
     setSelectedSymptoms([]);
     fetchStats();
-    alert('Благодарим за вашата оценка!');
+    alert(t('mood.thankYou') + '!');
   };
 
   const toggleSymptom = (symptom: string) => {
@@ -160,15 +162,15 @@ const Mood = () => {
     <div className="min-h-screen py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8 text-center">
-          <h1 className="text-4xl font-bold text-white mb-2">Как се чувствате днес?</h1>
-          <p className="text-gray-400">Споделете как се чувствате по време на космически събития</p>
+          <h1 className="text-4xl font-bold text-white mb-2">{t('mood.title')}</h1>
+          <p className="text-gray-400">{t('mood.subtitle')}</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
           <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
             <div className="flex items-center gap-3 mb-2">
               <Users className="w-5 h-5 text-[#00ff88]" />
-              <h3 className="text-gray-400 text-sm">Участници (24ч)</h3>
+              <h3 className="text-gray-400 text-sm">{t('mood.participants')}</h3>
             </div>
             <div className="text-4xl font-bold text-white">{totalEntries}</div>
           </div>
@@ -176,7 +178,7 @@ const Mood = () => {
           <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
             <div className="flex items-center gap-3 mb-2">
               <TrendingUp className="w-5 h-5 text-[#3b82f6]" />
-              <h3 className="text-gray-400 text-sm">Текущ Kp индекс</h3>
+              <h3 className="text-gray-400 text-sm">{t('mood.currentKp')}</h3>
             </div>
             <div className="text-4xl font-bold text-white">{currentKp.toFixed(1)}</div>
           </div>
@@ -184,7 +186,7 @@ const Mood = () => {
           <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
             <div className="flex items-center gap-3 mb-2">
               <Smile className="w-5 h-5 text-[#8b5cf6]" />
-              <h3 className="text-gray-400 text-sm">Най-честа оценка</h3>
+              <h3 className="text-gray-400 text-sm">{t('mood.topMood')}</h3>
             </div>
             <div className="text-2xl font-bold text-white">
               {stats.length > 0 ? getMoodInfo(stats[0].mood_type)?.label : '-'}
@@ -194,7 +196,7 @@ const Mood = () => {
 
         {!hasSubmittedToday ? (
           <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 mb-8">
-            <h2 className="text-2xl font-semibold text-white mb-6">Оценете как се чувствате</h2>
+            <h2 className="text-2xl font-semibold text-white mb-6">{t('mood.rateTitle')}</h2>
 
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-8">
               {moods.map((mood) => {
@@ -222,7 +224,7 @@ const Mood = () => {
             {selectedMood && (
               <div className="mb-8">
                 <h3 className="text-lg font-semibold text-white mb-4">
-                  Имате ли някои от тези симптоми? (по избор)
+                  {t('mood.symptomsQuestion')}
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   {symptoms.map((symptom) => {
@@ -254,7 +256,7 @@ const Mood = () => {
                   : 'bg-gray-600 text-gray-400 cursor-not-allowed'
               }`}
             >
-              Изпрати оценка
+              {t('mood.submit')}
             </button>
           </div>
         ) : (
@@ -262,16 +264,16 @@ const Mood = () => {
             <div className="w-16 h-16 bg-[#00ff88]/20 rounded-full flex items-center justify-center mx-auto mb-4">
               <ThumbsUp className="w-8 h-8 text-[#00ff88]" />
             </div>
-            <h3 className="text-2xl font-semibold text-white mb-2">Благодарим!</h3>
-            <p className="text-gray-400">Вече сте оценили как се чувствате днес. Можете да гласувате отново утре.</p>
+            <h3 className="text-2xl font-semibold text-white mb-2">{t('mood.thankYou')}</h3>
+            <p className="text-gray-400">{t('mood.alreadySubmitted')}</p>
           </div>
         )}
 
         <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-          <h2 className="text-2xl font-semibold text-white mb-6">Статистика за последните 24 часа</h2>
+          <h2 className="text-2xl font-semibold text-white mb-6">{t('mood.stats24h')}</h2>
 
           {stats.length === 0 ? (
-            <p className="text-gray-400 text-center py-8">Все още няма данни за последните 24 часа.</p>
+            <p className="text-gray-400 text-center py-8">{t('mood.noData')}</p>
           ) : (
             <div className="space-y-4">
               {stats.map((stat) => {
@@ -304,13 +306,13 @@ const Mood = () => {
         </div>
 
         <div className="mt-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-          <h3 className="text-xl font-semibold text-white mb-4">За този раздел</h3>
+          <h3 className="text-xl font-semibold text-white mb-4">{t('mood.about')}</h3>
           <div className="text-gray-400 space-y-3">
             <p>
-              Космическото време може да влияе на самочувствието на хората. Тази страница ви позволява да споделите как се чувствате и да видите как се чувстват другите.
+              {t('mood.aboutText1')}
             </p>
             <p>
-              Вашите данни са напълно анонимни и се използват само за статистически цели. Можете да гласувате веднъж на ден.
+              {t('mood.aboutText2')}
             </p>
           </div>
         </div>

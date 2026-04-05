@@ -1,19 +1,22 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Zap, Menu, X } from 'lucide-react';
+import { Zap, Menu, X, Globe } from 'lucide-react';
+import { useLanguage, languages } from '../contexts/LanguageContext';
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
   const location = useLocation();
+  const { language, setLanguage, t } = useLanguage();
 
   const navLinks = [
-    { to: '/', label: 'Home' },
-    { to: '/dashboard', label: 'Dashboard' },
-    { to: '/forecast', label: 'Forecast' },
-    { to: '/aurora', label: 'Aurora' },
-    { to: '/alerts', label: 'Alerts' },
-    { to: '/mood', label: 'Mood' },
-    { to: '/pricing', label: 'Pricing' },
+    { to: '/', label: t('nav.home') },
+    { to: '/dashboard', label: t('nav.dashboard') },
+    { to: '/forecast', label: t('nav.forecast') },
+    { to: '/aurora', label: t('nav.aurora') },
+    { to: '/alerts', label: t('nav.alerts') },
+    { to: '/mood', label: t('nav.mood') },
+    { to: '/pricing', label: t('nav.pricing') },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -41,6 +44,38 @@ const Navigation = () => {
                 {link.label}
               </Link>
             ))}
+
+            <div className="relative">
+              <button
+                onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
+                className="flex items-center gap-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
+              >
+                <Globe className="w-4 h-4" />
+                {languages.find(l => l.code === language)?.flag}
+              </button>
+
+              {isLangMenuOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-[#0a0a1a]/95 backdrop-blur-md border border-white/10 rounded-lg shadow-xl py-2">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => {
+                        setLanguage(lang.code);
+                        setIsLangMenuOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-2 text-sm transition-colors flex items-center gap-2 ${
+                        language === lang.code
+                          ? 'text-[#00ff88] bg-[#00ff88]/10'
+                          : 'text-gray-300 hover:text-white hover:bg-white/5'
+                      }`}
+                    >
+                      <span>{lang.flag}</span>
+                      <span>{lang.name}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           <button
@@ -70,6 +105,30 @@ const Navigation = () => {
                 {link.label}
               </Link>
             ))}
+
+            <div className="border-t border-white/10 pt-3 mt-3">
+              <div className="text-xs font-semibold text-gray-400 px-4 mb-2 flex items-center gap-2">
+                <Globe className="w-3 h-3" />
+                Language
+              </div>
+              {languages.map((lang) => (
+                <button
+                  key={lang.code}
+                  onClick={() => {
+                    setLanguage(lang.code);
+                    setIsMenuOpen(false);
+                  }}
+                  className={`w-full text-left px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+                    language === lang.code
+                      ? 'text-[#00ff88] bg-[#00ff88]/10'
+                      : 'text-gray-300 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <span>{lang.flag}</span>
+                  <span>{lang.name}</span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       )}
