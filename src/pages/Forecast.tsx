@@ -43,17 +43,19 @@ const Forecast = () => {
   const generateDemoData = () => {
     const demoData = [];
     const now = new Date();
+    // Generate 3-hour interval data
+    const rawData = [];
     for (let i = 0; i < 27 * 8; i++) {
       const date = new Date(now.getTime() + i * 3 * 60 * 60 * 1000);
       const kp = Math.random() * 7 + Math.sin(i / 10) * 2 + 2;
-      demoData.push({
+      rawData.push({
         time: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
         fullTime: date.toLocaleString(),
         kp: Math.max(0, Math.min(9, kp)),
         date: date,
       });
     }
-    setForecastData(demoData);
+    setForecastData(rawData);
   };
 
   useEffect(() => {
@@ -93,6 +95,23 @@ const Forecast = () => {
     return grouped;
   };
 
+  const getDailyChartData = () => {
+    const grouped = groupByDay();
+    return Object.entries(grouped).map(([day, items]) => {
+      const maxKp = Math.max(...items.map(i => i.kp));
+      const avgKp = items.reduce((acc, i) => acc + i.kp, 0) / items.length;
+      const date = items[0].date;
+      return {
+        time: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        fullTime: day,
+        kp: maxKp,
+        avgKp: avgKp,
+        date: date,
+        itemsCount: items.length
+      };
+    });
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -105,6 +124,7 @@ const Forecast = () => {
   const avgKp = getAverageKp();
   const stormDays = getDaysWithStorms();
   const groupedData = groupByDay();
+  const dailyChartData = getDailyChartData();
 
   return (
     <div className="min-h-screen pt-24 pb-16 relative">
@@ -186,17 +206,15 @@ const Forecast = () => {
             <Sun className="w-6 h-6 text-[#f97316]" />
             {t('forecast.kpForecast')}
           </h3>
-          {forecastData.length > 0 ? (
+          {dailyChartData.length > 0 ? (
             <ResponsiveContainer width="100%" height={400}>
-              <BarChart data={forecastData}>
+              <BarChart data={dailyChartData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
                 <XAxis
                   dataKey="time"
                   stroke="#6b7280"
-                  angle={-45}
-                  textAnchor="end"
-                  height={80}
-                  tick={{ fontSize: 12 }}
+                  height={60}
+                  tick={{ fontSize: 13, fill: '#9ca3af' }}
                 />
                 <YAxis
                   stroke="#6b7280"
@@ -212,7 +230,7 @@ const Forecast = () => {
                     padding: '12px',
                     boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
                   }}
-                  labelStyle={{ color: '#f97316', fontWeight: 'bold', marginBottom: '4px' }}
+                  labelStyle={{ color: '#f97316', fontWeight: 'bold', marginBottom: '8px' }}
                   itemStyle={{ color: '#fff' }}
                   labelFormatter={(value, payload) => {
                     if (payload && payload[0]) {
@@ -220,14 +238,18 @@ const Forecast = () => {
                     }
                     return value;
                   }}
-                  formatter={(value: number) => [value.toFixed(2), 'Kp Index']}
+                  formatter={(value: number, name: string) => {
+                    if (name === 'kp') return [value.toFixed(2), 'Max Kp'];
+                    if (name === 'avgKp') return [value.toFixed(2), 'Avg Kp'];
+                    return [value.toFixed(2), name];
+                  }}
                 />
                 <Bar
                   dataKey="kp"
-                  radius={[4, 4, 0, 0]}
-                  maxBarSize={40}
+                  radius={[8, 8, 0, 0]}
+                  maxBarSize={60}
                 >
-                  {forecastData.map((entry, index) => {
+                  {dailyChartData.map((entry, index) => {
                     let color = '#10b981';
                     if (entry.kp >= 7) color = '#ef4444';
                     else if (entry.kp >= 6) color = '#f97316';
