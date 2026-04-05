@@ -104,8 +104,8 @@ const Forecast = () => {
       return {
         time: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
         fullTime: day,
-        kp: maxKp,
-        avgKp: avgKp,
+        kp: avgKp,
+        maxKp: maxKp,
         date: date,
         itemsCount: items.length
       };
@@ -239,8 +239,8 @@ const Forecast = () => {
                     return value;
                   }}
                   formatter={(value: number, name: string) => {
-                    if (name === 'kp') return [value.toFixed(2), 'Max Kp'];
-                    if (name === 'avgKp') return [value.toFixed(2), 'Avg Kp'];
+                    if (name === 'kp') return [value.toFixed(2), 'Avg Kp'];
+                    if (name === 'maxKp') return [value.toFixed(2), 'Max Kp'];
                     return [value.toFixed(2), name];
                   }}
                 />
