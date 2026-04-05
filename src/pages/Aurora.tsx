@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { MapPin } from 'lucide-react';
 import { getKpIndex } from '../services/noaaApi';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const Aurora = () => {
+  const { t } = useLanguage();
   const [kpValue, setKpValue] = useState<number>(0);
   const [imageKey, setImageKey] = useState(Date.now());
 
@@ -45,30 +47,30 @@ const Aurora = () => {
     <div className="min-h-screen py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Aurora Forecast</h1>
-          <p className="text-gray-400">Real-time aurora visibility predictions</p>
+          <h1 className="text-4xl font-bold text-white mb-2">{t('aurora.title')}</h1>
+          <p className="text-gray-400">{t('aurora.subtitle')}</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
-            <h3 className="text-gray-400 text-sm mb-2">Current Kp Index</h3>
+            <h3 className="text-gray-400 text-sm mb-2">{t('aurora.currentKp')}</h3>
             <div className="text-5xl font-bold text-[#00ff88] mb-2">{kpValue.toFixed(1)}</div>
           </div>
 
           <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
-            <h3 className="text-gray-400 text-sm mb-2">Visibility Intensity</h3>
+            <h3 className="text-gray-400 text-sm mb-2">{t('aurora.intensity')}</h3>
             <div className={`text-5xl font-bold mb-2 ${visibility.color}`}>{visibility.intensity}</div>
           </div>
 
           <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
-            <h3 className="text-gray-400 text-sm mb-2">Visible Down To</h3>
+            <h3 className="text-gray-400 text-sm mb-2">{t('aurora.visibleDownTo')}</h3>
             <div className="text-5xl font-bold text-white mb-2">{visibility.latitude}°</div>
-            <div className="text-gray-400 text-sm">Latitude</div>
+            <div className="text-gray-400 text-sm">{t('aurora.latitude')}</div>
           </div>
         </div>
 
         <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 mb-8">
-          <h3 className="text-xl font-semibold text-white mb-4">Northern Hemisphere Forecast</h3>
+          <h3 className="text-xl font-semibold text-white mb-4">{t('aurora.hemisphereTitle')}</h3>
           <div className="relative w-full aspect-square max-w-3xl mx-auto">
             <img
               key={imageKey}
@@ -78,47 +80,47 @@ const Aurora = () => {
             />
           </div>
           <p className="text-gray-400 text-sm text-center mt-4">
-            Map updates every 5 minutes
+            {t('aurora.mapUpdates')}
           </p>
         </div>
 
         <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
           <div className="flex items-center gap-3 mb-6">
             <MapPin className="w-6 h-6 text-[#00ff88]" />
-            <h3 className="text-2xl font-semibold text-white">Visibility Guide</h3>
+            <h3 className="text-2xl font-semibold text-white">{t('aurora.guideTitle')}</h3>
           </div>
 
           <div className="space-y-6">
             <div>
-              <h4 className="text-lg font-semibold text-white mb-3">Aurora Visibility by Kp Index</h4>
+              <h4 className="text-lg font-semibold text-white mb-3">{t('aurora.visibilityByKp')}</h4>
               <div className="space-y-3">
                 <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
-                  <span className="text-white">Kp 5+ (Storm G1)</span>
-                  <span className="text-gray-400">Visible at 60° latitude (Southern Canada, Scotland)</span>
+                  <span className="text-white">{t('aurora.kp5')}</span>
+                  <span className="text-gray-400">{t('aurora.kp5desc')}</span>
                 </div>
                 <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
-                  <span className="text-white">Kp 6+ (Storm G2)</span>
-                  <span className="text-gray-400">Visible at 55° latitude (Northern UK, Denmark)</span>
+                  <span className="text-white">{t('aurora.kp6')}</span>
+                  <span className="text-gray-400">{t('aurora.kp6desc')}</span>
                 </div>
                 <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
-                  <span className="text-white">Kp 7+ (Storm G3)</span>
-                  <span className="text-gray-400">Visible at 50° latitude (Southern UK, Germany, Poland)</span>
+                  <span className="text-white">{t('aurora.kp7')}</span>
+                  <span className="text-gray-400">{t('aurora.kp7desc')}</span>
                 </div>
                 <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
-                  <span className="text-white">Kp 8+ (Storm G4)</span>
-                  <span className="text-gray-400">Visible at 45° latitude (Northern US, France, Italy)</span>
+                  <span className="text-white">{t('aurora.kp8')}</span>
+                  <span className="text-gray-400">{t('aurora.kp8desc')}</span>
                 </div>
               </div>
             </div>
 
             <div>
-              <h4 className="text-lg font-semibold text-white mb-3">Best Viewing Conditions</h4>
+              <h4 className="text-lg font-semibold text-white mb-3">{t('aurora.bestConditionsTitle')}</h4>
               <ul className="space-y-2 text-gray-400">
-                <li>• Clear, dark skies away from light pollution</li>
-                <li>• View between 10 PM and 2 AM local time</li>
-                <li>• Look north (northern hemisphere) or south (southern hemisphere)</li>
-                <li>• Check for cloud-free conditions</li>
-                <li>• Allow 20-30 minutes for eyes to adjust to darkness</li>
+                <li>• {t('aurora.condition1')}</li>
+                <li>• {t('aurora.condition2')}</li>
+                <li>• {t('aurora.condition3')}</li>
+                <li>• {t('aurora.condition4')}</li>
+                <li>• {t('aurora.condition5')}</li>
               </ul>
             </div>
           </div>

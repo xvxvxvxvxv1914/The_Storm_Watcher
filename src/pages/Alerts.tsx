@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { AlertTriangle, Info, AlertOctagon, ShieldAlert } from 'lucide-react';
 import { getAlerts, Alert as AlertType } from '../services/noaaApi';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const Alerts = () => {
+  const { t } = useLanguage();
   const [alerts, setAlerts] = useState<AlertType[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
@@ -75,9 +77,9 @@ const Alerts = () => {
     <div className="min-h-screen py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Space Weather Alerts</h1>
+          <h1 className="text-4xl font-bold text-white mb-2">{t('alerts.title')}</h1>
           <p className="text-gray-400">
-            Last updated: {lastUpdated.toLocaleTimeString()}
+            {t('dashboard.lastUpdated')}: {lastUpdated.toLocaleTimeString()}
           </p>
         </div>
 
@@ -87,8 +89,8 @@ const Alerts = () => {
               <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Info className="w-8 h-8 text-green-400" />
               </div>
-              <h3 className="text-2xl font-semibold text-white mb-2">All Clear</h3>
-              <p className="text-gray-400">No active space weather alerts at this time.</p>
+              <h3 className="text-2xl font-semibold text-white mb-2">{t('alerts.allClear')}</h3>
+              <p className="text-gray-400">{t('alerts.noActiveAlerts')}</p>
             </div>
           ) : (
             alerts.map((alert, index) => {
@@ -123,28 +125,28 @@ const Alerts = () => {
         </div>
 
         <div className="mt-12 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-          <h3 className="text-xl font-semibold text-white mb-4">About Space Weather Alerts</h3>
+          <h3 className="text-xl font-semibold text-white mb-4">{t('alerts.aboutTitle')}</h3>
           <div className="space-y-4 text-gray-400">
             <p>
-              Space weather alerts are issued by NOAA's Space Weather Prediction Center to inform the public about potentially hazardous space weather events.
+              {t('alerts.aboutText')}
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
               <div>
-                <h4 className="text-white font-semibold mb-2">Alert Types</h4>
+                <h4 className="text-white font-semibold mb-2">{t('alerts.typesTitle')}</h4>
                 <ul className="space-y-1 text-sm">
-                  <li className="text-red-400">• Warning: Imminent or occurring event</li>
-                  <li className="text-orange-400">• Watch: Conditions favorable for event</li>
-                  <li className="text-blue-400">• Summary: Past event information</li>
-                  <li className="text-green-400">• Advisory: General information</li>
+                  <li className="text-red-400">• {t('alerts.warning')}</li>
+                  <li className="text-orange-400">• {t('alerts.watch')}</li>
+                  <li className="text-blue-400">• {t('alerts.summary')}</li>
+                  <li className="text-green-400">• {t('alerts.advisory')}</li>
                 </ul>
               </div>
               <div>
-                <h4 className="text-white font-semibold mb-2">Common Events</h4>
+                <h4 className="text-white font-semibold mb-2">{t('alerts.eventsTitle')}</h4>
                 <ul className="space-y-1 text-sm">
-                  <li>• Geomagnetic Storms (G-scale)</li>
-                  <li>• Solar Radiation Storms (S-scale)</li>
-                  <li>• Radio Blackouts (R-scale)</li>
-                  <li>• Proton Events</li>
+                  <li>• {t('alerts.geomagnetic')}</li>
+                  <li>• {t('alerts.radiation')}</li>
+                  <li>• {t('alerts.radio')}</li>
+                  <li>• {t('alerts.proton')}</li>
                 </ul>
               </div>
             </div>

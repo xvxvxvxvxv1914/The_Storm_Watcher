@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 import { Calendar, TrendingUp, AlertCircle } from 'lucide-react';
 import { getKpForecast, getStormStatus } from '../services/noaaApi';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const Forecast = () => {
+  const { t } = useLanguage();
   const [forecastData, setForecastData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
@@ -81,9 +83,9 @@ const Forecast = () => {
     <div className="min-h-screen py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Прогноза за космическото време</h1>
+          <h1 className="text-4xl font-bold text-white mb-2">{t('forecast.title')}</h1>
           <p className="text-gray-400">
-            Последна актуализация: {lastUpdated.toLocaleString('bg-BG')}
+            {t('dashboard.lastUpdated')}: {lastUpdated.toLocaleString()}
           </p>
         </div>
 
@@ -93,7 +95,7 @@ const Forecast = () => {
               <div className="w-10 h-10 bg-[#00ff88]/20 rounded-lg flex items-center justify-center">
                 <TrendingUp className="w-5 h-5 text-[#00ff88]" />
               </div>
-              <h3 className="text-gray-400 text-sm">Максимален Kp</h3>
+              <h3 className="text-gray-400 text-sm">{t('forecast.maxKp')}</h3>
             </div>
             <div className="text-5xl font-bold text-white mb-2">{maxKp.toFixed(1)}</div>
             <div className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStormStatus(maxKp).bgColor} ${getStormStatus(maxKp).color}`}>
@@ -106,10 +108,10 @@ const Forecast = () => {
               <div className="w-10 h-10 bg-[#3b82f6]/20 rounded-lg flex items-center justify-center">
                 <Calendar className="w-5 h-5 text-[#3b82f6]" />
               </div>
-              <h3 className="text-gray-400 text-sm">Среден Kp</h3>
+              <h3 className="text-gray-400 text-sm">{t('forecast.avgKp')}</h3>
             </div>
             <div className="text-5xl font-bold text-white mb-2">{avgKp.toFixed(1)}</div>
-            <div className="text-gray-400 text-sm">За прогнозния период</div>
+            <div className="text-gray-400 text-sm">{t('forecast.forPeriod')}</div>
           </div>
 
           <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
@@ -117,15 +119,15 @@ const Forecast = () => {
               <div className="w-10 h-10 bg-[#f59e0b]/20 rounded-lg flex items-center justify-center">
                 <AlertCircle className="w-5 h-5 text-[#f59e0b]" />
               </div>
-              <h3 className="text-gray-400 text-sm">Periodi с буря</h3>
+              <h3 className="text-gray-400 text-sm">{t('forecast.stormPeriods')}</h3>
             </div>
             <div className="text-5xl font-bold text-white mb-2">{stormDays}</div>
-            <div className="text-gray-400 text-sm">3-часови периода</div>
+            <div className="text-gray-400 text-sm">{t('forecast.threehourPeriods')}</div>
           </div>
         </div>
 
         <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 mb-8">
-          <h3 className="text-xl font-semibold text-white mb-6">Прогноза за Kp индекс</h3>
+          <h3 className="text-xl font-semibold text-white mb-6">{t('forecast.kpForecast')}</h3>
           <ResponsiveContainer width="100%" height={400}>
             <AreaChart data={forecastData}>
               <defs>
@@ -168,7 +170,7 @@ const Forecast = () => {
         </div>
 
         <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-          <h3 className="text-xl font-semibold text-white mb-6">Детайлна дневна прогноза</h3>
+          <h3 className="text-xl font-semibold text-white mb-6">{t('forecast.dailyForecast')}</h3>
           <div className="space-y-6">
             {Object.entries(groupedData).map(([day, items]) => {
               const maxDayKp = Math.max(...items.map(i => i.kp));
@@ -182,10 +184,10 @@ const Forecast = () => {
                       <h4 className="text-lg font-semibold text-white mb-2">{day}</h4>
                       <div className="flex items-center gap-4">
                         <span className="text-gray-400 text-sm">
-                          Максимален Kp: <span className={`font-semibold ${status.color}`}>{maxDayKp.toFixed(1)}</span>
+                          {t('forecast.maxKp')}: <span className={`font-semibold ${status.color}`}>{maxDayKp.toFixed(1)}</span>
                         </span>
                         <span className="text-gray-400 text-sm">
-                          Среден Kp: <span className="text-white font-semibold">{avgDayKp.toFixed(1)}</span>
+                          {t('forecast.avgKp')}: <span className="text-white font-semibold">{avgDayKp.toFixed(1)}</span>
                         </span>
                       </div>
                     </div>
@@ -219,32 +221,32 @@ const Forecast = () => {
         </div>
 
         <div className="mt-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-          <h3 className="text-xl font-semibold text-white mb-4">За прогнозата</h3>
+          <h3 className="text-xl font-semibold text-white mb-4">{t('forecast.aboutTitle')}</h3>
           <div className="text-gray-400 space-y-3">
             <p>
-              Тази прогноза се базира на данни от NOAA Space Weather Prediction Center и показва очаквания Kp индекс за следващите дни.
+              {t('forecast.aboutText1')}
             </p>
             <p>
-              Прогнозата се актуализира на всеки 5 минути и може да се променя в зависимост от слънчевата активност и космическите условия.
+              {t('forecast.aboutText2')}
             </p>
             <div className="mt-4">
-              <h4 className="text-white font-semibold mb-2">Легенда:</h4>
+              <h4 className="text-white font-semibold mb-2">{t('forecast.legend')}:</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  <span>Kp &lt; 4: Спокойно</span>
+                  <span>{t('forecast.legend1')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                  <span>Kp 4-4.9: Нестабилно</span>
+                  <span>{t('forecast.legend2')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-                  <span>Kp 5-6.9: Буря</span>
+                  <span>{t('forecast.legend3')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                  <span>Kp 7+: Силна буря</span>
+                  <span>{t('forecast.legend4')}</span>
                 </div>
               </div>
             </div>
