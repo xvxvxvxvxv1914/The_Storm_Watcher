@@ -1,3 +1,145 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  * {
+    font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  }
+
+  body {
+    background: #000008;
+    color: #f8fafc;
+    overflow-x: hidden;
+  }
+
+  #root {
+    position: relative;
+    min-height: 100vh;
+  }
+}
+
+@layer utilities {
+  .gradient-fire {
+    background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-solar {
+    background: linear-gradient(135deg, #f97316 0%, #fbbf24 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-aurora {
+    background: linear-gradient(135deg, #7c3aed 0%, #06b6d4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glass-surface {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+  }
+
+  .glow-orange {
+    box-shadow: 0 0 25px rgba(249, 115, 22, 0.2);
+  }
+
+  .glow-red {
+    box-shadow: 0 0 25px rgba(239, 68, 68, 0.3);
+  }
+
+  .glow-purple {
+    box-shadow: 0 0 25px rgba(124, 58, 237, 0.2);
+  }
+
+  .glow-green {
+    box-shadow: 0 0 25px rgba(16, 185, 129, 0.2);
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
+  50% { box-shadow: 0 0 40px rgba(239, 68, 68, 0.8); }
+}
+
+@keyframes float-particles {
+  0% { transform: translateX(-100px); opacity: 0; }
+  10% { opacity: 0.5; }
+  90% { opacity: 0.5; }
+  100% { transform: translateX(100vw); opacity: 0; }
+}
+
+.star-field {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle 3s infinite;
+}
+
+.solar-orb {
+  position: fixed;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.15) 0%, transparent 70%);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.magnetic-orb {
+  position: fixed;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.1) 0%, transparent 70%);
+  filter: blur(50px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.pulse-alert {
+  animation: pulse-glow 2s infinite;
+}
+
+.solar-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(249, 115, 22, 0.6);
+  border-radius: 50%;
+  animation: float-particles 20s linear infinite;
+}
+
+@keyframes draw-line {
+  from {
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}

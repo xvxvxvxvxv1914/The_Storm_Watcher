@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import { Calendar, TrendingUp, AlertCircle } from 'lucide-react';
+import { Calendar, TrendingUp, AlertCircle, Sun } from 'lucide-react';
 import { getKpForecast, getStormStatus } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -96,7 +96,7 @@ const Forecast = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-16 h-16 border-4 border-[#00ff88]/20 border-t-[#00ff88] rounded-full animate-spin"></div>
+        <div className="w-16 h-16 border-4 border-[#f97316]/20 border-t-[#f97316] rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -107,64 +107,88 @@ const Forecast = () => {
   const groupedData = groupByDay();
 
   return (
-    <div className="min-h-screen py-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">{t('forecast.title')}</h1>
-          <p className="text-gray-400">
-            {t('dashboard.lastUpdated')}: {lastUpdated.toLocaleString()}
+    <div className="min-h-screen pt-24 pb-16 relative">
+      <div className="star-field">
+        {[...Array(50)].map((_, i) => (
+          <div
+            key={i}
+            className="star"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 3}s`,
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="magnetic-orb" style={{ top: '200px', left: '-200px' }} />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-12">
+          <h1 className="text-5xl font-bold gradient-solar mb-3 uppercase tracking-tight">
+            {t('forecast.title')}
+          </h1>
+          <p className="text-[#94a3b8] text-lg">
+            {t('forecast.subtitle')}
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
+          <div className={`glass-surface rounded-2xl p-8 ${maxKp >= 5 ? 'glow-red' : 'glow-green'} hover:scale-105 transition-transform`}>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-[#00ff88]/20 rounded-lg flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-[#00ff88]" />
+              <div className="w-12 h-12 bg-gradient-to-br from-[#ef4444] to-[#dc2626] rounded-xl flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-gray-400 text-sm">{t('forecast.maxKp')}</h3>
+              <h3 className="text-[#94a3b8] text-sm uppercase tracking-wider font-bold">
+                {t('forecast.maxKp')}
+              </h3>
             </div>
-            <div className="text-5xl font-bold text-white mb-2">{maxKp.toFixed(1)}</div>
-            <div className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStormStatus(maxKp).bgColor} ${getStormStatus(maxKp).color}`}>
-              {getStormStatus(maxKp).status}
+            <div className="text-6xl font-bold gradient-fire mb-2">{maxKp.toFixed(1)}</div>
+            <div className="text-[#94a3b8] text-sm uppercase tracking-wider">
+              {t('forecast.next3Days')}
             </div>
           </div>
 
-          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
+          <div className="glass-surface rounded-2xl p-8 hover:glow-orange transition-all hover:scale-105">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-[#3b82f6]/20 rounded-lg flex items-center justify-center">
-                <Calendar className="w-5 h-5 text-[#3b82f6]" />
+              <div className="w-12 h-12 bg-gradient-to-br from-[#fbbf24] to-[#f59e0b] rounded-xl flex items-center justify-center">
+                <Calendar className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-gray-400 text-sm">{t('forecast.avgKp')}</h3>
+              <h3 className="text-[#94a3b8] text-sm uppercase tracking-wider font-bold">
+                {t('forecast.avgKp')}
+              </h3>
             </div>
-            <div className="text-5xl font-bold text-white mb-2">{avgKp.toFixed(1)}</div>
-            <div className="text-gray-400 text-sm">{t('forecast.forPeriod')}</div>
+            <div className="text-6xl font-bold gradient-solar mb-2">{avgKp.toFixed(1)}</div>
+            <div className="text-[#94a3b8] text-sm uppercase tracking-wider">
+              Average Index
+            </div>
           </div>
 
-          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
+          <div className={`glass-surface rounded-2xl p-8 ${stormDays > 0 ? 'glow-orange' : 'glow-green'} hover:scale-105 transition-transform`}>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-[#f59e0b]/20 rounded-lg flex items-center justify-center">
-                <AlertCircle className="w-5 h-5 text-[#f59e0b]" />
+              <div className="w-12 h-12 bg-gradient-to-br from-[#f97316] to-[#ea580c] rounded-xl flex items-center justify-center">
+                <AlertCircle className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-gray-400 text-sm">{t('forecast.stormPeriods')}</h3>
+              <h3 className="text-[#94a3b8] text-sm uppercase tracking-wider font-bold">
+                {t('forecast.stormPeriods')}
+              </h3>
             </div>
-            <div className="text-5xl font-bold text-white mb-2">{stormDays}</div>
-            <div className="text-gray-400 text-sm">{t('forecast.threehourPeriods')}</div>
+            <div className="text-6xl font-bold text-white mb-2">{stormDays}</div>
+            <div className="text-[#94a3b8] text-sm uppercase tracking-wider">
+              {t('forecast.threehourPeriods')}
+            </div>
           </div>
         </div>
 
-        <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 mb-8">
-          <h3 className="text-xl font-semibold text-white mb-6">{t('forecast.kpForecast')}</h3>
+        <div className="glass-surface rounded-2xl p-8 mb-8">
+          <h3 className="text-2xl font-bold text-white mb-6 uppercase tracking-wide flex items-center gap-3">
+            <Sun className="w-6 h-6 text-[#f97316]" />
+            {t('forecast.kpForecast')}
+          </h3>
           {forecastData.length > 0 ? (
             <ResponsiveContainer width="100%" height={400}>
               <BarChart data={forecastData}>
-                <defs>
-                  <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#00ff88" stopOpacity={1}/>
-                    <stop offset="50%" stopColor="#00d4aa" stopOpacity={0.9}/>
-                    <stop offset="100%" stopColor="#0099cc" stopOpacity={0.8}/>
-                  </linearGradient>
-                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
                 <XAxis
                   dataKey="time"
@@ -182,13 +206,13 @@ const Forecast = () => {
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: 'rgba(15, 15, 30, 0.95)',
-                    border: '1px solid rgba(0, 255, 136, 0.3)',
+                    backgroundColor: 'rgba(10, 0, 21, 0.95)',
+                    border: '1px solid rgba(249, 115, 22, 0.3)',
                     borderRadius: '12px',
                     padding: '12px',
                     boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
                   }}
-                  labelStyle={{ color: '#00ff88', fontWeight: 'bold', marginBottom: '4px' }}
+                  labelStyle={{ color: '#f97316', fontWeight: 'bold', marginBottom: '4px' }}
                   itemStyle={{ color: '#fff' }}
                   labelFormatter={(value, payload) => {
                     if (payload && payload[0]) {
@@ -200,12 +224,11 @@ const Forecast = () => {
                 />
                 <Bar
                   dataKey="kp"
-                  fill="url(#barGradient)"
                   radius={[4, 4, 0, 0]}
                   maxBarSize={40}
                 >
                   {forecastData.map((entry, index) => {
-                    let color = '#00ff88';
+                    let color = '#10b981';
                     if (entry.kp >= 7) color = '#ef4444';
                     else if (entry.kp >= 6) color = '#f97316';
                     else if (entry.kp >= 5) color = '#f59e0b';
@@ -217,14 +240,16 @@ const Forecast = () => {
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-[400px] flex items-center justify-center text-gray-400">
+            <div className="h-[400px] flex items-center justify-center text-[#94a3b8]">
               {t('dashboard.noData')}
             </div>
           )}
         </div>
 
-        <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-          <h3 className="text-xl font-semibold text-white mb-6">{t('forecast.dailyForecast')}</h3>
+        <div className="glass-surface rounded-2xl p-8">
+          <h3 className="text-2xl font-bold text-white mb-6 uppercase tracking-wide">
+            {t('forecast.dailyForecast')}
+          </h3>
           {Object.keys(groupedData).length > 0 ? (
             <div className="space-y-6">
               {Object.entries(groupedData).map(([day, items]) => {
@@ -233,21 +258,24 @@ const Forecast = () => {
               const status = getStormStatus(maxDayKp);
 
               return (
-                <div key={day} className="bg-white/5 rounded-xl p-6 border border-white/10">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
-                    <div>
-                      <h4 className="text-lg font-semibold text-white mb-2">{day}</h4>
-                      <div className="flex items-center gap-4">
-                        <span className="text-gray-400 text-sm">
-                          {t('forecast.maxKp')}: <span className={`font-semibold ${status.color}`}>{maxDayKp.toFixed(1)}</span>
-                        </span>
-                        <span className="text-gray-400 text-sm">
-                          {t('forecast.avgKp')}: <span className="text-white font-semibold">{avgDayKp.toFixed(1)}</span>
-                        </span>
+                <div key={day} className={`glass-surface rounded-xl p-6 ${
+                  maxDayKp >= 5 ? 'glow-orange' : ''
+                }`}>
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="text-xl font-bold text-white uppercase tracking-wide">{day}</h4>
+                    <div className="flex items-center gap-4">
+                      <div className="text-right">
+                        <div className="text-sm text-[#94a3b8] uppercase tracking-wider mb-1">Max</div>
+                        <div className="text-2xl font-bold gradient-fire">{maxDayKp.toFixed(1)}</div>
                       </div>
-                    </div>
-                    <div className={`mt-3 md:mt-0 inline-block px-4 py-2 rounded-full text-sm font-semibold ${status.bgColor} ${status.color}`}>
-                      {status.status}
+                      <div className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider ${
+                        maxDayKp >= 7 ? 'bg-gradient-to-r from-[#ef4444] to-[#dc2626] text-white' :
+                        maxDayKp >= 5 ? 'bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white' :
+                        maxDayKp >= 4 ? 'bg-gradient-to-r from-[#eab308] to-[#ca8a04] text-white' :
+                        'bg-gradient-to-r from-[#10b981] to-[#059669] text-white'
+                      }`}>
+                        {status.status}
+                      </div>
                     </div>
                   </div>
 
@@ -257,12 +285,17 @@ const Forecast = () => {
                       return (
                         <div
                           key={idx}
-                          className={`${itemStatus.bgColor} border ${itemStatus.bgColor.replace('/20', '/30')} rounded-lg p-3`}
+                          className="glass-surface rounded-lg p-3 hover:scale-105 transition-transform"
                         >
-                          <div className="text-xs text-gray-400 mb-1">
-                            {item.date.toLocaleTimeString('bg-BG', { hour: '2-digit', minute: '2-digit' })}
+                          <div className="text-xs text-[#94a3b8] mb-1 uppercase tracking-wider">
+                            {item.date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                           </div>
-                          <div className={`text-2xl font-bold ${itemStatus.color}`}>
+                          <div className={`text-2xl font-bold ${
+                            item.kp >= 7 ? 'text-[#ef4444]' :
+                            item.kp >= 5 ? 'text-[#f97316]' :
+                            item.kp >= 4 ? 'text-[#eab308]' :
+                            'text-[#10b981]'
+                          }`}>
                             {item.kp.toFixed(1)}
                           </div>
                         </div>
@@ -274,42 +307,23 @@ const Forecast = () => {
             })}
             </div>
           ) : (
-            <div className="text-center text-gray-400 py-8">
+            <div className="text-center text-[#94a3b8] py-8">
               {t('dashboard.noData')}
             </div>
           )}
         </div>
 
-        <div className="mt-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-          <h3 className="text-xl font-semibold text-white mb-4">{t('forecast.aboutTitle')}</h3>
-          <div className="text-gray-400 space-y-3">
+        <div className="mt-8 glass-surface rounded-2xl p-8">
+          <h3 className="text-2xl font-bold text-white mb-4 uppercase tracking-wide">
+            {t('forecast.aboutTitle')}
+          </h3>
+          <div className="text-[#94a3b8] space-y-3 leading-relaxed">
             <p>
               {t('forecast.aboutText1')}
             </p>
             <p>
               {t('forecast.aboutText2')}
             </p>
-            <div className="mt-4">
-              <h4 className="text-white font-semibold mb-2">{t('forecast.legend')}:</h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  <span>{t('forecast.legend1')}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                  <span>{t('forecast.legend2')}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-                  <span>{t('forecast.legend3')}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                  <span>{t('forecast.legend4')}</span>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>

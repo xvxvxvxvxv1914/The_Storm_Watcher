@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Zap, Menu, X, Globe } from 'lucide-react';
+import { Sun, Menu, X, Globe } from 'lucide-react';
 import { useLanguage, languages } from '../contexts/LanguageContext';
 
 const Navigation = () => {
@@ -22,12 +22,15 @@ const Navigation = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a1a]/80 backdrop-blur-md border-b border-white/10">
+    <nav className="fixed top-0 left-0 right-0 z-50 glass-surface">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center gap-2 text-xl font-bold">
-            <Zap className="w-6 h-6 text-[#00ff88]" fill="#00ff88" />
-            <span className="text-white">The Storm Watcher</span>
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="relative">
+              <Sun className="w-8 h-8 text-[#f97316] group-hover:text-[#fbbf24] transition-colors" />
+              <div className="absolute inset-0 w-8 h-8 rounded-full bg-[#f97316] opacity-20 blur-lg group-hover:opacity-40 transition-opacity" />
+            </div>
+            <span className="text-xl font-bold gradient-solar">The Storm Watcher</span>
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
@@ -35,27 +38,30 @@ const Navigation = () => {
               <Link
                 key={link.to}
                 to={link.to}
-                className={`text-sm font-medium transition-colors ${
+                className={`relative text-sm font-bold uppercase tracking-wider transition-colors ${
                   isActive(link.to)
-                    ? 'text-[#00ff88]'
-                    : 'text-gray-300 hover:text-white'
+                    ? 'text-[#f97316]'
+                    : 'text-[#94a3b8] hover:text-white'
                 }`}
               >
                 {link.label}
+                {isActive(link.to) && (
+                  <div className="absolute -bottom-2 left-0 right-0 h-0.5 bg-gradient-to-r from-[#f97316] to-[#fbbf24] rounded-full glow-orange" />
+                )}
               </Link>
             ))}
 
             <div className="relative">
               <button
                 onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
-                className="flex items-center gap-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
+                className="flex items-center gap-2 text-sm font-bold text-[#94a3b8] hover:text-white transition-colors"
               >
                 <Globe className="w-4 h-4" />
                 {languages.find(l => l.code === language)?.flag}
               </button>
 
               {isLangMenuOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-[#0a0a1a]/95 backdrop-blur-md border border-white/10 rounded-lg shadow-xl py-2">
+                <div className="absolute right-0 mt-2 w-48 glass-surface rounded-xl shadow-2xl py-2 border border-[#f97316]/20">
                   {languages.map((lang) => (
                     <button
                       key={lang.code}
@@ -63,10 +69,10 @@ const Navigation = () => {
                         setLanguage(lang.code);
                         setIsLangMenuOpen(false);
                       }}
-                      className={`w-full text-left px-4 py-2 text-sm transition-colors flex items-center gap-2 ${
+                      className={`w-full text-left px-4 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${
                         language === lang.code
-                          ? 'text-[#00ff88] bg-[#00ff88]/10'
-                          : 'text-gray-300 hover:text-white hover:bg-white/5'
+                          ? 'text-[#f97316] bg-[#f97316]/10'
+                          : 'text-[#94a3b8] hover:text-white hover:bg-white/5'
                       }`}
                     >
                       <span>{lang.flag}</span>
@@ -89,17 +95,17 @@ const Navigation = () => {
       </div>
 
       {isMenuOpen && (
-        <div className="md:hidden bg-[#0a0a1a]/95 backdrop-blur-md border-t border-white/10">
+        <div className="md:hidden glass-surface border-t border-white/10">
           <div className="px-4 py-4 space-y-3">
             {navLinks.map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
                 onClick={() => setIsMenuOpen(false)}
-                className={`block px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`block px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wide transition-colors ${
                   isActive(link.to)
-                    ? 'text-[#00ff88] bg-[#00ff88]/10'
-                    : 'text-gray-300 hover:text-white hover:bg-white/5'
+                    ? 'text-[#f97316] bg-[#f97316]/10 glow-orange'
+                    : 'text-[#94a3b8] hover:text-white hover:bg-white/5'
                 }`}
               >
                 {link.label}
@@ -107,7 +113,7 @@ const Navigation = () => {
             ))}
 
             <div className="border-t border-white/10 pt-3 mt-3">
-              <div className="text-xs font-semibold text-gray-400 px-4 mb-2 flex items-center gap-2">
+              <div className="text-xs font-bold text-[#94a3b8] px-4 mb-2 flex items-center gap-2 uppercase tracking-wider">
                 <Globe className="w-3 h-3" />
                 Language
               </div>
@@ -120,8 +126,8 @@ const Navigation = () => {
                   }}
                   className={`w-full text-left px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
                     language === lang.code
-                      ? 'text-[#00ff88] bg-[#00ff88]/10'
-                      : 'text-gray-300 hover:text-white hover:bg-white/5'
+                      ? 'text-[#f97316] bg-[#f97316]/10'
+                      : 'text-[#94a3b8] hover:text-white hover:bg-white/5'
                   }`}
                 >
                   <span>{lang.flag}</span>
