@@ -1,0 +1,70 @@
+import axios from 'axios';
+
+const NOAA_BASE_URL = 'https://services.swpc.noaa.gov';
+
+export interface KpIndexData {
+  time_tag: string;
+  kp_index: number;
+  estimated_kp?: number;
+}
+
+export interface SolarWindData {
+  time_tag: string;
+  speed: number;
+  density: number;
+  bz: number;
+  bt: number;
+}
+
+export interface XrayData {
+  time_tag: string;
+  flux: number;
+  energy: string;
+}
+
+export interface Alert {
+  issue_datetime: string;
+  message: string;
+  product_id: string;
+}
+
+export const getKpIndex = async (): Promise<KpIndexData[]> => {
+  const response = await axios.get(`${NOAA_BASE_URL}/json/planetary_k_index_1m.json`);
+  return response.data;
+};
+
+export const getXrayFlux = async (): Promise<XrayData[]> => {
+  const response = await axios.get(`${NOAA_BASE_URL}/json/goes/primary/xrays-1-day.json`);
+  return response.data;
+};
+
+export const getSolarWind = async (): Promise<SolarWindData[]> => {
+  const response = await axios.get(`${NOAA_BASE_URL}/json/rtsw/rtsw_wind_1m.json`);
+  return response.data;
+};
+
+export const getAlerts = async (): Promise<Alert[]> => {
+  const response = await axios.get(`${NOAA_BASE_URL}/products/alerts.json`);
+  return response.data;
+};
+
+export const getKpForecast = async (): Promise<KpIndexData[]> => {
+  const response = await axios.get(`${NOAA_BASE_URL}/json/planetary_k_index_forecast.json`);
+  return response.data;
+};
+
+export const getStormStatus = (kp: number): { status: string; color: string; bgColor: string } => {
+  if (kp < 4) return { status: 'QUIET', color: 'text-green-400', bgColor: 'bg-green-500/20' };
+  if (kp < 5) return { status: 'UNSETTLED', color: 'text-yellow-400', bgColor: 'bg-yellow-500/20' };
+  if (kp < 6) return { status: 'STORM G1', color: 'text-orange-400', bgColor: 'bg-orange-500/20' };
+  if (kp < 7) return { status: 'STORM G2', color: 'text-orange-600', bgColor: 'bg-orange-600/20' };
+  return { status: 'SEVERE STORM G3+', color: 'text-red-500', bgColor: 'bg-red-500/20' };
+};
+
+export const getXrayClass = (flux: number): string => {
+  if (flux < 1e-8) return 'A';
+  if (flux < 1e-7) return 'B';
+  if (flux < 1e-6) return 'C';
+  if (flux < 1e-5) return 'M';
+  return 'X';
+};
