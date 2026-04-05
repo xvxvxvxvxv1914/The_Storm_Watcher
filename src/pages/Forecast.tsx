@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Calendar, TrendingUp, AlertCircle } from 'lucide-react';
 import { getKpForecast, getStormStatus } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -157,43 +157,64 @@ const Forecast = () => {
           <h3 className="text-xl font-semibold text-white mb-6">{t('forecast.kpForecast')}</h3>
           {forecastData.length > 0 ? (
             <ResponsiveContainer width="100%" height={400}>
-              <AreaChart data={forecastData}>
+              <BarChart data={forecastData}>
                 <defs>
-                  <linearGradient id="colorKp" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#00ff88" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#00ff88" stopOpacity={0}/>
+                  <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#00ff88" stopOpacity={1}/>
+                    <stop offset="50%" stopColor="#00d4aa" stopOpacity={0.9}/>
+                    <stop offset="100%" stopColor="#0099cc" stopOpacity={0.8}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
                 <XAxis
                   dataKey="time"
-                  stroke="#9ca3af"
+                  stroke="#6b7280"
                   angle={-45}
                   textAnchor="end"
                   height={80}
+                  tick={{ fontSize: 12 }}
                 />
-                <YAxis stroke="#9ca3af" domain={[0, 9]} />
+                <YAxis
+                  stroke="#6b7280"
+                  domain={[0, 9]}
+                  tick={{ fontSize: 12 }}
+                  label={{ value: 'Kp Index', angle: -90, position: 'insideLeft', fill: '#9ca3af' }}
+                />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#1a1a2e',
-                    border: '1px solid #ffffff20',
-                    borderRadius: '8px',
+                    backgroundColor: 'rgba(15, 15, 30, 0.95)',
+                    border: '1px solid rgba(0, 255, 136, 0.3)',
+                    borderRadius: '12px',
+                    padding: '12px',
+                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
                   }}
+                  labelStyle={{ color: '#00ff88', fontWeight: 'bold', marginBottom: '4px' }}
+                  itemStyle={{ color: '#fff' }}
                   labelFormatter={(value, payload) => {
                     if (payload && payload[0]) {
                       return payload[0].payload.fullTime;
                     }
                     return value;
                   }}
+                  formatter={(value: number) => [value.toFixed(2), 'Kp Index']}
                 />
-                <Area
-                  type="monotone"
+                <Bar
                   dataKey="kp"
-                  stroke="#00ff88"
-                  strokeWidth={3}
-                  fill="url(#colorKp)"
-                />
-              </AreaChart>
+                  fill="url(#barGradient)"
+                  radius={[4, 4, 0, 0]}
+                  maxBarSize={40}
+                >
+                  {forecastData.map((entry, index) => {
+                    let color = '#00ff88';
+                    if (entry.kp >= 7) color = '#ef4444';
+                    else if (entry.kp >= 6) color = '#f97316';
+                    else if (entry.kp >= 5) color = '#f59e0b';
+                    else if (entry.kp >= 4) color = '#eab308';
+
+                    return <Cell key={`cell-${index}`} fill={color} />;
+                  })}
+                </Bar>
+              </BarChart>
             </ResponsiveContainer>
           ) : (
             <div className="h-[400px] flex items-center justify-center text-gray-400">
