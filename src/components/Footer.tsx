@@ -25,24 +25,16 @@ const Footer = () => {
             <h3 className="text-white font-bold mb-4 uppercase tracking-wider">{t('footer.company')}</h3>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-[#94a3b8] hover:text-[#f97316] text-sm transition-colors">
-                  {t('footer.about')}
-                </a>
+                <span className="text-[#94a3b8] text-sm">{t('footer.about')}</span>
               </li>
               <li>
-                <a href="#" className="text-[#94a3b8] hover:text-[#f97316] text-sm transition-colors">
-                  {t('footer.privacy')}
-                </a>
+                <span className="text-[#94a3b8] text-sm">{t('footer.privacy')}</span>
               </li>
               <li>
-                <a href="#" className="text-[#94a3b8] hover:text-[#f97316] text-sm transition-colors">
-                  {t('footer.support')}
-                </a>
+                <span className="text-[#94a3b8] text-sm">{t('footer.support')}</span>
               </li>
               <li>
-                <a href="#" className="text-[#94a3b8] hover:text-[#f97316] text-sm transition-colors">
-                  {t('footer.contact')}
-                </a>
+                <span className="text-[#94a3b8] text-sm">{t('footer.contact')}</span>
               </li>
             </ul>
           </div>
@@ -50,24 +42,15 @@ const Footer = () => {
           <div>
             <h3 className="text-white font-bold mb-4 uppercase tracking-wider">Connect</h3>
             <div className="flex gap-4">
-              <a
-                href="#"
-                className="w-10 h-10 glass-surface rounded-lg flex items-center justify-center text-[#94a3b8] hover:text-[#f97316] hover:glow-orange transition-all"
-              >
+              <div className="w-10 h-10 glass-surface rounded-lg flex items-center justify-center text-[#94a3b8]">
                 <Github className="w-5 h-5" />
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 glass-surface rounded-lg flex items-center justify-center text-[#94a3b8] hover:text-[#f97316] hover:glow-orange transition-all"
-              >
+              </div>
+              <div className="w-10 h-10 glass-surface rounded-lg flex items-center justify-center text-[#94a3b8]">
                 <Twitter className="w-5 h-5" />
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 glass-surface rounded-lg flex items-center justify-center text-[#94a3b8] hover:text-[#f97316] hover:glow-orange transition-all"
-              >
+              </div>
+              <div className="w-10 h-10 glass-surface rounded-lg flex items-center justify-center text-[#94a3b8]">
                 <Mail className="w-5 h-5" />
-              </a>
+              </div>
             </div>
           </div>
         </div>

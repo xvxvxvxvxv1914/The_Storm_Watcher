@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Activity, AlertTriangle, Satellite, Sun, Zap, Radio } from 'lucide-react';
 import { getKpIndex, getStormStatus } from '../services/noaaApi';
@@ -35,18 +35,35 @@ const Home = () => {
   const stormStatus = kpValue !== null ? getStormStatus(kpValue) : null;
   const isStorm = kpValue !== null && kpValue >= 5;
 
+  const stars = useMemo(() =>
+    [...Array(100)].map((_, i) => ({
+      id: i,
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      delay: Math.random() * 3,
+      duration: 2 + Math.random() * 4,
+    })), []);
+
+  const particles = useMemo(() =>
+    [...Array(20)].map((_, i) => ({
+      id: i,
+      top: Math.random() * 100,
+      delay: Math.random() * 20,
+      duration: 15 + Math.random() * 10,
+    })), []);
+
   return (
     <div className="min-h-screen relative">
       <div className="star-field">
-        {[...Array(100)].map((_, i) => (
+        {stars.map((s) => (
           <div
-            key={i}
+            key={s.id}
             className="star"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${2 + Math.random() * 4}s`,
+              left: `${s.left}%`,
+              top: `${s.top}%`,
+              animationDelay: `${s.delay}s`,
+              animationDuration: `${s.duration}s`,
             }}
           />
         ))}
@@ -61,7 +78,7 @@ const Home = () => {
             <div className="max-w-7xl mx-auto flex items-center justify-center gap-3">
               <AlertTriangle className="w-6 h-6 text-white" />
               <span className="text-white font-bold uppercase tracking-wider">
-                GEOMAGNETIC STORM IN PROGRESS — Kp {kpValue?.toFixed(1)}
+                {t('home.stormBanner')} {kpValue?.toFixed(1)}
               </span>
               <AlertTriangle className="w-6 h-6 text-white" />
             </div>
@@ -70,14 +87,14 @@ const Home = () => {
       )}
 
       <div className="relative overflow-hidden" style={{ paddingTop: isStorm ? '60px' : '0' }}>
-        {[...Array(20)].map((_, i) => (
+        {particles.map((p) => (
           <div
-            key={i}
+            key={p.id}
             className="solar-particle"
             style={{
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 20}s`,
-              animationDuration: `${15 + Math.random() * 10}s`,
+              top: `${p.top}%`,
+              animationDelay: `${p.delay}s`,
+              animationDuration: `${p.duration}s`,
             }}
           />
         ))}
@@ -122,7 +139,7 @@ const Home = () => {
             )}
 
             <p className="text-xl sm:text-2xl text-[#94a3b8] mb-12 max-w-2xl mx-auto font-medium">
-              Monitoring the sun. Protecting the Earth.
+              {t('home.tagline')}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

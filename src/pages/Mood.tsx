@@ -1,16 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Smile, Frown, Meh, ThumbsUp, ThumbsDown, Users, TrendingUp } from 'lucide-react';
+import { Smile, Frown, Meh, ThumbsUp, ThumbsDown, Users, TrendingUp, CheckCircle, AlertCircle } from 'lucide-react';
 import { supabase, getSessionId } from '../lib/supabase';
 import { getKpIndex } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
-
-interface MoodEntry {
-  id: string;
-  mood_type: string;
-  symptoms: string[];
-  created_at: string;
-  kp_index: number;
-}
 
 interface MoodStats {
   mood_type: string;
@@ -27,24 +19,25 @@ const Mood = () => {
   const [totalEntries, setTotalEntries] = useState(0);
   const [hasSubmittedToday, setHasSubmittedToday] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [submitMessage, setSubmitMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   const moods = [
-    { type: 'great', label: t('mood.great'), icon: ThumbsUp, color: 'bg-green-500', textColor: 'text-green-500' },
-    { type: 'good', label: t('mood.good'), icon: Smile, color: 'bg-emerald-500', textColor: 'text-emerald-500' },
-    { type: 'okay', label: t('mood.okay'), icon: Meh, color: 'bg-yellow-500', textColor: 'text-yellow-500' },
-    { type: 'bad', label: t('mood.bad'), icon: Frown, color: 'bg-orange-500', textColor: 'text-orange-500' },
-    { type: 'terrible', label: t('mood.terrible'), icon: ThumbsDown, color: 'bg-red-500', textColor: 'text-red-500' },
+    { type: 'great', labelKey: 'mood.great', icon: ThumbsUp, color: 'bg-green-500', textColor: 'text-green-500' },
+    { type: 'good', labelKey: 'mood.good', icon: Smile, color: 'bg-emerald-500', textColor: 'text-emerald-500' },
+    { type: 'okay', labelKey: 'mood.okay', icon: Meh, color: 'bg-yellow-500', textColor: 'text-yellow-500' },
+    { type: 'bad', labelKey: 'mood.bad', icon: Frown, color: 'bg-orange-500', textColor: 'text-orange-500' },
+    { type: 'terrible', labelKey: 'mood.terrible', icon: ThumbsDown, color: 'bg-red-500', textColor: 'text-red-500' },
   ];
 
-  const symptoms = [
-    t('mood.symptom.headache'),
-    t('mood.symptom.dizzy'),
-    t('mood.symptom.anxiety'),
-    t('mood.symptom.insomnia'),
-    t('mood.symptom.fatigue'),
-    t('mood.symptom.irritability'),
-    t('mood.symptom.concentration'),
-    t('mood.symptom.palpitations'),
+  const symptomKeys = [
+    'mood.symptom.headache',
+    'mood.symptom.dizzy',
+    'mood.symptom.anxiety',
+    'mood.symptom.insomnia',
+    'mood.symptom.fatigue',
+    'mood.symptom.irritability',
+    'mood.symptom.concentration',
+    'mood.symptom.palpitations',
   ];
 
   useEffect(() => {
@@ -129,7 +122,7 @@ const Mood = () => {
 
     if (error) {
       console.error('Error submitting mood:', error);
-      alert(t('mood.error'));
+      setSubmitMessage({ type: 'error', text: t('mood.error') });
       return;
     }
 
@@ -137,18 +130,16 @@ const Mood = () => {
     setSelectedMood(null);
     setSelectedSymptoms([]);
     fetchStats();
-    alert(t('mood.thankYou') + '!');
+    setSubmitMessage({ type: 'success', text: t('mood.thankYou') });
   };
 
-  const toggleSymptom = (symptom: string) => {
+  const toggleSymptom = (key: string) => {
     setSelectedSymptoms((prev) =>
-      prev.includes(symptom) ? prev.filter((s) => s !== symptom) : [...prev, symptom]
+      prev.includes(key) ? prev.filter((s) => s !== key) : [...prev, key]
     );
   };
 
-  const getMoodInfo = (moodType: string) => {
-    return moods.find((m) => m.type === moodType);
-  };
+  const getMoodInfo = (moodType: string) => moods.find((m) => m.type === moodType);
 
   if (loading) {
     return (
@@ -189,10 +180,23 @@ const Mood = () => {
               <h3 className="text-gray-400 text-sm">{t('mood.topMood')}</h3>
             </div>
             <div className="text-2xl font-bold text-white">
-              {stats.length > 0 ? getMoodInfo(stats[0].mood_type)?.label : '-'}
+              {stats.length > 0 ? t(getMoodInfo(stats[0].mood_type)?.labelKey ?? '') : '-'}
             </div>
           </div>
         </div>
+
+        {submitMessage && (
+          <div className={`mb-6 flex items-center gap-3 px-6 py-4 rounded-xl border ${
+            submitMessage.type === 'success'
+              ? 'bg-green-500/10 border-green-500/30 text-green-400'
+              : 'bg-red-500/10 border-red-500/30 text-red-400'
+          }`}>
+            {submitMessage.type === 'success'
+              ? <CheckCircle className="w-5 h-5 flex-shrink-0" />
+              : <AlertCircle className="w-5 h-5 flex-shrink-0" />}
+            <span className="font-medium">{submitMessage.text}</span>
+          </div>
+        )}
 
         {!hasSubmittedToday ? (
           <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 mb-8">
@@ -214,7 +218,7 @@ const Mood = () => {
                   >
                     <Icon className={`w-12 h-12 mx-auto mb-3 ${isSelected ? 'text-white' : mood.textColor}`} />
                     <div className={`font-semibold text-sm ${isSelected ? 'text-white' : 'text-gray-300'}`}>
-                      {mood.label}
+                      {t(mood.labelKey)}
                     </div>
                   </button>
                 );
@@ -227,19 +231,19 @@ const Mood = () => {
                   {t('mood.symptomsQuestion')}
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {symptoms.map((symptom) => {
-                    const isSelected = selectedSymptoms.includes(symptom);
+                  {symptomKeys.map((key) => {
+                    const isSelected = selectedSymptoms.includes(key);
                     return (
                       <button
-                        key={symptom}
-                        onClick={() => toggleSymptom(symptom)}
+                        key={key}
+                        onClick={() => toggleSymptom(key)}
                         className={`p-3 rounded-lg text-sm transition-all ${
                           isSelected
                             ? 'bg-[#00ff88] text-[#0a0a1a] font-semibold'
                             : 'bg-white/5 text-gray-300 border border-white/10 hover:border-white/30'
                         }`}
                       >
-                        {symptom}
+                        {t(key)}
                       </button>
                     );
                   })}
@@ -286,7 +290,7 @@ const Mood = () => {
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-3">
                         <Icon className={`w-6 h-6 ${moodInfo.textColor}`} />
-                        <span className="text-white font-semibold">{moodInfo.label}</span>
+                        <span className="text-white font-semibold">{t(moodInfo.labelKey)}</span>
                       </div>
                       <div className="text-white font-semibold">
                         {stat.count} ({stat.percentage.toFixed(1)}%)
@@ -308,12 +312,8 @@ const Mood = () => {
         <div className="mt-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
           <h3 className="text-xl font-semibold text-white mb-4">{t('mood.about')}</h3>
           <div className="text-gray-400 space-y-3">
-            <p>
-              {t('mood.aboutText1')}
-            </p>
-            <p>
-              {t('mood.aboutText2')}
-            </p>
+            <p>{t('mood.aboutText1')}</p>
+            <p>{t('mood.aboutText2')}</p>
           </div>
         </div>
       </div>

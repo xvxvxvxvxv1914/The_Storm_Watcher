@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Activity, Wind, Compass, Zap, Sun, Radio } from 'lucide-react';
 import { getKpIndex, getSolarWind, getXrayFlux, getStormStatus, getXrayClass } from '../services/noaaApi';
@@ -10,8 +10,8 @@ const Dashboard = () => {
   const [solarWindSpeed, setSolarWindSpeed] = useState<number>(0);
   const [bz, setBz] = useState<number>(0);
   const [xrayFlux, setXrayFlux] = useState<number>(0);
-  const [kpHistory, setKpHistory] = useState<any[]>([]);
-  const [windHistory, setWindHistory] = useState<any[]>([]);
+  const [kpHistory, setKpHistory] = useState<{ time: number; kp: number }[]>([]);
+  const [windHistory, setWindHistory] = useState<{ time: number; speed: number }[]>([]);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [loading, setLoading] = useState(true);
 
@@ -95,6 +95,14 @@ const Dashboard = () => {
   const stormStatus = getStormStatus(kpValue);
   const xrayClass = getXrayClass(xrayFlux);
 
+  const stars = useMemo(() =>
+    [...Array(50)].map((_, i) => ({
+      id: i,
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      delay: Math.random() * 3,
+    })), []);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -106,14 +114,14 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen pt-24 pb-16 relative">
       <div className="star-field">
-        {[...Array(50)].map((_, i) => (
+        {stars.map((s) => (
           <div
-            key={i}
+            key={s.id}
             className="star"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
+              left: `${s.left}%`,
+              top: `${s.top}%`,
+              animationDelay: `${s.delay}s`,
             }}
           />
         ))}
@@ -150,7 +158,7 @@ const Dashboard = () => {
               kpValue >= 4 ? 'bg-gradient-to-r from-[#eab308] to-[#ca8a04] text-white' :
               'bg-gradient-to-r from-[#10b981] to-[#059669] text-white'
             }`}>
-              {stormStatus.status}
+              {t(stormStatus.statusKey)}
             </div>
           </div>
 

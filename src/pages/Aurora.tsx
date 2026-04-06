@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { MapPin, Eye, Sparkles } from 'lucide-react';
 import { getKpIndex } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -37,26 +37,34 @@ const Aurora = () => {
   }, []);
 
   const getVisibilityInfo = (kp: number) => {
-    if (kp >= 7) return { latitude: 50, color: 'text-[#ef4444]', intensity: 'Very High', bgGlow: 'glow-red' };
-    if (kp >= 6) return { latitude: 55, color: 'text-[#f97316]', intensity: 'High', bgGlow: 'glow-orange' };
-    if (kp >= 5) return { latitude: 60, color: 'text-[#fbbf24]', intensity: 'Moderate', bgGlow: 'glow-orange' };
-    if (kp >= 4) return { latitude: 65, color: 'text-[#10b981]', intensity: 'Low', bgGlow: 'glow-green' };
-    return { latitude: 70, color: 'text-[#94a3b8]', intensity: 'Very Low', bgGlow: '' };
+    if (kp >= 7) return { latitude: 50, color: 'text-[#ef4444]', intensityKey: 'aurora.intensityVeryHigh', bgGlow: 'glow-red' };
+    if (kp >= 6) return { latitude: 55, color: 'text-[#f97316]', intensityKey: 'aurora.intensityHigh', bgGlow: 'glow-orange' };
+    if (kp >= 5) return { latitude: 60, color: 'text-[#fbbf24]', intensityKey: 'aurora.intensityModerate', bgGlow: 'glow-orange' };
+    if (kp >= 4) return { latitude: 65, color: 'text-[#10b981]', intensityKey: 'aurora.intensityLow', bgGlow: 'glow-green' };
+    return { latitude: 70, color: 'text-[#94a3b8]', intensityKey: 'aurora.intensityVeryLow', bgGlow: '' };
   };
 
   const visibility = getVisibilityInfo(kpValue);
 
+  const stars = useMemo(() =>
+    [...Array(50)].map((_, i) => ({
+      id: i,
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      delay: Math.random() * 3,
+    })), []);
+
   return (
     <div className="min-h-screen pt-24 pb-16 relative">
       <div className="star-field">
-        {[...Array(50)].map((_, i) => (
+        {stars.map((s) => (
           <div
-            key={i}
+            key={s.id}
             className="star"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
+              left: `${s.left}%`,
+              top: `${s.top}%`,
+              animationDelay: `${s.delay}s`,
             }}
           />
         ))}
@@ -97,7 +105,7 @@ const Aurora = () => {
                 {t('aurora.intensity')}
               </h3>
             </div>
-            <div className={`text-4xl font-bold mb-3 ${visibility.color}`}>{visibility.intensity}</div>
+            <div className={`text-4xl font-bold mb-3 ${visibility.color}`}>{t(visibility.intensityKey)}</div>
             <div className="text-[#94a3b8] text-sm uppercase tracking-wider">Aurora Strength</div>
           </div>
 

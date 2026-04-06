@@ -53,12 +53,12 @@ export const getKpForecast = async (): Promise<KpIndexData[]> => {
   return response.data;
 };
 
-export const getStormStatus = (kp: number): { status: string; color: string; bgColor: string } => {
-  if (kp < 4) return { status: 'QUIET', color: 'text-green-400', bgColor: 'bg-green-500/20' };
-  if (kp < 5) return { status: 'UNSETTLED', color: 'text-yellow-400', bgColor: 'bg-yellow-500/20' };
-  if (kp < 6) return { status: 'STORM G1', color: 'text-orange-400', bgColor: 'bg-orange-500/20' };
-  if (kp < 7) return { status: 'STORM G2', color: 'text-orange-600', bgColor: 'bg-orange-600/20' };
-  return { status: 'SEVERE STORM G3+', color: 'text-red-500', bgColor: 'bg-red-500/20' };
+export const getStormStatus = (kp: number): { statusKey: string; color: string; bgColor: string } => {
+  if (kp < 4) return { statusKey: 'storm.quiet', color: 'text-green-400', bgColor: 'bg-green-500/20' };
+  if (kp < 5) return { statusKey: 'storm.unsettled', color: 'text-yellow-400', bgColor: 'bg-yellow-500/20' };
+  if (kp < 6) return { statusKey: 'storm.g1', color: 'text-orange-400', bgColor: 'bg-orange-500/20' };
+  if (kp < 7) return { statusKey: 'storm.g2', color: 'text-orange-600', bgColor: 'bg-orange-600/20' };
+  return { statusKey: 'storm.g3plus', color: 'text-red-500', bgColor: 'bg-red-500/20' };
 };
 
 export const getXrayClass = (flux: number): string => {

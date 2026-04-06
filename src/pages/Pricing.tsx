@@ -94,10 +94,11 @@ const Pricing = () => {
               </div>
 
               <button
-                className={`w-full py-3 px-6 rounded-lg font-semibold transition-colors mb-8 ${
+                disabled
+                className={`w-full py-3 px-6 rounded-lg font-semibold mb-8 cursor-not-allowed opacity-60 ${
                   plan.highlighted
-                    ? 'bg-[#00ff88] text-[#0a0a1a] hover:bg-[#00ff88]/90'
-                    : 'bg-white/10 text-white hover:bg-white/20 border border-white/20'
+                    ? 'bg-[#00ff88] text-[#0a0a1a]'
+                    : 'bg-white/10 text-white border border-white/20'
                 }`}
               >
                 {plan.buttonText}
@@ -154,7 +155,7 @@ const Pricing = () => {
               <li>• {t('pricing.enterprise4')}</li>
               <li>• {t('pricing.enterprise5')}</li>
             </ul>
-            <button className="w-full py-3 px-6 bg-[#8b5cf6] text-white rounded-lg font-semibold hover:bg-[#8b5cf6]/90 transition-colors">
+            <button disabled className="w-full py-3 px-6 bg-[#8b5cf6] text-white rounded-lg font-semibold cursor-not-allowed opacity-60">
               {t('pricing.contactSales')}
             </button>
           </div>

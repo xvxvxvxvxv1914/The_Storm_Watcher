@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Calendar, TrendingUp, AlertCircle, Sun } from 'lucide-react';
 import { getKpForecast, getStormStatus } from '../services/noaaApi';
@@ -120,6 +120,14 @@ const Forecast = () => {
     );
   }
 
+  const stars = useMemo(() =>
+    [...Array(50)].map((_, i) => ({
+      id: i,
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      delay: Math.random() * 3,
+    })), []);
+
   const maxKp = getMaxKp();
   const avgKp = getAverageKp();
   const stormDays = getDaysWithStorms();
@@ -129,14 +137,14 @@ const Forecast = () => {
   return (
     <div className="min-h-screen pt-24 pb-16 relative">
       <div className="star-field">
-        {[...Array(50)].map((_, i) => (
+        {stars.map((s) => (
           <div
-            key={i}
+            key={s.id}
             className="star"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
+              left: `${s.left}%`,
+              top: `${s.top}%`,
+              animationDelay: `${s.delay}s`,
             }}
           />
         ))}
@@ -181,7 +189,7 @@ const Forecast = () => {
             </div>
             <div className="text-6xl font-bold gradient-solar mb-2">{avgKp.toFixed(1)}</div>
             <div className="text-[#94a3b8] text-sm uppercase tracking-wider">
-              Average Index
+              {t('forecast.avgKp')}
             </div>
           </div>
 
@@ -296,7 +304,7 @@ const Forecast = () => {
                         maxDayKp >= 4 ? 'bg-gradient-to-r from-[#eab308] to-[#ca8a04] text-white' :
                         'bg-gradient-to-r from-[#10b981] to-[#059669] text-white'
                       }`}>
-                        {status.status}
+                        {t(status.statusKey)}
                       </div>
                     </div>
                   </div>
