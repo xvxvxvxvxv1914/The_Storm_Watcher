@@ -92,7 +92,7 @@ function AppRoutes() {
       <Navigation />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/auth" element={user ? <Navigate to="/dashboard" replace /> : <Auth />} />
+        <Route path="/auth" element={user && user.email_confirmed_at ? <Navigate to="/dashboard" replace /> : <Auth />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route
           path="/forecast"
