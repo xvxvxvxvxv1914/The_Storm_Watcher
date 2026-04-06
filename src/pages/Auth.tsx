@@ -13,7 +13,7 @@ export default function Auth() {
   const [loading, setLoading] = useState(false);
   const [confirmationSent, setConfirmationSent] = useState(false);
   const navigate = useNavigate();
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, signOut } = useAuth();
   const { t } = useLanguage();
 
   const handleEmailAuth = async (e: React.FormEvent) => {
@@ -29,6 +29,7 @@ export default function Auth() {
       if (error) {
         setError(error.message);
       } else if (!isLogin) {
+        await signOut();
         setConfirmationSent(true);
       } else {
         navigate('/dashboard');
