@@ -131,7 +131,7 @@ const Dashboard = () => {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-12">
-          <h1 className="text-5xl font-bold mb-3 uppercase tracking-tight" style={getKpGradientStyle(kpValue)}>
+          <h1 className="text-5xl font-bold gradient-solar mb-3 uppercase tracking-tight">
             {t('dashboard.title')}
           </h1>
           <p className="text-[#94a3b8] text-lg">
