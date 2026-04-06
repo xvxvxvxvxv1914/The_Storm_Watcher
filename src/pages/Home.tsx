@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Activity, AlertTriangle, Satellite, Sun, Zap, Radio } from 'lucide-react';
+import { Activity, AlertTriangle, Satellite, Sun, Zap, Radio, X, Siren } from 'lucide-react';
 import { getKpIndex, getStormStatus, getKpGradientStyle } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -8,6 +8,8 @@ const Home = () => {
   const { t } = useLanguage();
   const [kpValue, setKpValue] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showStormAlert, setShowStormAlert] = useState(false);
+  const [dismissedKp, setDismissedKp] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchKp = async () => {
@@ -31,6 +33,12 @@ const Home = () => {
     const interval = setInterval(fetchKp, 60000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (kpValue !== null && kpValue >= 7 && dismissedKp !== Math.floor(kpValue)) {
+      setShowStormAlert(true);
+    }
+  }, [kpValue]);
 
   const stormStatus = kpValue !== null ? getStormStatus(kpValue) : null;
   const isStorm = kpValue !== null && kpValue >= 5;
@@ -71,6 +79,51 @@ const Home = () => {
 
       <div className="solar-orb" style={{ top: '-200px', right: '-200px' }} />
       <div className="magnetic-orb" style={{ bottom: '-150px', left: '-150px' }} />
+
+      {showStormAlert && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => { setShowStormAlert(false); setDismissedKp(Math.floor(kpValue!)); }} />
+          <div className="relative max-w-md w-full rounded-2xl border-2 border-[#ef4444] shadow-2xl overflow-hidden pulse-alert">
+            <div className="bg-gradient-to-br from-[#1a0000] via-[#0a0a1a] to-[#1a0000] p-8">
+              <button
+                onClick={() => { setShowStormAlert(false); setDismissedKp(Math.floor(kpValue!)); }}
+                className="absolute top-4 right-4 text-[#94a3b8] hover:text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              <div className="flex flex-col items-center text-center">
+                <div className="w-20 h-20 bg-[#ef4444]/20 rounded-full flex items-center justify-center mb-6 animate-pulse">
+                  <AlertTriangle className="w-10 h-10 text-[#ef4444]" />
+                </div>
+                <h2 className="text-3xl font-bold text-white mb-2 uppercase tracking-wider">
+                  ⚠️ Силна буря!
+                </h2>
+                <div className="text-7xl font-bold mb-3" style={getKpGradientStyle(kpValue!)}>
+                  Kp {kpValue?.toFixed(1)}
+                </div>
+                <p className="text-[#94a3b8] mb-6 leading-relaxed">
+                  Регистрирана е много силна геомагнитна буря. Може да има смущения в GPS, радио връзки и електрически мрежи. Аврора е видима на ниски географски ширини.
+                </p>
+                <div className="flex gap-3 w-full">
+                  <Link
+                    to="/alerts"
+                    onClick={() => setShowStormAlert(false)}
+                    className="flex-1 py-3 px-4 bg-gradient-to-r from-[#ef4444] to-[#dc2626] text-white font-bold rounded-lg text-center hover:shadow-lg hover:shadow-[#ef4444]/50 transition-all uppercase tracking-wide text-sm"
+                  >
+                    Виж известията
+                  </Link>
+                  <button
+                    onClick={() => { setShowStormAlert(false); setDismissedKp(Math.floor(kpValue!)); }}
+                    className="flex-1 py-3 px-4 glass-surface text-white font-semibold rounded-lg border border-white/10 hover:border-white/30 transition-all text-sm"
+                  >
+                    Затвори
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {isStorm && (
         <div className="fixed top-0 left-0 right-0 z-50 pulse-alert">
