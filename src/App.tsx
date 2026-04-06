@@ -34,25 +34,18 @@ function AppRoutes() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/auth" element={user ? <Navigate to="/dashboard" replace /> : <Auth />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route
-          path="/dashboard"
+          path="/forecast"
           element={
             <ProtectedRoute>
-              <Dashboard />
+              <Forecast />
             </ProtectedRoute>
           }
         />
-        <Route path="/forecast" element={<Forecast />} />
         <Route path="/aurora" element={<Aurora />} />
         <Route path="/alerts" element={<Alerts />} />
-        <Route
-          path="/mood"
-          element={
-            <ProtectedRoute>
-              <Mood />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/mood" element={<Mood />} />
         <Route path="/pricing" element={<Pricing />} />
       </Routes>
       <Footer />
