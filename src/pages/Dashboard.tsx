@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Activity, Wind, Compass, Zap, Sun, Radio } from 'lucide-react';
 import { getKpIndex, getSolarWind, getXrayFlux, getKpHistory3Day, getStormStatus, getXrayClass, getKpGradientStyle } from '../services/noaaApi';
-
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Dashboard = () => {
@@ -11,7 +10,6 @@ const Dashboard = () => {
   const [solarWindSpeed, setSolarWindSpeed] = useState<number>(0);
   const [bz, setBz] = useState<number>(0);
   const [xrayFlux, setXrayFlux] = useState<number>(0);
-  const [kpHistory, setKpHistory] = useState<{ time: string; kp: number }[]>([]);
   const [windHistory, setWindHistory] = useState<{ time: string; speed: number }[]>([]);
   const [kpHistory3Day, setKpHistory3Day] = useState<{ time: string; kp: number }[]>([]);
   const [timeRange, setTimeRange] = useState<'24h' | '48h' | '72h'>('24h');
@@ -31,14 +29,8 @@ const Dashboard = () => {
         const latest = kpData[kpData.length - 1];
         setKpValue(latest.kp_index || latest.estimated_kp || 0);
 
-        const last24Hours = kpData.slice(-1440).map((item) => ({
-          time: new Date(item.time_tag).toLocaleTimeString('bg', { hour: '2-digit', minute: '2-digit' }),
-          kp: item.kp_index || item.estimated_kp || 0,
-        }));
-        setKpHistory(last24Hours);
       } else {
         setKpValue(0);
-        setKpHistory([]);
       }
 
       if (kp3dayData && kp3dayData.length > 0) {
@@ -258,109 +250,36 @@ const Dashboard = () => {
           )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="glass-surface rounded-2xl p-8">
-            <h3 className="text-2xl font-bold text-white mb-6 uppercase tracking-wide flex items-center gap-3">
-              <Radio className="w-6 h-6 text-[#f97316]" />
-              {t('dashboard.kpHistory')}
-            </h3>
-            {kpHistory.length > 0 ? (
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={kpHistory}>
-                  <defs>
-                    <linearGradient id="kpGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#f97316" stopOpacity={0.3}/>
-                      <stop offset="100%" stopColor="#f97316" stopOpacity={0.05}/>
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-                  <XAxis
-                    dataKey="time"
-                    stroke="#6b7280"
-                    tick={{ fontSize: 12 }}
-                  />
-                  <YAxis
-                    stroke="#6b7280"
-                    domain={[0, 9]}
-                    tick={{ fontSize: 12 }}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: 'rgba(10, 0, 21, 0.95)',
-                      border: '1px solid rgba(249, 115, 22, 0.3)',
-                      borderRadius: '12px',
-                      padding: '12px',
-                    }}
-                    labelStyle={{ color: '#f97316', fontWeight: 'bold' }}
-                    itemStyle={{ color: '#fff' }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="kp"
-                    stroke="#f97316"
-                    strokeWidth={3}
-                    dot={false}
-                    fill="url(#kpGradient)"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="h-[300px] flex items-center justify-center text-[#94a3b8]">
-                {t('dashboard.noData')}
-              </div>
-            )}
-          </div>
-
-          <div className="glass-surface rounded-2xl p-8">
-            <h3 className="text-2xl font-bold text-white mb-6 uppercase tracking-wide flex items-center gap-3">
-              <Wind className="w-6 h-6 text-[#7c3aed]" />
-              {t('dashboard.windHistory')}
-            </h3>
-            {windHistory.length > 0 ? (
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={windHistory}>
-                  <defs>
-                    <linearGradient id="windGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#7c3aed" stopOpacity={0.3}/>
-                      <stop offset="100%" stopColor="#7c3aed" stopOpacity={0.05}/>
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-                  <XAxis
-                    dataKey="time"
-                    stroke="#6b7280"
-                    tick={{ fontSize: 12 }}
-                  />
-                  <YAxis
-                    stroke="#6b7280"
-                    tick={{ fontSize: 12 }}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: 'rgba(10, 0, 21, 0.95)',
-                      border: '1px solid rgba(124, 58, 237, 0.3)',
-                      borderRadius: '12px',
-                      padding: '12px',
-                    }}
-                    labelStyle={{ color: '#7c3aed', fontWeight: 'bold' }}
-                    itemStyle={{ color: '#fff' }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="speed"
-                    stroke="#7c3aed"
-                    strokeWidth={3}
-                    dot={false}
-                    fill="url(#windGradient)"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="h-[300px] flex items-center justify-center text-[#94a3b8]">
-                {t('dashboard.noData')}
-              </div>
-            )}
-          </div>
+        <div className="glass-surface rounded-2xl p-8 mb-8">
+          <h3 className="text-2xl font-bold text-white mb-6 uppercase tracking-wide flex items-center gap-3">
+            <Wind className="w-6 h-6 text-[#7c3aed]" />
+            {t('dashboard.windHistory')}
+          </h3>
+          {windHistory.length > 0 ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={windHistory}>
+                <defs>
+                  <linearGradient id="windGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#7c3aed" stopOpacity={0.3}/>
+                    <stop offset="100%" stopColor="#7c3aed" stopOpacity={0.05}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                <XAxis dataKey="time" stroke="#6b7280" tick={{ fontSize: 11 }} interval="preserveStartEnd" />
+                <YAxis stroke="#6b7280" tick={{ fontSize: 12 }} />
+                <Tooltip
+                  contentStyle={{ backgroundColor: 'rgba(10,0,21,0.95)', border: '1px solid rgba(124,58,237,0.3)', borderRadius: '12px', padding: '12px' }}
+                  labelStyle={{ color: '#7c3aed', fontWeight: 'bold' }}
+                  itemStyle={{ color: '#fff' }}
+                />
+                <Line type="monotone" dataKey="speed" stroke="#7c3aed" strokeWidth={2} dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="h-[300px] flex items-center justify-center text-[#94a3b8]">
+              {t('dashboard.noData')}
+            </div>
+          )}
         </div>
       </div>
     </div>
