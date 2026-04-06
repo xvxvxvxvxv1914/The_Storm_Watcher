@@ -131,7 +131,7 @@ const Dashboard = () => {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-12">
-          <h1 className="text-5xl font-bold gradient-fire mb-3 uppercase tracking-tight">
+          <h1 className="text-5xl font-bold mb-3 uppercase tracking-tight" style={getKpGradientStyle(kpValue)}>
             {t('dashboard.title')}
           </h1>
           <p className="text-[#94a3b8] text-lg">
@@ -144,7 +144,12 @@ const Dashboard = () => {
             kpValue >= 5 ? 'glow-red' : kpValue >= 4 ? 'glow-orange' : 'glow-green'
           } hover:scale-105 transition-transform`}>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-[#f97316] to-[#ef4444] rounded-xl flex items-center justify-center">
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                kpValue >= 5 ? 'bg-gradient-to-br from-[#ef4444] to-[#dc2626]' :
+                kpValue >= 4 ? 'bg-gradient-to-br from-[#f97316] to-[#ea580c]' :
+                kpValue >= 2 ? 'bg-gradient-to-br from-[#eab308] to-[#10b981]' :
+                'bg-gradient-to-br from-[#10b981] to-[#059669]'
+              }`}>
                 <Activity className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-[#94a3b8] text-sm uppercase tracking-wider font-bold">
