@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Smile, Frown, Meh, ThumbsUp, ThumbsDown, Users, TrendingUp, CheckCircle, AlertCircle } from 'lucide-react';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
 import { supabase, getSessionId } from '../lib/supabase';
 import { getKpIndex } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -10,12 +11,22 @@ interface MoodStats {
   percentage: number;
 }
 
+interface HourlyData {
+  hour: string;
+  great: number;
+  good: number;
+  okay: number;
+  bad: number;
+  terrible: number;
+}
+
 const Mood = () => {
   const { t } = useLanguage();
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
   const [currentKp, setCurrentKp] = useState<number>(0);
   const [stats, setStats] = useState<MoodStats[]>([]);
+  const [hourlyData, setHourlyData] = useState<HourlyData[]>([]);
   const [totalEntries, setTotalEntries] = useState(0);
   const [hasSubmittedToday, setHasSubmittedToday] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -80,7 +91,7 @@ const Mood = () => {
 
     const { data, error } = await supabase
       .from('mood_entries')
-      .select('mood_type')
+      .select('mood_type, created_at')
       .gte('created_at', twentyFourHoursAgo.toISOString());
 
     if (error) {
@@ -102,9 +113,24 @@ const Mood = () => {
         count,
         percentage: total > 0 ? (count / total) * 100 : 0,
       }));
-
       statsArray.sort((a, b) => b.count - a.count);
       setStats(statsArray);
+
+      // Build hourly data for last 12 hours
+      const hourlyMap: { [key: string]: HourlyData } = {};
+      for (let i = 11; i >= 0; i--) {
+        const d = new Date();
+        d.setHours(d.getHours() - i, 0, 0, 0);
+        const key = d.getHours().toString().padStart(2, '0') + ':00';
+        hourlyMap[key] = { hour: key, great: 0, good: 0, okay: 0, bad: 0, terrible: 0 };
+      }
+      data.forEach((entry: { mood_type: string; created_at: string }) => {
+        const h = new Date(entry.created_at).getHours().toString().padStart(2, '0') + ':00';
+        if (hourlyMap[h]) {
+          hourlyMap[h][entry.mood_type as keyof Omit<HourlyData, 'hour'>]++;
+        }
+      });
+      setHourlyData(Object.values(hourlyMap));
     }
   };
 
@@ -279,32 +305,80 @@ const Mood = () => {
           {stats.length === 0 ? (
             <p className="text-gray-400 text-center py-8">{t('mood.noData')}</p>
           ) : (
-            <div className="space-y-4">
-              {stats.map((stat) => {
-                const moodInfo = getMoodInfo(stat.mood_type);
-                if (!moodInfo) return null;
-                const Icon = moodInfo.icon;
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Pie chart */}
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-4 text-center">Разпределение</h3>
+                <ResponsiveContainer width="100%" height={280}>
+                  <PieChart>
+                    <Pie
+                      data={stats.map((s: MoodStats) => ({
+                        name: t(getMoodInfo(s.mood_type)?.labelKey ?? s.mood_type),
+                        value: s.count,
+                        mood: s.mood_type,
+                      }))}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={100}
+                      paddingAngle={3}
+                      dataKey="value"
+                    >
+                      {stats.map((stat: MoodStats) => (
+                        <Cell
+                          key={stat.mood_type}
+                          fill={
+                            stat.mood_type === 'great' ? '#22c55e' :
+                            stat.mood_type === 'good' ? '#10b981' :
+                            stat.mood_type === 'okay' ? '#eab308' :
+                            stat.mood_type === 'bad' ? '#f97316' :
+                            '#ef4444'
+                          }
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      contentStyle={{ backgroundColor: 'rgba(10,0,21,0.95)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
+                      itemStyle={{ color: '#fff' }}
+                      formatter={(value: number, name: string) => [`${value} гласа`, name]}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="flex flex-wrap justify-center gap-3 mt-2">
+                  {stats.map((stat: MoodStats) => {
+                    const moodInfo = getMoodInfo(stat.mood_type);
+                    if (!moodInfo) return null;
+                    return (
+                      <div key={stat.mood_type} className="flex items-center gap-2">
+                        <div className={`w-3 h-3 rounded-full ${moodInfo.color}`} />
+                        <span className="text-gray-300 text-sm">{t(moodInfo.labelKey)} ({stat.percentage.toFixed(0)}%)</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
 
-                return (
-                  <div key={stat.mood_type} className="bg-white/5 rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-3">
-                        <Icon className={`w-6 h-6 ${moodInfo.textColor}`} />
-                        <span className="text-white font-semibold">{t(moodInfo.labelKey)}</span>
-                      </div>
-                      <div className="text-white font-semibold">
-                        {stat.count} ({stat.percentage.toFixed(1)}%)
-                      </div>
-                    </div>
-                    <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
-                      <div
-                        className={`h-full ${moodInfo.color} transition-all duration-500`}
-                        style={{ width: `${stat.percentage}%` }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
+              {/* Bar chart по часове */}
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-4 text-center">По часове (последните 12ч)</h3>
+                <ResponsiveContainer width="100%" height={280}>
+                  <BarChart data={hourlyData} barSize={8}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                    <XAxis dataKey="hour" stroke="#6b7280" tick={{ fontSize: 11, fill: '#9ca3af' }} />
+                    <YAxis stroke="#6b7280" tick={{ fontSize: 11 }} allowDecimals={false} />
+                    <Tooltip
+                      contentStyle={{ backgroundColor: 'rgba(10,0,21,0.95)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
+                      itemStyle={{ color: '#fff' }}
+                    />
+                    <Legend wrapperStyle={{ fontSize: '12px' }} formatter={(value: string) => t(`mood.${value}`)} />
+                    <Bar dataKey="great" stackId="a" fill="#22c55e" />
+                    <Bar dataKey="good" stackId="a" fill="#10b981" />
+                    <Bar dataKey="okay" stackId="a" fill="#eab308" />
+                    <Bar dataKey="bad" stackId="a" fill="#f97316" />
+                    <Bar dataKey="terrible" stackId="a" fill="#ef4444" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
             </div>
           )}
         </div>
