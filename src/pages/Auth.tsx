@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Mail, Lock, User, Chrome, Facebook, Apple } from 'lucide-react';
+import { Mail, Lock, User } from 'lucide-react';
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -11,8 +11,9 @@ export default function Auth() {
   const [fullName, setFullName] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [confirmationSent, setConfirmationSent] = useState(false);
   const navigate = useNavigate();
-  const { signIn, signUp, signInWithGoogle, signInWithFacebook, signInWithApple } = useAuth();
+  const { signIn, signUp } = useAuth();
   const { t } = useLanguage();
 
   const handleEmailAuth = async (e: React.FormEvent) => {
@@ -27,6 +28,8 @@ export default function Auth() {
 
       if (error) {
         setError(error.message);
+      } else if (!isLogin) {
+        setConfirmationSent(true);
       } else {
         navigate('/dashboard');
       }
@@ -60,6 +63,33 @@ export default function Auth() {
       setLoading(false);
     }
   };
+
+  if (confirmationSent) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-4 py-12">
+        <div className="max-w-md w-full">
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-slate-700 text-center">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[#f97316] to-[#fbbf24] rounded-full mb-6">
+              <Mail className="w-10 h-10 text-white" />
+            </div>
+            <h2 className="text-2xl font-bold text-white mb-3">Провери имейла си</h2>
+            <p className="text-slate-400 mb-6 leading-relaxed">
+              Изпратихме линк за потвърждение на <span className="text-white font-medium">{email}</span>. Кликни върху него за да активираш профила си.
+            </p>
+            <p className="text-slate-500 text-sm">
+              Не виждаш имейла? Провери папката Spam.
+            </p>
+            <button
+              onClick={() => { setConfirmationSent(false); setIsLogin(true); }}
+              className="mt-6 text-[#f97316] hover:text-[#fbbf24] text-sm font-medium transition"
+            >
+              Обратно към вход
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-4 py-12">
@@ -149,38 +179,6 @@ export default function Auth() {
             </button>
           </form>
 
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-600"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-slate-800/50 text-slate-400">{t('auth.orContinueWith')}</span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-3 gap-3">
-            <button
-              onClick={() => handleSocialAuth('google')}
-              disabled={loading}
-              className="flex items-center justify-center py-3 bg-slate-700/50 hover:bg-slate-700 border border-slate-600 rounded-lg transition transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-            >
-              <Chrome className="w-5 h-5 text-white" />
-            </button>
-            <button
-              onClick={() => handleSocialAuth('facebook')}
-              disabled={loading}
-              className="flex items-center justify-center py-3 bg-slate-700/50 hover:bg-slate-700 border border-slate-600 rounded-lg transition transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-            >
-              <Facebook className="w-5 h-5 text-white" />
-            </button>
-            <button
-              onClick={() => handleSocialAuth('apple')}
-              disabled={loading}
-              className="flex items-center justify-center py-3 bg-slate-700/50 hover:bg-slate-700 border border-slate-600 rounded-lg transition transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-            >
-              <Apple className="w-5 h-5 text-white" />
-            </button>
-          </div>
 
           <div className="mt-6 text-center">
             <button
