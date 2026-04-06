@@ -5,14 +5,8 @@
   2. Fix function search_path for handle_new_user and handle_updated_at
 */
 
--- Fix mood_entries: only authenticated users can insert
-DROP POLICY IF EXISTS "Anyone can insert mood entries" ON mood_entries;
-
-CREATE POLICY "Authenticated users can insert mood entries"
-  ON mood_entries
-  FOR INSERT
-  TO authenticated
-  WITH CHECK (true);
+-- mood_entries INSERT stays open to anon+authenticated (mood page is public, uses session ID tracking)
+-- No change needed for mood_entries INSERT policy
 
 -- Fix search_path for handle_new_user
 CREATE OR REPLACE FUNCTION public.handle_new_user()

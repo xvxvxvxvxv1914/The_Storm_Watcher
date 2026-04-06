@@ -112,14 +112,6 @@ const Forecast = () => {
     });
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-16 h-16 border-4 border-[#f97316]/20 border-t-[#f97316] rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
   const stars = useMemo(() =>
     [...Array(50)].map((_, i) => ({
       id: i,
@@ -127,6 +119,14 @@ const Forecast = () => {
       top: Math.random() * 100,
       delay: Math.random() * 3,
     })), []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-16 h-16 border-4 border-[#f97316]/20 border-t-[#f97316] rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   const maxKp = getMaxKp();
   const avgKp = getAverageKp();
