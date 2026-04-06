@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Calendar, TrendingUp, AlertCircle, Sun } from 'lucide-react';
-import { getKpForecast, getStormStatus } from '../services/noaaApi';
+import { getKpForecast, getStormStatus, getKpGradientStyle } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Forecast = () => {
@@ -172,7 +172,7 @@ const Forecast = () => {
                 {t('forecast.maxKp')}
               </h3>
             </div>
-            <div className="text-6xl font-bold gradient-fire mb-2">{maxKp.toFixed(1)}</div>
+            <div className="text-6xl font-bold mb-2" style={getKpGradientStyle(maxKp)}>{maxKp.toFixed(1)}</div>
             <div className="text-[#94a3b8] text-sm uppercase tracking-wider">
               {t('forecast.next3Days')}
             </div>
@@ -187,7 +187,7 @@ const Forecast = () => {
                 {t('forecast.avgKp')}
               </h3>
             </div>
-            <div className="text-6xl font-bold gradient-solar mb-2">{avgKp.toFixed(1)}</div>
+            <div className="text-6xl font-bold mb-2" style={getKpGradientStyle(avgKp)}>{avgKp.toFixed(1)}</div>
             <div className="text-[#94a3b8] text-sm uppercase tracking-wider">
               {t('forecast.avgKp')}
             </div>
@@ -296,7 +296,7 @@ const Forecast = () => {
                     <div className="flex items-center gap-4">
                       <div className="text-right">
                         <div className="text-sm text-[#94a3b8] uppercase tracking-wider mb-1">Max</div>
-                        <div className="text-2xl font-bold gradient-fire">{maxDayKp.toFixed(1)}</div>
+                        <div className="text-2xl font-bold" style={getKpGradientStyle(maxDayKp)}>{maxDayKp.toFixed(1)}</div>
                       </div>
                       <div className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider ${
                         maxDayKp >= 7 ? 'bg-gradient-to-r from-[#ef4444] to-[#dc2626] text-white' :
@@ -320,12 +320,7 @@ const Forecast = () => {
                           <div className="text-xs text-[#94a3b8] mb-1 uppercase tracking-wider">
                             {item.date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                           </div>
-                          <div className={`text-2xl font-bold ${
-                            item.kp >= 7 ? 'text-[#ef4444]' :
-                            item.kp >= 5 ? 'text-[#f97316]' :
-                            item.kp >= 4 ? 'text-[#eab308]' :
-                            'text-[#10b981]'
-                          }`}>
+                          <div className="text-2xl font-bold" style={getKpGradientStyle(item.kp)}>
                             {item.kp.toFixed(1)}
                           </div>
                         </div>

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Activity, Wind, Compass, Zap, Sun, Radio } from 'lucide-react';
-import { getKpIndex, getSolarWind, getXrayFlux, getStormStatus, getXrayClass } from '../services/noaaApi';
+import { getKpIndex, getSolarWind, getXrayFlux, getStormStatus, getXrayClass, getKpGradientStyle } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Dashboard = () => {
@@ -151,7 +151,7 @@ const Dashboard = () => {
                 {t('dashboard.kpIndex')}
               </h3>
             </div>
-            <div className="text-6xl font-bold gradient-fire mb-3">{kpValue.toFixed(1)}</div>
+            <div className="text-6xl font-bold mb-3" style={getKpGradientStyle(kpValue)}>{kpValue.toFixed(1)}</div>
             <div className={`inline-block px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider ${
               kpValue >= 7 ? 'bg-gradient-to-r from-[#ef4444] to-[#dc2626] text-white' :
               kpValue >= 5 ? 'bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white' :

@@ -1,3 +1,4 @@
+import type React from 'react';
 import axios from 'axios';
 
 const NOAA_BASE_URL = 'https://services.swpc.noaa.gov';
@@ -52,6 +53,18 @@ export const getKpForecast = async (): Promise<KpIndexData[]> => {
   const response = await axios.get(`${NOAA_BASE_URL}/json/planetary_k_index_forecast.json`);
   return response.data;
 };
+
+export const getKpGradientStyle = (kp: number): React.CSSProperties => ({
+  backgroundImage:
+    kp >= 7 ? 'linear-gradient(135deg, #ef4444, #dc2626)' :
+    kp >= 5 ? 'linear-gradient(135deg, #f97316, #ef4444)' :
+    kp >= 4 ? 'linear-gradient(135deg, #eab308, #f97316)' :
+    kp >= 2 ? 'linear-gradient(135deg, #10b981, #eab308)' :
+    'linear-gradient(135deg, #10b981, #059669)',
+  WebkitBackgroundClip: 'text',
+  WebkitTextFillColor: 'transparent',
+  backgroundClip: 'text',
+});
 
 export const getStormStatus = (kp: number): { statusKey: string; color: string; bgColor: string } => {
   if (kp < 4) return { statusKey: 'storm.quiet', color: 'text-green-400', bgColor: 'bg-green-500/20' };

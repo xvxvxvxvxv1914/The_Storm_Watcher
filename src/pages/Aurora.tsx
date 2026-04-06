@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { MapPin, Eye, Sparkles } from 'lucide-react';
-import { getKpIndex } from '../services/noaaApi';
+import { getKpIndex, getKpGradientStyle } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Aurora = () => {
@@ -92,7 +92,7 @@ const Aurora = () => {
                 {t('aurora.kpIndex')}
               </h3>
             </div>
-            <div className="text-6xl font-bold gradient-aurora mb-3">{kpValue.toFixed(1)}</div>
+            <div className="text-6xl font-bold mb-3" style={getKpGradientStyle(kpValue)}>{kpValue.toFixed(1)}</div>
             <div className="text-[#94a3b8] text-sm uppercase tracking-wider">Current Value</div>
           </div>
 
