@@ -117,7 +117,20 @@ const Home = () => {
             ) : (
               <div className="my-12">
                 <div className={`inline-block ${isStorm ? 'pulse-alert' : ''}`}>
-                  <div className="text-9xl sm:text-[180px] font-bold gradient-fire leading-none">
+                  <div
+                    className="text-9xl sm:text-[180px] font-bold leading-none"
+                    style={{
+                      backgroundImage: kpValue === null ? 'linear-gradient(135deg, #10b981, #059669)' :
+                        kpValue >= 7 ? 'linear-gradient(135deg, #ef4444, #dc2626)' :
+                        kpValue >= 5 ? 'linear-gradient(135deg, #f97316, #ef4444)' :
+                        kpValue >= 4 ? 'linear-gradient(135deg, #eab308, #f97316)' :
+                        kpValue >= 2 ? 'linear-gradient(135deg, #10b981, #eab308)' :
+                        'linear-gradient(135deg, #10b981, #059669)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      backgroundClip: 'text',
+                    }}
+                  >
                     {kpValue?.toFixed(1) || '0.0'}
                   </div>
                 </div>
