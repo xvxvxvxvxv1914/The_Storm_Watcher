@@ -131,7 +131,7 @@ const Home = () => {
                   }`}>
                     {kpValue! >= 5 && <AlertTriangle className="w-6 h-6 text-white" />}
                     <span className="text-white font-bold text-xl uppercase tracking-wider">
-                      {stormStatus.status}
+                      {t(stormStatus.statusKey)}
                     </span>
                   </div>
                 )}
