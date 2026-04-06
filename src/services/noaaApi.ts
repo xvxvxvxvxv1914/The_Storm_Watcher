@@ -11,10 +11,16 @@ export interface KpIndexData {
 
 export interface SolarWindData {
   time_tag: string;
-  speed: number;
-  density: number;
-  bz: number;
+  proton_speed: number;
+  proton_density: number;
+  active: boolean;
+}
+
+export interface MagFieldData {
+  time_tag: string;
+  bz_gsm: number;
   bt: number;
+  active: boolean;
 }
 
 export interface XrayData {
@@ -41,6 +47,11 @@ export const getXrayFlux = async (): Promise<XrayData[]> => {
 
 export const getSolarWind = async (): Promise<SolarWindData[]> => {
   const response = await axios.get(`${NOAA_BASE_URL}/json/rtsw/rtsw_wind_1m.json`);
+  return response.data;
+};
+
+export const getMagField = async (): Promise<MagFieldData[]> => {
+  const response = await axios.get(`${NOAA_BASE_URL}/json/rtsw/rtsw_mag_1m.json`);
   return response.data;
 };
 

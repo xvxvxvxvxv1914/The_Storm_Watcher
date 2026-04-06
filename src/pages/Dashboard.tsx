@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Activity, Wind, Compass, Zap, Sun, Radio } from 'lucide-react';
-import { getKpIndex, getSolarWind, getXrayFlux, getKpHistory3Day, getStormStatus, getXrayClass, getKpGradientStyle } from '../services/noaaApi';
+import { getKpIndex, getSolarWind, getMagField, getXrayFlux, getKpHistory3Day, getStormStatus, getXrayClass, getKpGradientStyle } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Dashboard = () => {
@@ -18,9 +18,10 @@ const Dashboard = () => {
 
   const fetchData = async () => {
     try {
-      const [kpData, windData, xrayData, kp3dayData] = await Promise.all([
+      const [kpData, windData, magData, xrayData, kp3dayData] = await Promise.all([
         getKpIndex(),
         getSolarWind(),
+        getMagField(),
         getXrayFlux(),
         getKpHistory3Day(),
       ]);
@@ -42,19 +43,24 @@ const Dashboard = () => {
       }
 
       if (windData && windData.length > 0) {
-        const latest = windData[windData.length - 1];
-        setSolarWindSpeed(latest.speed || 0);
-        setBz(latest.bz || 0);
+        const active = windData.find(d => d.active) || windData[windData.length - 1];
+        setSolarWindSpeed(active.proton_speed || 0);
 
-        const last24Hours = windData.slice(-1440).map((item) => ({
+        const last24Hours = windData.filter(d => d.proton_speed).slice(-1440).map((item) => ({
           time: new Date(item.time_tag).toLocaleTimeString('bg', { hour: '2-digit', minute: '2-digit' }),
-          speed: item.speed || 0,
+          speed: item.proton_speed || 0,
         }));
         setWindHistory(last24Hours);
       } else {
         setSolarWindSpeed(0);
-        setBz(0);
         setWindHistory([]);
+      }
+
+      if (magData && magData.length > 0) {
+        const active = magData.find(d => d.active) || magData[magData.length - 1];
+        setBz(active.bz_gsm || 0);
+      } else {
+        setBz(0);
       }
 
       if (xrayData && xrayData.length > 0) {
