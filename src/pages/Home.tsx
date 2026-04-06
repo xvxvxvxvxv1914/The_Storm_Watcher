@@ -19,12 +19,12 @@ const Home = () => {
           const latest = data[data.length - 1];
           setKpValue(latest.kp_index || latest.estimated_kp || 0);
         } else {
-          setKpValue(3.5 + Math.random() * 2);
+          setKpValue(0);
         }
         setLoading(false);
       } catch (error) {
         console.error('Error fetching Kp index:', error);
-        setKpValue(3.5 + Math.random() * 2);
+        setKpValue(0);
         setLoading(false);
       }
     };

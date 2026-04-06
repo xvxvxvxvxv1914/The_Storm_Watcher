@@ -33,11 +33,8 @@ const Dashboard = () => {
         }));
         setKpHistory(last24Hours);
       } else {
-        setKpValue(3.5 + Math.random() * 2);
-        setKpHistory(Array.from({length: 24}, (_, i) => ({
-          time: i,
-          kp: 2 + Math.random() * 4
-        })));
+        setKpValue(0);
+        setKpHistory([]);
       }
 
       if (windData && windData.length > 0) {
@@ -51,37 +48,28 @@ const Dashboard = () => {
         }));
         setWindHistory(last24Hours);
       } else {
-        setSolarWindSpeed(400 + Math.random() * 100);
-        setBz(-5 + Math.random() * 10);
-        setWindHistory(Array.from({length: 24}, (_, i) => ({
-          time: i,
-          speed: 350 + Math.random() * 200
-        })));
+        setSolarWindSpeed(0);
+        setBz(0);
+        setWindHistory([]);
       }
 
       if (xrayData && xrayData.length > 0) {
         const latest = xrayData[xrayData.length - 1];
         setXrayFlux(latest.flux || 0);
       } else {
-        setXrayFlux(1e-7 + Math.random() * 1e-6);
+        setXrayFlux(0);
       }
 
       setLastUpdated(new Date());
       setLoading(false);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
-      setKpValue(3.5 + Math.random() * 2);
-      setSolarWindSpeed(400 + Math.random() * 100);
-      setBz(-5 + Math.random() * 10);
-      setXrayFlux(1e-7 + Math.random() * 1e-6);
-      setKpHistory(Array.from({length: 24}, (_, i) => ({
-        time: i,
-        kp: 2 + Math.random() * 4
-      })));
-      setWindHistory(Array.from({length: 24}, (_, i) => ({
-        time: i,
-        speed: 350 + Math.random() * 200
-      })));
+      setKpValue(0);
+      setSolarWindSpeed(0);
+      setBz(0);
+      setXrayFlux(0);
+      setKpHistory([]);
+      setWindHistory([]);
       setLoading(false);
     }
   };
