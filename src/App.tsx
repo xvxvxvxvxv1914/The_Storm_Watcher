@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { Lock, X } from 'lucide-react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
@@ -117,6 +118,7 @@ function App() {
     <Router>
       <AuthProvider>
         <AppRoutes />
+        <SpeedInsights />
       </AuthProvider>
     </Router>
   );
