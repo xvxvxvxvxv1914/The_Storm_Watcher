@@ -125,6 +125,48 @@ const Aurora = () => {
 
         <div className="glass-surface rounded-2xl p-8 mb-8">
           <h3 className="text-2xl font-bold text-white mb-6 uppercase tracking-wide">
+            Видимост в Европа
+          </h3>
+          <div className="space-y-3">
+            {[
+              { city: 'Рейкявик, Исландия', lat: 64, minKp: 0 },
+              { city: 'Хелзинки, Финландия', lat: 60, minKp: 3 },
+              { city: 'Стокхолм, Швеция', lat: 59, minKp: 4 },
+              { city: 'Копенхаген, Дания', lat: 56, minKp: 5 },
+              { city: 'Берлин, Германия', lat: 52, minKp: 6 },
+              { city: 'Варшава, Полша', lat: 52, minKp: 6 },
+              { city: 'Прага, Чехия', lat: 50, minKp: 7 },
+              { city: 'Виена, Австрия', lat: 48, minKp: 7 },
+              { city: 'София, България', lat: 42, minKp: 8 },
+            ].map(({ city, lat, minKp }) => {
+              const visible = kpValue >= minKp;
+              const chance = Math.min(100, Math.max(0, ((kpValue - minKp + 1) / 3) * 100));
+              return (
+                <div key={city} className="flex items-center gap-4">
+                  <div className="w-48 text-sm text-[#94a3b8] flex-shrink-0">{city}</div>
+                  <div className="flex-1 bg-white/5 rounded-full h-3 overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-700"
+                      style={{
+                        width: `${visible ? Math.max(10, chance) : 2}%`,
+                        background: visible
+                          ? 'linear-gradient(90deg, #10b981, #fbbf24)'
+                          : 'rgba(148,163,184,0.2)',
+                      }}
+                    />
+                  </div>
+                  <div className={`text-sm font-bold w-20 text-right flex-shrink-0 ${visible ? 'text-[#10b981]' : 'text-[#475569]'}`}>
+                    {visible ? `~${Math.round(chance)}%` : 'Не се вижда'}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <p className="text-[#475569] text-xs mt-4">* Приблизителна вероятност при текущото Kp = {kpValue.toFixed(1)} и ясно небе</p>
+        </div>
+
+        <div className="glass-surface rounded-2xl p-8 mb-8">
+          <h3 className="text-2xl font-bold text-white mb-6 uppercase tracking-wide">
             {t('aurora.oval')}
           </h3>
           <div className="relative">

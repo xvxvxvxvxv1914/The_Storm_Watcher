@@ -1,36 +1,48 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Activity, AlertTriangle, Satellite, Sun, Zap, Radio, X, Siren } from 'lucide-react';
-import { getKpIndex, getStormStatus, getKpGradientStyle } from '../services/noaaApi';
+import { getKpIndex, getSolarWind, getXrayFlux, getXrayClass, getStormStatus, getKpGradientStyle } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Home = () => {
   const { t } = useLanguage();
   const [kpValue, setKpValue] = useState<number | null>(null);
+  const [windSpeed, setWindSpeed] = useState<number | null>(null);
+  const [xrayClass, setXrayClass] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [showStormAlert, setShowStormAlert] = useState(false);
   const [dismissedKp, setDismissedKp] = useState<number | null>(null);
 
   useEffect(() => {
-    const fetchKp = async () => {
+    const fetchAll = async () => {
       try {
-        const data = await getKpIndex();
-        if (data && data.length > 0) {
-          const latest = data[data.length - 1];
+        const [kpData, windData, xrayData] = await Promise.all([
+          getKpIndex(),
+          getSolarWind(),
+          getXrayFlux(),
+        ]);
+        if (kpData && kpData.length > 0) {
+          const latest = kpData[kpData.length - 1];
           setKpValue(latest.kp_index || latest.estimated_kp || 0);
         } else {
           setKpValue(0);
         }
+        if (windData && windData.length > 0) {
+          setWindSpeed(windData[windData.length - 1].speed || 0);
+        }
+        if (xrayData && xrayData.length > 0) {
+          setXrayClass(getXrayClass(xrayData[xrayData.length - 1].flux || 0));
+        }
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching Kp index:', error);
+        console.error('Error fetching data:', error);
         setKpValue(0);
         setLoading(false);
       }
     };
 
-    fetchKp();
-    const interval = setInterval(fetchKp, 60000);
+    fetchAll();
+    const interval = setInterval(fetchAll, 60000);
     return () => clearInterval(interval);
   }, []);
 
@@ -212,6 +224,30 @@ const Home = () => {
                 {t('nav.alerts')}
               </Link>
             </div>
+
+            {!loading && (
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
+                <div className="glass-surface rounded-xl px-6 py-3 flex items-center gap-3">
+                  <Activity className="w-4 h-4 text-[#f97316]" />
+                  <span className="text-[#94a3b8] text-sm uppercase tracking-wider">Kp</span>
+                  <span className="text-white font-bold">{kpValue?.toFixed(1)}</span>
+                </div>
+                {windSpeed !== null && windSpeed > 0 && (
+                  <div className="glass-surface rounded-xl px-6 py-3 flex items-center gap-3">
+                    <Zap className="w-4 h-4 text-[#7c3aed]" />
+                    <span className="text-[#94a3b8] text-sm uppercase tracking-wider">Слънчев вятър</span>
+                    <span className="text-white font-bold">{windSpeed.toFixed(0)} km/s</span>
+                  </div>
+                )}
+                {xrayClass && (
+                  <div className="glass-surface rounded-xl px-6 py-3 flex items-center gap-3">
+                    <Radio className="w-4 h-4 text-[#fbbf24]" />
+                    <span className="text-[#94a3b8] text-sm uppercase tracking-wider">X-ray</span>
+                    <span className="text-white font-bold">Клас {xrayClass}</span>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

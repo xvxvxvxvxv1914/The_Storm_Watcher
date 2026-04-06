@@ -54,6 +54,11 @@ export const getKpForecast = async (): Promise<KpIndexData[]> => {
   return response.data;
 };
 
+export const getKpHistory3Day = async (): Promise<KpIndexData[]> => {
+  const response = await axios.get(`${NOAA_BASE_URL}/json/planetary_k_index_3-day.json`);
+  return response.data;
+};
+
 export const getKpGradientStyle = (kp: number): React.CSSProperties => ({
   backgroundImage:
     kp >= 7 ? 'linear-gradient(135deg, #ef4444, #dc2626)' :

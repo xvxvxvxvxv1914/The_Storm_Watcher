@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Activity, Wind, Compass, Zap, Sun, Radio } from 'lucide-react';
-import { getKpIndex, getSolarWind, getXrayFlux, getStormStatus, getXrayClass, getKpGradientStyle } from '../services/noaaApi';
+import { getKpIndex, getSolarWind, getXrayFlux, getKpHistory3Day, getStormStatus, getXrayClass, getKpGradientStyle } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Dashboard = () => {
@@ -10,25 +10,28 @@ const Dashboard = () => {
   const [solarWindSpeed, setSolarWindSpeed] = useState<number>(0);
   const [bz, setBz] = useState<number>(0);
   const [xrayFlux, setXrayFlux] = useState<number>(0);
-  const [kpHistory, setKpHistory] = useState<{ time: number; kp: number }[]>([]);
-  const [windHistory, setWindHistory] = useState<{ time: number; speed: number }[]>([]);
+  const [kpHistory, setKpHistory] = useState<{ time: string; kp: number }[]>([]);
+  const [windHistory, setWindHistory] = useState<{ time: string; speed: number }[]>([]);
+  const [kpHistory3Day, setKpHistory3Day] = useState<{ time: string; kp: number }[]>([]);
+  const [timeRange, setTimeRange] = useState<'24h' | '48h' | '72h'>('24h');
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
     try {
-      const [kpData, windData, xrayData] = await Promise.all([
+      const [kpData, windData, xrayData, kp3dayData] = await Promise.all([
         getKpIndex(),
         getSolarWind(),
         getXrayFlux(),
+        getKpHistory3Day(),
       ]);
 
       if (kpData && kpData.length > 0) {
         const latest = kpData[kpData.length - 1];
         setKpValue(latest.kp_index || latest.estimated_kp || 0);
 
-        const last24Hours = kpData.slice(-24).map((item, index) => ({
-          time: index,
+        const last24Hours = kpData.slice(-1440).map((item) => ({
+          time: new Date(item.time_tag).toLocaleTimeString('bg', { hour: '2-digit', minute: '2-digit' }),
           kp: item.kp_index || item.estimated_kp || 0,
         }));
         setKpHistory(last24Hours);
@@ -37,13 +40,21 @@ const Dashboard = () => {
         setKpHistory([]);
       }
 
+      if (kp3dayData && kp3dayData.length > 0) {
+        const history = kp3dayData.map((item) => ({
+          time: new Date(item.time_tag).toLocaleString('bg', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+          kp: item.kp_index || item.estimated_kp || 0,
+        }));
+        setKpHistory3Day(history);
+      }
+
       if (windData && windData.length > 0) {
         const latest = windData[windData.length - 1];
         setSolarWindSpeed(latest.speed || 0);
         setBz(latest.bz || 0);
 
-        const last24Hours = windData.slice(-24).map((item, index) => ({
-          time: index,
+        const last24Hours = windData.slice(-1440).map((item) => ({
+          time: new Date(item.time_tag).toLocaleTimeString('bg', { hour: '2-digit', minute: '2-digit' }),
           speed: item.speed || 0,
         }));
         setWindHistory(last24Hours);
@@ -195,6 +206,55 @@ const Dashboard = () => {
             <div className="text-6xl font-bold gradient-solar mb-3">{xrayClass}</div>
             <div className="text-[#94a3b8] text-sm uppercase tracking-wider">Class</div>
           </div>
+        </div>
+
+        <div className="glass-surface rounded-2xl p-8 mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <h3 className="text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
+              <Radio className="w-6 h-6 text-[#f97316]" />
+              Kp Индекс — История
+            </h3>
+            <div className="flex gap-2">
+              {(['24h', '48h', '72h'] as const).map((range) => (
+                <button
+                  key={range}
+                  onClick={() => setTimeRange(range)}
+                  className={`px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all ${
+                    timeRange === range
+                      ? 'bg-[#f97316] text-white'
+                      : 'glass-surface text-[#94a3b8] hover:text-white'
+                  }`}
+                >
+                  {range}
+                </button>
+              ))}
+            </div>
+          </div>
+          {(timeRange === '24h' ? kpHistory : kpHistory3Day).length > 0 ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={timeRange === '24h' ? kpHistory : kpHistory3Day.slice(timeRange === '48h' ? -960 : -1440)}>
+                <defs>
+                  <linearGradient id="kpGradient3" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#f97316" stopOpacity={0.3}/>
+                    <stop offset="100%" stopColor="#f97316" stopOpacity={0.05}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                <XAxis dataKey="time" stroke="#6b7280" tick={{ fontSize: 11 }} interval="preserveStartEnd" />
+                <YAxis stroke="#6b7280" domain={[0, 9]} tick={{ fontSize: 12 }} />
+                <Tooltip
+                  contentStyle={{ backgroundColor: 'rgba(10,0,21,0.95)', border: '1px solid rgba(249,115,22,0.3)', borderRadius: '12px', padding: '12px' }}
+                  labelStyle={{ color: '#f97316', fontWeight: 'bold' }}
+                  itemStyle={{ color: '#fff' }}
+                />
+                <Line type="monotone" dataKey="kp" stroke="#f97316" strokeWidth={2} dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="h-[300px] flex items-center justify-center text-[#94a3b8]">
+              {t('dashboard.noData')}
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

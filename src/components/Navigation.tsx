@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Sun, Menu, X, Globe, User, LogOut } from 'lucide-react';
 import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
+import PushNotificationBell from './PushNotificationBell';
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -71,6 +72,8 @@ const Navigation = () => {
                 )}
               </Link>
             ))}
+
+            <PushNotificationBell />
 
             <div className="relative" ref={langMenuRef}>
               <button
