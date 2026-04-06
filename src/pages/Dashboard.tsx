@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Activity, Wind, Compass, Zap, Sun, Radio } from 'lucide-react';
 import { getKpIndex, getSolarWind, getXrayFlux, getKpHistory3Day, getStormStatus, getXrayClass, getKpGradientStyle } from '../services/noaaApi';
+
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Dashboard = () => {
@@ -43,7 +44,7 @@ const Dashboard = () => {
       if (kp3dayData && kp3dayData.length > 0) {
         const history = kp3dayData.map((item) => ({
           time: new Date(item.time_tag).toLocaleString('bg', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
-          kp: item.kp_index || item.estimated_kp || 0,
+          kp: item.Kp || 0,
         }));
         setKpHistory3Day(history);
       }
@@ -230,9 +231,9 @@ const Dashboard = () => {
               ))}
             </div>
           </div>
-          {(timeRange === '24h' ? kpHistory : kpHistory3Day).length > 0 ? (
+          {kpHistory3Day.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={timeRange === '24h' ? kpHistory : kpHistory3Day.slice(timeRange === '48h' ? -960 : -1440)}>
+              <LineChart data={timeRange === '24h' ? kpHistory3Day.slice(-8) : timeRange === '48h' ? kpHistory3Day.slice(-16) : kpHistory3Day.slice(-24)}>
                 <defs>
                   <linearGradient id="kpGradient3" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#f97316" stopOpacity={0.3}/>

@@ -54,8 +54,8 @@ export const getKpForecast = async (): Promise<KpIndexData[]> => {
   return response.data;
 };
 
-export const getKpHistory3Day = async (): Promise<KpIndexData[]> => {
-  const response = await axios.get(`${NOAA_BASE_URL}/json/planetary_k_index_3-day.json`);
+export const getKpHistory3Day = async (): Promise<{ time_tag: string; Kp: number }[]> => {
+  const response = await axios.get(`${NOAA_BASE_URL}/products/noaa-planetary-k-index.json`);
   return response.data;
 };
 
