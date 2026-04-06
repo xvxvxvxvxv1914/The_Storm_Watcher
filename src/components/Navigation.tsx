@@ -1,13 +1,23 @@
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Sun, Menu, X, Globe } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Sun, Menu, X, Globe, User, LogOut } from 'lucide-react';
 import { useLanguage, languages } from '../contexts/LanguageContext';
+import { useAuth } from '../contexts/AuthContext';
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
+  const { user, profile, signOut } = useAuth();
+
+  const handleLogout = async () => {
+    await signOut();
+    setIsUserMenuOpen(false);
+    navigate('/');
+  };
 
   const navLinks = [
     { to: '/', label: t('nav.home') },
@@ -82,6 +92,43 @@ const Navigation = () => {
                 </div>
               )}
             </div>
+
+            {user ? (
+              <div className="relative">
+                <button
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#f97316]/10 text-[#f97316] hover:bg-[#f97316]/20 transition-colors"
+                >
+                  <User className="w-4 h-4" />
+                  <span className="text-sm font-medium">
+                    {profile?.full_name || user.email?.split('@')[0]}
+                  </span>
+                </button>
+
+                {isUserMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-56 glass-surface rounded-xl shadow-2xl py-2 border border-[#f97316]/20">
+                    <div className="px-4 py-2 border-b border-white/10">
+                      <p className="text-sm font-medium text-white">{profile?.full_name || 'User'}</p>
+                      <p className="text-xs text-[#94a3b8] mt-1">{user.email}</p>
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-2 text-sm font-medium text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors flex items-center gap-2"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      {t('auth.logout')}
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                to="/auth"
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#f97316] to-[#fbbf24] text-white font-medium text-sm hover:shadow-lg hover:shadow-[#f97316]/50 transition-all"
+              >
+                {t('auth.signIn')}
+              </Link>
+            )}
           </div>
 
           <button
@@ -135,6 +182,37 @@ const Navigation = () => {
                 </button>
               ))}
             </div>
+
+            {user && (
+              <div className="border-t border-white/10 pt-3 mt-3">
+                <div className="px-4 py-2 mb-2">
+                  <p className="text-sm font-medium text-white">{profile?.full_name || 'User'}</p>
+                  <p className="text-xs text-[#94a3b8] mt-1">{user.email}</p>
+                </div>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setIsMenuOpen(false);
+                  }}
+                  className="w-full text-left px-4 py-2 rounded-lg text-sm font-medium text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors flex items-center gap-2"
+                >
+                  <LogOut className="w-4 h-4" />
+                  {t('auth.logout')}
+                </button>
+              </div>
+            )}
+
+            {!user && (
+              <div className="border-t border-white/10 pt-3 mt-3">
+                <Link
+                  to="/auth"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="block px-4 py-2 rounded-lg bg-gradient-to-r from-[#f97316] to-[#fbbf24] text-white font-medium text-sm text-center"
+                >
+                  {t('auth.signIn')}
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       )}

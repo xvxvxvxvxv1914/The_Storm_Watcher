@@ -132,6 +132,23 @@ const translations: Record<Language, Record<string, string>> = {
     'footer.contact': 'Contact',
     'footer.privacy': 'Privacy',
     'footer.rights': 'All rights reserved',
+
+    // Auth
+    'auth.signIn': 'Sign In',
+    'auth.signUp': 'Sign Up',
+    'auth.signInDescription': 'Welcome back! Sign in to your account',
+    'auth.signUpDescription': 'Create an account to get started',
+    'auth.email': 'Email',
+    'auth.password': 'Password',
+    'auth.fullName': 'Full Name',
+    'auth.emailPlaceholder': 'your@email.com',
+    'auth.passwordPlaceholder': 'Enter your password',
+    'auth.fullNamePlaceholder': 'Your full name',
+    'auth.orContinueWith': 'Or continue with',
+    'auth.loading': 'Loading...',
+    'auth.noAccount': 'Don\'t have an account? Sign up',
+    'auth.haveAccount': 'Already have an account? Sign in',
+    'auth.logout': 'Logout',
   },
   bg: {
     // Navigation
@@ -254,6 +271,23 @@ const translations: Record<Language, Record<string, string>> = {
     'footer.contact': 'Контакт',
     'footer.privacy': 'Поверителност',
     'footer.rights': 'Всички права запазени',
+
+    // Auth
+    'auth.signIn': 'Вход',
+    'auth.signUp': 'Регистрация',
+    'auth.signInDescription': 'Добре дошли обратно! Влезте в профила си',
+    'auth.signUpDescription': 'Създайте профил, за да започнете',
+    'auth.email': 'Имейл',
+    'auth.password': 'Парола',
+    'auth.fullName': 'Пълно име',
+    'auth.emailPlaceholder': 'вашият@имейл.com',
+    'auth.passwordPlaceholder': 'Въведете парола',
+    'auth.fullNamePlaceholder': 'Вашето пълно име',
+    'auth.orContinueWith': 'Или продължете с',
+    'auth.loading': 'Зареждане...',
+    'auth.noAccount': 'Нямате профил? Регистрирайте се',
+    'auth.haveAccount': 'Вече имате профил? Влезте',
+    'auth.logout': 'Изход',
   },
   es: {
     // Navigation
