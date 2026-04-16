@@ -76,7 +76,7 @@ const Forecast = () => {
   };
 
   const groupByDay = () => {
-    const grouped: { [key: string]: unknown[] } = {};
+    const grouped: { [key: string]: any[] } = {};
     forecastData.forEach((item) => {
       const dayKey = item.date.toLocaleDateString('en-US', {
         month: 'long',
@@ -242,7 +242,7 @@ const Forecast = () => {
                     }
                     return value;
                   }}
-                  formatter={(value: number, name: string) => {
+                  formatter={(value: any, name: any) => {
                     if (name === 'kp') return [value.toFixed(2), 'Avg Kp'];
                     if (name === 'maxKp') return [value.toFixed(2), 'Max Kp'];
                     return [value.toFixed(2), name];

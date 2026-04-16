@@ -28,7 +28,7 @@ const Home = () => {
           setKpValue(0);
         }
         if (windData && windData.length > 0) {
-          setWindSpeed(windData[windData.length - 1].speed || 0);
+          setWindSpeed(windData[windData.length - 1].proton_speed || 0);
         }
         if (xrayData && xrayData.length > 0) {
           setXrayClass(getXrayClass(xrayData[xrayData.length - 1].flux || 0));

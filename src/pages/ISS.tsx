@@ -7,7 +7,8 @@ import { useLanguage } from '../contexts/LanguageContext';
 
 const ISS = () => {
   const { t } = useLanguage();
-  const globeRef = useRef<unknown>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const globeRef = useRef<any>(null);
   const [position, setPosition] = useState<IssPosition | null>(null);
   const [passes, setPasses] = useState<IssPass[]>([]);
   const [loadingPos, setLoadingPos] = useState(true);

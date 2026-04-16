@@ -68,30 +68,45 @@ const Navigation = () => {
             <span className="hidden xl:inline text-xl font-bold gradient-solar whitespace-nowrap">The Storm Watcher</span>
           </Link>
 
-          <div className="hidden lg:flex items-center gap-4 xl:gap-6">
-            {navLinks.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className={`relative text-xs xl:text-sm font-bold uppercase tracking-wider transition-colors whitespace-nowrap ${
-                  isActive(link.to)
-                    ? 'text-[#f97316]'
-                    : 'text-[#94a3b8] hover:text-white'
-                }`}
-              >
-                {link.label}
-                {isActive(link.to) && (
-                  <div className="absolute -bottom-2 left-0 right-0 h-0.5 bg-gradient-to-r from-[#f97316] to-[#fbbf24] rounded-full glow-orange" />
-                )}
-              </Link>
-            ))}
+          <div className="hidden lg:flex items-center flex-1 min-w-0 ml-3 xl:ml-5 gap-2 xl:gap-3">
+            <div className="flex items-center justify-between flex-1 min-w-0 gap-0.5 xl:gap-1">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className={`relative flex-1 min-w-0 px-1 text-center text-[10px] xl:text-xs font-semibold transition-colors whitespace-nowrap overflow-hidden text-ellipsis ${
+                    isActive(link.to)
+                      ? 'text-[#10b981]'
+                      : 'text-[#94a3b8] hover:text-white'
+                  }`}
+                  title={link.label}
+                >
+                  {link.to === '/sky' ? (
+                    <>
+                      <span className="xl:hidden">Sky</span>
+                      <span className="hidden xl:inline">{link.label}</span>
+                    </>
+                  ) : link.to === '/iss' ? (
+                    <>
+                      <span className="xl:hidden">ISS</span>
+                      <span className="hidden xl:inline">{link.label}</span>
+                    </>
+                  ) : (
+                    link.label
+                  )}
+                  {isActive(link.to) && (
+                    <div className="absolute -bottom-2 left-1 right-1 h-0.5 bg-gradient-to-r from-[#10b981] to-[#14b8a6] rounded-full" />
+                  )}
+                </Link>
+              ))}
+            </div>
 
             <PushNotificationBell />
 
-            <div className="relative" ref={langMenuRef}>
+            <div className="relative shrink-0" ref={langMenuRef}>
               <button
                 onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
-                className="flex items-center gap-2 text-sm font-bold text-[#94a3b8] hover:text-white transition-colors"
+                className="flex items-center gap-1.5 text-xs xl:text-sm font-bold text-[#94a3b8] hover:text-white transition-colors"
               >
                 <Globe className="w-4 h-4" />
                 {languages.find(l => l.code === language)?.flag}
@@ -121,13 +136,13 @@ const Navigation = () => {
             </div>
 
             {user ? (
-              <div className="relative">
+              <div className="relative shrink-0">
                 <button
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#f97316]/10 text-[#f97316] hover:bg-[#f97316]/20 transition-colors"
+                  className="flex items-center gap-1.5 xl:gap-2 px-2.5 xl:px-4 py-2 rounded-lg bg-[#f97316]/10 text-[#f97316] hover:bg-[#f97316]/20 transition-colors"
                 >
                   <User className="w-4 h-4" />
-                  <span className="text-sm font-medium">
+                  <span className="hidden 2xl:inline text-sm font-medium max-w-[140px] truncate">
                     {profile?.full_name || user.email?.split('@')[0]}
                   </span>
                 </button>
@@ -151,7 +166,7 @@ const Navigation = () => {
             ) : (
               <Link
                 to="/auth"
-                className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#f97316] to-[#fbbf24] text-white font-medium text-sm hover:shadow-lg hover:shadow-[#f97316]/50 transition-all"
+                className="shrink-0 px-2.5 xl:px-4 py-2 rounded-lg bg-gradient-to-r from-[#f97316] to-[#fbbf24] text-white font-medium text-[11px] xl:text-sm hover:shadow-lg hover:shadow-[#f97316]/50 transition-all"
               >
                 {t('auth.signIn')}
               </Link>
@@ -176,9 +191,9 @@ const Navigation = () => {
                 key={link.to}
                 to={link.to}
                 onClick={() => setIsMenuOpen(false)}
-                className={`block px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wide transition-colors ${
+                className={`block px-4 py-2 rounded-lg text-center text-sm font-bold uppercase tracking-wide transition-colors ${
                   isActive(link.to)
-                    ? 'text-[#f97316] bg-[#f97316]/10 glow-orange'
+                    ? 'text-[#10b981] bg-[#10b981]/10'
                     : 'text-[#94a3b8] hover:text-white hover:bg-white/5'
                 }`}
               >

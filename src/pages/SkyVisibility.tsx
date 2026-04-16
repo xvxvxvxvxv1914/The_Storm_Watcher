@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Cloud, Eye, MapPin, Droplets, Star } from 'lucide-react';
 import { getSkyVisibility, SkyData } from '../services/skyApi';
 import { getKpIndex } from '../services/noaaApi';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const verdictConfig = {
   excellent: {

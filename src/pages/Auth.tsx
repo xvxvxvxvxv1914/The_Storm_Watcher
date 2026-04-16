@@ -71,20 +71,46 @@ export default function Auth() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-4 py-12">
       <div className="max-w-md w-full">
-        <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-slate-700">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full mb-4">
-              <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl shadow-2xl p-5 sm:p-6 md:p-8 border border-slate-700">
+          <div className="text-center mb-5 sm:mb-7">
+            <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full mb-3 sm:mb-4">
+              <svg className="w-7 h-7 sm:w-8 sm:h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
-            <h2 className="text-3xl font-bold text-white mb-2">
+            <h1 className="text-white font-bold leading-tight text-[clamp(1.25rem,4.8vw,2rem)]">
               {isLogin ? t('auth.signIn') : t('auth.signUp')}
-            </h2>
-            <p className="text-slate-400">
-              {isLogin ? t('auth.signInDescription') : t('auth.signUpDescription')}
-            </p>
+            </h1>
           </div>
+
+          <div className="grid grid-cols-2 mb-5 sm:mb-6 bg-slate-700/40 rounded-lg p-1 sm:p-1.5 min-h-[40px] sm:min-h-[46px] gap-1">
+            <button
+              type="button"
+              onClick={() => { setIsLogin(true); setError(''); }}
+              className={`min-w-0 flex items-center justify-center py-2 px-2 sm:px-3 text-[clamp(0.72rem,2.7vw,0.92rem)] sm:text-sm leading-none font-semibold rounded-md border transition-all whitespace-nowrap ${
+                isLogin
+                  ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white border-emerald-400/40 shadow-lg'
+                  : 'text-slate-200 border-slate-500/40 hover:text-white hover:border-slate-400/60'
+              }`}
+            >
+              {t('auth.signIn')}
+            </button>
+            <button
+              type="button"
+              onClick={() => { setIsLogin(false); setError(''); }}
+              className={`min-w-0 flex items-center justify-center py-2 px-2 sm:px-3 text-[clamp(0.72rem,2.7vw,0.92rem)] sm:text-sm leading-none font-semibold rounded-md border transition-all whitespace-nowrap ${
+                !isLogin
+                  ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white border-emerald-400/40 shadow-lg'
+                  : 'text-slate-200 border-slate-500/40 hover:text-white hover:border-slate-400/60'
+              }`}
+            >
+              {t('auth.signUp')}
+            </button>
+          </div>
+
+          <p className="text-slate-400 text-center text-sm mb-6">
+            {isLogin ? t('auth.signInDescription') : t('auth.signUpDescription')}
+          </p>
 
           {error && (
             <div className="mb-6 p-4 bg-red-500/10 border border-red-500/50 rounded-lg">
@@ -155,19 +181,6 @@ export default function Auth() {
               {loading ? t('auth.loading') : isLogin ? t('auth.signIn') : t('auth.signUp')}
             </button>
           </form>
-
-
-          <div className="mt-6 text-center">
-            <button
-              onClick={() => {
-                setIsLogin(!isLogin);
-                setError('');
-              }}
-              className="text-emerald-400 hover:text-emerald-300 text-sm font-medium transition"
-            >
-              {isLogin ? t('auth.noAccount') : t('auth.haveAccount')}
-            </button>
-          </div>
         </div>
       </div>
     </div>

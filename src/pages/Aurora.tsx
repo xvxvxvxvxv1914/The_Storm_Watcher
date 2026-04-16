@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState, useRef } from 'react';
 import { MapPin, Eye, Sparkles } from 'lucide-react';
-import Globe from 'react-globe.gl';
+import GlobeOrig from 'react-globe.gl';
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const Globe = GlobeOrig as any;
 import * as THREE from 'three';
 import { getKpIndex, getKpGradientStyle, getAuroraModel, AuroraOvationPoint } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -10,7 +12,8 @@ const Aurora = () => {
   const [kpValue, setKpValue] = useState<number>(0);
     const [auroraData, setAuroraData] = useState<AuroraOvationPoint[]>([]);
   const [isGlobeLoading, setIsGlobeLoading] = useState(true);
-  const globeRef = useRef<unknown>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const globeRef = useRef<any>(null);
 
   useEffect(() => {
     const fetchAuroraModel = async () => {
@@ -108,13 +111,6 @@ const Aurora = () => {
 
     fetchKp();
     const interval = setInterval(fetchKp, 60000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setImageKey(Date.now());
-    }, 300000);
     return () => clearInterval(interval);
   }, []);
 
@@ -274,7 +270,7 @@ const Aurora = () => {
                 hexBinPointWeight="intensity"
                 hexBinResolution={4}
                 hexMargin={0.2}
-                hexBinPointColor={(d: { sumWeight: number; points: AuroraOvationPoint[] }) => {
+                hexBinPointColor={(d: any) => {
                   const avg = d.sumWeight / d.points.length;
                   const o = Math.max(0.15, Math.min(0.95, avg / 60));
                   // Aurora colors: bright green base, cyan middle, purple/pink top
@@ -283,7 +279,7 @@ const Aurora = () => {
                   if (avg > 25) return "rgba(45, 212, 191, " + o + ")";  // Cyan (Moderate)
                   return "rgba(34, 197, 94, " + o + ")";                 // Bright Green (Low/Base)
                 }}
-                hexAltitude={(d: { sumWeight: number; points: AuroraOvationPoint[] }) => Math.max(0.01, (d.sumWeight / d.points.length) / 100)}
+                hexAltitude={(d: any) => Math.max(0.01, (d.sumWeight / d.points.length) / 100)}
                 hexTransitionDuration={1000}
               />
             )}

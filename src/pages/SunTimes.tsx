@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Sunrise, Sunset, Sun, MapPin, Clock } from 'lucide-react';
 import { getSunData, SunDay } from '../services/uvApi';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const formatDaylight = (seconds: number) => {
   const h = Math.floor(seconds / 3600);

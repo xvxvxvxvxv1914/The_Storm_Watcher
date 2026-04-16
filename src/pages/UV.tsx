@@ -27,13 +27,17 @@ const UV = () => {
           const data = await getUvIndex(latitude, longitude);
           setUvData(data);
 
-          // Reverse geocode for location name
-          const geo = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
-          ).then(r => r.json());
-          const city = geo.address?.city || geo.address?.town || geo.address?.village || '';
-          const country = geo.address?.country || '';
-          setLocationName([city, country].filter(Boolean).join(', '));
+          // Reverse geocode is best-effort and should not break UV rendering.
+          try {
+            const geo = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+            ).then(r => r.json());
+            const city = geo.address?.city || geo.address?.town || geo.address?.village || '';
+            const country = geo.address?.country || '';
+            setLocationName([city, country].filter(Boolean).join(', '));
+          } catch {
+            setLocationName(t('uv.currentLocation') || 'Current location');
+          }
         } catch {
           setLocationError(true);
         } finally {
@@ -147,7 +151,7 @@ const UV = () => {
                 contentStyle={{ backgroundColor: 'rgba(10,0,21,0.95)', border: '1px solid rgba(251,191,36,0.3)', borderRadius: '12px', padding: '12px' }}
                 labelStyle={{ color: '#fbbf24', fontWeight: 'bold' }}
                 itemStyle={{ color: '#fff' }}
-                formatter={(v: number) => [v, t('uv.chartTooltip')]}
+                formatter={(v: any) => [v, t('uv.chartTooltip')]}
               />
               <ReferenceLine y={3} stroke="#10b981" strokeDasharray="4 4" label={{ value: 'Low 3', fill: '#10b981', fontSize: 11 }} />
               <ReferenceLine y={6} stroke="#eab308" strokeDasharray="4 4" label={{ value: 'Moderate 6', fill: '#eab308', fontSize: 11 }} />

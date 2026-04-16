@@ -81,7 +81,7 @@ const Dashboard = () => {
       setSolarWindSpeed(0);
       setBz(0);
       setXrayFlux(0);
-      setKpHistory([]);
+      setKpHistory3Day([]);
       setWindHistory([]);
       setLoading(false);
     }
@@ -280,7 +280,7 @@ const Dashboard = () => {
                   contentStyle={{ backgroundColor: 'rgba(10,0,21,0.95)', border: '1px solid rgba(124,58,237,0.3)', borderRadius: '12px', padding: '12px' }}
                   labelStyle={{ color: '#7c3aed', fontWeight: 'bold' }}
                   itemStyle={{ color: '#fff' }}
-                  formatter={(v: number) => [`${v} km/s`, 'Solar Wind']}
+                  formatter={(v: any) => [`${v} km/s`, 'Solar Wind']}
                 />
                 <ReferenceLine y={400} stroke="#f97316" strokeDasharray="4 4" label={{ value: 'Normal 400', fill: '#f97316', fontSize: 11 }} />
                 <ReferenceLine y={600} stroke="#ef4444" strokeDasharray="4 4" label={{ value: 'High 600', fill: '#ef4444', fontSize: 11 }} />
