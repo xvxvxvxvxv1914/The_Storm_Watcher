@@ -7,4 +7,13 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
+  server: {
+    proxy: {
+      '/donki': {
+        target: 'https://kauai.ccmc.gsfc.nasa.gov',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/donki/, '/DONKI/WS/get'),
+      },
+    },
+  },
 });

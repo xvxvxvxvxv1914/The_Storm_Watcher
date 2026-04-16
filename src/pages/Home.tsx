@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Activity, AlertTriangle, Satellite, Sun, Zap, Radio, X, Siren } from 'lucide-react';
+import { Activity, AlertTriangle, Satellite, Sun, Zap, Radio, X, Siren, Calendar, Bot, Globe, Bell, Camera, Trophy, Video, Smartphone, Check } from 'lucide-react';
 import { getKpIndex, getSolarWind, getXrayFlux, getXrayClass, getStormStatus, getKpGradientStyle } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -164,29 +164,54 @@ const Home = () => {
           />
         ))}
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 sm:py-48">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-24 sm:pt-44 sm:pb-32">
           <div className="text-center">
-            <div className="flex justify-center mb-8">
-              <div className="relative">
-                <Sun className="w-20 h-20 text-[#f97316] animate-pulse" />
-                <div className="absolute inset-0 w-20 h-20 rounded-full bg-[#f97316] opacity-20 blur-xl animate-pulse" />
-              </div>
+
+            {/* Live badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-surface border border-[#f97316]/30 mb-8">
+              <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse" />
+              <span className="text-[#94a3b8] text-sm font-semibold uppercase tracking-widest">Live Space Weather</span>
             </div>
 
-            <h1 className="text-5xl sm:text-7xl font-bold mb-4 gradient-solar">
+            <h1 className="text-5xl sm:text-7xl font-bold mb-6 gradient-solar">
               The Storm Watcher
             </h1>
 
+            <p className="text-2xl sm:text-3xl text-white font-semibold mb-4">
+              Know when the sky is about to come alive.
+            </p>
+
+            <p className="text-lg text-[#94a3b8] mb-10 max-w-2xl mx-auto leading-relaxed">
+              Real-time geomagnetic storm tracking, aurora forecasts, and community reporting — in one place.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-14">
+              <Link
+                to="/auth"
+                className="px-8 py-4 bg-gradient-to-r from-[#f97316] to-[#ef4444] text-white rounded-lg font-bold uppercase tracking-wider hover:scale-105 transition-transform glow-orange"
+              >
+                Get Started Free
+              </Link>
+              <Link
+                to="/dashboard"
+                className="px-8 py-4 glass-surface text-white rounded-lg font-bold uppercase tracking-wider hover:glow-orange transition-all border border-white/10"
+              >
+                View Live Map
+              </Link>
+            </div>
+
+            {/* Live Kp */}
             {loading ? (
-              <div className="inline-block w-32 h-32 border-4 border-[#f97316]/20 border-t-[#f97316] rounded-full animate-spin my-8"></div>
+              <div className="inline-block w-24 h-24 border-4 border-[#f97316]/20 border-t-[#f97316] rounded-full animate-spin my-8" />
             ) : (
-              <div className="my-12">
+              <div className="my-8">
+                <div className="text-xs text-[#64748b] uppercase tracking-widest mb-2 font-semibold">Live · Kp Index</div>
                 <div className={`inline-block ${isStorm ? 'pulse-alert' : ''}`}>
                   <div
-                    className="text-9xl sm:text-[180px] font-bold leading-none"
+                    className="text-8xl sm:text-[160px] font-bold leading-none"
                     style={getKpGradientStyle(kpValue ?? 0)}
                   >
-                    {kpValue?.toFixed(1) || '0.0'}
+                    {kpValue?.toFixed(1) ?? '0.0'}
                   </div>
                 </div>
 
@@ -206,44 +231,25 @@ const Home = () => {
               </div>
             )}
 
-            <p className="text-xl sm:text-2xl text-[#94a3b8] mb-12 max-w-2xl mx-auto font-medium">
-              {t('home.tagline')}
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                to="/dashboard"
-                className="px-8 py-4 bg-gradient-to-r from-[#f97316] to-[#ef4444] text-white rounded-lg font-bold uppercase tracking-wider hover:scale-105 transition-transform glow-orange"
-              >
-                {t('home.hero.cta')}
-              </Link>
-              <Link
-                to="/alerts"
-                className="px-8 py-4 glass-surface text-white rounded-lg font-bold uppercase tracking-wider hover:glow-orange transition-all"
-              >
-                {t('nav.alerts')}
-              </Link>
-            </div>
-
             {!loading && (
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
-                <div className="glass-surface rounded-xl px-6 py-3 flex items-center gap-3">
+              <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
+                <div className="glass-surface rounded-xl px-5 py-3 flex items-center gap-3">
                   <Activity className="w-4 h-4 text-[#f97316]" />
                   <span className="text-[#94a3b8] text-sm uppercase tracking-wider">Kp</span>
                   <span className="text-white font-bold">{kpValue?.toFixed(1)}</span>
                 </div>
                 {windSpeed !== null && windSpeed > 0 && (
-                  <div className="glass-surface rounded-xl px-6 py-3 flex items-center gap-3">
+                  <div className="glass-surface rounded-xl px-5 py-3 flex items-center gap-3">
                     <Zap className="w-4 h-4 text-[#7c3aed]" />
-                    <span className="text-[#94a3b8] text-sm uppercase tracking-wider">Слънчев вятър</span>
+                    <span className="text-[#94a3b8] text-sm uppercase tracking-wider">Solar Wind</span>
                     <span className="text-white font-bold">{windSpeed.toFixed(0)} km/s</span>
                   </div>
                 )}
                 {xrayClass && (
-                  <div className="glass-surface rounded-xl px-6 py-3 flex items-center gap-3">
+                  <div className="glass-surface rounded-xl px-5 py-3 flex items-center gap-3">
                     <Radio className="w-4 h-4 text-[#fbbf24]" />
                     <span className="text-[#94a3b8] text-sm uppercase tracking-wider">X-ray</span>
-                    <span className="text-white font-bold">Клас {xrayClass}</span>
+                    <span className="text-white font-bold">Class {xrayClass}</span>
                   </div>
                 )}
               </div>
@@ -252,45 +258,232 @@ const Home = () => {
         </div>
       </div>
 
+      {/* Storm Score */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="glass-surface rounded-3xl p-10 border border-[#f97316]/10 text-center">
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3 uppercase tracking-wide">
+            Storm Score Index
+          </h2>
+          <p className="text-[#94a3b8] max-w-xl mx-auto mb-10 leading-relaxed">
+            A single number from 0 to 100 showing how active the geomagnetic situation is right now. No charts, no jargon — just one number that tells you everything.
+          </p>
+
+          {loading ? (
+            <div className="inline-block w-16 h-16 border-4 border-[#f97316]/20 border-t-[#f97316] rounded-full animate-spin" />
+          ) : (
+            <div className="flex flex-col items-center gap-6">
+              {/* Score number */}
+              <div
+                className="text-8xl sm:text-[120px] font-bold leading-none"
+                style={getKpGradientStyle(kpValue ?? 0)}
+              >
+                {kpValue !== null ? Math.round((kpValue / 9) * 100) : 0}
+              </div>
+
+              {/* Progress bar */}
+              <div className="w-full max-w-lg">
+                <div className="flex justify-between text-xs text-[#64748b] uppercase tracking-widest mb-2">
+                  <span>Quiet</span>
+                  <span>Unsettled</span>
+                  <span>Storm</span>
+                  <span>Severe</span>
+                </div>
+                <div className="h-3 rounded-full bg-white/5 overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-1000"
+                    style={{
+                      width: `${kpValue !== null ? Math.round((kpValue / 9) * 100) : 0}%`,
+                      background: kpValue !== null && kpValue >= 7
+                        ? 'linear-gradient(to right, #ef4444, #dc2626)'
+                        : kpValue !== null && kpValue >= 5
+                        ? 'linear-gradient(to right, #f97316, #ef4444)'
+                        : kpValue !== null && kpValue >= 4
+                        ? 'linear-gradient(to right, #eab308, #f97316)'
+                        : 'linear-gradient(to right, #10b981, #059669)',
+                    }}
+                  />
+                </div>
+                <div className="flex justify-between text-xs text-[#64748b] mt-1">
+                  <span>0</span>
+                  <span>25</span>
+                  <span>50</span>
+                  <span>75</span>
+                  <span>100</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Features */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="glass-surface rounded-2xl p-8 hover:glow-green transition-all">
-            <div className="w-16 h-16 bg-gradient-to-br from-[#10b981] to-[#059669] rounded-xl flex items-center justify-center mb-6">
-              <Activity className="w-8 h-8 text-white" />
+        <div className="text-center mb-14">
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 uppercase tracking-wide">
+            Everything you need to track the storm
+          </h2>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="glass-surface rounded-2xl p-7 hover:glow-green transition-all group">
+            <div className="w-14 h-14 bg-gradient-to-br from-[#10b981] to-[#059669] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+              <Calendar className="w-7 h-7 text-white" />
             </div>
-            <h3 className="text-2xl font-bold text-white mb-3 uppercase tracking-wide">
-              {t('home.feature1.title')}
-            </h3>
-            <p className="text-[#94a3b8] leading-relaxed">
-              {t('home.feature1.desc')}
-            </p>
+            <h3 className="text-lg font-bold text-white mb-2">Aurora Calendar</h3>
+            <p className="text-[#94a3b8] text-sm leading-relaxed">See which upcoming nights have the best aurora visibility based on solar forecasts and your location.</p>
           </div>
 
-          <div className="glass-surface rounded-2xl p-8 hover:glow-orange transition-all">
-            <div className="w-16 h-16 bg-gradient-to-br from-[#f97316] to-[#ef4444] rounded-xl flex items-center justify-center mb-6">
-              <Zap className="w-8 h-8 text-white" />
+          <div className="glass-surface rounded-2xl p-7 hover:glow-purple transition-all group">
+            <div className="w-14 h-14 bg-gradient-to-br from-[#7c3aed] to-[#6d28d9] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+              <Bot className="w-7 h-7 text-white" />
             </div>
-            <h3 className="text-2xl font-bold text-white mb-3 uppercase tracking-wide">
-              {t('home.feature2.title')}
-            </h3>
-            <p className="text-[#94a3b8] leading-relaxed">
-              {t('home.feature2.desc')}
-            </p>
+            <h3 className="text-lg font-bold text-white mb-2">AI Assistant</h3>
+            <p className="text-[#94a3b8] text-sm leading-relaxed">Ask anything — what is Kp index, will there be a storm tonight, is it safe to fly. Powered by Claude AI.</p>
           </div>
 
-          <div className="glass-surface rounded-2xl p-8 hover:glow-purple transition-all">
-            <div className="w-16 h-16 bg-gradient-to-br from-[#7c3aed] to-[#6d28d9] rounded-xl flex items-center justify-center mb-6">
-              <Satellite className="w-8 h-8 text-white" />
+          <div className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group">
+            <div className="w-14 h-14 bg-gradient-to-br from-[#f97316] to-[#ef4444] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+              <Globe className="w-7 h-7 text-white" />
             </div>
-            <h3 className="text-2xl font-bold text-white mb-3 uppercase tracking-wide">
-              {t('home.feature3.title')}
-            </h3>
-            <p className="text-[#94a3b8] leading-relaxed">
-              {t('home.feature3.desc')}
-            </p>
+            <h3 className="text-lg font-bold text-white mb-2">Global Map + Aurora Oval</h3>
+            <p className="text-[#94a3b8] text-sm leading-relaxed">Live map showing the aurora oval in real time. See exactly where the northern lights are visible right now.</p>
+          </div>
+
+          <div className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group">
+            <div className="w-14 h-14 bg-gradient-to-br from-[#fbbf24] to-[#f97316] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+              <Bell className="w-7 h-7 text-white" />
+            </div>
+            <h3 className="text-lg font-bold text-white mb-2">Push Alerts</h3>
+            <p className="text-[#94a3b8] text-sm leading-relaxed">Get notified the moment a geomagnetic storm reaches your chosen threshold — before it peaks.</p>
+          </div>
+
+          <div className="glass-surface rounded-2xl p-7 hover:glow-green transition-all group">
+            <div className="w-14 h-14 bg-gradient-to-br from-[#06b6d4] to-[#0891b2] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+              <Camera className="w-7 h-7 text-white" />
+            </div>
+            <h3 className="text-lg font-bold text-white mb-2">Community Photo Gallery</h3>
+            <p className="text-[#94a3b8] text-sm leading-relaxed">Users upload aurora photos verified by AI. See what others are capturing around the world.</p>
+          </div>
+
+          <div className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group">
+            <div className="w-14 h-14 bg-gradient-to-br from-[#f59e0b] to-[#d97706] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+              <Trophy className="w-7 h-7 text-white" />
+            </div>
+            <h3 className="text-lg font-bold text-white mb-2">Aurora Hunt</h3>
+            <p className="text-[#94a3b8] text-sm leading-relaxed">Earn badges and points for spotting and reporting auroras. Leaderboard updated in real time.</p>
+          </div>
+
+          <div className="glass-surface rounded-2xl p-7 hover:glow-purple transition-all group">
+            <div className="w-14 h-14 bg-gradient-to-br from-[#ec4899] to-[#be185d] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+              <Video className="w-7 h-7 text-white" />
+            </div>
+            <h3 className="text-lg font-bold text-white mb-2">Livestream</h3>
+            <p className="text-[#94a3b8] text-sm leading-relaxed">Watch live aurora cameras from Norway, Iceland and Finland — powered by Cloudflare Stream.</p>
+          </div>
+
+          <div className="glass-surface rounded-2xl p-7 hover:glow-green transition-all group">
+            <div className="w-14 h-14 bg-gradient-to-br from-[#10b981] to-[#059669] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+              <Smartphone className="w-7 h-7 text-white" />
+            </div>
+            <h3 className="text-lg font-bold text-white mb-2">PWA</h3>
+            <p className="text-[#94a3b8] text-sm leading-relaxed">Add The Storm Watcher to your home screen and use it like a native app. No app store needed.</p>
           </div>
         </div>
       </div>
+      {/* Data Sources */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="glass-surface rounded-3xl p-10 border border-white/10 text-center">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4 uppercase tracking-wide">
+            Trusted data sources
+          </h2>
+          <p className="text-[#94a3b8] max-w-2xl mx-auto mb-10 leading-relaxed">
+            Our forecasts are powered by NOAA Space Weather Prediction Center, NASA DONKI, ESA Space Weather Service, and the National Institute of Geophysics and Geodesy (Bulgaria).
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { name: 'NOAA SWPC', sub: 'Space Weather Prediction Center', color: 'from-[#0ea5e9] to-[#0284c7]' },
+              { name: 'NASA DONKI', sub: 'Space Weather Database', color: 'from-[#6366f1] to-[#4f46e5]' },
+              { name: 'ESA', sub: 'Space Weather Service', color: 'from-[#10b981] to-[#059669]' },
+              { name: 'NIGGG', sub: 'Bulgaria Geophysics Institute', color: 'from-[#f97316] to-[#ea580c]' },
+            ].map(source => (
+              <div key={source.name} className="glass-surface rounded-xl p-5 border border-white/5">
+                <div className={`text-2xl font-bold mb-1 bg-gradient-to-br ${source.color} bg-clip-text text-transparent`}>
+                  {source.name}
+                </div>
+                <div className="text-[#64748b] text-xs leading-snug">{source.sub}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Pricing */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div className="text-center mb-14">
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 uppercase tracking-wide">
+            Simple, transparent pricing
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+          {/* Free */}
+          <div className="glass-surface rounded-2xl p-8 border border-white/10">
+            <h3 className="text-xl font-bold text-white mb-1">Free</h3>
+            <div className="text-4xl font-bold text-white mb-1">$0<span className="text-lg text-[#94a3b8] font-normal">/month</span></div>
+            <p className="text-[#64748b] text-sm mb-8">Always free, no credit card needed.</p>
+            <ul className="space-y-3 mb-8">
+              {['Real-time Kp index', 'Basic geomagnetic alerts', '3-day forecast', 'Web access only'].map(f => (
+                <li key={f} className="flex items-center gap-3 text-[#94a3b8] text-sm">
+                  <Check className="w-4 h-4 text-[#10b981] shrink-0" />
+                  {f}
+                </li>
+              ))}
+            </ul>
+            <Link to="/auth" className="block w-full py-3 text-center rounded-lg border border-white/20 text-white font-semibold hover:border-[#f97316]/50 transition-all">
+              Get Started
+            </Link>
+          </div>
+
+          {/* Pro */}
+          <div className="glass-surface rounded-2xl p-8 border-2 border-[#f97316] relative">
+            <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-[#f97316] to-[#fbbf24] rounded-full text-white text-xs font-bold uppercase tracking-wider">
+              Most Popular
+            </div>
+            <h3 className="text-xl font-bold text-white mb-1">Pro</h3>
+            <div className="text-4xl font-bold text-white mb-1">$4.99<span className="text-lg text-[#94a3b8] font-normal">/month</span></div>
+            <p className="text-[#64748b] text-sm mb-8">For serious aurora chasers.</p>
+            <ul className="space-y-3 mb-8">
+              {['Everything in Free', 'Hourly forecasts up to 7 days', 'Push notifications', 'Aurora visibility map', 'Storm Score index', 'Install as PWA'].map(f => (
+                <li key={f} className="flex items-center gap-3 text-[#94a3b8] text-sm">
+                  <Check className="w-4 h-4 text-[#f97316] shrink-0" />
+                  {f}
+                </li>
+              ))}
+            </ul>
+            <Link to="/auth" className="block w-full py-3 text-center rounded-lg bg-gradient-to-r from-[#f97316] to-[#fbbf24] text-white font-bold hover:shadow-lg hover:shadow-[#f97316]/40 transition-all">
+              Get Pro
+            </Link>
+          </div>
+
+          {/* Premium */}
+          <div className="glass-surface rounded-2xl p-8 border border-[#7c3aed]/50">
+            <h3 className="text-xl font-bold text-white mb-1">Premium</h3>
+            <div className="text-4xl font-bold text-white mb-1">$9.99<span className="text-lg text-[#94a3b8] font-normal">/month</span></div>
+            <p className="text-[#64748b] text-sm mb-8">The full storm experience.</p>
+            <ul className="space-y-3 mb-8">
+              {['Everything in Pro', 'AI chatbot assistant', 'Aurora Calendar', 'Community photo gallery', 'Aurora Hunt gamification', 'Livestream access', 'Feature voting priority'].map(f => (
+                <li key={f} className="flex items-center gap-3 text-[#94a3b8] text-sm">
+                  <Check className="w-4 h-4 text-[#7c3aed] shrink-0" />
+                  {f}
+                </li>
+              ))}
+            </ul>
+            <Link to="/auth" className="block w-full py-3 text-center rounded-lg bg-gradient-to-r from-[#7c3aed] to-[#6d28d9] text-white font-bold hover:shadow-lg hover:shadow-[#7c3aed]/40 transition-all">
+              Get Premium
+            </Link>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 };

@@ -1,18 +1,27 @@
 import { useEffect, useState } from 'react';
-import { AlertTriangle, Info, AlertOctagon, ShieldAlert } from 'lucide-react';
+import { AlertTriangle, Info, AlertOctagon, ShieldAlert, Flame, Wind } from 'lucide-react';
 import { getAlerts, Alert as AlertType } from '../services/noaaApi';
+import { getDonkiCme, getDonkiFlares, CmeEvent, FlareEvent } from '../services/donkiApi';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Alerts = () => {
   const { t } = useLanguage();
   const [alerts, setAlerts] = useState<AlertType[]>([]);
+  const [cmeEvents, setCmeEvents] = useState<CmeEvent[]>([]);
+  const [flareEvents, setFlareEvents] = useState<FlareEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
 
   const fetchAlerts = async () => {
     try {
-      const data = await getAlerts();
-      setAlerts(data || []);
+      const [noaaData, cmeData, flareData] = await Promise.allSettled([
+        getAlerts(),
+        getDonkiCme(),
+        getDonkiFlares(),
+      ]);
+      if (noaaData.status === 'fulfilled') setAlerts(noaaData.value || []);
+      if (cmeData.status === 'fulfilled') setCmeEvents(cmeData.value || []);
+      if (flareData.status === 'fulfilled') setFlareEvents(flareData.value || []);
       setLastUpdated(new Date());
       setLoading(false);
     } catch (error) {
@@ -123,6 +132,121 @@ const Alerts = () => {
             })
           )}
         </div>
+
+        {/* NASA DONKI — CME Events */}
+        {cmeEvents.length > 0 && (
+          <div className="mt-12">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-gradient-to-br from-[#f97316] to-[#ef4444] rounded-lg flex items-center justify-center">
+                <Wind className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-white">Coronal Mass Ejections</h2>
+                <p className="text-[#94a3b8] text-sm">NASA DONKI · last 7 days</p>
+              </div>
+            </div>
+            <div className="space-y-4">
+              {cmeEvents.slice(-10).reverse().map((cme) => {
+                const analysis = cme.cmeAnalyses?.find(a => a.isMostAccurate) ?? cme.cmeAnalyses?.[0];
+                const enlil = analysis?.enlilList?.[0];
+                const isEarthDirected = enlil?.isEarthGB;
+                return (
+                  <div
+                    key={cme.activityID}
+                    className={`backdrop-blur-sm border rounded-2xl p-6 ${
+                      isEarthDirected
+                        ? 'bg-orange-500/10 border-orange-500/30'
+                        : 'bg-white/5 border-white/10'
+                    }`}
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+                      <div className={`w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                        isEarthDirected ? 'bg-orange-500/20 text-orange-400' : 'bg-white/10 text-[#94a3b8]'
+                      }`}>
+                        <Wind className="w-5 h-5" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex flex-wrap items-center gap-2 mb-2">
+                          {isEarthDirected && (
+                            <span className="px-3 py-1 rounded-full text-xs font-bold bg-orange-500/20 text-orange-400">
+                              Earth-Directed
+                            </span>
+                          )}
+                          {analysis?.speed && (
+                            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-white">
+                              {analysis.speed.toFixed(0)} km/s
+                            </span>
+                          )}
+                          {cme.sourceLocation && (
+                            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-white/5 text-[#94a3b8]">
+                              {cme.sourceLocation}
+                            </span>
+                          )}
+                          <span className="text-[#64748b] text-xs">
+                            {new Date(cme.startTime).toLocaleString()}
+                          </span>
+                        </div>
+                        {enlil?.estimatedShockArrivalTime && (
+                          <p className="text-orange-300 text-sm mb-2 font-semibold">
+                            Estimated arrival: {new Date(enlil.estimatedShockArrivalTime).toLocaleString()}
+                            {enlil.kp_90 && ` · Expected Kp: ${enlil.kp_90}`}
+                          </p>
+                        )}
+                        {cme.note && (
+                          <p className="text-[#94a3b8] text-sm leading-relaxed line-clamp-3">{cme.note}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* NASA DONKI — Solar Flares */}
+        {flareEvents.length > 0 && (
+          <div className="mt-12">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-gradient-to-br from-[#fbbf24] to-[#f97316] rounded-lg flex items-center justify-center">
+                <Flame className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-white">Solar Flares</h2>
+                <p className="text-[#94a3b8] text-sm">NASA DONKI · last 7 days</p>
+              </div>
+            </div>
+            <div className="space-y-4">
+              {flareEvents.slice(-10).reverse().map((flare) => (
+                <div key={flare.flrID} className="bg-yellow-500/5 backdrop-blur-sm border border-yellow-500/20 rounded-2xl p-6">
+                  <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+                    <div className="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center flex-shrink-0 text-yellow-400">
+                      <Flame className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
+                        <span className="px-3 py-1 rounded-full text-xs font-bold bg-yellow-500/20 text-yellow-400">
+                          Class {flare.classType}
+                        </span>
+                        {flare.sourceLocation && (
+                          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-white/5 text-[#94a3b8]">
+                            {flare.sourceLocation}
+                          </span>
+                        )}
+                        <span className="text-[#64748b] text-xs">
+                          {new Date(flare.beginTime).toLocaleString()}
+                        </span>
+                      </div>
+                      {flare.note && (
+                        <p className="text-[#94a3b8] text-sm leading-relaxed line-clamp-3">{flare.note}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="mt-12 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
           <h3 className="text-xl font-semibold text-white mb-4">{t('alerts.aboutTitle')}</h3>

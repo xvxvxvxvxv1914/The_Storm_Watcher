@@ -1,13 +1,22 @@
-import { Github, Twitter, Mail, Sun } from 'lucide-react';
-import { useLanguage } from '../contexts/LanguageContext';
+import { Mail, Sun } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
-  const { t } = useLanguage();
+  const navLinks = [
+    { to: '/', label: 'Home' },
+    { to: '/dashboard', label: 'Map' },
+    { to: '/forecast', label: 'Forecast' },
+    { to: '/aurora', label: 'Aurora' },
+    { to: '/alerts', label: 'Alerts' },
+    { to: '/mood', label: 'Community' },
+  ];
 
   return (
     <footer className="relative glass-surface border-t border-white/10 py-12 mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
+
+          {/* Brand */}
           <div>
             <div className="flex items-center gap-3 mb-4">
               <div className="relative">
@@ -17,47 +26,40 @@ const Footer = () => {
               <h3 className="text-white font-bold text-lg gradient-solar">The Storm Watcher</h3>
             </div>
             <p className="text-[#94a3b8] text-sm leading-relaxed">
-              {t('footer.tagline')}
+              Real-time space weather tracking for aurora chasers and space enthusiasts.
             </p>
           </div>
 
+          {/* Links */}
           <div>
-            <h3 className="text-white font-bold mb-4 uppercase tracking-wider">{t('footer.company')}</h3>
+            <h3 className="text-white font-bold mb-4 uppercase tracking-wider text-sm">Navigation</h3>
             <ul className="space-y-2">
-              <li>
-                <span className="text-[#94a3b8] text-sm">{t('footer.about')}</span>
-              </li>
-              <li>
-                <span className="text-[#94a3b8] text-sm">{t('footer.privacy')}</span>
-              </li>
-              <li>
-                <span className="text-[#94a3b8] text-sm">{t('footer.support')}</span>
-              </li>
-              <li>
-                <span className="text-[#94a3b8] text-sm">{t('footer.contact')}</span>
-              </li>
+              {navLinks.map(link => (
+                <li key={link.to}>
+                  <Link to={link.to} className="text-[#94a3b8] text-sm hover:text-white transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
+          {/* Contact & Social */}
           <div>
-            <h3 className="text-white font-bold mb-4 uppercase tracking-wider">Connect</h3>
-            <div className="flex gap-4">
-              <div className="w-10 h-10 glass-surface rounded-lg flex items-center justify-center text-[#94a3b8]">
-                <Github className="w-5 h-5" />
-              </div>
-              <div className="w-10 h-10 glass-surface rounded-lg flex items-center justify-center text-[#94a3b8]">
-                <Twitter className="w-5 h-5" />
-              </div>
-              <div className="w-10 h-10 glass-surface rounded-lg flex items-center justify-center text-[#94a3b8]">
-                <Mail className="w-5 h-5" />
-              </div>
-            </div>
+            <h3 className="text-white font-bold mb-4 uppercase tracking-wider text-sm">Contact</h3>
+            <a
+              href="mailto:hello@thestormwatcher.com"
+              className="flex items-center gap-2 text-[#94a3b8] text-sm hover:text-white transition-colors mb-6"
+            >
+              <Mail className="w-4 h-4" />
+              hello@thestormwatcher.com
+            </a>
           </div>
         </div>
 
         <div className="border-t border-white/10 pt-8">
           <p className="text-center text-[#94a3b8] text-sm">
-            © 2026 The Storm Watcher. {t('footer.rights')}.
+            © 2026 The Storm Watcher. All rights reserved.
           </p>
         </div>
       </div>

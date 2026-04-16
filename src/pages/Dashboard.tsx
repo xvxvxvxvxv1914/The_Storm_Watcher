@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, ReferenceLine } from 'recharts';
 import { Activity, Wind, Compass, Zap, Sun, Radio } from 'lucide-react';
 import { getKpIndex, getSolarWind, getMagField, getXrayFlux, getKpHistory3Day, getStormStatus, getXrayClass, getKpGradientStyle } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -36,7 +36,7 @@ const Dashboard = () => {
 
       if (kp3dayData && kp3dayData.length > 0) {
         const history = kp3dayData.map((item) => ({
-          time: new Date(item.time_tag).toLocaleString('bg', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+          time: new Date(item.time_tag.replace(' ', 'T') + 'Z').toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
           kp: item.Kp || 0,
         }));
         setKpHistory3Day(history);
@@ -46,9 +46,12 @@ const Dashboard = () => {
         const active = windData.find(d => d.active) || windData[windData.length - 1];
         setSolarWindSpeed(active.proton_speed || 0);
 
-        const last24Hours = windData.filter(d => d.proton_speed).slice(-1440).map((item) => ({
-          time: new Date(item.time_tag).toLocaleTimeString('bg', { hour: '2-digit', minute: '2-digit' }),
-          speed: item.proton_speed || 0,
+        const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
+        const filtered = windData.filter(d => d.proton_speed > 0 && new Date(d.time_tag) >= since24h);
+        const sampled = filtered.filter((_, i) => i % 30 === 0);
+        const last24Hours = sampled.map((item) => ({
+          time: new Date(item.time_tag.replace(' ', 'T') + 'Z').toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }),
+          speed: Math.round(item.proton_speed),
         }));
         setWindHistory(last24Hours);
       } else {
@@ -263,23 +266,26 @@ const Dashboard = () => {
           </h3>
           {windHistory.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={windHistory}>
+              <AreaChart data={windHistory}>
                 <defs>
                   <linearGradient id="windGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#7c3aed" stopOpacity={0.3}/>
-                    <stop offset="100%" stopColor="#7c3aed" stopOpacity={0.05}/>
+                    <stop offset="0%" stopColor="#7c3aed" stopOpacity={0.5}/>
+                    <stop offset="100%" stopColor="#7c3aed" stopOpacity={0.02}/>
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
                 <XAxis dataKey="time" stroke="#6b7280" tick={{ fontSize: 11 }} interval="preserveStartEnd" />
-                <YAxis stroke="#6b7280" tick={{ fontSize: 12 }} />
+                <YAxis stroke="#6b7280" tick={{ fontSize: 12 }} domain={['auto', 'auto']} />
                 <Tooltip
                   contentStyle={{ backgroundColor: 'rgba(10,0,21,0.95)', border: '1px solid rgba(124,58,237,0.3)', borderRadius: '12px', padding: '12px' }}
                   labelStyle={{ color: '#7c3aed', fontWeight: 'bold' }}
                   itemStyle={{ color: '#fff' }}
+                  formatter={(v: number) => [`${v} km/s`, 'Solar Wind']}
                 />
-                <Line type="monotone" dataKey="speed" stroke="#7c3aed" strokeWidth={2} dot={false} />
-              </LineChart>
+                <ReferenceLine y={400} stroke="#f97316" strokeDasharray="4 4" label={{ value: 'Normal 400', fill: '#f97316', fontSize: 11 }} />
+                <ReferenceLine y={600} stroke="#ef4444" strokeDasharray="4 4" label={{ value: 'High 600', fill: '#ef4444', fontSize: 11 }} />
+                <Area type="monotone" dataKey="speed" stroke="#7c3aed" strokeWidth={2} fill="url(#windGradient)" dot={false} />
+              </AreaChart>
             </ResponsiveContainer>
           ) : (
             <div className="h-[300px] flex items-center justify-center text-[#94a3b8]">

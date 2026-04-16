@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Sun, Menu, X, Globe, User, LogOut } from 'lucide-react';
+import { Sun, Menu, X, Globe, User, LogOut, ChevronDown } from 'lucide-react';
 import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import PushNotificationBell from './PushNotificationBell';
@@ -9,7 +9,9 @@ const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
   const langMenuRef = useRef<HTMLDivElement>(null);
+  const moreMenuRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
@@ -26,20 +28,31 @@ const Navigation = () => {
       if (langMenuRef.current && !langMenuRef.current.contains(e.target as Node)) {
         setIsLangMenuOpen(false);
       }
+      if (moreMenuRef.current && !moreMenuRef.current.contains(e.target as Node)) {
+        setIsMoreOpen(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const navLinks = [
+  const mainLinks = [
     { to: '/', label: t('nav.home') },
     { to: '/dashboard', label: t('nav.dashboard') },
     { to: '/forecast', label: t('nav.forecast') },
     { to: '/aurora', label: t('nav.aurora') },
     { to: '/alerts', label: t('nav.alerts') },
     { to: '/mood', label: t('nav.mood') },
-    { to: '/pricing', label: t('nav.pricing') },
   ];
+
+  const moreLinks = [
+    { to: '/uv', label: 'UV' },
+    { to: '/sun', label: 'Sun' },
+    { to: '/sky', label: 'Sky Tonight' },
+    { to: '/iss', label: 'ISS' },
+  ];
+
+  const navLinks = [...mainLinks, ...moreLinks];
 
   const isActive = (path: string) => location.pathname === path;
 
