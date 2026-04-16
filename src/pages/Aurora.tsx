@@ -60,7 +60,8 @@ const Aurora = () => {
           const lightsToRemove = scene.children.filter((c: THREE.Light | THREE.Object3D) => typeof c.type === 'string' && c.type.includes('Light'));
           const camera = typeof globeRef.current.camera === 'function' ? globeRef.current.camera() : null;
           if (camera) {
-             const camLights = camera.children.filter((c: THREE.Light | THREE.Object3D) => typeof c.type === 'string' && c.type.includes('Light'));
+             camera.children.filter((c: THREE.Light | THREE.Object3D) => typeof c.type === 'string' && c.type.includes('Light'))
+               .forEach((l: THREE.Light | THREE.Object3D) => camera.remove(l));
         }
         lightsToRemove.forEach((l: THREE.Light | THREE.Object3D) => scene.remove(l));
         

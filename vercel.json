@@ -3,6 +3,10 @@
     {
       "source": "/donki/:path*",
       "destination": "https://kauai.ccmc.gsfc.nasa.gov/DONKI/WS/get/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }

@@ -13,8 +13,6 @@ const Forecast = () => {
   const fetchForecast = React.useCallback(async () => {
     try {
       const data = await getKpForecast();
-      console.log('Forecast data received:', data);
-
       if (data && data.length > 0) {
         const formattedData = data.map((item) => {
           const date = new Date(item.time_tag);
@@ -25,10 +23,8 @@ const Forecast = () => {
             date: date,
           };
         });
-        console.log('Formatted data:', formattedData);
         setForecastData(formattedData);
       } else {
-        console.log('No forecast data available - using demo data');
         generateDemoData();
       }
       setLastUpdated(new Date());

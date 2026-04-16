@@ -393,10 +393,10 @@ const Home = () => {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="glass-surface rounded-3xl p-10 border border-white/10 text-center">
           <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4 uppercase tracking-wide">
-            Trusted data sources
+            {t('home.trustedSources')}
           </h2>
           <p className="text-[#94a3b8] max-w-2xl mx-auto mb-10 leading-relaxed">
-            Our forecasts are powered by NOAA Space Weather Prediction Center, NASA DONKI, ESA Space Weather Service, and the National Institute of Geophysics and Geodesy (Bulgaria).
+            {t('home.trustedSourcesDesc')}
           </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
