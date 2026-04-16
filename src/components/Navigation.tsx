@@ -65,15 +65,15 @@ const Navigation = () => {
               <Sun className="w-8 h-8 text-[#f97316] group-hover:text-[#fbbf24] transition-colors" />
               <div className="absolute inset-0 w-8 h-8 rounded-full bg-[#f97316] opacity-20 blur-lg group-hover:opacity-40 transition-opacity" />
             </div>
-            <span className="text-xl font-bold gradient-solar">The Storm Watcher</span>
+            <span className="hidden xl:inline text-xl font-bold gradient-solar whitespace-nowrap">The Storm Watcher</span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-4 xl:gap-6">
             {navLinks.map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
-                className={`relative text-sm font-bold uppercase tracking-wider transition-colors ${
+                className={`relative text-xs xl:text-sm font-bold uppercase tracking-wider transition-colors whitespace-nowrap ${
                   isActive(link.to)
                     ? 'text-[#f97316]'
                     : 'text-[#94a3b8] hover:text-white'
