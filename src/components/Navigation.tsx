@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Sun, Menu, X, Globe, User, LogOut, ChevronDown } from 'lucide-react';
+import { Sun, Menu, X, Globe, User, LogOut } from 'lucide-react';
 import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import PushNotificationBell from './PushNotificationBell';
@@ -9,7 +9,7 @@ const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [isMoreOpen, setIsMoreOpen] = useState(false);
+  const [, setIsMoreOpen] = useState(false);
   const langMenuRef = useRef<HTMLDivElement>(null);
   const moreMenuRef = useRef<HTMLDivElement>(null);
   const location = useLocation();

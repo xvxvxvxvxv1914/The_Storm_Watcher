@@ -34,31 +34,7 @@ export default function Auth() {
       } else {
         navigate('/dashboard');
       }
-    } catch (err) {
-      setError('An unexpected error occurred');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSocialAuth = async (provider: 'google' | 'facebook' | 'apple') => {
-    setError('');
-    setLoading(true);
-
-    try {
-      let result;
-      if (provider === 'google') {
-        result = await signInWithGoogle();
-      } else if (provider === 'facebook') {
-        result = await signInWithFacebook();
-      } else {
-        result = await signInWithApple();
-      }
-
-      if (result.error) {
-        setError(result.error.message);
-      }
-    } catch (err) {
+    } catch {
       setError('An unexpected error occurred');
     } finally {
       setLoading(false);

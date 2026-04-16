@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { useEffect, useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { Sun, MapPin, AlertTriangle } from 'lucide-react';

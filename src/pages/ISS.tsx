@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { useEffect, useRef, useState } from 'react';
 import { MapPin, Clock, Eye, Satellite } from 'lucide-react';
 import Globe from 'react-globe.gl';
@@ -26,7 +27,7 @@ const ISS = () => {
     fetchPos();
     const interval = setInterval(fetchPos, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [position]);
 
   // Point globe at ISS when position updates
   useEffect(() => {
@@ -59,7 +60,7 @@ const ISS = () => {
       (pos) => load(pos.coords.latitude, pos.coords.longitude),
       () => { load(42.7, 23.3); setLocationName('Sofia, Bulgaria (default)'); },
     );
-  }, []);
+  }, [position]);
 
   const getElevationColor = (el: number) => {
     if (el >= 60) return '#10b981';

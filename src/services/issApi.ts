@@ -44,7 +44,6 @@ const getTle = async (): Promise<{ line1: string; line2: string }> => {
   }
 };
 
-const toRad = (deg: number) => (deg * Math.PI) / 180;
 const toDeg = (rad: number) => (rad * 180) / Math.PI;
 
 export const getIssPasses = async (lat: number, lon: number, altMeters = 0): Promise<IssPass[]> => {

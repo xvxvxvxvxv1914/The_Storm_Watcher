@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Activity, AlertTriangle, Satellite, Sun, Zap, Radio, X, Siren, Calendar, Bot, Globe, Bell, Camera, Trophy, Video, Smartphone, Check } from 'lucide-react';
+import { Activity, AlertTriangle, Zap, Radio, X, Calendar, Bot, Globe, Bell, Camera, Trophy, Video, Smartphone, Check } from 'lucide-react';
 import { getKpIndex, getSolarWind, getXrayFlux, getXrayClass, getStormStatus, getKpGradientStyle } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 

@@ -138,7 +138,7 @@ const Aurora = () => {
               { city: 'Прага, Чехия', lat: 50, minKp: 7 },
               { city: 'Виена, Австрия', lat: 48, minKp: 7 },
               { city: 'София, България', lat: 42, minKp: 8 },
-            ].map(({ city, lat, minKp }) => {
+            ].map(({ city, minKp }) => {
               const visible = kpValue >= minKp;
               const chance = Math.min(100, Math.max(0, ((kpValue - minKp + 1) / 3) * 100));
               return (

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, ReferenceLine } from 'recharts';
-import { Activity, Wind, Compass, Zap, Sun, Radio } from 'lucide-react';
+import { Activity, Wind, Compass, Sun, Radio } from 'lucide-react';
 import { getKpIndex, getSolarWind, getMagField, getXrayFlux, getKpHistory3Day, getStormStatus, getXrayClass, getKpGradientStyle } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 

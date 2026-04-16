@@ -6,11 +6,11 @@ import { useLanguage } from '../contexts/LanguageContext';
 
 const Forecast = () => {
   const { t } = useLanguage();
-  const [forecastData, setForecastData] = useState<any[]>([]);
+  const [forecastData, setForecastData] = useState<unknown[]>([]);
   const [loading, setLoading] = useState(true);
-  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const [, setLastUpdated] = useState<Date>(new Date());
 
-  const fetchForecast = async () => {
+  const fetchForecast = React.useCallback(async () => {
     try {
       const data = await getKpForecast();
       console.log('Forecast data received:', data);
@@ -38,10 +38,10 @@ const Forecast = () => {
       generateDemoData();
       setLoading(false);
     }
-  };
+  }, []);
 
-  const generateDemoData = () => {
-    const demoData = [];
+  const generateDemoData = React.useCallback(() => {
+    // const demoData = [];
     const now = new Date();
     // Generate 3-hour interval data
     const rawData = [];
@@ -56,13 +56,13 @@ const Forecast = () => {
       });
     }
     setForecastData(rawData);
-  };
+  }, []);
 
   useEffect(() => {
     fetchForecast();
     const interval = setInterval(fetchForecast, 300000);
     return () => clearInterval(interval);
-  }, []);
+  }, [fetchForecast]);
 
   const getMaxKp = () => {
     if (forecastData.length === 0) return 0;
@@ -80,7 +80,7 @@ const Forecast = () => {
   };
 
   const groupByDay = () => {
-    const grouped: { [key: string]: any[] } = {};
+    const grouped: { [key: string]: unknown[] } = {};
     forecastData.forEach((item) => {
       const dayKey = item.date.toLocaleDateString('en-US', {
         month: 'long',
@@ -284,7 +284,7 @@ const Forecast = () => {
             <div className="space-y-6">
               {Object.entries(groupedData).map(([day, items]) => {
               const maxDayKp = Math.max(...items.map(i => i.kp));
-              const avgDayKp = items.reduce((acc, i) => acc + i.kp, 0) / items.length;
+              // const avgDayKp = items.reduce((acc, i) => acc + i.kp, 0) / items.length;
               const status = getStormStatus(maxDayKp);
 
               return (
@@ -311,7 +311,7 @@ const Forecast = () => {
 
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                     {items.map((item, idx) => {
-                      const itemStatus = getStormStatus(item.kp);
+                      // const itemStatus = getStormStatus(item.kp);
                       return (
                         <div
                           key={idx}
