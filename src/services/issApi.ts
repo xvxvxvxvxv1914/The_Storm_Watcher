@@ -18,30 +18,44 @@ export interface IssPass {
 }
 
 export const getIssPosition = async (): Promise<IssPosition> => {
-  const res = await axios.get('https://api.wheretheiss.at/v1/satellites/25544');
-  return {
-    latitude: res.data.latitude,
-    longitude: res.data.longitude,
-    altitude: res.data.altitude,
-    velocity: res.data.velocity,
-    visibility: res.data.visibility,
-  };
+  try {
+    const res = await axios.get('https://api.wheretheiss.at/v1/satellites/25544');
+    return {
+      latitude: res.data.latitude,
+      longitude: res.data.longitude,
+      altitude: res.data.altitude,
+      velocity: res.data.velocity,
+      visibility: res.data.visibility,
+    };
+  } catch (error) {
+    console.error('Error fetching ISS position:', error);
+    return { latitude: 0, longitude: 0, altitude: 0, velocity: 0, visibility: 'unknown' };
+  }
 };
 
 const getTle = async (): Promise<{ line1: string; line2: string }> => {
-  const res = await axios.get('https://tle.ivanstanojevic.me/api/tle/25544');
-  return { line1: res.data.line1, line2: res.data.line2 };
+  try {
+    const res = await axios.get('https://tle.ivanstanojevic.me/api/tle/25544');
+    return { line1: res.data.line1, line2: res.data.line2 };
+  } catch (error) {
+    console.error('Error fetching ISS TLE:', error);
+    // Return a dummy TLE or empty string. Since satellite logic will fail if it's broken anyway:
+    return { line1: '', line2: '' };
+  }
 };
 
 const toRad = (deg: number) => (deg * Math.PI) / 180;
 const toDeg = (rad: number) => (rad * 180) / Math.PI;
 
 export const getIssPasses = async (lat: number, lon: number, altMeters = 0): Promise<IssPass[]> => {
-  const { line1, line2 } = await getTle();
-  const satrec = satellite.twoline2satrec(line1, line2);
+  try {
+    const { line1, line2 } = await getTle();
+    if (!line1 || !line2) return [];
 
-  const passes: IssPass[] = [];
-  const now = new Date();
+    const satrec = satellite.twoline2satrec(line1, line2);
+
+    const passes: IssPass[] = [];
+    const now = new Date();
   const end = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // next 7 days
   const obsGd = {
     longitude: satellite.degreesToRadians(lon),
@@ -98,4 +112,8 @@ export const getIssPasses = async (lat: number, lon: number, altMeters = 0): Pro
   }
 
   return passes;
+  } catch (error) {
+    console.error('Error fetching ISS passes:', error);
+    return [];
+  }
 };

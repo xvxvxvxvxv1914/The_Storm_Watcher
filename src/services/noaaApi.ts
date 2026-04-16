@@ -36,38 +36,73 @@ export interface Alert {
 }
 
 export const getKpIndex = async (): Promise<KpIndexData[]> => {
-  const response = await axios.get(`${NOAA_BASE_URL}/json/planetary_k_index_1m.json`);
-  return response.data;
+  try {
+    const response = await axios.get(`${NOAA_BASE_URL}/json/planetary_k_index_1m.json`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data in getKpIndex:', error);
+    return [];
+  }
 };
 
 export const getXrayFlux = async (): Promise<XrayData[]> => {
-  const response = await axios.get(`${NOAA_BASE_URL}/json/goes/primary/xrays-1-day.json`);
-  return response.data;
+  try {
+    const response = await axios.get(`${NOAA_BASE_URL}/json/goes/primary/xrays-1-day.json`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data in getXrayFlux:', error);
+    return [];
+  }
 };
 
 export const getSolarWind = async (): Promise<SolarWindData[]> => {
-  const response = await axios.get(`${NOAA_BASE_URL}/json/rtsw/rtsw_wind_1m.json`);
-  return response.data;
+  try {
+    const response = await axios.get(`${NOAA_BASE_URL}/json/rtsw/rtsw_wind_1m.json`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data in getSolarWind:', error);
+    return [];
+  }
 };
 
 export const getMagField = async (): Promise<MagFieldData[]> => {
-  const response = await axios.get(`${NOAA_BASE_URL}/json/rtsw/rtsw_mag_1m.json`);
-  return response.data;
+  try {
+    const response = await axios.get(`${NOAA_BASE_URL}/json/rtsw/rtsw_mag_1m.json`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data in getMagField:', error);
+    return [];
+  }
 };
 
 export const getAlerts = async (): Promise<Alert[]> => {
-  const response = await axios.get(`${NOAA_BASE_URL}/products/alerts.json`);
-  return response.data;
+  try {
+    const response = await axios.get(`${NOAA_BASE_URL}/products/alerts.json`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data in getAlerts:', error);
+    return [];
+  }
 };
 
 export const getKpForecast = async (): Promise<KpIndexData[]> => {
-  const response = await axios.get(`${NOAA_BASE_URL}/json/planetary_k_index_forecast.json`);
-  return response.data;
+  try {
+    const response = await axios.get(`${NOAA_BASE_URL}/json/planetary_k_index_forecast.json`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data in getKpForecast:', error);
+    return [];
+  }
 };
 
 export const getKpHistory3Day = async (): Promise<{ time_tag: string; Kp: number }[]> => {
-  const response = await axios.get(`${NOAA_BASE_URL}/products/noaa-planetary-k-index.json`);
-  return response.data;
+  try {
+    const response = await axios.get(`${NOAA_BASE_URL}/products/noaa-planetary-k-index.json`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data in getKpHistory3Day:', error);
+    return [];
+  }
 };
 
 export const getKpGradientStyle = (kp: number): React.CSSProperties => ({

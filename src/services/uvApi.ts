@@ -13,6 +13,7 @@ export interface UvData {
 }
 
 export const getUvIndex = async (lat: number, lon: number): Promise<UvData> => {
+  try {
   const response = await axios.get('https://api.open-meteo.com/v1/forecast', {
     params: {
       latitude: lat,
@@ -39,6 +40,10 @@ export const getUvIndex = async (lat: number, lon: number): Promise<UvData> => {
     hourly,
     timezone: data.timezone,
   };
+  } catch (error) {
+    console.error('Error fetching UV Index:', error);
+    return { current: 0, max: 0, hourly: [], timezone: 'UTC' };
+  }
 };
 
 export interface SunDay {
@@ -51,6 +56,7 @@ export interface SunDay {
 }
 
 export const getSunData = async (lat: number, lon: number): Promise<SunDay[]> => {
+  try {
   const response = await axios.get('https://api.open-meteo.com/v1/forecast', {
     params: {
       latitude: lat,
@@ -81,6 +87,10 @@ export const getSunData = async (lat: number, lon: number): Promise<SunDay[]> =>
       goldenEveningStart: fmt(goldenEveningStart),
     };
   });
+  } catch (error) {
+    console.error('Error fetching Sun Data:', error);
+    return [];
+  }
 };
 
 export const getUvLevel = (uv: number): { label: string; color: string; bg: string; advice: string } => {

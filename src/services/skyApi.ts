@@ -22,6 +22,7 @@ export interface SkyData {
 }
 
 export const getSkyVisibility = async (lat: number, lon: number, kp: number): Promise<SkyData> => {
+  try {
   const response = await axios.get('https://api.open-meteo.com/v1/forecast', {
     params: {
       latitude: lat,
@@ -95,4 +96,18 @@ export const getSkyVisibility = async (lat: number, lon: number, kp: number): Pr
     sunset: fmtTime(sunset),
     sunrise: fmtTime(sunrise),
   };
+  } catch (error) {
+    console.error('Error fetching Sky Visibility:', error);
+    return {
+      verdict: 'poor',
+      score: 0,
+      cloudCoverAvg: 100,
+      visibilityAvg: 0,
+      kp,
+      auroraChance: '-',
+      nightHours: [],
+      sunset: '-',
+      sunrise: '-',
+    };
+  }
 };

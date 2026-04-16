@@ -43,15 +43,25 @@ const startDate = () => {
 const endDate = () => new Date().toISOString().split('T')[0];
 
 export const getDonkiCme = async (): Promise<CmeEvent[]> => {
-  const response = await axios.get(`${DONKI_BASE}/CME`, {
-    params: { startDate: startDate(), endDate: endDate() },
-  });
-  return response.data || [];
+  try {
+    const response = await axios.get(`${DONKI_BASE}/CME`, {
+      params: { startDate: startDate(), endDate: endDate() },
+    });
+    return response.data || [];
+  } catch (error) {
+    console.error('Error fetching donki cme:', error);
+    return [];
+  }
 };
 
 export const getDonkiFlares = async (): Promise<FlareEvent[]> => {
-  const response = await axios.get(`${DONKI_BASE}/FLR`, {
-    params: { startDate: startDate(), endDate: endDate() },
-  });
-  return response.data || [];
+  try {
+    const response = await axios.get(`${DONKI_BASE}/FLR`, {
+      params: { startDate: startDate(), endDate: endDate() },
+    });
+    return response.data || [];
+  } catch (error) {
+    console.error('Error fetching donki flares:', error);
+    return [];
+  }
 };
