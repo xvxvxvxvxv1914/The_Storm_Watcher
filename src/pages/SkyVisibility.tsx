@@ -35,6 +35,7 @@ const verdictConfig = {
 };
 
 const SkyVisibility = () => {
+  const { t } = useLanguage();
   const [sky, setSky] = useState<SkyData | null>(null);
   const [loading, setLoading] = useState(true);
   const [locationName, setLocationName] = useState('');
@@ -80,7 +81,7 @@ const SkyVisibility = () => {
         {/* Header */}
         <div className="mb-10">
           <h1 className="text-5xl font-bold text-white mb-2 uppercase tracking-tight">
-            Sky <span className="gradient-solar">Tonight</span>
+            Sky <span className="gradient-solar">{t('sky.tonight')}</span>
           </h1>
           {locationName && (
             <div className="flex items-center gap-2 text-[#94a3b8]">
@@ -117,29 +118,29 @@ const SkyVisibility = () => {
           <div className="glass-surface rounded-2xl p-5 text-center border border-white/10">
             <Cloud className="w-6 h-6 text-[#94a3b8] mx-auto mb-2" />
             <div className="text-2xl font-bold text-white">{sky.cloudCoverAvg}%</div>
-            <div className="text-[#64748b] text-xs mt-1 uppercase tracking-wider">Cloud Cover</div>
+            <div className="text-[#64748b] text-xs mt-1 uppercase tracking-wider">{t('sky.cloudCover')}</div>
           </div>
           <div className="glass-surface rounded-2xl p-5 text-center border border-white/10">
             <Eye className="w-6 h-6 text-[#94a3b8] mx-auto mb-2" />
             <div className="text-2xl font-bold text-white">{sky.visibilityAvg} km</div>
-            <div className="text-[#64748b] text-xs mt-1 uppercase tracking-wider">Visibility</div>
+            <div className="text-[#64748b] text-xs mt-1 uppercase tracking-wider">{t('sky.visibility')}</div>
           </div>
           <div className="glass-surface rounded-2xl p-5 text-center border border-white/10">
             <Star className="w-6 h-6 text-[#7c3aed] mx-auto mb-2" />
             <div className="text-xl font-bold text-white">{sky.auroraChance}</div>
-            <div className="text-[#64748b] text-xs mt-1 uppercase tracking-wider">Aurora Chance</div>
+            <div className="text-[#64748b] text-xs mt-1 uppercase tracking-wider">{t('sky.auroraChance')}</div>
           </div>
           <div className="glass-surface rounded-2xl p-5 text-center border border-white/10">
             <Droplets className="w-6 h-6 text-[#0ea5e9] mx-auto mb-2" />
             <div className="text-2xl font-bold text-white">Kp {sky.kp.toFixed(1)}</div>
-            <div className="text-[#64748b] text-xs mt-1 uppercase tracking-wider">Geomagnetic</div>
+            <div className="text-[#64748b] text-xs mt-1 uppercase tracking-wider">{t('sky.geomagnetic')}</div>
           </div>
         </div>
 
         {/* Hourly breakdown */}
         {sky.nightHours.length > 0 && (
           <div className="glass-surface rounded-2xl p-8 border border-white/10">
-            <h3 className="text-lg font-bold text-white mb-6 uppercase tracking-wide">Hourly Breakdown</h3>
+            <h3 className="text-lg font-bold text-white mb-6 uppercase tracking-wide">{t('sky.hourlyBreakdown')}</h3>
             <div className="space-y-3">
               {sky.nightHours.map((h) => (
                 <div key={h.time} className="flex items-center gap-4">
@@ -165,10 +166,10 @@ const SkyVisibility = () => {
               ))}
             </div>
             <div className="flex gap-4 mt-5 text-xs text-[#64748b]">
-              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#10b981] inline-block" /> Clear</span>
-              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#fbbf24] inline-block" /> Partly cloudy</span>
-              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#f97316] inline-block" /> Mostly cloudy</span>
-              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#ef4444] inline-block" /> Overcast</span>
+              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#10b981] inline-block" />{t('sky.clear')}</span>
+              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#fbbf24] inline-block" />{t('sky.partlyCloudy')}</span>
+              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#f97316] inline-block" />{t('sky.mostlyCloudy')}</span>
+              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#ef4444] inline-block" />{t('sky.overcast')}</span>
             </div>
           </div>
         )}

@@ -76,6 +76,7 @@ const SunArc = ({ sunrise, sunset }: { sunrise: string; sunset: string }) => {
 };
 
 const SunTimes = () => {
+  const { t } = useLanguage();
   const [days, setDays] = useState<SunDay[]>([]);
   const [loading, setLoading] = useState(true);
   const [locationName, setLocationName] = useState('');
@@ -96,7 +97,7 @@ const SunTimes = () => {
 
     navigator.geolocation?.getCurrentPosition(
       (pos) => load(pos.coords.latitude, pos.coords.longitude),
-      () => load(42.7, 23.3).then(() => setLocationName('Sofia, Bulgaria (default)')),
+      () => load(42.7, 23.3).then(() => setLocationName(t('uv.defaultLocation'))),
     );
   }, []);
 
@@ -117,7 +118,7 @@ const SunTimes = () => {
         {/* Header */}
         <div className="mb-10">
           <h1 className="text-5xl font-bold text-white mb-2 uppercase tracking-tight">
-            <span className="gradient-solar">Sun</span> Times
+            <span className="gradient-solar">{t('sun.title')}</span> {t('sun.times')}
           </h1>
           {locationName && (
             <div className="flex items-center gap-2 text-[#94a3b8]">
@@ -139,24 +140,24 @@ const SunTimes = () => {
               <div className="text-center">
                 <div className="flex items-center justify-center gap-2 text-[#fbbf24] mb-2">
                   <Sunrise className="w-5 h-5" />
-                  <span className="text-sm uppercase tracking-wider font-bold">Sunrise</span>
+                  <span className="text-sm uppercase tracking-wider font-bold">{t('sun.sunrise')}</span>
                 </div>
                 <div className="text-4xl font-bold text-white">{today.sunrise}</div>
-                <div className="text-[#64748b] text-xs mt-1">Golden hour until {today.goldenMorningEnd}</div>
+                <div className="text-[#64748b] text-xs mt-1">{t('sun.goldenMorning')} {today.goldenMorningEnd}</div>
               </div>
               <div className="text-center">
                 <div className="flex items-center justify-center gap-2 text-[#f97316] mb-2">
                   <Sunset className="w-5 h-5" />
-                  <span className="text-sm uppercase tracking-wider font-bold">Sunset</span>
+                  <span className="text-sm uppercase tracking-wider font-bold">{t('sun.sunset')}</span>
                 </div>
                 <div className="text-4xl font-bold text-white">{today.sunset}</div>
-                <div className="text-[#64748b] text-xs mt-1">Golden hour from {today.goldenEveningStart}</div>
+                <div className="text-[#64748b] text-xs mt-1">{t('sun.goldenEvening')} {today.goldenEveningStart}</div>
               </div>
             </div>
 
             <div className="flex items-center justify-center gap-2 mt-8 glass-surface rounded-xl px-6 py-3 w-fit mx-auto">
               <Clock className="w-4 h-4 text-[#94a3b8]" />
-              <span className="text-[#94a3b8] text-sm">Daylight:</span>
+              <span className="text-[#94a3b8] text-sm">{t('sun.daylight')}:</span>
               <span className="text-white font-bold">{formatDaylight(today.daylightSeconds)}</span>
             </div>
           </div>
@@ -171,21 +172,21 @@ const SunTimes = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-[#fbbf24]">
                     <Sunrise className="w-4 h-4" />
-                    <span className="text-sm">Sunrise</span>
+                    <span className="text-sm">{t('sun.sunrise')}</span>
                   </div>
                   <span className="text-white font-bold">{day.sunrise}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-[#f97316]">
                     <Sunset className="w-4 h-4" />
-                    <span className="text-sm">Sunset</span>
+                    <span className="text-sm">{t('sun.sunset')}</span>
                   </div>
                   <span className="text-white font-bold">{day.sunset}</span>
                 </div>
                 <div className="flex items-center justify-between border-t border-white/10 pt-4">
                   <div className="flex items-center gap-2 text-[#94a3b8]">
                     <Sun className="w-4 h-4" />
-                    <span className="text-sm">Daylight</span>
+                    <span className="text-sm">{t('sun.daylight')}</span>
                   </div>
                   <span className="text-white font-bold">{formatDaylight(day.daylightSeconds)}</span>
                 </div>

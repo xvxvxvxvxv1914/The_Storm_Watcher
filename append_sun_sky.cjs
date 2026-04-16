@@ -1,0 +1,177 @@
+const fs = require('fs');
+const data = fs.readFileSync('src/contexts/LanguageContext.tsx', 'utf-8');
+
+const t = {
+  en: {
+    'sun.title': 'Sun',
+    'sun.times': 'Times',
+    'sun.sunrise': 'Sunrise',
+    'sun.sunset': 'Sunset',
+    'sun.daylight': 'Daylight',
+    'sun.goldenMorning': 'Golden hour until',
+    'sun.goldenEvening': 'Golden hour from',
+    'sky.title': 'Sky',
+    'sky.tonight': 'Tonight',
+    'sky.visibility': 'Visibility',
+    'sky.cloudCover': 'Cloud Cover',
+    'sky.auroraChance': 'Aurora Chance',
+    'sky.geomagnetic': 'Geomagnetic',
+    'sky.hourlyBreakdown': 'Hourly Breakdown',
+    'sky.clear': ' Clear',
+    'sky.partlyCloudy': ' Partly cloudy',
+    'sky.mostlyCloudy': ' Mostly cloudy',
+    'sky.overcast': ' Overcast'
+  },
+  bg: {
+    'sun.title': 'Слънце',
+    'sun.times': 'Времена',
+    'sun.sunrise': 'Изгрев',
+    'sun.sunset': 'Залез',
+    'sun.daylight': 'Светла част от деня',
+    'sun.goldenMorning': 'Златен час до',
+    'sun.goldenEvening': 'Златен час от',
+    'sky.title': 'Небе',
+    'sky.tonight': 'Тази вечер',
+    'sky.visibility': 'Видимост',
+    'sky.cloudCover': 'Облачност',
+    'sky.auroraChance': 'Шанс за сияние',
+    'sky.geomagnetic': 'Геомагнитна (Kp)',
+    'sky.hourlyBreakdown': 'Почасова прогноза',
+    'sky.clear': ' Ясно',
+    'sky.partlyCloudy': ' Предимно ясно',
+    'sky.mostlyCloudy': ' Предимно облачно',
+    'sky.overcast': ' Облачно'
+  },
+  es: {
+    'sun.title': 'Sol',
+    'sun.times': 'Horarios',
+    'sun.sunrise': 'Amanecer',
+    'sun.sunset': 'Atardecer',
+    'sun.daylight': 'Luz del día',
+    'sun.goldenMorning': 'Hora dorada hasta',
+    'sun.goldenEvening': 'Hora dorada desde',
+    'sky.title': 'Cielo',
+    'sky.tonight': 'Esta noche',
+    'sky.visibility': 'Visibilidad',
+    'sky.cloudCover': 'Cobertura de nubes',
+    'sky.auroraChance': 'Probabilidad de aurora',
+    'sky.geomagnetic': 'Geomagnético',
+    'sky.hourlyBreakdown': 'Desglose por horas',
+    'sky.clear': ' Despejado',
+    'sky.partlyCloudy': ' Parcialmente nublado',
+    'sky.mostlyCloudy': ' Mayormente nublado',
+    'sky.overcast': ' Nublado'
+  },
+  fr: {
+    'sun.title': 'Soleil',
+    'sun.times': 'Horaires',
+    'sun.sunrise': 'Lever du soleil',
+    'sun.sunset': 'Coucher du soleil',
+    'sun.daylight': 'Lumière du jour',
+    'sun.goldenMorning': 'Heure dorée jusqu\'à',
+    'sun.goldenEvening': 'Heure dorée à partir de',
+    'sky.title': 'Ciel',
+    'sky.tonight': 'Ce soir',
+    'sky.visibility': 'Visibilité',
+    'sky.cloudCover': 'Couverture nuageuse',
+    'sky.auroraChance': 'Chance d\'aurore',
+    'sky.geomagnetic': 'Géomagnétique',
+    'sky.hourlyBreakdown': 'Détail horaire',
+    'sky.clear': ' Dégagé',
+    'sky.partlyCloudy': ' Partiellement nuageux',
+    'sky.mostlyCloudy': ' Plutôt nuageux',
+    'sky.overcast': ' Couvert'
+  },
+  de: {
+    'sun.title': 'Sonne',
+    'sun.times': 'Zeiten',
+    'sun.sunrise': 'Sonnenaufgang',
+    'sun.sunset': 'Sonnenuntergang',
+    'sun.daylight': 'Tageslicht',
+    'sun.goldenMorning': 'Goldene Stunde bis',
+    'sun.goldenEvening': 'Goldene Stunde ab',
+    'sky.title': 'Himmel',
+    'sky.tonight': 'Heute Abend',
+    'sky.visibility': 'Sichtweite',
+    'sky.cloudCover': 'Wolkendecke',
+    'sky.auroraChance': 'Polarlicht-Chance',
+    'sky.geomagnetic': 'Geomagnetisch',
+    'sky.hourlyBreakdown': 'Stündliche Übersicht',
+    'sky.clear': ' Klar',
+    'sky.partlyCloudy': ' Leicht bewölkt',
+    'sky.mostlyCloudy': ' Überwiegend bewölkt',
+    'sky.overcast': ' Bedeckt'
+  },
+  ru: {
+    'sun.title': 'Солнце',
+    'sun.times': 'Время',
+    'sun.sunrise': 'Восход',
+    'sun.sunset': 'Закат',
+    'sun.daylight': 'Световой день',
+    'sun.goldenMorning': 'Золотой час до',
+    'sun.goldenEvening': 'Золотой час с',
+    'sky.title': 'Небо',
+    'sky.tonight': 'Сегодня вечером',
+    'sky.visibility': 'Видимость',
+    'sky.cloudCover': 'Облачность',
+    'sky.auroraChance': 'Шанс Авроры',
+    'sky.geomagnetic': 'Геомагнитная',
+    'sky.hourlyBreakdown': 'Почасовой прогноз',
+    'sky.clear': ' Ясно',
+    'sky.partlyCloudy': ' Переменная облачность',
+    'sky.mostlyCloudy': ' В основном облачно',
+    'sky.overcast': ' Пасмурно'
+  },
+  zh: {
+    'sun.title': '太阳',
+    'sun.times': '时间',
+    'sun.sunrise': '日出',
+    'sun.sunset': '日落',
+    'sun.daylight': '白昼',
+    'sun.goldenMorning': '黄金时刻至',
+    'sun.goldenEvening': '黄金时刻始于',
+    'sky.title': '天空',
+    'sky.tonight': '今晚',
+    'sky.visibility': '能见度',
+    'sky.cloudCover': '云量',
+    'sky.auroraChance': '极光几率',
+    'sky.geomagnetic': '地磁',
+    'sky.hourlyBreakdown': '每小时明细',
+    'sky.clear': ' 晴朗',
+    'sky.partlyCloudy': ' 局部多云',
+    'sky.mostlyCloudy': ' 大部多云',
+    'sky.overcast': ' 阴天'
+  },
+  ja: {
+    'sun.title': '太陽',
+    'sun.times': '時間',
+    'sun.sunrise': '日の出',
+    'sun.sunset': '日の入り',
+    'sun.daylight': '日照時間',
+    'sun.goldenMorning': 'ゴールデンアワー (朝) まで',
+    'sun.goldenEvening': 'ゴールデンアワー (夕) から',
+    'sky.title': '空',
+    'sky.tonight': '今夜',
+    'sky.visibility': '視程',
+    'sky.cloudCover': '雲量',
+    'sky.auroraChance': 'オーロラ発生確率',
+    'sky.geomagnetic': '地磁気',
+    'sky.hourlyBreakdown': '時間別詳細',
+    'sky.clear': ' 快晴',
+    'sky.partlyCloudy': ' 一部曇り',
+    'sky.mostlyCloudy': ' 概ね曇り',
+    'sky.overcast': ' 本曇り'
+  }
+};
+
+let updatedData = data;
+for (const [lang, trans] of Object.entries(t)) {
+  const marker = `${lang}: {`;
+  const insertStr = Object.entries(trans)
+    .map(([k, v]) => `\n    '${k}': '${v}',`)
+    .join('');
+  updatedData = updatedData.replace(marker, marker + insertStr);
+}
+
+fs.writeFileSync('src/contexts/LanguageContext.tsx', updatedData);
+console.log('LanguageContext populated with SC/Sky');

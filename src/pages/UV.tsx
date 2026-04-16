@@ -4,7 +4,10 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { Sun, MapPin, AlertTriangle } from 'lucide-react';
 import { getUvIndex, getUvLevel, UvData } from '../services/uvApi';
 
+import { useLanguage } from '../contexts/LanguageContext';
+
 const UV = () => {
+  const { t } = useLanguage();
   const [uvData, setUvData] = useState<UvData | null>(null);
   const [loading, setLoading] = useState(true);
   const [locationError, setLocationError] = useState(false);
@@ -42,7 +45,7 @@ const UV = () => {
         try {
           const data = await getUvIndex(42.7, 23.3);
           setUvData(data);
-          setLocationName('Sofia, Bulgaria (default)');
+          setLocationName(t('uv.defaultLocation') || 'Sofia, Bulgaria (default)');
         } catch {
           setLocationError(true);
         } finally {
@@ -66,7 +69,7 @@ const UV = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <AlertTriangle className="w-12 h-12 text-[#f97316] mx-auto mb-4" />
-          <p className="text-white text-lg">Could not load UV data.</p>
+          <p className="text-white text-lg">{t('uv.errorLoad')}</p>
         </div>
       </div>
     );
@@ -95,7 +98,7 @@ const UV = () => {
 
         {/* Current UV */}
         <div className="glass-surface rounded-3xl p-10 mb-8 text-center border border-white/10">
-          <div className="text-sm text-[#64748b] uppercase tracking-widest mb-3 font-semibold">Current UV Index</div>
+          <div className="text-sm text-[#64748b] uppercase tracking-widest mb-3 font-semibold">{t('uv.currentUvIndex')}</div>
 
           <div
             className="text-[120px] sm:text-[160px] font-bold leading-none mb-4"
@@ -106,20 +109,20 @@ const UV = () => {
 
           <div className={`inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r ${level.bg} mb-6`}>
             <Sun className="w-5 h-5 text-white" />
-            <span className="text-white font-bold text-lg uppercase tracking-wider">{level.label}</span>
+            <span className="text-white font-bold text-lg uppercase tracking-wider">{t(level.labelKey)}</span>
           </div>
 
-          <p className="text-[#94a3b8] max-w-md mx-auto leading-relaxed">{level.advice}</p>
+          <p className="text-[#94a3b8] max-w-md mx-auto leading-relaxed">{t(level.adviceKey)}</p>
         </div>
 
         {/* Today's max */}
         <div className="glass-surface rounded-2xl p-6 mb-8 flex items-center justify-between border border-white/10">
           <div>
-            <div className="text-sm text-[#64748b] uppercase tracking-widest mb-1">Today's Maximum</div>
+            <div className="text-sm text-[#64748b] uppercase tracking-widest mb-1">{t('uv.todaysMax')}</div>
             <div className="text-4xl font-bold text-white">{uvData.max.toFixed(1)}</div>
           </div>
           <div className={`px-5 py-2 rounded-full bg-gradient-to-r ${maxLevel.bg}`}>
-            <span className="text-white font-bold uppercase tracking-wider">{maxLevel.label}</span>
+            <span className="text-white font-bold uppercase tracking-wider">{t(maxLevel.labelKey)}</span>
           </div>
         </div>
 
@@ -127,7 +130,7 @@ const UV = () => {
         <div className="glass-surface rounded-2xl p-8 mb-8 border border-white/10">
           <h3 className="text-xl font-bold text-white mb-6 uppercase tracking-wide flex items-center gap-3">
             <Sun className="w-5 h-5 text-[#fbbf24]" />
-            UV Index — Today
+            {t('uv.indexToday')}
           </h3>
           <ResponsiveContainer width="100%" height={280}>
             <AreaChart data={uvData.hourly}>
@@ -144,7 +147,7 @@ const UV = () => {
                 contentStyle={{ backgroundColor: 'rgba(10,0,21,0.95)', border: '1px solid rgba(251,191,36,0.3)', borderRadius: '12px', padding: '12px' }}
                 labelStyle={{ color: '#fbbf24', fontWeight: 'bold' }}
                 itemStyle={{ color: '#fff' }}
-                formatter={(v: number) => [v, 'UV Index']}
+                formatter={(v: number) => [v, t('uv.chartTooltip')]}
               />
               <ReferenceLine y={3} stroke="#10b981" strokeDasharray="4 4" label={{ value: 'Low 3', fill: '#10b981', fontSize: 11 }} />
               <ReferenceLine y={6} stroke="#eab308" strokeDasharray="4 4" label={{ value: 'Moderate 6', fill: '#eab308', fontSize: 11 }} />
@@ -155,9 +158,9 @@ const UV = () => {
           </ResponsiveContainer>
         </div>
 
-        {/* UV Scale */}
+        {/* {t('uv.scale')} */}
         <div className="glass-surface rounded-2xl p-8 border border-white/10">
-          <h3 className="text-lg font-bold text-white mb-5 uppercase tracking-wide">UV Scale</h3>
+          <h3 className="text-lg font-bold text-white mb-5 uppercase tracking-wide">{t('uv.scale')}</h3>
           <div className="space-y-3">
             {[
               { range: '0–2', label: 'Low', color: '#10b981', advice: 'No protection needed.' },

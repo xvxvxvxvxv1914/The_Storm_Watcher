@@ -46,10 +46,10 @@ const Navigation = () => {
   ];
 
   const moreLinks = [
-    { to: '/uv', label: 'UV' },
-    { to: '/sun', label: 'Sun' },
-    { to: '/sky', label: 'Sky Tonight' },
-    { to: '/iss', label: 'ISS' },
+    { to: '/uv', label: t('nav.uv') || 'UV' },
+    { to: '/sun', label: t('nav.sun') || 'Sun' },
+    { to: '/sky', label: t('nav.sky') || 'Sky Tonight' },
+    { to: '/iss', label: t('nav.iss') || 'ISS' },
   ];
 
   const navLinks = [...mainLinks, ...moreLinks];

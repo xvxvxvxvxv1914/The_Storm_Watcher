@@ -3,8 +3,10 @@ import { useEffect, useRef, useState } from 'react';
 import { MapPin, Clock, Eye, Satellite } from 'lucide-react';
 import Globe from 'react-globe.gl';
 import { getIssPosition, getIssPasses, IssPosition, IssPass } from '../services/issApi';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const ISS = () => {
+  const { t } = useLanguage();
   const globeRef = useRef<unknown>(null);
   const [position, setPosition] = useState<IssPosition | null>(null);
   const [passes, setPasses] = useState<IssPass[]>([]);
@@ -101,7 +103,7 @@ const ISS = () => {
           <h1 className="text-5xl font-bold text-white mb-2 uppercase tracking-tight">
             <span className="gradient-solar">ISS</span> Tracker
           </h1>
-          <p className="text-[#94a3b8] text-sm">International Space Station — live position & pass predictions</p>
+          <p className="text-[#94a3b8] text-sm">{t('iss.subtitle')}</p>
           {locationName && (
             <div className="flex items-center gap-2 text-[#94a3b8] mt-2">
               <MapPin className="w-4 h-4" />
@@ -114,8 +116,8 @@ const ISS = () => {
         <div className="glass-surface rounded-3xl overflow-hidden border border-white/10 mb-8 flex flex-col items-center">
           <div className="flex items-center gap-3 w-full px-8 pt-6 pb-2">
             <div className="w-3 h-3 rounded-full bg-[#10b981] animate-pulse" />
-            <h2 className="text-xl font-bold text-white uppercase tracking-wide">Live Position</h2>
-            <span className="text-[#64748b] text-xs">updates every 5s</span>
+            <h2 className="text-xl font-bold text-white uppercase tracking-wide">{t('iss.livePosition')}</h2>
+            <span className="text-[#64748b] text-xs">{t('iss.updates5s')}</span>
           </div>
 
           {loadingPos ? (
@@ -146,19 +148,19 @@ const ISS = () => {
               {position && (
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full px-8 pb-8">
                   <div className="text-center">
-                    <div className="text-[#64748b] text-xs uppercase tracking-wider mb-1">Latitude</div>
+                    <div className="text-[#64748b] text-xs uppercase tracking-wider mb-1">{t('iss.latitude')}</div>
                     <div className="text-xl font-bold text-white">{position.latitude.toFixed(2)}°</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-[#64748b] text-xs uppercase tracking-wider mb-1">Longitude</div>
+                    <div className="text-[#64748b] text-xs uppercase tracking-wider mb-1">{t('iss.longitude')}</div>
                     <div className="text-xl font-bold text-white">{position.longitude.toFixed(2)}°</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-[#64748b] text-xs uppercase tracking-wider mb-1">Altitude</div>
+                    <div className="text-[#64748b] text-xs uppercase tracking-wider mb-1">{t('iss.altitude')}</div>
                     <div className="text-xl font-bold text-white">{position.altitude.toFixed(0)} km</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-[#64748b] text-xs uppercase tracking-wider mb-1">Speed</div>
+                    <div className="text-[#64748b] text-xs uppercase tracking-wider mb-1">{t('iss.speed')}</div>
                     <div className="text-xl font-bold text-white">{(position.velocity / 3600).toFixed(2)} km/s</div>
                   </div>
                 </div>
@@ -178,14 +180,14 @@ const ISS = () => {
             <Satellite className="w-5 h-5 text-[#f97316]" />
             Upcoming Passes
           </h2>
-          <p className="text-[#64748b] text-sm mb-6">Next 7 days · minimum elevation 10°</p>
+          <p className="text-[#64748b] text-sm mb-6">{t('iss.passesSubtitle')}</p>
 
           {loadingPasses ? (
             <div className="flex justify-center py-8">
               <div className="w-10 h-10 border-4 border-[#f97316]/20 border-t-[#f97316] rounded-full animate-spin" />
             </div>
           ) : passes.length === 0 ? (
-            <div className="text-center py-8 text-[#94a3b8]">No visible passes in the next 7 days.</div>
+            <div className="text-center py-8 text-[#94a3b8]">{t('iss.noPasses')}</div>
           ) : (
             <div className="space-y-4">
               {passes.map((pass, i) => (
@@ -194,7 +196,7 @@ const ISS = () => {
                 }`}>
                   <div className="flex items-center gap-4">
                     {i === 0 && (
-                      <span className="px-2 py-1 rounded-full text-xs font-bold bg-[#f97316]/20 text-[#f97316]">Next</span>
+                      <span className="px-2 py-1 rounded-full text-xs font-bold bg-[#f97316]/20 text-[#f97316]">{t('iss.nextPassTitle')}</span>
                     )}
                     <div>
                       <div className="text-white font-semibold">{pass.date}</div>
@@ -222,8 +224,8 @@ const ISS = () => {
 
           <div className="mt-6 flex gap-4 text-xs text-[#64748b]">
             <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#10b981] inline-block" /> Excellent (60°+)</span>
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#fbbf24] inline-block" /> Good (30°+)</span>
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#f97316] inline-block" /> Low (10°+)</span>
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#fbbf24] inline-block" />{t('iss.good')}</span>
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#f97316] inline-block" />{t('iss.low')}</span>
           </div>
         </div>
 
