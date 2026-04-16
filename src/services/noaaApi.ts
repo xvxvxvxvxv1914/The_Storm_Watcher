@@ -95,6 +95,39 @@ export const getKpForecast = async (): Promise<KpIndexData[]> => {
   }
 };
 
+export interface AuroraOvationPoint {
+  lng: number;
+  lat: number;
+  intensity: number;
+}
+
+export const getAuroraModel = async (): Promise<AuroraOvationPoint[]> => {
+  try {
+    const response = await axios.get(`${NOAA_BASE_URL}/json/ovation_aurora_latest.json`);
+    if (response.data && response.data.coordinates) {
+      // Only keep points with intensity > 0 to optimize Globe rendering
+      return response.data.coordinates
+        .filter((c: [number, number, number]) => c[2] > 0)
+        .map((c: [number, number, number]) => {
+          // Normalize longitude from 0-359 to -180 to 180 for react-globe.gl
+          let lng = c[0];
+          if (lng > 180) {
+            lng = lng - 360;
+          }
+          return {
+            lng: lng,
+            lat: c[1],
+            intensity: c[2],
+          };
+        });
+    }
+    return [];
+  } catch (error) {
+    console.error('Error fetching aurora ovation model:', error);
+    return [];
+  }
+};
+
 export const getKpHistory3Day = async (): Promise<{ time_tag: string; Kp: number }[]> => {
   try {
     const response = await axios.get(`${NOAA_BASE_URL}/products/noaa-planetary-k-index.json`);

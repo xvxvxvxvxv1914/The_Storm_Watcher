@@ -13,6 +13,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.57.4",
     "@types/leaflet": "^1.9.21",
+    "@types/three": "^0.183.1",
     "axios": "^1.14.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.344.0",
@@ -23,7 +24,8 @@
     "react-leaflet": "^4.2.1",
     "react-router-dom": "^7.14.0",
     "recharts": "^3.8.1",
-    "satellite.js": "^4.1.4"
+    "satellite.js": "^4.1.4",
+    "three": "^0.184.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",

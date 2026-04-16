@@ -1,12 +1,93 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { MapPin, Eye, Sparkles } from 'lucide-react';
-import { getKpIndex, getKpGradientStyle } from '../services/noaaApi';
+import Globe from 'react-globe.gl';
+import * as THREE from 'three';
+import { getKpIndex, getKpGradientStyle, getAuroraModel, AuroraOvationPoint } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Aurora = () => {
   const { t } = useLanguage();
   const [kpValue, setKpValue] = useState<number>(0);
-  const [imageKey, setImageKey] = useState(Date.now());
+    const [auroraData, setAuroraData] = useState<AuroraOvationPoint[]>([]);
+  const [isGlobeLoading, setIsGlobeLoading] = useState(true);
+  const globeRef = useRef<unknown>(null);
+
+  useEffect(() => {
+    const fetchAuroraModel = async () => {
+      setIsGlobeLoading(true);
+      const points = await getAuroraModel();
+      setAuroraData(points);
+      setIsGlobeLoading(false);
+    };
+    fetchAuroraModel();
+    const interval = setInterval(fetchAuroraModel, 300000); // 5 mins
+    return () => clearInterval(interval);
+  }, []);
+
+  
+
+  useEffect(() => {
+    if (!globeRef.current) return;
+    
+    // Time and date setup
+    const now = new Date();
+    const D = now.getTime() / 86400000 + 2440587.5 - 2451545.0; // Days since J2000
+    
+    // Solar position approximation (accurate to ~1 deg)
+    const g = (357.529 + 0.98560028 * D) % 360;
+    const q = (280.459 + 0.98564736 * D) % 360;
+    const L = (q + 1.915 * Math.sin(g * Math.PI / 180) + 0.020 * Math.sin(2 * g * Math.PI / 180)) % 360;
+    const e = 23.439 - 0.00000036 * D;
+    
+    const ra = Math.atan2(Math.cos(e * Math.PI/180) * Math.sin(L * Math.PI/180), Math.cos(L * Math.PI/180)) * 180 / Math.PI;
+    const decl = Math.asin(Math.sin(e * Math.PI/180) * Math.sin(L * Math.PI/180)) * 180 / Math.PI;
+    const gmst = (18.697374558 + 24.06570982441908 * D) % 24;
+    
+    let lng = ra - (gmst * 15);
+    lng = (lng + 540) % 360 - 180;
+    
+    // Convert to globe coordinate space (Y up, X right, Z front)
+    const latRad = decl * Math.PI / 180;
+    const lngRad = lng * Math.PI / 180;
+    
+    setTimeout(() => {
+      try {
+        if (!globeRef.current) return;
+        const scene = typeof globeRef.current.scene === 'function' ? globeRef.current.scene() : null;
+        if (!scene) return;
+        
+        // Remove existing standard lights
+          const lightsToRemove = scene.children.filter((c: THREE.Light | THREE.Object3D) => typeof c.type === 'string' && c.type.includes('Light'));
+          const camera = typeof globeRef.current.camera === 'function' ? globeRef.current.camera() : null;
+          if (camera) {
+             const camLights = camera.children.filter((c: THREE.Light | THREE.Object3D) => typeof c.type === 'string' && c.type.includes('Light'));
+        }
+        lightsToRemove.forEach((l: THREE.Light | THREE.Object3D) => scene.remove(l));
+        
+        // Add minimal ambient light so the night side isn't 100% pitch black
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.015);
+        scene.add(ambientLight);
+        
+        // Add the Sun
+        const sunLight = new THREE.DirectionalLight(0xffffff, 4.0); // Bright, high-contrast sunlight
+        sunLight.position.set(
+          Math.cos(latRad) * Math.sin(lngRad) * 1000,
+          Math.sin(latRad) * 1000,
+          Math.cos(latRad) * Math.cos(lngRad) * 1000
+        );
+        scene.add(sunLight);
+      } catch (err) {
+        console.error("Failed to inject realistic lighting", err);
+      }
+    }, 1000); 
+  }, [auroraData]);
+
+  useEffect(() => {
+    // Initial zoom for globe
+    if (globeRef.current) {
+      globeRef.current.pointOfView({ lat: 90, lng: 0, altitude: 2 }, 1000);
+    }
+  }, [auroraData]);
 
   useEffect(() => {
     const fetchKp = async () => {
@@ -165,53 +246,53 @@ const Aurora = () => {
           <p className="text-[#475569] text-xs mt-4">* Приблизителна вероятност при текущото Kp = {kpValue.toFixed(1)} и ясно небе</p>
         </div>
 
-        <div className="glass-surface rounded-2xl p-8 mb-8">
-          <h3 className="text-2xl font-bold text-white mb-6 uppercase tracking-wide">
-            {t('aurora.oval')}
-          </h3>
-          <div className="relative">
-            <img
-              key={imageKey}
-              src={`https://services.swpc.noaa.gov/images/animations/ovation/north/latest.jpg?t=${imageKey}`}
-              alt="Aurora Oval"
-              className="w-full rounded-xl"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.style.display = 'none';
-                target.nextElementSibling?.classList.remove('hidden');
-              }}
-            />
-            <div className="hidden h-96 flex items-center justify-center text-[#94a3b8] bg-[#0a0015] rounded-xl">
-              Aurora oval data temporarily unavailable
-            </div>
+        
+        <div className="glass-surface rounded-3xl overflow-hidden border border-white/10 mb-8 flex flex-col items-center w-full">
+          <div className="flex items-center justify-between w-full p-4 border-b border-white/5">
+            <h3 className="text-xl font-bold text-white uppercase tracking-wide">
+              {t('aurora.oval')}
+            </h3>
+            {isGlobeLoading && <div className="w-5 h-5 border-2 border-[#10b981]/20 border-t-[#10b981] rounded-full animate-spin" />}
           </div>
-          <p className="text-[#94a3b8] text-sm mt-4 leading-relaxed">
-            {t('aurora.ovalDesc')}
-          </p>
-        </div>
-
-        <div className="glass-surface rounded-2xl p-8 mb-8">
-          <h3 className="text-2xl font-bold text-white mb-6 uppercase tracking-wide">
-            {t('aurora.forecast')}
-          </h3>
-          <div className="relative">
-            <img
-              src={`https://services.swpc.noaa.gov/images/aurora-forecast-northern-hemisphere.jpg?t=${imageKey}`}
-              alt="Aurora Forecast"
-              className="w-full rounded-xl"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.style.display = 'none';
-                target.nextElementSibling?.classList.remove('hidden');
-              }}
-            />
-            <div className="hidden h-96 flex items-center justify-center text-[#94a3b8] bg-[#0a0015] rounded-xl">
-              Aurora forecast data temporarily unavailable
-            </div>
+          
+          <div className="relative w-full flex justify-center bg-[#050510] min-h-[500px] cursor-grab active:cursor-grabbing">
+            {isGlobeLoading && auroraData.length === 0 ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <div className="w-12 h-12 border-4 border-[#10b981]/20 border-t-[#10b981] rounded-full animate-spin mb-4" />
+                <div className="text-[#10b981] font-bold tracking-widest text-sm uppercase animate-pulse">Loading Aurora Model</div>
+              </div>
+            ) : (
+              <Globe
+                ref={globeRef}
+                width={800}
+                height={500}
+                backgroundColor="rgba(0,0,0,0)"
+                globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
+                bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
+                hexBinPointsData={auroraData}
+                hexBinPointWeight="intensity"
+                hexBinResolution={4}
+                hexMargin={0.2}
+                hexBinPointColor={(d: { sumWeight: number; points: AuroraOvationPoint[] }) => {
+                  const avg = d.sumWeight / d.points.length;
+                  const o = Math.max(0.15, Math.min(0.95, avg / 60));
+                  // Aurora colors: bright green base, cyan middle, purple/pink top
+                  if (avg > 75) return "rgba(244, 63, 94, " + o + ")";   // Pinkish-red (Extreme)
+                  if (avg > 50) return "rgba(168, 85, 247, " + o + ")";  // Purple (High)
+                  if (avg > 25) return "rgba(45, 212, 191, " + o + ")";  // Cyan (Moderate)
+                  return "rgba(34, 197, 94, " + o + ")";                 // Bright Green (Low/Base)
+                }}
+                hexAltitude={(d: { sumWeight: number; points: AuroraOvationPoint[] }) => Math.max(0.01, (d.sumWeight / d.points.length) / 100)}
+                hexTransitionDuration={1000}
+              />
+            )}
           </div>
-          <p className="text-[#94a3b8] text-sm mt-4 leading-relaxed">
-            {t('aurora.forecastDesc')}
-          </p>
+          
+          <div className="w-full px-8 py-6 border-t border-white/5 bg-black/20">
+            <p className="text-[#94a3b8] text-sm leading-relaxed">
+              {t('aurora.ovalDesc')} · Use your mouse to rotate and zoom the globe. Bright green indicates the base of the aurora, shifting into cyan, purple, and vibrant pink at the highest active intensities.
+            </p>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

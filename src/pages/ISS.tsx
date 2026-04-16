@@ -5,7 +5,7 @@ import Globe from 'react-globe.gl';
 import { getIssPosition, getIssPasses, IssPosition, IssPass } from '../services/issApi';
 
 const ISS = () => {
-  const globeRef = useRef<any>(null);
+  const globeRef = useRef<unknown>(null);
   const [position, setPosition] = useState<IssPosition | null>(null);
   const [passes, setPasses] = useState<IssPass[]>([]);
   const [loadingPos, setLoadingPos] = useState(true);
