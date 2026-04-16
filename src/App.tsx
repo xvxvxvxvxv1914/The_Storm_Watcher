@@ -1,18 +1,27 @@
+import { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
-import Home from './pages/Home';
-import Dashboard from './pages/Dashboard';
-import Forecast from './pages/Forecast';
-import Aurora from './pages/Aurora';
-import Alerts from './pages/Alerts';
-import Mood from './pages/Mood';
-import Auth from './pages/Auth';
-import UV from './pages/UV';
-import SunTimes from './pages/SunTimes';
-import SkyVisibility from './pages/SkyVisibility';
-import ISS from './pages/ISS';
+
+const Home = lazy(() => import('./pages/Home'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Forecast = lazy(() => import('./pages/Forecast'));
+const Aurora = lazy(() => import('./pages/Aurora'));
+const Alerts = lazy(() => import('./pages/Alerts'));
+const Mood = lazy(() => import('./pages/Mood'));
+const Auth = lazy(() => import('./pages/Auth'));
+const UV = lazy(() => import('./pages/UV'));
+const SunTimes = lazy(() => import('./pages/SunTimes'));
+const SkyVisibility = lazy(() => import('./pages/SkyVisibility'));
+const ISS = lazy(() => import('./pages/ISS'));
+
+const LoadingFallback = () => (
+  <div className="flex flex-col items-center justify-center min-h-[calc(100vh-16rem)] gap-4">
+    <div className="w-12 h-12 border-4 border-[#f97316]/20 border-t-[#f97316] rounded-full animate-spin"></div>
+    <div className="text-[#f97316] font-bold tracking-widest text-sm uppercase animate-pulse">Loading</div>
+  </div>
+);
 
 function AppRoutes() {
   const { user } = useAuth();
@@ -20,19 +29,21 @@ function AppRoutes() {
   return (
     <div className="min-h-screen bg-[#0a0a1a]">
       <Navigation />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/auth" element={user && user.email_confirmed_at ? <Navigate to="/dashboard" replace /> : <Auth />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/forecast" element={<Forecast />} />
-        <Route path="/aurora" element={<Aurora />} />
-        <Route path="/alerts" element={<Alerts />} />
-        <Route path="/mood" element={<Mood />} />
-        <Route path="/uv" element={<UV />} />
-        <Route path="/sun" element={<SunTimes />} />
-        <Route path="/sky" element={<SkyVisibility />} />
-        <Route path="/iss" element={<ISS />} />
-      </Routes>
+      <Suspense fallback={<LoadingFallback />}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/auth" element={user && user.email_confirmed_at ? <Navigate to="/dashboard" replace /> : <Auth />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/forecast" element={<Forecast />} />
+          <Route path="/aurora" element={<Aurora />} />
+          <Route path="/alerts" element={<Alerts />} />
+          <Route path="/mood" element={<Mood />} />
+          <Route path="/uv" element={<UV />} />
+          <Route path="/sun" element={<SunTimes />} />
+          <Route path="/sky" element={<SkyVisibility />} />
+          <Route path="/iss" element={<ISS />} />
+        </Routes>
+      </Suspense>
       <Footer />
     </div>
   );
