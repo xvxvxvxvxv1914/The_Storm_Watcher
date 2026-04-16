@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Calendar, TrendingUp, AlertCircle, Sun } from 'lucide-react';
 import { getKpForecast, getStormStatus, getKpGradientStyle } from '../services/noaaApi';
@@ -6,7 +6,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 
 const Forecast = () => {
   const { t } = useLanguage();
-  const [forecastData, setForecastData] = useState<unknown[]>([]);
+  const [forecastData, setForecastData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [, setLastUpdated] = useState<Date>(new Date());
 

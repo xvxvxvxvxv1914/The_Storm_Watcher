@@ -48,7 +48,8 @@ const UV = () => {
         } finally {
           setLoading(false);
         }
-      }
+      },
+      { timeout: 5000 }
     );
   }, []);
 
