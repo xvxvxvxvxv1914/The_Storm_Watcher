@@ -19,7 +19,8 @@ const UV = lazy(() => import('./pages/UV'));
 const SunTimes = lazy(() => import('./pages/SunTimes'));
 const SkyVisibility = lazy(() => import('./pages/SkyVisibility'));
 const ISS = lazy(() => import('./pages/ISS'));
-const Pricing = lazy(() => import('./pages/Pricing'));
+// TODO: Remove when Stripe payments are live — pricing page hidden until payment system is ready
+// const Pricing = lazy(() => import('./pages/Pricing'));
 
 const LoadingFallback = () => (
   <div className="flex flex-col items-center justify-center min-h-[calc(100vh-16rem)] gap-4">
@@ -48,7 +49,9 @@ function AppRoutes() {
           <Route path="/sun" element={<SunTimes />} />
           <Route path="/sky" element={<SkyVisibility />} />
           <Route path="/iss" element={<ISS />} />
-          <Route path="/pricing" element={<Pricing />} />
+          {/* TODO: Remove when Stripe payments are live */}
+          <Route path="/pricing" element={<Navigate to="/" replace />} />
+          {/* <Route path="/pricing" element={<Pricing />} /> */}
         </Routes>
       </Suspense>
       <Footer />
