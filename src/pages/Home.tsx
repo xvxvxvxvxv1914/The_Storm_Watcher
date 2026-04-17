@@ -282,10 +282,10 @@ const Home = () => {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="glass-surface rounded-3xl p-10 border border-[#f97316]/10 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3 uppercase tracking-wide">
-            Storm Score Index
+            {t('home.stormScore.title')}
           </h2>
           <p className="text-[#94a3b8] max-w-xl mx-auto mb-10 leading-relaxed">
-            A single number from 0 to 100 showing how active the geomagnetic situation is right now. No charts, no jargon — just one number that tells you everything.
+            {t('home.stormScore.desc')}
           </p>
 
           {loading ? (
@@ -307,7 +307,7 @@ const Home = () => {
                     title="Share Storm Score"
                   >
                     <Share2 className="w-4 h-4" />
-                    Share
+                    {t('home.stormScore.share')}
                   </button>
                   {shareOpen && (() => {
                     const score = kpValue !== null ? Math.round((kpValue / 9) * 100) : 0;
@@ -323,7 +323,7 @@ const Home = () => {
                           className="flex items-center gap-3 px-4 py-2 text-sm text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors"
                         >
                           <Twitter className="w-4 h-4 text-[#1d9bf0]" />
-                          Share on X/Twitter
+                          {t('home.stormScore.shareX')}
                         </a>
                         <a
                           href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://thestormwatcher.com')}&quote=${encodeURIComponent(text)}`}
@@ -333,7 +333,7 @@ const Home = () => {
                           className="flex items-center gap-3 px-4 py-2 text-sm text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors"
                         >
                           <Globe className="w-4 h-4 text-[#1877f2]" />
-                          Share on Facebook
+                          {t('home.stormScore.shareFb')}
                         </a>
                         <button
                           onClick={() => {
@@ -344,7 +344,7 @@ const Home = () => {
                           className="w-full flex items-center gap-3 px-4 py-2 text-sm text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors"
                         >
                           <Copy className="w-4 h-4 text-[#10b981]" />
-                          {copied ? 'Copied!' : 'Copy link'}
+                          {copied ? t('home.stormScore.copied') : t('home.stormScore.copy')}
                         </button>
                       </div>
                     );
@@ -355,10 +355,10 @@ const Home = () => {
               {/* Progress bar */}
               <div className="w-full max-w-lg">
                 <div className="flex justify-between text-xs text-[#64748b] uppercase tracking-widest mb-2">
-                  <span>Quiet</span>
-                  <span>Unsettled</span>
-                  <span>Storm</span>
-                  <span>Severe</span>
+                  <span>{t('home.stormScore.quiet')}</span>
+                  <span>{t('home.stormScore.unsettled')}</span>
+                  <span>{t('home.stormScore.storm')}</span>
+                  <span>{t('home.stormScore.severe')}</span>
                 </div>
                 <div className="h-3 rounded-full bg-white/5 overflow-hidden">
                   <div
