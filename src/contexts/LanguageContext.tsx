@@ -248,6 +248,7 @@ const translations: Record<Language, Record<string, string>> = {
 
     // ISS Tracker
     'iss.subtitle': 'International Space Station — live position & pass predictions',
+    'iss.upcomingPasses': 'Upcoming Passes',
     'iss.livePosition': 'Live Position',
     'iss.updates5s': 'updates every 5s',
     'iss.latitude': 'Latitude',
@@ -259,6 +260,9 @@ const translations: Record<Language, Record<string, string>> = {
     'iss.excellent': ' Excellent (60+)',
     'iss.good': ' Good (30°+)',
     'iss.low': ' Low (10°+)',
+    'iss.excellentShort': 'Excellent',
+    'iss.goodShort': 'Good',
+    'iss.lowShort': 'Low',
     'iss.yourLocation': 'Your location',
     'iss.nextPassTitle': 'Next',
 
@@ -577,6 +581,7 @@ const translations: Record<Language, Record<string, string>> = {
 
     // ISS Tracker
     'iss.subtitle': 'Международна космическа станция — позиция на живо и прогноза за преминавания',
+    'iss.upcomingPasses': 'Следващи преминавания',
     'iss.livePosition': 'Текуща позиция',
     'iss.updates5s': 'обновява се на 5 сек',
     'iss.latitude': 'Ширина',
@@ -588,6 +593,9 @@ const translations: Record<Language, Record<string, string>> = {
     'iss.excellent': ' Отлично (60°+)',
     'iss.good': ' Добро (30°+)',
     'iss.low': ' Ниско (10°+)',
+    'iss.excellentShort': 'Отлично',
+    'iss.goodShort': 'Добро',
+    'iss.lowShort': 'Ниско',
     'iss.yourLocation': 'Къде се намирате',
     'iss.nextPassTitle': 'Следващо',
 

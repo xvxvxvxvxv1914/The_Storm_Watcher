@@ -72,9 +72,9 @@ const ISS = () => {
   };
 
   const getElevationLabel = (el: number) => {
-    if (el >= 60) return 'Excellent';
-    if (el >= 30) return 'Good';
-    return 'Low';
+    if (el >= 60) return t('iss.excellentShort') || 'Excellent';
+    if (el >= 30) return t('iss.goodShort') || 'Good';
+    return t('iss.lowShort') || 'Low';
   };
 
   // Points for globe
@@ -179,7 +179,7 @@ const ISS = () => {
         <div className="glass-surface rounded-2xl p-8 border border-white/10">
           <h2 className="text-xl font-bold text-white mb-2 uppercase tracking-wide flex items-center gap-3">
             <Satellite className="w-5 h-5 text-[#f97316]" />
-            Upcoming Passes
+            {t('iss.upcomingPasses')}
           </h2>
           <p className="text-[#64748b] text-sm mb-6">{t('iss.passesSubtitle')}</p>
 
@@ -224,7 +224,7 @@ const ISS = () => {
           )}
 
           <div className="mt-6 flex gap-4 text-xs text-[#64748b]">
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#10b981] inline-block" /> Excellent (60°+)</span>
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#10b981] inline-block" />{t('iss.excellent')}</span>
             <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#fbbf24] inline-block" />{t('iss.good')}</span>
             <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#f97316] inline-block" />{t('iss.low')}</span>
           </div>
