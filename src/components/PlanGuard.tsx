@@ -14,8 +14,10 @@ interface PlanGuardProps {
 const PlanGuard = ({ requiredPlan, children }: PlanGuardProps) => {
   const { user, profile } = useAuth();
 
-  const userPlan: Plan = profile?.plan ?? 'free';
-  const hasAccess = PLAN_RANK[userPlan] >= PLAN_RANK[requiredPlan];
+  // TODO: Remove when Stripe payments are live
+  const hasAccess = true; // Temporarily unlocked — all features free until payments are ready
+  // const userPlan: Plan = profile?.plan ?? 'free';
+  // const hasAccess = PLAN_RANK[userPlan] >= PLAN_RANK[requiredPlan];
 
   if (hasAccess) return <>{children}</>;
 
