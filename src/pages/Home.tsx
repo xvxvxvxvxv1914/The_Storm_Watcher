@@ -198,11 +198,11 @@ const Home = () => {
             </h1>
 
             <p className="text-2xl sm:text-3xl text-white font-semibold mb-4">
-              Know when the sky is about to come alive.
+              {t('home.hero.tagline')}
             </p>
 
             <p className="text-lg text-[#94a3b8] mb-10 max-w-2xl mx-auto leading-relaxed">
-              Real-time geomagnetic storm tracking, aurora forecasts, and community reporting — in one place.
+              {t('home.hero.desc')}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-14">
@@ -210,13 +210,13 @@ const Home = () => {
                 to="/auth"
                 className="px-8 py-4 bg-gradient-to-r from-[#f97316] to-[#ef4444] text-white rounded-lg font-bold uppercase tracking-wider hover:scale-105 transition-transform glow-orange"
               >
-                Get Started Free
+                {t('home.hero.getStarted')}
               </Link>
               <Link
                 to="/dashboard"
                 className="px-8 py-4 glass-surface text-white rounded-lg font-bold uppercase tracking-wider hover:glow-orange transition-all border border-white/10"
               >
-                View Live Map
+                {t('home.hero.viewMap')}
               </Link>
             </div>
 
