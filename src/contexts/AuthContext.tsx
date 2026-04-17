@@ -36,7 +36,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let initialDone = false;
+
     supabase.auth.getSession().then(({ data: { session } }) => {
+      if (initialDone) return;
+      initialDone = true;
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
@@ -49,6 +53,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!initialDone) {
+        initialDone = true;
+      }
       (async () => {
         setSession(session);
         setUser(session?.user ?? null);
@@ -56,6 +63,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           await fetchProfile(session.user.id);
         } else {
           setProfile(null);
+          setLoading(false);
         }
       })();
     });
@@ -140,9 +148,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!user) return { error: new Error('No user logged in') };
 
     try {
+      // Allowlist: only permit safe fields to be updated by the client
+      const { full_name, avatar_url } = updates;
+      const safeUpdates: Record<string, unknown> = {};
+      if (full_name !== undefined) safeUpdates.full_name = full_name;
+      if (avatar_url !== undefined) safeUpdates.avatar_url = avatar_url;
+
+      if (Object.keys(safeUpdates).length === 0) {
+        return { error: new Error('No valid fields to update') };
+      }
+
       const { error } = await supabase
         .from('profiles')
-        .update(updates)
+        .update(safeUpdates)
         .eq('id', user.id);
 
       if (error) throw error;
