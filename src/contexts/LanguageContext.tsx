@@ -324,10 +324,18 @@ const translations: Record<Language, Record<string, string>> = {
     'aurora.approxChance': 'Approximate chance with current Kp =',
     'dashboard.nextUpdate': 'Next space weather update in:',
     'dashboard.history': 'Kp Index — History',
+    'dashboard.kms': 'KM/S',
+    'dashboard.nt': 'nT',
+    'dashboard.classTxt': 'CLASS',
+    'dashboard.hr24': '24H',
+    'dashboard.hr48': '48H',
+    'dashboard.hr72': '72H',
 
     // Extra Translations
     'nav.switchLight': 'Switch to light mode',
     'nav.switchDark': 'Switch to dark mode',
+    'nav.profile': 'Profile',
+    'nav.settings': 'Settings',
     'auth.checkEmail': 'Check your email',
 
     // UV Scale missing terms
@@ -657,6 +665,14 @@ const translations: Record<Language, Record<string, string>> = {
     'aurora.approxChance': 'Приблизителна вероятност при текущото Kp =',
     'dashboard.nextUpdate': 'Следващо обновяване след:',
     'dashboard.history': 'Kp Индекс — История',
+    'dashboard.kms': 'КМ/С',
+    'dashboard.nt': 'nT',
+    'dashboard.classTxt': 'КЛАС',
+    'dashboard.hr24': '24Ч',
+    'dashboard.hr48': '48Ч',
+    'dashboard.hr72': '72Ч',
+    'nav.profile': 'Профил',
+    'nav.settings': 'Настройки',
 
     // UV Scale missing terms
     'uv.scaleLow': 'Ниско',
@@ -951,6 +967,15 @@ const translations: Record<Language, Record<string, string>> = {
     'storm.g1': 'TORMENTA G1',
     'storm.g2': 'TORMENTA G2',
     'storm.g3plus': 'TORMENTA SEVERA G3+',
+    'dashboard.nextUpdate': 'Próxima actualización en:',
+    'dashboard.kms': 'KM/S',
+    'dashboard.nt': 'nT',
+    'dashboard.classTxt': 'CLASE',
+    'dashboard.hr24': '24H',
+    'dashboard.hr48': '48H',
+    'dashboard.hr72': '72H',
+    'nav.profile': 'Perfil',
+    'nav.settings': 'Configuración',
 
   },
   fr: {
@@ -1214,6 +1239,15 @@ const translations: Record<Language, Record<string, string>> = {
     'storm.g1': 'TEMPÊTE G1',
     'storm.g2': 'TEMPÊTE G2',
     'storm.g3plus': 'TEMPÊTE SÉVÈRE G3+',
+    'dashboard.nextUpdate': 'Prochaine mise à jour dans:',
+    'dashboard.kms': 'KM/S',
+    'dashboard.nt': 'nT',
+    'dashboard.classTxt': 'CLASSE',
+    'dashboard.hr24': '24H',
+    'dashboard.hr48': '48H',
+    'dashboard.hr72': '72H',
+    'nav.profile': 'Profil',
+    'nav.settings': 'Paramètres',
 
   },
   de: {
@@ -1477,6 +1511,15 @@ const translations: Record<Language, Record<string, string>> = {
     'storm.g1': 'STURM G1',
     'storm.g2': 'STURM G2',
     'storm.g3plus': 'SCHWERER STURM G3+',
+    'dashboard.nextUpdate': 'Nächste Aktualisierung in:',
+    'dashboard.kms': 'KM/S',
+    'dashboard.nt': 'nT',
+    'dashboard.classTxt': 'KLASSE',
+    'dashboard.hr24': '24H',
+    'dashboard.hr48': '48H',
+    'dashboard.hr72': '72H',
+    'nav.profile': 'Profil',
+    'nav.settings': 'Einstellungen',
 
   },
   ru: {
@@ -1740,6 +1783,15 @@ const translations: Record<Language, Record<string, string>> = {
     'storm.g1': 'БУРЯ G1',
     'storm.g2': 'БУРЯ G2',
     'storm.g3plus': 'СИЛЬНАЯ БУРЯ G3+',
+    'dashboard.nextUpdate': 'Следующее обновление через:',
+    'dashboard.kms': 'КМ/С',
+    'dashboard.nt': 'нТл',
+    'dashboard.classTxt': 'КЛАСС',
+    'dashboard.hr24': '24Ч',
+    'dashboard.hr48': '48Ч',
+    'dashboard.hr72': '72Ч',
+    'nav.profile': 'Профиль',
+    'nav.settings': 'Настройки',
 
   },
   zh: {
@@ -2003,6 +2055,15 @@ const translations: Record<Language, Record<string, string>> = {
     'storm.g1': '风暴 G1',
     'storm.g2': '风暴 G2',
     'storm.g3plus': '强烈风暴 G3+',
+    'dashboard.nextUpdate': '下次更新于:',
+    'dashboard.kms': 'KM/S',
+    'dashboard.nt': 'nT',
+    'dashboard.classTxt': '等级',
+    'dashboard.hr24': '24H',
+    'dashboard.hr48': '48H',
+    'dashboard.hr72': '72H',
+    'nav.profile': '个人资料',
+    'nav.settings': '设置',
 
   },
   ja: {
@@ -2266,6 +2327,15 @@ const translations: Record<Language, Record<string, string>> = {
     'storm.g1': '嵐 G1',
     'storm.g2': '嵐 G2',
     'storm.g3plus': '激甚嵐 G3+',
+    'dashboard.nextUpdate': '次回更新まで:',
+    'dashboard.kms': 'KM/S',
+    'dashboard.nt': 'nT',
+    'dashboard.classTxt': 'クラス',
+    'dashboard.hr24': '24H',
+    'dashboard.hr48': '48H',
+    'dashboard.hr72': '72H',
+    'nav.profile': 'プロフィール',
+    'nav.settings': '設定',
 
   },
 };
