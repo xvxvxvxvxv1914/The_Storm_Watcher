@@ -36,7 +36,7 @@ const UV = () => {
             const country = geo.address?.country || '';
             setLocationName([city, country].filter(Boolean).join(', '));
           } catch {
-            setLocationName(t('uv.currentLocation') || 'Current location');
+            setLocationName(t('uv.currentLocation') || t('uv.currentLoc'));
           }
         } catch {
           setLocationError(true);
@@ -49,7 +49,7 @@ const UV = () => {
         try {
           const data = await getUvIndex(42.7, 23.3);
           setUvData(data);
-          setLocationName(t('uv.defaultLocation') || 'Sofia, Bulgaria (default)');
+          setLocationName(t('uv.defaultLocation') || t('uv.sofiaDef'));
         } catch {
           setLocationError(true);
         } finally {

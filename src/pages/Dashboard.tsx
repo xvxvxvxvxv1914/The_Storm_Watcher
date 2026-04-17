@@ -214,7 +214,7 @@ const Dashboard = () => {
               </h3>
             </div>
             <div className="text-6xl font-bold text-white mb-3">{solarWindSpeed.toFixed(0)}</div>
-            <div className="text-[#94a3b8] text-sm uppercase tracking-wider">km/s</div>
+            <div className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('dashboard.kms')}</div>
           </div>
 
           <div className="relative glass-surface rounded-2xl p-6 hover:glow-orange transition-all hover:scale-105">
@@ -230,7 +230,7 @@ const Dashboard = () => {
             <div className={`text-6xl font-bold mb-3 ${bz < 0 ? 'text-[#ef4444]' : 'text-[#10b981]'}`}>
               {bz.toFixed(1)}
             </div>
-            <div className="text-[#94a3b8] text-sm uppercase tracking-wider">nT</div>
+            <div className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('dashboard.nt')}</div>
           </div>
 
           <div className="relative glass-surface rounded-2xl p-6 hover:glow-orange transition-all hover:scale-105">
@@ -244,7 +244,7 @@ const Dashboard = () => {
               </h3>
             </div>
             <div className="text-6xl font-bold gradient-solar mb-3">{xrayClass}</div>
-            <div className="text-[#94a3b8] text-sm uppercase tracking-wider">Class</div>
+            <div className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('dashboard.classTxt')}</div>
           </div>
         </div>
 
@@ -265,14 +265,16 @@ const Dashboard = () => {
                       : 'glass-surface text-[#94a3b8] hover:text-white'
                   }`}
                 >
-                  {range}
+                  {range === '24h' && t('dashboard.hr24')}
+                  {range === '48h' && t('dashboard.hr48')}
+                  {range === '72h' && t('dashboard.hr72')}
                 </button>
               ))}
             </div>
           </div>
           {kpHistory3Day.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={timeRange === '24h' ? kpHistory3Day.slice(-8) : timeRange === '48h' ? kpHistory3Day.slice(-16) : kpHistory3Day.slice(-24)}>
+              <LineChart data={timeRange === t('dashboard.hr24') ? kpHistory3Day.slice(-8) : timeRange === t('dashboard.hr48') ? kpHistory3Day.slice(-16) : kpHistory3Day.slice(-24)}>
                 <defs>
                   <linearGradient id="kpGradient3" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#f97316" stopOpacity={0.3}/>
@@ -318,10 +320,10 @@ const Dashboard = () => {
                   contentStyle={{ backgroundColor: 'rgba(10,0,21,0.95)', border: '1px solid rgba(124,58,237,0.3)', borderRadius: '12px', padding: '12px' }}
                   labelStyle={{ color: '#7c3aed', fontWeight: 'bold' }}
                   itemStyle={{ color: '#fff' }}
-                  formatter={(v: unknown) => [`${Number(v)} km/s`, 'Solar Wind']}
+                  formatter={(v: unknown) => [`${Number(v)} km/s`, t('dashboard.swTooltip')]}
                 />
-                <ReferenceLine y={400} stroke="#f97316" strokeDasharray="4 4" label={{ value: 'Normal 400', fill: '#f97316', fontSize: 11 }} />
-                <ReferenceLine y={600} stroke="#ef4444" strokeDasharray="4 4" label={{ value: 'High 600', fill: '#ef4444', fontSize: 11 }} />
+                <ReferenceLine y={400} stroke="#f97316" strokeDasharray="4 4" label={{ value: t('dashboard.normal400'), fill: '#f97316', fontSize: 11 }} />
+                <ReferenceLine y={600} stroke="#ef4444" strokeDasharray="4 4" label={{ value: t('dashboard.high600'), fill: '#ef4444', fontSize: 11 }} />
                 <Area type="monotone" dataKey="speed" stroke="#7c3aed" strokeWidth={2} fill="url(#windGradient)" dot={false} />
               </AreaChart>
             </ResponsiveContainer>

@@ -35,7 +35,7 @@ export default function Auth() {
         navigate('/dashboard');
       }
     } catch {
-      setError('An unexpected error occurred');
+      setError(t('auth.error'));
     } finally {
       setLoading(false);
     }

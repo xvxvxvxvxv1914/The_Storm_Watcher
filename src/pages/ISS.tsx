@@ -84,14 +84,14 @@ const ISS = () => {
       lng: position.longitude,
       size: 0.8,
       color: '#f97316',
-      label: '🛸 ISS',
+      label: t('iss.markerIss'),
     }] : []),
     ...(userCoords ? [{
       lat: userCoords.lat,
       lng: userCoords.lon,
       size: 0.5,
       color: '#10b981',
-      label: '📍 You',
+      label: t('iss.markerYou'),
     }] : []),
   ];
 
@@ -170,8 +170,8 @@ const ISS = () => {
           )}
 
           <div className="flex gap-6 pb-5 text-xs text-[#64748b]">
-            <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#f97316] inline-block" /> ISS</span>
-            <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#10b981] inline-block" /> Your location</span>
+            <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#f97316] inline-block" />{t('iss.locIss')}</span>
+            <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#10b981] inline-block" />{t('iss.locYou')}</span>
           </div>
         </div>
 

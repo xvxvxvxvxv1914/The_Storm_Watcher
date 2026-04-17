@@ -130,7 +130,7 @@ const Navigation = () => {
             <button
               onClick={toggleTheme}
               className="text-xl shrink-0 leading-none hover:opacity-80 transition-opacity"
-              title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+              title={theme === 'dark' ? t('nav.switchLight') : t('nav.switchDark')}
             >
               {theme === 'dark' ? '🌙' : '☀️'}
             </button>
@@ -182,7 +182,7 @@ const Navigation = () => {
                 {isUserMenuOpen && (
                   <div className="absolute right-0 mt-2 w-56 glass-surface rounded-xl shadow-2xl py-2 border border-[#f97316]/20">
                     <div className="px-4 py-2 border-b border-white/10">
-                      <p className="text-sm font-medium text-white">{profile?.full_name || 'User'}</p>
+                      <p className="text-sm font-medium text-white">{profile?.full_name || t('nav.user')}</p>
                       <p className="text-xs text-[#94a3b8] mt-1">{user.email}</p>
                     </div>
                     <button
@@ -270,7 +270,7 @@ const Navigation = () => {
             {user && (
               <div className="border-t border-white/10 pt-3 mt-3">
                 <div className="px-4 py-2 mb-2">
-                  <p className="text-sm font-medium text-white">{profile?.full_name || 'User'}</p>
+                  <p className="text-sm font-medium text-white">{profile?.full_name || t('nav.user')}</p>
                   <p className="text-xs text-[#94a3b8] mt-1">{user.email}</p>
                 </div>
                 <button

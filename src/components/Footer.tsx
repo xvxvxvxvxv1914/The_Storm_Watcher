@@ -68,14 +68,14 @@ const Footer = () => {
             <div className="cursor-not-allowed opacity-50">
               <img
                 src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
-                alt="Download on the App Store"
+                alt={t('footer.appStore')}
                 className="h-10 pointer-events-none select-none"
               />
             </div>
             <div className="cursor-not-allowed opacity-50">
               <img
                 src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
-                alt="Get it on Google Play"
+                alt={t('footer.googlePlay')}
                 className="h-10 pointer-events-none select-none"
               />
             </div>

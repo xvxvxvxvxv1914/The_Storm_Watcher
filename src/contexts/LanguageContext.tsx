@@ -321,6 +321,10 @@ const translations: Record<Language, Record<string, string>> = {
     'dashboard.nextUpdate': 'Next space weather update in:',
     'dashboard.history': 'Kp Index — History',
 
+    // Extra Translations
+    'nav.switchLight': 'Switch to light mode',
+    'nav.switchDark': 'Switch to dark mode',
+    'auth.checkEmail': 'Check your email',
   },
   bg: {
     // Navigation
