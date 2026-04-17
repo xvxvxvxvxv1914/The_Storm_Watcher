@@ -3,6 +3,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import PlanGuard from './components/PlanGuard';
@@ -29,9 +30,10 @@ const LoadingFallback = () => (
 
 function AppRoutes() {
   const { user } = useAuth();
+  const { theme } = useTheme();
 
   return (
-    <div className="min-h-screen bg-[#0a0a1a]">
+    <div className={`min-h-screen ${theme === 'light' ? 'bg-slate-100' : 'bg-[#0a0a1a]'}`}>
       <Navigation />
       <Suspense fallback={<LoadingFallback />}>
         <Routes>
@@ -57,9 +59,11 @@ function AppRoutes() {
 function App() {
   return (
     <Router>
-      <AuthProvider>
-        <AppRoutes />
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
+      </ThemeProvider>
       <Analytics />
       <SpeedInsights />
     </Router>

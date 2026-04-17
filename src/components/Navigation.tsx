@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Sun, Menu, X, Globe, User, LogOut, ChevronDown } from 'lucide-react';
 import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 import PushNotificationBell from './PushNotificationBell';
 
 const Navigation = () => {
@@ -16,6 +17,7 @@ const Navigation = () => {
   const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
   const { user, profile, signOut } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   const handleLogout = async () => {
     await signOut();
@@ -125,6 +127,14 @@ const Navigation = () => {
 
             <PushNotificationBell />
 
+            <button
+              onClick={toggleTheme}
+              className="text-xl shrink-0 leading-none hover:opacity-80 transition-opacity"
+              title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {theme === 'dark' ? '🌙' : '☀️'}
+            </button>
+
             <div className="relative shrink-0" ref={langMenuRef}>
               <button
                 onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
@@ -222,6 +232,16 @@ const Navigation = () => {
                 {link.label}
               </Link>
             ))}
+
+            <div className="border-t border-white/10 pt-3 mt-3">
+              <button
+                onClick={toggleTheme}
+                className="w-full text-left px-4 py-2 rounded-lg text-sm font-medium text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors flex items-center gap-2"
+              >
+                <span>{theme === 'dark' ? '🌙' : '☀️'}</span>
+                <span>{theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}</span>
+              </button>
+            </div>
 
             <div className="border-t border-white/10 pt-3 mt-3">
               <div className="text-xs font-bold text-[#94a3b8] px-4 mb-2 flex items-center gap-2 uppercase tracking-wider">

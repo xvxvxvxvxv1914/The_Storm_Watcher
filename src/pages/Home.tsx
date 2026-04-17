@@ -1,8 +1,15 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Activity, AlertTriangle, Zap, Radio, X, Calendar, Bot, Globe, Bell, Camera, Trophy, Video, Smartphone, Check } from 'lucide-react';
+import { Activity, AlertTriangle, Zap, Radio, X, Calendar, Bot, Globe, Bell, Camera, Trophy, Video, Smartphone, Check, Share2, Copy, Twitter } from 'lucide-react';
 import { getKpIndex, getSolarWind, getXrayFlux, getXrayClass, getStormStatus, getKpGradientStyle } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
+
+const getScoreShareStatus = (score: number) => {
+  if (score <= 25) return 'Quiet';
+  if (score <= 50) return 'Unsettled';
+  if (score <= 75) return 'Storm';
+  return 'Severe Storm';
+};
 
 const Home = () => {
   const { t } = useLanguage();
@@ -12,6 +19,19 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [showStormAlert, setShowStormAlert] = useState(false);
   const [dismissedKp, setDismissedKp] = useState<number | null>(null);
+  const [shareOpen, setShareOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const shareRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (shareRef.current && !shareRef.current.contains(e.target as Node)) {
+        setShareOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -272,12 +292,64 @@ const Home = () => {
             <div className="inline-block w-16 h-16 border-4 border-[#f97316]/20 border-t-[#f97316] rounded-full animate-spin" />
           ) : (
             <div className="flex flex-col items-center gap-6">
-              {/* Score number */}
-              <div
-                className="text-8xl sm:text-[120px] font-bold leading-none"
-                style={getKpGradientStyle(kpValue ?? 0)}
-              >
-                {kpValue !== null ? Math.round((kpValue / 9) * 100) : 0}
+              {/* Score number + share button */}
+              <div className="flex items-center gap-4">
+                <div
+                  className="text-8xl sm:text-[120px] font-bold leading-none"
+                  style={getKpGradientStyle(kpValue ?? 0)}
+                >
+                  {kpValue !== null ? Math.round((kpValue / 9) * 100) : 0}
+                </div>
+                <div className="relative self-start mt-4" ref={shareRef}>
+                  <button
+                    onClick={() => setShareOpen(p => !p)}
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl glass-surface border border-white/10 text-[#94a3b8] hover:text-white hover:border-[#f97316]/40 transition-all text-sm font-medium"
+                    title="Share Storm Score"
+                  >
+                    <Share2 className="w-4 h-4" />
+                    Share
+                  </button>
+                  {shareOpen && (() => {
+                    const score = kpValue !== null ? Math.round((kpValue / 9) * 100) : 0;
+                    const status = getScoreShareStatus(score);
+                    const text = `🌌 Storm Score is ${score}/100 right now! Space weather is ${status}. Track it live at thestormwatcher.com #aurora #spaceweather`;
+                    return (
+                      <div className="absolute left-0 mt-2 w-52 glass-surface rounded-xl shadow-2xl py-2 border border-[#f97316]/20 z-20">
+                        <a
+                          href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => setShareOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2 text-sm text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors"
+                        >
+                          <Twitter className="w-4 h-4 text-[#1d9bf0]" />
+                          Share on X/Twitter
+                        </a>
+                        <a
+                          href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://thestormwatcher.com')}&quote=${encodeURIComponent(text)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => setShareOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2 text-sm text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors"
+                        >
+                          <Globe className="w-4 h-4 text-[#1877f2]" />
+                          Share on Facebook
+                        </a>
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText('https://thestormwatcher.com');
+                            setCopied(true);
+                            setTimeout(() => { setCopied(false); setShareOpen(false); }, 1500);
+                          }}
+                          className="w-full flex items-center gap-3 px-4 py-2 text-sm text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors"
+                        >
+                          <Copy className="w-4 h-4 text-[#10b981]" />
+                          {copied ? 'Copied!' : 'Copy link'}
+                        </button>
+                      </div>
+                    );
+                  })()}
+                </div>
               </div>
 
               {/* Progress bar */}
@@ -315,6 +387,30 @@ const Home = () => {
           )}
         </div>
       </div>
+
+      {/* What does this mean for me? */}
+      {!loading && kpValue !== null && (() => {
+        const score = Math.round((kpValue / 9) * 100);
+        const meanings = [
+          { max: 25, emoji: '🌙', text: 'Tonight is quiet. No aurora expected anywhere in Europe.', color: 'from-[#10b981]/20 to-[#059669]/10', border: 'border-[#10b981]/30', accent: '#10b981' },
+          { max: 50, emoji: '⚡', text: 'Moderate activity. Aurora may be visible in Scandinavia and Iceland.', color: 'from-[#eab308]/20 to-[#ca8a04]/10', border: 'border-[#eab308]/30', accent: '#eab308' },
+          { max: 75, emoji: '🌌', text: 'Geomagnetic storm! Aurora is visible in Northern Europe, possibly the UK.', color: 'from-[#f97316]/20 to-[#ea580c]/10', border: 'border-[#f97316]/30', accent: '#f97316' },
+          { max: 100, emoji: '🔴', text: 'Strong storm! Aurora is visible even in Central Europe. Go outside!', color: 'from-[#ef4444]/20 to-[#dc2626]/10', border: 'border-[#ef4444]/30', accent: '#ef4444' },
+        ];
+        const m = meanings.find(x => score <= x.max) ?? meanings[3];
+        return (
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+            <div className={`rounded-2xl p-8 bg-gradient-to-r ${m.color} border ${m.border} text-center`}>
+              <p className="text-xs uppercase tracking-widest font-bold mb-4" style={{ color: m.accent }}>
+                What does this mean for me?
+              </p>
+              <p className="text-2xl sm:text-3xl font-bold text-white">
+                {m.emoji} {m.text}
+              </p>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Features */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">

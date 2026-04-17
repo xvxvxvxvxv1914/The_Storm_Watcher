@@ -143,3 +143,43 @@
     stroke-dashoffset: 0;
   }
 }
+
+/* Light mode overrides */
+html.light body {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+html.light .glass-surface {
+  background: rgba(255, 255, 255, 0.88) !important;
+  border-color: rgba(0, 0, 0, 0.09) !important;
+}
+
+html.light .star-field {
+  display: none;
+}
+
+html.light .solar-orb,
+html.light .magnetic-orb {
+  opacity: 0.06;
+}
+
+html.light .text-white {
+  color: #1e293b;
+}
+
+html.light .text-\[\#94a3b8\] {
+  color: #64748b;
+}
+
+html.light .text-\[\#64748b\] {
+  color: #94a3b8;
+}
+
+html.light .star {
+  background: transparent;
+}
+
+html.light .solar-particle {
+  display: none;
+}

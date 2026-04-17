@@ -26,6 +26,7 @@ const Dashboard = () => {
   const [timeRange, setTimeRange] = useState<'24h' | '48h' | '72h'>('24h');
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [loading, setLoading] = useState(true);
+  const [countdown, setCountdown] = useState('');
 
   const fetchData = async () => {
     try {
@@ -104,6 +105,22 @@ const Dashboard = () => {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const tick = () => {
+      const now = new Date();
+      const next = new Date(now);
+      next.setHours(now.getHours() + 1, 0, 0, 0);
+      const diff = next.getTime() - now.getTime();
+      const h = Math.floor(diff / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      setCountdown(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`);
+    };
+    tick();
+    const timer = setInterval(tick, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   const stormStatus = getStormStatus(kpValue);
   const xrayClass = getXrayClass(xrayFlux);
 
@@ -149,6 +166,12 @@ const Dashboard = () => {
           <p className="text-[#94a3b8] text-lg">
             {t('dashboard.lastUpdated')}: {lastUpdated.toLocaleTimeString()}
           </p>
+          {countdown && (
+            <p className="text-[#64748b] text-sm mt-1">
+              Next space weather update in:{' '}
+              <span className="text-[#f97316] font-mono font-bold tracking-wider">{countdown}</span>
+            </p>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
