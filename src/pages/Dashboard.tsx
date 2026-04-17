@@ -4,6 +4,17 @@ import { Activity, Wind, Compass, Sun, Radio } from 'lucide-react';
 import { getKpIndex, getSolarWind, getMagField, getXrayFlux, getKpHistory3Day, getStormStatus, getXrayClass, getKpGradientStyle } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 
+const InfoTooltip = ({ text }: { text: string }) => (
+  <div className="absolute top-3 right-3 group z-20">
+    <div className="w-5 h-5 rounded-full bg-white/10 border border-white/20 flex items-center justify-center cursor-help text-[#94a3b8] hover:text-white hover:bg-white/20 transition-colors" style={{ fontSize: '11px', fontWeight: 700 }}>
+      i
+    </div>
+    <div className="absolute right-0 top-7 w-56 rounded-xl p-3 text-xs text-[#cbd5e1] leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-30 border border-white/10" style={{ background: 'rgba(10,10,26,0.97)', backdropFilter: 'blur(12px)' }}>
+      {text}
+    </div>
+  </div>
+);
+
 const Dashboard = () => {
   const { t } = useLanguage();
   const [kpValue, setKpValue] = useState<number>(0);
@@ -141,9 +152,10 @@ const Dashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <div className={`glass-surface rounded-2xl p-6 ${
+          <div className={`relative glass-surface rounded-2xl p-6 ${
             kpValue >= 5 ? 'glow-red' : kpValue >= 4 ? 'glow-orange' : 'glow-green'
           } hover:scale-105 transition-transform`}>
+            <InfoTooltip text="Геомагнитният Kp индекс измерва активността на магнитното поле на Земята по скала от 0 до 9. Kp 0-2 = тихо, 3-4 = умерено, 5-6 = геомагнитна буря, 7-9 = силна буря. При Kp 5+ аврората може да се вижда на по-ниски ширини." />
             <div className="flex items-center gap-3 mb-4">
               <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
                 kpValue >= 5 ? 'bg-gradient-to-br from-[#ef4444] to-[#dc2626]' :
@@ -168,7 +180,8 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="glass-surface rounded-2xl p-6 hover:glow-purple transition-all hover:scale-105">
+          <div className="relative glass-surface rounded-2xl p-6 hover:glow-purple transition-all hover:scale-105">
+            <InfoTooltip text="Скоростта на слънчевия вятър — поток от заредени частици от Слънцето. Нормална скорост: 300-500 km/s. При над 600 km/s вероятността за геомагнитна буря се увеличава значително." />
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-[#7c3aed] to-[#6d28d9] rounded-xl flex items-center justify-center">
                 <Wind className="w-6 h-6 text-white" />
@@ -181,7 +194,8 @@ const Dashboard = () => {
             <div className="text-[#94a3b8] text-sm uppercase tracking-wider">km/s</div>
           </div>
 
-          <div className="glass-surface rounded-2xl p-6 hover:glow-orange transition-all hover:scale-105">
+          <div className="relative glass-surface rounded-2xl p-6 hover:glow-orange transition-all hover:scale-105">
+            <InfoTooltip text="Южната компонента на междупланетното магнитно поле (IMF). Когато Bz е отрицателна (насочена на юг), магнитното поле на Земята се отваря и слънчевият вятър влиза — ключовият тригер за аврора. Bz под -10 nT = силна активност." />
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-[#06b6d4] to-[#0891b2] rounded-xl flex items-center justify-center">
                 <Compass className="w-6 h-6 text-white" />
@@ -196,7 +210,8 @@ const Dashboard = () => {
             <div className="text-[#94a3b8] text-sm uppercase tracking-wider">nT</div>
           </div>
 
-          <div className="glass-surface rounded-2xl p-6 hover:glow-orange transition-all hover:scale-105">
+          <div className="relative glass-surface rounded-2xl p-6 hover:glow-orange transition-all hover:scale-105">
+            <InfoTooltip text="Интензитетът на рентгеновото излъчване от Слънцето. Класове: A и B = тихо, C = умерено, M = силно, X = екстремно. M и X класовете могат да причинят радио смущения и геомагнитни бури." />
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-[#fbbf24] to-[#f59e0b] rounded-xl flex items-center justify-center">
                 <Sun className="w-6 h-6 text-white" />
