@@ -155,7 +155,7 @@ const Dashboard = () => {
           <div className={`relative glass-surface rounded-2xl p-6 ${
             kpValue >= 5 ? 'glow-red' : kpValue >= 4 ? 'glow-orange' : 'glow-green'
           } hover:scale-105 transition-transform`}>
-            <InfoTooltip text="Геомагнитният Kp индекс измерва активността на магнитното поле на Земята по скала от 0 до 9. Kp 0-2 = тихо, 3-4 = умерено, 5-6 = геомагнитна буря, 7-9 = силна буря. При Kp 5+ аврората може да се вижда на по-ниски ширини." />
+            <InfoTooltip text={t('dashboard.tooltip.kp')} />
             <div className="flex items-center gap-3 mb-4">
               <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
                 kpValue >= 5 ? 'bg-gradient-to-br from-[#ef4444] to-[#dc2626]' :
@@ -181,7 +181,7 @@ const Dashboard = () => {
           </div>
 
           <div className="relative glass-surface rounded-2xl p-6 hover:glow-purple transition-all hover:scale-105">
-            <InfoTooltip text="Скоростта на слънчевия вятър — поток от заредени частици от Слънцето. Нормална скорост: 300-500 km/s. При над 600 km/s вероятността за геомагнитна буря се увеличава значително." />
+            <InfoTooltip text={t('dashboard.tooltip.wind')} />
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-[#7c3aed] to-[#6d28d9] rounded-xl flex items-center justify-center">
                 <Wind className="w-6 h-6 text-white" />
@@ -195,7 +195,7 @@ const Dashboard = () => {
           </div>
 
           <div className="relative glass-surface rounded-2xl p-6 hover:glow-orange transition-all hover:scale-105">
-            <InfoTooltip text="Южната компонента на междупланетното магнитно поле (IMF). Когато Bz е отрицателна (насочена на юг), магнитното поле на Земята се отваря и слънчевият вятър влиза — ключовият тригер за аврора. Bz под -10 nT = силна активност." />
+            <InfoTooltip text={t('dashboard.tooltip.bz')} />
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-[#06b6d4] to-[#0891b2] rounded-xl flex items-center justify-center">
                 <Compass className="w-6 h-6 text-white" />
@@ -211,7 +211,7 @@ const Dashboard = () => {
           </div>
 
           <div className="relative glass-surface rounded-2xl p-6 hover:glow-orange transition-all hover:scale-105">
-            <InfoTooltip text="Интензитетът на рентгеновото излъчване от Слънцето. Класове: A и B = тихо, C = умерено, M = силно, X = екстремно. M и X класовете могат да причинят радио смущения и геомагнитни бури." />
+            <InfoTooltip text={t('dashboard.tooltip.xray')} />
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-[#fbbf24] to-[#f59e0b] rounded-xl flex items-center justify-center">
                 <Sun className="w-6 h-6 text-white" />
