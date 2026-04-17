@@ -1,8 +1,11 @@
 import { Check } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useAuth } from '../contexts/AuthContext';
 
 const Pricing = () => {
   const { t } = useLanguage();
+  const { user } = useAuth();
   const plans = [
     {
       name: 'Free',
@@ -93,16 +96,29 @@ const Pricing = () => {
                 </div>
               </div>
 
-              <button
-                disabled
-                className={`w-full py-3 px-6 rounded-lg font-semibold mb-8 cursor-not-allowed opacity-60 ${
-                  plan.highlighted
-                    ? 'bg-[#00ff88] text-[#0a0a1a]'
-                    : 'bg-white/10 text-white border border-white/20'
-                }`}
-              >
-                {plan.buttonText}
-              </button>
+              {plan.name === 'Free' && !user ? (
+                <Link
+                  to="/auth"
+                  className={`block w-full py-3 px-6 rounded-lg font-semibold mb-8 text-center transition-all ${
+                    plan.highlighted
+                      ? 'bg-[#00ff88] text-[#0a0a1a] hover:bg-[#00e67a]'
+                      : 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
+                  }`}
+                >
+                  {plan.buttonText}
+                </Link>
+              ) : (
+                <button
+                  disabled
+                  className={`w-full py-3 px-6 rounded-lg font-semibold mb-8 cursor-not-allowed opacity-60 ${
+                    plan.highlighted
+                      ? 'bg-[#00ff88] text-[#0a0a1a]'
+                      : 'bg-white/10 text-white border border-white/20'
+                  }`}
+                >
+                  {plan.buttonText}
+                </button>
+              )}
 
               <ul className="space-y-4">
                 {plan.features.map((feature, featureIndex) => (

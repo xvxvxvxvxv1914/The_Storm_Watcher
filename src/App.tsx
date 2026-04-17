@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
+import PlanGuard from './components/PlanGuard';
 
 const Home = lazy(() => import('./pages/Home'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
@@ -15,6 +16,7 @@ const UV = lazy(() => import('./pages/UV'));
 const SunTimes = lazy(() => import('./pages/SunTimes'));
 const SkyVisibility = lazy(() => import('./pages/SkyVisibility'));
 const ISS = lazy(() => import('./pages/ISS'));
+const Pricing = lazy(() => import('./pages/Pricing'));
 
 const LoadingFallback = () => (
   <div className="flex flex-col items-center justify-center min-h-[calc(100vh-16rem)] gap-4">
@@ -35,13 +37,14 @@ function AppRoutes() {
           <Route path="/auth" element={user && user.email_confirmed_at ? <Navigate to="/dashboard" replace /> : <Auth />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/forecast" element={<Forecast />} />
-          <Route path="/aurora" element={<Aurora />} />
-          <Route path="/alerts" element={<Alerts />} />
+          <Route path="/aurora" element={<PlanGuard requiredPlan="pro"><Aurora /></PlanGuard>} />
+          <Route path="/alerts" element={<PlanGuard requiredPlan="pro"><Alerts /></PlanGuard>} />
           <Route path="/mood" element={<Mood />} />
           <Route path="/uv" element={<UV />} />
           <Route path="/sun" element={<SunTimes />} />
           <Route path="/sky" element={<SkyVisibility />} />
           <Route path="/iss" element={<ISS />} />
+          <Route path="/pricing" element={<Pricing />} />
         </Routes>
       </Suspense>
       <Footer />

@@ -331,6 +331,8 @@ const translations: Record<Language, Record<string, string>> = {
     'home.feature4.title': '27-дневна прогноза',
     'home.feature4.desc': 'Разширени прогнози базирани на слънчевата ротация',
     'home.stormBanner': 'ГЕОМАГНИТНА БУРЯ — Kp',
+    'home.trustedSources': 'Доверени източници на данни',
+    'home.trustedSourcesDesc': 'Прогнозите ни са базирани на NOAA Space Weather Prediction Center, NASA DONKI, ESA Space Weather Service и Националния институт по геофизика и геодезия (България).',
     'home.tagline': 'Наблюдаваме слънцето. Пазим Земята.',
 
     // Dashboard
@@ -588,6 +590,8 @@ const translations: Record<Language, Record<string, string>> = {
     'home.feature4.title': 'Pronóstico de 27 días',
     'home.feature4.desc': 'Predicciones extendidas basadas en rotación solar',
     'home.stormBanner': 'TORMENTA GEOMAGNÉTICA — Kp',
+    'home.trustedSources': 'Fuentes de datos de confianza',
+    'home.trustedSourcesDesc': 'Nuestras predicciones utilizan datos del Centro de Predicción del Clima Espacial de NOAA, NASA DONKI, ESA Space Weather Service y el Instituto Nacional de Geofísica y Geodesia (Bulgaria).',
     'home.tagline': 'Monitoreando el sol. Protegiendo la Tierra.',
 
     // Dashboard
@@ -845,6 +849,8 @@ const translations: Record<Language, Record<string, string>> = {
     'home.feature4.title': 'Prévisions sur 27 jours',
     'home.feature4.desc': 'Prédictions étendues basées sur la rotation solaire',
     'home.stormBanner': 'TEMPÊTE GÉOMAGNÉTIQUE — Kp',
+    'home.trustedSources': 'Sources de données fiables',
+    'home.trustedSourcesDesc': 'Nos prévisions sont alimentées par le Centre de prévision météorologique spatiale de la NOAA, NASA DONKI, ESA Space Weather Service et l\'Institut national de géophysique et de géodésie (Bulgarie).',
     'home.tagline': 'Surveillons le soleil. Protégeons la Terre.',
 
     // Dashboard
@@ -1102,6 +1108,8 @@ const translations: Record<Language, Record<string, string>> = {
     'home.feature4.title': '27-Tage-Vorhersage',
     'home.feature4.desc': 'Erweiterte Vorhersagen basierend auf Sonnenrotation',
     'home.stormBanner': 'GEOMAGNETISCHER STURM — Kp',
+    'home.trustedSources': 'Vertrauenswürdige Datenquellen',
+    'home.trustedSourcesDesc': 'Unsere Vorhersagen basieren auf dem NOAA-Weltraumwettervorhersagezentrum, NASA DONKI, ESA Space Weather Service und dem Nationalen Institut für Geophysik und Geodäsie (Bulgarien).',
     'home.tagline': 'Die Sonne beobachten. Die Erde schützen.',
 
     // Dashboard
@@ -1359,6 +1367,8 @@ const translations: Record<Language, Record<string, string>> = {
     'home.feature4.title': '27-дневный прогноз',
     'home.feature4.desc': 'Расширенные прогнозы на основе солнечного вращения',
     'home.stormBanner': 'ГЕОМАГНИТНАЯ БУРЯ — Kp',
+    'home.trustedSources': 'Надёжные источники данных',
+    'home.trustedSourcesDesc': 'Наши прогнозы основаны на данных Центра прогнозирования космической погоды NOAA, NASA DONKI, ESA Space Weather Service и Национального института геофизики и геодезии (Болгария).',
     'home.tagline': 'Наблюдаем за солнцем. Защищаем Землю.',
 
     // Dashboard
@@ -1616,6 +1626,8 @@ const translations: Record<Language, Record<string, string>> = {
     'home.feature4.title': '27天预报',
     'home.feature4.desc': '基于太阳自转的延长预测',
     'home.stormBanner': '地磁暴正在进行 — Kp',
+    'home.trustedSources': '可信数据来源',
+    'home.trustedSourcesDesc': '我们的预报由NOAA空间天气预报中心、NASA DONKI、ESA空间天气服务和国家地球物理与大地测量研究所（保加利亚）提供支持。',
     'home.tagline': '监测太阳。保护地球。',
 
     // Dashboard
@@ -1873,6 +1885,8 @@ const translations: Record<Language, Record<string, string>> = {
     'home.feature4.title': '27日間予報',
     'home.feature4.desc': '太陽の自転に基づく拡張予測',
     'home.stormBanner': '地磁気嵐が発生中 — Kp',
+    'home.trustedSources': '信頼できるデータソース',
+    'home.trustedSourcesDesc': '私たちの予報は、NOAA宇宙天気予報センター、NASA DONKI、ESA宇宙天気サービス、および国立地球物理・測地研究所（ブルガリア）のデータに基づいています。',
     'home.tagline': '太陽を監視する。地球を守る。',
 
     // Dashboard
