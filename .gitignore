@@ -21,3 +21,8 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# Capacitor iOS
+ios/DerivedData
+ios/App/Pods
+ios/.xcode.env.local

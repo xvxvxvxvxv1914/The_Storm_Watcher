@@ -7,6 +7,10 @@
     font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
   }
 
+  html {
+    scroll-padding-top: calc(env(safe-area-inset-top) + 3.5rem);
+  }
+
   body {
     background: #000008;
     color: #f8fafc;

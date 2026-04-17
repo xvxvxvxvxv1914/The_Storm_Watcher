@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { MapPin, Clock, Eye, Satellite } from 'lucide-react';
 import Globe from 'react-globe.gl';
 import { getIssPosition, getIssPasses, IssPosition, IssPass } from '../services/issApi';
@@ -9,7 +9,22 @@ const ISS = () => {
   const { t } = useLanguage();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const globeRef = useRef<any>(null);
+  const globeContainerRef = useRef<HTMLDivElement>(null);
+  const [globeWidth, setGlobeWidth] = useState(780);
   const [position, setPosition] = useState<IssPosition | null>(null);
+
+  const handleGlobeResize = useCallback((entries: ResizeObserverEntry[]) => {
+    for (const entry of entries) {
+      setGlobeWidth(Math.floor(entry.contentRect.width));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!globeContainerRef.current) return;
+    const ro = new ResizeObserver(handleGlobeResize);
+    ro.observe(globeContainerRef.current);
+    return () => ro.disconnect();
+  }, [handleGlobeResize]);
   const [passes, setPasses] = useState<IssPass[]>([]);
   const [loadingPos, setLoadingPos] = useState(true);
   const [loadingPasses, setLoadingPasses] = useState(true);
@@ -96,7 +111,7 @@ const ISS = () => {
   ];
 
   return (
-    <div className="min-h-screen pt-24 pb-16">
+    <div className="min-h-screen pt-28 md:pt-24 pb-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}
@@ -121,6 +136,7 @@ const ISS = () => {
             <span className="text-[#64748b] text-xs">{t('iss.updates5s')}</span>
           </div>
 
+          <div ref={globeContainerRef} className="w-full" />
           {loadingPos ? (
             <div className="flex justify-center py-16">
               <div className="w-10 h-10 border-4 border-[#f97316]/20 border-t-[#f97316] rounded-full animate-spin" />
@@ -129,8 +145,8 @@ const ISS = () => {
             <>
               <Globe
                 ref={globeRef}
-                width={780}
-                height={580}
+                width={globeWidth}
+                height={Math.max(280, Math.round(globeWidth * 0.74))}
                 backgroundColor="rgba(0,0,0,0)"
                 globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
                 atmosphereColor="#f97316"

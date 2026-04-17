@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useRef } from 'react';
+import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
 import { MapPin, Eye, Sparkles } from 'lucide-react';
 import GlobeOrig from 'react-globe.gl';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -12,8 +12,23 @@ const Aurora = () => {
   const [kpValue, setKpValue] = useState<number>(0);
   const [auroraData, setAuroraData] = useState<AuroraOvationPoint[]>([]);
   const [isGlobeLoading, setIsGlobeLoading] = useState(true);
+  const [globeWidth, setGlobeWidth] = useState(800);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const globeRef = useRef<any>(null);
+  const globeContainerRef = useRef<HTMLDivElement>(null);
+
+  const handleGlobeResize = useCallback((entries: ResizeObserverEntry[]) => {
+    for (const entry of entries) {
+      setGlobeWidth(Math.floor(entry.contentRect.width));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!globeContainerRef.current) return;
+    const ro = new ResizeObserver(handleGlobeResize);
+    ro.observe(globeContainerRef.current);
+    return () => ro.disconnect();
+  }, [handleGlobeResize]);
 
   const auroraTexture = useMemo(() => {
     if (auroraData.length === 0) return null;
@@ -88,23 +103,21 @@ const Aurora = () => {
         if (!scene) return;
 
         const lightsToRemove = scene.children.filter((c: THREE.Light | THREE.Object3D) => typeof c.type === 'string' && c.type.includes('Light'));
-        const camera = typeof globeRef.current.camera === 'function' ? globeRef.current.camera() : null;
-        if (camera) {
-          camera.children.filter((c: THREE.Light | THREE.Object3D) => typeof c.type === 'string' && c.type.includes('Light'))
-            .forEach((l: THREE.Light | THREE.Object3D) => camera.remove(l));
-        }
         lightsToRemove.forEach((l: THREE.Light | THREE.Object3D) => scene.remove(l));
 
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.03);
-        scene.add(ambientLight);
+        scene.add(new THREE.AmbientLight(0xffffff, 1.8));
 
-        const sunLight = new THREE.DirectionalLight(0xffffff, 4.0);
+        const sunLight = new THREE.DirectionalLight(0xffffff, 2.0);
         sunLight.position.set(
           Math.cos(latRad) * Math.sin(lngRad) * 1000,
           Math.sin(latRad) * 1000,
           Math.cos(latRad) * Math.cos(lngRad) * 1000
         );
         scene.add(sunLight);
+
+        const fillLight = new THREE.DirectionalLight(0x8888ff, 0.8);
+        fillLight.position.set(-1000, 500, -500);
+        scene.add(fillLight);
 
         // City lights layer (added once)
         const existingCityLights = scene.children.find((c: THREE.Object3D) => c.userData?.isCityLights);
@@ -205,7 +218,7 @@ const Aurora = () => {
     })), []);
 
   return (
-    <div className="min-h-screen pt-24 pb-16 relative">
+    <div className="min-h-screen pt-28 md:pt-24 pb-16 relative">
       <div className="star-field">
         {stars.map((s) => (
           <div
@@ -223,17 +236,17 @@ const Aurora = () => {
       <div className="magnetic-orb" style={{ top: '-100px', right: '-200px' }} />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-12">
-          <h1 className="text-5xl font-bold gradient-aurora mb-3 uppercase tracking-tight">
+        <div className="mb-6 md:mb-12">
+          <h1 className="text-3xl md:text-5xl font-bold gradient-aurora mb-3 uppercase tracking-tight">
             {t('aurora.title')}
           </h1>
-          <p className="text-[#94a3b8] text-lg">
+          <p className="text-[#94a3b8] text-base md:text-lg">
             {t('aurora.subtitle')}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <div className={`glass-surface rounded-2xl p-8 ${visibility.bgGlow} hover:scale-105 transition-transform`}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-12">
+          <div className={`glass-surface rounded-2xl p-4 sm:p-8 ${visibility.bgGlow} hover:scale-105 transition-transform`}>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-[#10b981] to-[#059669] rounded-xl flex items-center justify-center">
                 <Sparkles className="w-6 h-6 text-white" />
@@ -246,7 +259,7 @@ const Aurora = () => {
             <div className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('aurora.currentValue')}</div>
           </div>
 
-          <div className={`glass-surface rounded-2xl p-8 ${visibility.bgGlow} hover:scale-105 transition-transform`}>
+          <div className={`glass-surface rounded-2xl p-4 sm:p-8 ${visibility.bgGlow} hover:scale-105 transition-transform`}>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-[#06b6d4] to-[#0891b2] rounded-xl flex items-center justify-center">
                 <Eye className="w-6 h-6 text-white" />
@@ -259,7 +272,7 @@ const Aurora = () => {
             <div className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('aurora.strength')}</div>
           </div>
 
-          <div className="glass-surface rounded-2xl p-8 hover:glow-purple transition-all hover:scale-105">
+          <div className="glass-surface rounded-2xl p-4 sm:p-8 hover:glow-purple transition-all hover:scale-105">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-[#7c3aed] to-[#6d28d9] rounded-xl flex items-center justify-center">
                 <MapPin className="w-6 h-6 text-white" />
@@ -273,7 +286,7 @@ const Aurora = () => {
           </div>
         </div>
 
-        <div className="glass-surface rounded-2xl p-8 mb-8">
+        <div className="glass-surface rounded-2xl p-4 sm:p-8 mb-6 md:mb-8">
           <h3 className="text-2xl font-bold text-white mb-6 uppercase tracking-wide">
             {t('aurora.visibilityEurope')}
           </h3>
@@ -292,9 +305,9 @@ const Aurora = () => {
               const visible = kpValue >= minKp;
               const chance = Math.min(100, Math.max(0, ((kpValue - minKp + 1) / 3) * 100));
               return (
-                <div key={city} className="flex items-center gap-4">
-                  <div className="w-48 text-sm text-[#94a3b8] flex-shrink-0">{city}</div>
-                  <div className="flex-1 bg-white/5 rounded-full h-3 overflow-hidden">
+                <div key={city} className="flex items-center gap-2 sm:gap-4">
+                  <div className="w-24 sm:w-48 text-xs sm:text-sm text-[#94a3b8] flex-shrink-0">{city}</div>
+                  <div className="flex-1 bg-white/5 rounded-full h-2 sm:h-3 overflow-hidden">
                     <div
                       className="h-full rounded-full transition-all duration-700"
                       style={{
@@ -305,7 +318,7 @@ const Aurora = () => {
                       }}
                     />
                   </div>
-                  <div className={`text-sm font-bold w-24 text-right flex-shrink-0 ${visible ? 'text-[#10b981]' : 'text-[#475569]'}`}>
+                  <div className={`text-xs sm:text-sm font-bold w-14 sm:w-24 text-right flex-shrink-0 ${visible ? 'text-[#10b981]' : 'text-[#475569]'}`}>
                     {visible ? `~${Math.round(chance)}%` : t('aurora.notVisible')}
                   </div>
                 </div>
@@ -324,7 +337,7 @@ const Aurora = () => {
             {isGlobeLoading && <div className="w-5 h-5 border-2 border-[#10b981]/20 border-t-[#10b981] rounded-full animate-spin" />}
           </div>
           
-          <div className="relative w-full flex justify-center bg-[#050510] min-h-[500px] cursor-grab active:cursor-grabbing">
+          <div ref={globeContainerRef} className="relative w-full flex justify-center bg-[#050510] cursor-grab active:cursor-grabbing" style={{ minHeight: Math.max(320, Math.round(globeWidth * 0.75)) }}>
             {isGlobeLoading && auroraData.length === 0 ? (
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <div className="w-12 h-12 border-4 border-[#10b981]/20 border-t-[#10b981] rounded-full animate-spin mb-4" />
@@ -333,8 +346,8 @@ const Aurora = () => {
             ) : (
               <Globe
                 ref={globeRef}
-                width={800}
-                height={500}
+                width={globeWidth}
+                height={Math.max(320, Math.round(globeWidth * 0.75))}
                 backgroundColor="rgba(0,0,0,0)"
                 globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
                 atmosphereColor="rgba(0,180,60,0.15)"

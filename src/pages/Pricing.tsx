@@ -59,7 +59,7 @@ const Pricing = () => {
   ];
 
   return (
-    <div className="min-h-screen py-24">
+    <div className="min-h-screen pt-20 pb-16 md:pt-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
@@ -76,7 +76,7 @@ const Pricing = () => {
               key={index}
               className={`relative bg-white/5 backdrop-blur-sm border rounded-2xl p-8 ${
                 plan.highlighted
-                  ? 'border-[#00ff88] ring-2 ring-[#00ff88]/20 scale-105'
+                  ? 'border-[#00ff88] ring-2 ring-[#00ff88]/20 md:scale-105'
                   : 'border-white/10'
               }`}
             >

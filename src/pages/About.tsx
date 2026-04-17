@@ -22,7 +22,7 @@ const About = () => {
   ];
 
   return (
-    <div className="min-h-screen pt-24 pb-16 relative">
+    <div className="min-h-screen pt-28 md:pt-24 pb-16 relative">
       <div className="star-field">
         {stars.map((s) => (
           <div
