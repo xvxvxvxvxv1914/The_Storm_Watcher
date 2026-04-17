@@ -431,7 +431,7 @@ const Home = () => {
             <div className="text-4xl font-bold text-white mb-1">$0<span className="text-lg text-[#94a3b8] font-normal">/month</span></div>
             <p className="text-[#64748b] text-sm mb-8">Always free, no credit card needed.</p>
             <ul className="space-y-3 mb-8">
-              {['Real-time Kp index', 'Basic geomagnetic alerts', '3-day forecast', 'Web access only'].map(f => (
+              {['Real-time Kp index', 'Storm Score index', '3-day forecast', 'Basic geomagnetic alerts', 'Web access only', 'Install as PWA'].map(f => (
                 <li key={f} className="flex items-center gap-3 text-[#94a3b8] text-sm">
                   <Check className="w-4 h-4 text-[#10b981] shrink-0" />
                   {f}
@@ -452,7 +452,7 @@ const Home = () => {
             <div className="text-4xl font-bold text-white mb-1">$4.99<span className="text-lg text-[#94a3b8] font-normal">/month</span></div>
             <p className="text-[#64748b] text-sm mb-8">For serious aurora chasers.</p>
             <ul className="space-y-3 mb-8">
-              {['Everything in Free', 'Hourly forecasts up to 7 days', 'Push notifications', 'Aurora visibility map', 'Storm Score index', 'Install as PWA'].map(f => (
+              {['Everything in Free', 'Hourly forecasts up to 7 days', 'Push notifications', 'Aurora visibility map', 'Aurora Calendar', 'Community photo gallery', 'Aurora Hunt gamification', 'Feature voting priority'].map(f => (
                 <li key={f} className="flex items-center gap-3 text-[#94a3b8] text-sm">
                   <Check className="w-4 h-4 text-[#f97316] shrink-0" />
                   {f}
@@ -470,7 +470,7 @@ const Home = () => {
             <div className="text-4xl font-bold text-white mb-1">$9.99<span className="text-lg text-[#94a3b8] font-normal">/month</span></div>
             <p className="text-[#64748b] text-sm mb-8">The full storm experience.</p>
             <ul className="space-y-3 mb-8">
-              {['Everything in Pro', 'AI chatbot assistant', 'Aurora Calendar', 'Community photo gallery', 'Aurora Hunt gamification', 'Livestream access', 'Feature voting priority'].map(f => (
+              {['Everything in Pro', 'AI chatbot assistant', 'Livestream access', 'Full Aurora oval map', '30+ day history'].map(f => (
                 <li key={f} className="flex items-center gap-3 text-[#94a3b8] text-sm">
                   <Check className="w-4 h-4 text-[#7c3aed] shrink-0" />
                   {f}
