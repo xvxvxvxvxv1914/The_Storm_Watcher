@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Sun, Menu, X, Globe, User, LogOut } from 'lucide-react';
+import { Sun, Menu, X, Globe, User, LogOut, ChevronDown } from 'lucide-react';
 import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import PushNotificationBell from './PushNotificationBell';
@@ -9,7 +9,7 @@ const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [, setIsMoreOpen] = useState(false);
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
   const langMenuRef = useRef<HTMLDivElement>(null);
   const moreMenuRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
@@ -56,6 +56,8 @@ const Navigation = () => {
 
   const isActive = (path: string) => location.pathname === path;
 
+  const isMoreActive = moreLinks.some(link => isActive(link.to));
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass-surface">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -69,36 +71,56 @@ const Navigation = () => {
           </Link>
 
           <div className="hidden lg:flex items-center flex-1 min-w-0 ml-3 xl:ml-5 gap-2 xl:gap-3">
-            <div className="flex items-center justify-between flex-1 min-w-0 gap-0.5 xl:gap-1">
-              {navLinks.map((link) => (
+            <div className="flex items-center gap-1 xl:gap-2">
+              {mainLinks.map((link) => (
                 <Link
                   key={link.to}
                   to={link.to}
-                  className={`relative flex-1 min-w-0 px-1 text-center text-[10px] xl:text-xs font-semibold transition-colors whitespace-nowrap overflow-hidden text-ellipsis ${
+                  className={`relative px-2 xl:px-3 py-1 text-xs xl:text-sm font-semibold transition-colors whitespace-nowrap ${
                     isActive(link.to)
                       ? 'text-[#10b981]'
                       : 'text-[#94a3b8] hover:text-white'
                   }`}
-                  title={link.label}
                 >
-                  {link.to === '/sky' ? (
-                    <>
-                      <span className="xl:hidden">Sky</span>
-                      <span className="hidden xl:inline">{link.label}</span>
-                    </>
-                  ) : link.to === '/iss' ? (
-                    <>
-                      <span className="xl:hidden">ISS</span>
-                      <span className="hidden xl:inline">{link.label}</span>
-                    </>
-                  ) : (
-                    link.label
-                  )}
+                  {link.label}
                   {isActive(link.to) && (
                     <div className="absolute -bottom-2 left-1 right-1 h-0.5 bg-gradient-to-r from-[#10b981] to-[#14b8a6] rounded-full" />
                   )}
                 </Link>
               ))}
+
+              <div className="relative" ref={moreMenuRef}>
+                <button
+                  onClick={() => setIsMoreOpen(!isMoreOpen)}
+                  className={`relative flex items-center gap-1 px-2 xl:px-3 py-1 text-xs xl:text-sm font-semibold transition-colors whitespace-nowrap ${
+                    isMoreActive ? 'text-[#10b981]' : 'text-[#94a3b8] hover:text-white'
+                  }`}
+                >
+                  More
+                  <ChevronDown className={`w-3 h-3 transition-transform ${isMoreOpen ? 'rotate-180' : ''}`} />
+                  {isMoreActive && (
+                    <div className="absolute -bottom-2 left-1 right-1 h-0.5 bg-gradient-to-r from-[#10b981] to-[#14b8a6] rounded-full" />
+                  )}
+                </button>
+                {isMoreOpen && (
+                  <div className="absolute left-0 mt-3 w-44 glass-surface rounded-xl shadow-2xl py-2 border border-[#10b981]/20">
+                    {moreLinks.map((link) => (
+                      <Link
+                        key={link.to}
+                        to={link.to}
+                        onClick={() => setIsMoreOpen(false)}
+                        className={`block px-4 py-2 text-sm font-medium transition-colors ${
+                          isActive(link.to)
+                            ? 'text-[#10b981] bg-[#10b981]/10'
+                            : 'text-[#94a3b8] hover:text-white hover:bg-white/5'
+                        }`}
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             <PushNotificationBell />

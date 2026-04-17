@@ -681,6 +681,23 @@ const translations: Record<Language, Record<string, string>> = {
     'alerts.radio': 'Apagones de radio (escala R)',
     'alerts.proton': 'Eventos de protones',
 
+    // Auth
+    'auth.signIn': 'Iniciar sesión',
+    'auth.signUp': 'Registrarse',
+    'auth.signInDescription': '¡Bienvenido de nuevo! Inicia sesión en tu cuenta',
+    'auth.signUpDescription': 'Crea una cuenta para comenzar',
+    'auth.email': 'Correo electrónico',
+    'auth.password': 'Contraseña',
+    'auth.fullName': 'Nombre completo',
+    'auth.emailPlaceholder': 'tu@correo.com',
+    'auth.passwordPlaceholder': 'Introduce tu contraseña',
+    'auth.fullNamePlaceholder': 'Tu nombre completo',
+    'auth.orContinueWith': 'O continúa con',
+    'auth.loading': 'Cargando...',
+    'auth.noAccount': '¿No tienes cuenta? Regístrate',
+    'auth.haveAccount': '¿Ya tienes cuenta? Inicia sesión',
+    'auth.logout': 'Cerrar sesión',
+
     // Pricing
     'pricing.title': 'Elige tu plan',
     'pricing.subtitle': 'Obtén los datos que necesitas',
@@ -920,6 +937,23 @@ const translations: Record<Language, Record<string, string>> = {
     'alerts.radiation': 'Tempêtes de rayonnement solaire (échelle S)',
     'alerts.radio': 'Pannes radio (échelle R)',
     'alerts.proton': 'Événements protoniques',
+
+    // Auth
+    'auth.signIn': 'Se connecter',
+    'auth.signUp': "S'inscrire",
+    'auth.signInDescription': 'Bon retour ! Connectez-vous à votre compte',
+    'auth.signUpDescription': 'Créez un compte pour commencer',
+    'auth.email': 'E-mail',
+    'auth.password': 'Mot de passe',
+    'auth.fullName': 'Nom complet',
+    'auth.emailPlaceholder': 'votre@email.com',
+    'auth.passwordPlaceholder': 'Entrez votre mot de passe',
+    'auth.fullNamePlaceholder': 'Votre nom complet',
+    'auth.orContinueWith': 'Ou continuer avec',
+    'auth.loading': 'Chargement...',
+    'auth.noAccount': "Pas de compte ? S'inscrire",
+    'auth.haveAccount': 'Déjà un compte ? Se connecter',
+    'auth.logout': 'Déconnexion',
 
     // Pricing
     'pricing.title': 'Choisissez votre plan',
@@ -1161,6 +1195,23 @@ const translations: Record<Language, Record<string, string>> = {
     'alerts.radio': 'Funkausfälle (R-Skala)',
     'alerts.proton': 'Protonenereignisse',
 
+    // Auth
+    'auth.signIn': 'Anmelden',
+    'auth.signUp': 'Registrieren',
+    'auth.signInDescription': 'Willkommen zurück! Melden Sie sich in Ihrem Konto an',
+    'auth.signUpDescription': 'Erstellen Sie ein Konto, um loszulegen',
+    'auth.email': 'E-Mail',
+    'auth.password': 'Passwort',
+    'auth.fullName': 'Vollständiger Name',
+    'auth.emailPlaceholder': 'ihre@email.com',
+    'auth.passwordPlaceholder': 'Passwort eingeben',
+    'auth.fullNamePlaceholder': 'Ihr vollständiger Name',
+    'auth.orContinueWith': 'Oder weiter mit',
+    'auth.loading': 'Wird geladen...',
+    'auth.noAccount': 'Kein Konto? Registrieren',
+    'auth.haveAccount': 'Bereits ein Konto? Anmelden',
+    'auth.logout': 'Abmelden',
+
     // Pricing
     'pricing.title': 'Wählen Sie Ihren Plan',
     'pricing.subtitle': 'Erhalten Sie die Daten, die Sie benötigen',
@@ -1400,6 +1451,23 @@ const translations: Record<Language, Record<string, string>> = {
     'alerts.radiation': 'Радиационные бури (шкала S)',
     'alerts.radio': 'Радиопомехи (шкала R)',
     'alerts.proton': 'Протонные события',
+
+    // Auth
+    'auth.signIn': 'Войти',
+    'auth.signUp': 'Зарегистрироваться',
+    'auth.signInDescription': 'С возвращением! Войдите в свой аккаунт',
+    'auth.signUpDescription': 'Создайте аккаунт, чтобы начать',
+    'auth.email': 'Эл. почта',
+    'auth.password': 'Пароль',
+    'auth.fullName': 'Полное имя',
+    'auth.emailPlaceholder': 'ваш@email.com',
+    'auth.passwordPlaceholder': 'Введите пароль',
+    'auth.fullNamePlaceholder': 'Ваше полное имя',
+    'auth.orContinueWith': 'Или продолжить с',
+    'auth.loading': 'Загрузка...',
+    'auth.noAccount': 'Нет аккаунта? Зарегистрироваться',
+    'auth.haveAccount': 'Уже есть аккаунт? Войти',
+    'auth.logout': 'Выйти',
 
     // Pricing
     'pricing.title': 'Выберите свой план',
@@ -1641,6 +1709,23 @@ const translations: Record<Language, Record<string, string>> = {
     'alerts.radio': '无线电中断（R级）',
     'alerts.proton': '质子事件',
 
+    // Auth
+    'auth.signIn': '登录',
+    'auth.signUp': '注册',
+    'auth.signInDescription': '欢迎回来！登录您的账户',
+    'auth.signUpDescription': '创建账户以开始使用',
+    'auth.email': '电子邮件',
+    'auth.password': '密码',
+    'auth.fullName': '全名',
+    'auth.emailPlaceholder': '您的@邮箱.com',
+    'auth.passwordPlaceholder': '输入密码',
+    'auth.fullNamePlaceholder': '您的全名',
+    'auth.orContinueWith': '或继续使用',
+    'auth.loading': '加载中...',
+    'auth.noAccount': '没有账户？注册',
+    'auth.haveAccount': '已有账户？登录',
+    'auth.logout': '退出登录',
+
     // Pricing
     'pricing.title': '选择您的计划',
     'pricing.subtitle': '获取您需要的数据',
@@ -1880,6 +1965,23 @@ const translations: Record<Language, Record<string, string>> = {
     'alerts.radiation': '太陽放射線嵐（Sスケール）',
     'alerts.radio': '電波障害（Rスケール）',
     'alerts.proton': '陽子イベント',
+
+    // Auth
+    'auth.signIn': 'ログイン',
+    'auth.signUp': '登録',
+    'auth.signInDescription': 'おかえりなさい！アカウントにログインしてください',
+    'auth.signUpDescription': 'アカウントを作成して始めましょう',
+    'auth.email': 'メールアドレス',
+    'auth.password': 'パスワード',
+    'auth.fullName': 'フルネーム',
+    'auth.emailPlaceholder': 'your@email.com',
+    'auth.passwordPlaceholder': 'パスワードを入力',
+    'auth.fullNamePlaceholder': 'フルネームを入力',
+    'auth.orContinueWith': 'または続ける',
+    'auth.loading': '読み込み中...',
+    'auth.noAccount': 'アカウントをお持ちでない方は登録',
+    'auth.haveAccount': 'すでにアカウントをお持ちの方はログイン',
+    'auth.logout': 'ログアウト',
 
     // Pricing
     'pricing.title': 'プランを選択',

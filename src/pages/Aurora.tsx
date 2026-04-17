@@ -10,10 +10,41 @@ import { useLanguage } from '../contexts/LanguageContext';
 const Aurora = () => {
   const { t } = useLanguage();
   const [kpValue, setKpValue] = useState<number>(0);
-    const [auroraData, setAuroraData] = useState<AuroraOvationPoint[]>([]);
+  const [auroraData, setAuroraData] = useState<AuroraOvationPoint[]>([]);
   const [isGlobeLoading, setIsGlobeLoading] = useState(true);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const globeRef = useRef<any>(null);
+
+  const auroraTexture = useMemo(() => {
+    if (auroraData.length === 0) return null;
+    const W = 2048, H = 1024;
+    const canvas = document.createElement('canvas');
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext('2d')!;
+    ctx.globalCompositeOperation = 'lighter';
+    auroraData.forEach(point => {
+      if (point.intensity < 2) return;
+      const x = ((point.lng + 180) / 360) * W;
+      const y = ((90 - point.lat) / 180) * H;
+      const intensity = point.intensity;
+      const radius = 18 + intensity / 2.5;
+      const alpha = Math.min(0.65, intensity / 55);
+      let r = 57, g = 255, b = 20;
+      if (intensity > 75) { r = 220; g = 20; b = 20; }
+      else if (intensity > 50) { r = 255; g = 100; b = 0; }
+      else if (intensity > 25) { r = 80; g = 255; b = 40; }
+      const grad = ctx.createRadialGradient(x, y, 0, x, y, radius);
+      grad.addColorStop(0, `rgba(${r},${g},${b},${alpha})`);
+      grad.addColorStop(0.45, `rgba(${r},${g},${b},${alpha * 0.35})`);
+      grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    return new THREE.CanvasTexture(canvas);
+  }, [auroraData]);
 
   useEffect(() => {
     const fetchAuroraModel = async () => {
@@ -31,63 +62,104 @@ const Aurora = () => {
 
   useEffect(() => {
     if (!globeRef.current) return;
-    
-    // Time and date setup
+
     const now = new Date();
-    const D = now.getTime() / 86400000 + 2440587.5 - 2451545.0; // Days since J2000
-    
-    // Solar position approximation (accurate to ~1 deg)
+    const D = now.getTime() / 86400000 + 2440587.5 - 2451545.0;
+
     const g = (357.529 + 0.98560028 * D) % 360;
     const q = (280.459 + 0.98564736 * D) % 360;
     const L = (q + 1.915 * Math.sin(g * Math.PI / 180) + 0.020 * Math.sin(2 * g * Math.PI / 180)) % 360;
     const e = 23.439 - 0.00000036 * D;
-    
+
     const ra = Math.atan2(Math.cos(e * Math.PI/180) * Math.sin(L * Math.PI/180), Math.cos(L * Math.PI/180)) * 180 / Math.PI;
     const decl = Math.asin(Math.sin(e * Math.PI/180) * Math.sin(L * Math.PI/180)) * 180 / Math.PI;
     const gmst = (18.697374558 + 24.06570982441908 * D) % 24;
-    
+
     let lng = ra - (gmst * 15);
     lng = (lng + 540) % 360 - 180;
-    
-    // Convert to globe coordinate space (Y up, X right, Z front)
+
     const latRad = decl * Math.PI / 180;
     const lngRad = lng * Math.PI / 180;
-    
+
     setTimeout(() => {
       try {
         if (!globeRef.current) return;
         const scene = typeof globeRef.current.scene === 'function' ? globeRef.current.scene() : null;
         if (!scene) return;
-        
-        // Remove existing standard lights
-          const lightsToRemove = scene.children.filter((c: THREE.Light | THREE.Object3D) => typeof c.type === 'string' && c.type.includes('Light'));
-          const camera = typeof globeRef.current.camera === 'function' ? globeRef.current.camera() : null;
-          if (camera) {
-             camera.children.filter((c: THREE.Light | THREE.Object3D) => typeof c.type === 'string' && c.type.includes('Light'))
-               .forEach((l: THREE.Light | THREE.Object3D) => camera.remove(l));
+
+        const lightsToRemove = scene.children.filter((c: THREE.Light | THREE.Object3D) => typeof c.type === 'string' && c.type.includes('Light'));
+        const camera = typeof globeRef.current.camera === 'function' ? globeRef.current.camera() : null;
+        if (camera) {
+          camera.children.filter((c: THREE.Light | THREE.Object3D) => typeof c.type === 'string' && c.type.includes('Light'))
+            .forEach((l: THREE.Light | THREE.Object3D) => camera.remove(l));
         }
         lightsToRemove.forEach((l: THREE.Light | THREE.Object3D) => scene.remove(l));
-        
-        // Add minimal ambient light so the night side isn't 100% pitch black
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.015);
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.03);
         scene.add(ambientLight);
-        
-        // Add the Sun
-        const sunLight = new THREE.DirectionalLight(0xffffff, 4.0); // Bright, high-contrast sunlight
+
+        const sunLight = new THREE.DirectionalLight(0xffffff, 4.0);
         sunLight.position.set(
           Math.cos(latRad) * Math.sin(lngRad) * 1000,
           Math.sin(latRad) * 1000,
           Math.cos(latRad) * Math.cos(lngRad) * 1000
         );
         scene.add(sunLight);
+
+        // City lights layer (added once)
+        const existingCityLights = scene.children.find((c: THREE.Object3D) => c.userData?.isCityLights);
+        if (!existingCityLights) {
+          new THREE.TextureLoader().load('//unpkg.com/three-globe/example/img/earth-night.jpg', (texture) => {
+            const geo = new THREE.SphereGeometry(100.3, 64, 32);
+            const mat = new THREE.MeshBasicMaterial({
+              map: texture,
+              transparent: true,
+              opacity: 0.45,
+              blending: THREE.AdditiveBlending,
+              depthWrite: false,
+            });
+            const mesh = new THREE.Mesh(geo, mat);
+            mesh.rotation.y = -Math.PI / 2;
+            mesh.renderOrder = 1;
+            mesh.userData = { isCityLights: true };
+            scene.add(mesh);
+          });
+        }
+
+        // Aurora overlay — multiple layers at different altitudes (curtain effect)
+        scene.children
+          .filter((c: THREE.Object3D) => c.userData?.isAurora)
+          .forEach((c: THREE.Object3D) => scene.remove(c));
+
+        if (auroraTexture) {
+          const layers = [
+            { radius: 102.0, opacity: 0.6 },
+            { radius: 104.0, opacity: 0.35 },
+            { radius: 106.5, opacity: 0.15 },
+          ];
+          layers.forEach(({ radius, opacity }) => {
+            const geo = new THREE.SphereGeometry(radius, 128, 64);
+            const mat = new THREE.MeshBasicMaterial({
+              map: auroraTexture,
+              transparent: true,
+              opacity,
+              blending: THREE.AdditiveBlending,
+              depthWrite: false,
+              side: THREE.FrontSide,
+            });
+            const mesh = new THREE.Mesh(geo, mat);
+            mesh.rotation.y = -Math.PI / 2;
+            mesh.userData = { isAurora: true };
+            scene.add(mesh);
+          });
+        }
       } catch (err) {
         console.error("Failed to inject realistic lighting", err);
       }
-    }, 1000); 
-  }, [auroraData]);
+    }, 1000);
+  }, [auroraData, auroraTexture]);
 
   useEffect(() => {
-    // Initial zoom for globe
     if (globeRef.current) {
       globeRef.current.pointOfView({ lat: 90, lng: 0, altitude: 2 }, 1000);
     }
@@ -265,22 +337,8 @@ const Aurora = () => {
                 height={500}
                 backgroundColor="rgba(0,0,0,0)"
                 globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
-                bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
-                hexBinPointsData={auroraData}
-                hexBinPointWeight="intensity"
-                hexBinResolution={4}
-                hexMargin={0.2}
-                hexBinPointColor={(d: any) => {
-                  const avg = d.sumWeight / d.points.length;
-                  const o = Math.max(0.15, Math.min(0.95, avg / 60));
-                  // Aurora colors: bright green base, cyan middle, purple/pink top
-                  if (avg > 75) return "rgba(244, 63, 94, " + o + ")";   // Pinkish-red (Extreme)
-                  if (avg > 50) return "rgba(168, 85, 247, " + o + ")";  // Purple (High)
-                  if (avg > 25) return "rgba(45, 212, 191, " + o + ")";  // Cyan (Moderate)
-                  return "rgba(34, 197, 94, " + o + ")";                 // Bright Green (Low/Base)
-                }}
-                hexAltitude={(d: any) => Math.max(0.01, (d.sumWeight / d.points.length) / 100)}
-                hexTransitionDuration={1000}
+                atmosphereColor="rgba(0,180,60,0.15)"
+                atmosphereAltitude={0.15}
               />
             )}
           </div>
