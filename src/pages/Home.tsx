@@ -512,75 +512,75 @@ const Home = () => {
         </div>
       </div>
 
-      {/* TODO: Remove when Stripe payments are live — pricing section hidden until payment system is ready */}
-      {/* Pricing
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-        <div className="text-center mb-14">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 uppercase tracking-wide">
-            Simple, transparent pricing
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
-          Free
-          <div className="glass-surface rounded-2xl p-8 border border-white/10">
-            <h3 className="text-xl font-bold text-white mb-1">Free</h3>
-            <div className="text-4xl font-bold text-white mb-1">$0<span className="text-lg text-[#94a3b8] font-normal">/month</span></div>
-            <p className="text-[#64748b] text-sm mb-8">Always free, no credit card needed.</p>
-            <ul className="space-y-3 mb-8">
-              {['Real-time Kp index', 'Storm Score index', '3-day forecast', 'Basic geomagnetic alerts', 'Web access only', 'Install as PWA'].map(f => (
-                <li key={f} className="flex items-center gap-3 text-[#94a3b8] text-sm">
-                  <Check className="w-4 h-4 text-[#10b981] shrink-0" />
-                  {f}
-                </li>
-              ))}
-            </ul>
-            <Link to="/auth" className="block w-full py-3 text-center rounded-lg border border-white/20 text-white font-semibold hover:border-[#f97316]/50 transition-all">
-              Get Started
-            </Link>
+      {/* TODO: Remove when Stripe payments are live — set SHOW_PRICING = true to restore */}
+      {(false as boolean) && (
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 uppercase tracking-wide">
+              Simple, transparent pricing
+            </h2>
           </div>
 
-          Pro
-          <div className="glass-surface rounded-2xl p-8 border-2 border-[#f97316] relative">
-            <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-[#f97316] to-[#fbbf24] rounded-full text-white text-xs font-bold uppercase tracking-wider">
-              Most Popular
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+            {/* Free */}
+            <div className="glass-surface rounded-2xl p-8 border border-white/10">
+              <h3 className="text-xl font-bold text-white mb-1">Free</h3>
+              <div className="text-4xl font-bold text-white mb-1">$0<span className="text-lg text-[#94a3b8] font-normal">/month</span></div>
+              <p className="text-[#64748b] text-sm mb-8">Always free, no credit card needed.</p>
+              <ul className="space-y-3 mb-8">
+                {['Real-time Kp index', 'Storm Score index', '3-day forecast', 'Basic geomagnetic alerts', 'Web access only', 'Install as PWA'].map(f => (
+                  <li key={f} className="flex items-center gap-3 text-[#94a3b8] text-sm">
+                    <Check className="w-4 h-4 text-[#10b981] shrink-0" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link to="/auth" className="block w-full py-3 text-center rounded-lg border border-white/20 text-white font-semibold hover:border-[#f97316]/50 transition-all">
+                Get Started
+              </Link>
             </div>
-            <h3 className="text-xl font-bold text-white mb-1">Pro</h3>
-            <div className="text-4xl font-bold text-white mb-1">$4.99<span className="text-lg text-[#94a3b8] font-normal">/month</span></div>
-            <p className="text-[#64748b] text-sm mb-8">For serious aurora chasers.</p>
-            <ul className="space-y-3 mb-8">
-              {['Everything in Free', 'Hourly forecasts up to 7 days', 'Push notifications', 'Aurora visibility map', 'Aurora Calendar', 'Community photo gallery', 'Aurora Hunt gamification', 'Feature voting priority'].map(f => (
-                <li key={f} className="flex items-center gap-3 text-[#94a3b8] text-sm">
-                  <Check className="w-4 h-4 text-[#f97316] shrink-0" />
-                  {f}
-                </li>
-              ))}
-            </ul>
-            <Link to="/auth" className="block w-full py-3 text-center rounded-lg bg-gradient-to-r from-[#f97316] to-[#fbbf24] text-white font-bold hover:shadow-lg hover:shadow-[#f97316]/40 transition-all">
-              Get Pro
-            </Link>
-          </div>
 
-          Premium
-          <div className="glass-surface rounded-2xl p-8 border border-[#7c3aed]/50">
-            <h3 className="text-xl font-bold text-white mb-1">Premium</h3>
-            <div className="text-4xl font-bold text-white mb-1">$9.99<span className="text-lg text-[#94a3b8] font-normal">/month</span></div>
-            <p className="text-[#64748b] text-sm mb-8">The full storm experience.</p>
-            <ul className="space-y-3 mb-8">
-              {['Everything in Pro', 'AI chatbot assistant', 'Livestream access', 'Full Aurora oval map', '30+ day history'].map(f => (
-                <li key={f} className="flex items-center gap-3 text-[#94a3b8] text-sm">
-                  <Check className="w-4 h-4 text-[#7c3aed] shrink-0" />
-                  {f}
-                </li>
-              ))}
-            </ul>
-            <Link to="/auth" className="block w-full py-3 text-center rounded-lg bg-gradient-to-r from-[#7c3aed] to-[#6d28d9] text-white font-bold hover:shadow-lg hover:shadow-[#7c3aed]/40 transition-all">
-              Get Premium
-            </Link>
+            {/* Pro */}
+            <div className="glass-surface rounded-2xl p-8 border-2 border-[#f97316] relative">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-[#f97316] to-[#fbbf24] rounded-full text-white text-xs font-bold uppercase tracking-wider">
+                Most Popular
+              </div>
+              <h3 className="text-xl font-bold text-white mb-1">Pro</h3>
+              <div className="text-4xl font-bold text-white mb-1">$4.99<span className="text-lg text-[#94a3b8] font-normal">/month</span></div>
+              <p className="text-[#64748b] text-sm mb-8">For serious aurora chasers.</p>
+              <ul className="space-y-3 mb-8">
+                {['Everything in Free', 'Hourly forecasts up to 7 days', 'Push notifications', 'Aurora visibility map', 'Aurora Calendar', 'Community photo gallery', 'Aurora Hunt gamification', 'Feature voting priority'].map(f => (
+                  <li key={f} className="flex items-center gap-3 text-[#94a3b8] text-sm">
+                    <Check className="w-4 h-4 text-[#f97316] shrink-0" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link to="/auth" className="block w-full py-3 text-center rounded-lg bg-gradient-to-r from-[#f97316] to-[#fbbf24] text-white font-bold hover:shadow-lg hover:shadow-[#f97316]/40 transition-all">
+                Get Pro
+              </Link>
+            </div>
+
+            {/* Premium */}
+            <div className="glass-surface rounded-2xl p-8 border border-[#7c3aed]/50">
+              <h3 className="text-xl font-bold text-white mb-1">Premium</h3>
+              <div className="text-4xl font-bold text-white mb-1">$9.99<span className="text-lg text-[#94a3b8] font-normal">/month</span></div>
+              <p className="text-[#64748b] text-sm mb-8">The full storm experience.</p>
+              <ul className="space-y-3 mb-8">
+                {['Everything in Pro', 'AI chatbot assistant', 'Livestream access', 'Full Aurora oval map', '30+ day history'].map(f => (
+                  <li key={f} className="flex items-center gap-3 text-[#94a3b8] text-sm">
+                    <Check className="w-4 h-4 text-[#7c3aed] shrink-0" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link to="/auth" className="block w-full py-3 text-center rounded-lg bg-gradient-to-r from-[#7c3aed] to-[#6d28d9] text-white font-bold hover:shadow-lg hover:shadow-[#7c3aed]/40 transition-all">
+                Get Premium
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
-      */}
+      )}
 
     </div>
   );
