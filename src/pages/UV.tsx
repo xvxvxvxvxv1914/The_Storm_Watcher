@@ -153,9 +153,9 @@ const UV = () => {
                 itemStyle={{ color: '#fff' }}
                 formatter={(v: unknown) => [Number(v), t('uv.chartTooltip')]}
               />
-              <ReferenceLine y={3} stroke="#10b981" strokeDasharray="4 4" label={{ value: 'Low 3', fill: '#10b981', fontSize: 11 }} />
-              <ReferenceLine y={6} stroke="#eab308" strokeDasharray="4 4" label={{ value: 'Moderate 6', fill: '#eab308', fontSize: 11 }} />
-              <ReferenceLine y={8} stroke="#f97316" strokeDasharray="4 4" label={{ value: 'High 8', fill: '#f97316', fontSize: 11 }} />
+              <ReferenceLine y={3} stroke="#10b981" strokeDasharray="4 4" label={{ value: t('uv.low3'), fill: '#10b981', fontSize: 11 }} />
+              <ReferenceLine y={6} stroke="#eab308" strokeDasharray="4 4" label={{ value: t('uv.mod6'), fill: '#eab308', fontSize: 11 }} />
+              <ReferenceLine y={8} stroke="#f97316" strokeDasharray="4 4" label={{ value: t('uv.high8'), fill: '#f97316', fontSize: 11 }} />
               <ReferenceLine x={uvData.hourly[currentHour]?.time} stroke="#ffffff50" strokeDasharray="4 4" />
               <Area type="monotone" dataKey="uv_index" stroke="#fbbf24" strokeWidth={2} fill="url(#uvGradient)" dot={false} />
             </AreaChart>
@@ -167,11 +167,11 @@ const UV = () => {
           <h3 className="text-lg font-bold text-white mb-5 uppercase tracking-wide">{t('uv.scale')}</h3>
           <div className="space-y-3">
             {[
-              { range: '0–2', label: 'Low', color: '#10b981', advice: 'No protection needed.' },
-              { range: '3–5', label: 'Moderate', color: '#eab308', advice: 'Sunscreen SPF 30+ recommended.' },
-              { range: '6–7', label: 'High', color: '#f97316', advice: 'SPF 50+, hat and sunglasses required.' },
-              { range: '8–10', label: 'Very High', color: '#ef4444', advice: 'Avoid sun 10am–4pm.' },
-              { range: '11+', label: 'Extreme', color: '#7c3aed', advice: 'Stay indoors during midday.' },
+                { range: '0–2', label: t('uv.scaleLow'), color: '#10b981', advice: t('uv.advLow') },
+                { range: '3–5', label: t('uv.scaleModerate'), color: '#eab308', advice: t('uv.advMod') },
+                { range: '6–7', label: t('uv.scaleHigh'), color: '#f97316', advice: t('uv.advHigh') },
+                { range: '8–10', label: t('uv.scaleVHigh'), color: '#ef4444', advice: t('uv.advVHigh') },
+                { range: '11+', label: t('uv.scaleExtreme'), color: '#7c3aed', advice: t('uv.advExtreme') },
             ].map(item => (
               <div key={item.range} className="flex items-center gap-4">
                 <div className="w-12 text-center font-bold text-sm" style={{ color: item.color }}>{item.range}</div>

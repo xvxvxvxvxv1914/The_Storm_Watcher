@@ -325,6 +325,21 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.switchLight': 'Switch to light mode',
     'nav.switchDark': 'Switch to dark mode',
     'auth.checkEmail': 'Check your email',
+
+    // UV Scale missing terms
+    'uv.scaleLow': 'Low',
+    'uv.scaleModerate': 'Moderate',
+    'uv.scaleHigh': 'High',
+    'uv.scaleVHigh': 'Very High',
+    'uv.scaleExtreme': 'Extreme',
+    'uv.advLow': 'No protection needed.',
+    'uv.advMod': 'Sunscreen SPF 30+ recommended.',
+    'uv.advHigh': 'SPF 50+, hat and sunglasses required.',
+    'uv.advVHigh': 'Avoid sun 10am–4pm.',
+    'uv.advExtreme': 'Stay indoors during midday.',
+    'uv.low3': 'Low 3',
+    'uv.mod6': 'Moderate 6',
+    'uv.high8': 'High 8',
   },
   bg: {
     // Navigation
@@ -635,6 +650,20 @@ const translations: Record<Language, Record<string, string>> = {
     'dashboard.nextUpdate': 'Следващо обновяване след:',
     'dashboard.history': 'Kp Индекс — История',
 
+    // UV Scale missing terms
+    'uv.scaleLow': 'Ниско',
+    'uv.scaleModerate': 'Умерено',
+    'uv.scaleHigh': 'Високо',
+    'uv.scaleVHigh': 'Много Високо',
+    'uv.scaleExtreme': 'Екстремно',
+    'uv.advLow': 'Не е нужна защита.',
+    'uv.advMod': 'Препоръчва се слънцезащитен крем SPF 30+.',
+    'uv.advHigh': 'Задължителни SPF 50+, шапка и очила.',
+    'uv.advVHigh': 'Избягвайте слънцето между 10 и 16 ч.',
+    'uv.advExtreme': 'Останете на закрито по обяд.',
+    'uv.low3': 'Ниско 3',
+    'uv.mod6': 'Умерено 6',
+    'uv.high8': 'Високо 8',
   },
   es: {
     // Navigation
