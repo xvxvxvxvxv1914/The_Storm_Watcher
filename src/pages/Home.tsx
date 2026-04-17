@@ -392,17 +392,17 @@ const Home = () => {
       {!loading && kpValue !== null && (() => {
         const score = Math.round((kpValue / 9) * 100);
         const meanings = [
-          { max: 25, emoji: '🌙', text: 'Tonight is quiet. No aurora expected anywhere in Europe.', color: 'from-[#10b981]/20 to-[#059669]/10', border: 'border-[#10b981]/30', accent: '#10b981' },
-          { max: 50, emoji: '⚡', text: 'Moderate activity. Aurora may be visible in Scandinavia and Iceland.', color: 'from-[#eab308]/20 to-[#ca8a04]/10', border: 'border-[#eab308]/30', accent: '#eab308' },
-          { max: 75, emoji: '🌌', text: 'Geomagnetic storm! Aurora is visible in Northern Europe, possibly the UK.', color: 'from-[#f97316]/20 to-[#ea580c]/10', border: 'border-[#f97316]/30', accent: '#f97316' },
-          { max: 100, emoji: '🔴', text: 'Strong storm! Aurora is visible even in Central Europe. Go outside!', color: 'from-[#ef4444]/20 to-[#dc2626]/10', border: 'border-[#ef4444]/30', accent: '#ef4444' },
+          { max: 25, emoji: '🌙', text: t('home.meaningQuiet'), color: 'from-[#10b981]/20 to-[#059669]/10', border: 'border-[#10b981]/30', accent: '#10b981' },
+          { max: 50, emoji: '⚡', text: t('home.meaningModerate'), color: 'from-[#eab308]/20 to-[#ca8a04]/10', border: 'border-[#eab308]/30', accent: '#eab308' },
+          { max: 75, emoji: '🌌', text: t('home.meaningStorm'), color: 'from-[#f97316]/20 to-[#ea580c]/10', border: 'border-[#f97316]/30', accent: '#f97316' },
+          { max: 100, emoji: '🔴', text: t('home.meaningStrong'), color: 'from-[#ef4444]/20 to-[#dc2626]/10', border: 'border-[#ef4444]/30', accent: '#ef4444' },
         ];
         const m = meanings.find(x => score <= x.max) ?? meanings[3];
         return (
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
             <div className={`rounded-2xl p-8 bg-gradient-to-r ${m.color} border ${m.border} text-center`}>
               <p className="text-xs uppercase tracking-widest font-bold mb-4" style={{ color: m.accent }}>
-                What does this mean for me?
+                {t('home.meaning')}
               </p>
               <p className="text-2xl sm:text-3xl font-bold text-white">
                 {m.emoji} {m.text}
@@ -416,7 +416,7 @@ const Home = () => {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="text-center mb-14">
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 uppercase tracking-wide">
-            Everything you need to track the storm
+            {t('home.features2.title')}
           </h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
