@@ -1,14 +1,17 @@
 import { Mail, Sun } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const Footer = () => {
+  const { t } = useLanguage();
+
   const navLinks = [
-    { to: '/', label: 'Home' },
-    { to: '/dashboard', label: 'Map' },
-    { to: '/forecast', label: 'Forecast' },
-    { to: '/aurora', label: 'Aurora' },
-    { to: '/alerts', label: 'Alerts' },
-    { to: '/mood', label: 'Community' },
+    { to: '/', label: t('nav.home') },
+    { to: '/dashboard', label: t('nav.dashboard') },
+    { to: '/forecast', label: t('nav.forecast') },
+    { to: '/aurora', label: t('nav.aurora') },
+    { to: '/alerts', label: t('nav.alerts') },
+    { to: '/mood', label: t('nav.mood') },
   ];
 
   return (
@@ -26,13 +29,13 @@ const Footer = () => {
               <h3 className="text-white font-bold text-lg gradient-solar">The Storm Watcher</h3>
             </div>
             <p className="text-[#94a3b8] text-sm leading-relaxed">
-              Real-time space weather tracking for aurora chasers and space enthusiasts.
+              {t('footer.description')}
             </p>
           </div>
 
           {/* Links */}
           <div>
-            <h3 className="text-white font-bold mb-4 uppercase tracking-wider text-sm">Navigation</h3>
+            <h3 className="text-white font-bold mb-4 uppercase tracking-wider text-sm">{t('footer.navigation')}</h3>
             <ul className="space-y-2">
               {navLinks.map(link => (
                 <li key={link.to}>
@@ -46,7 +49,7 @@ const Footer = () => {
 
           {/* Contact & Social */}
           <div>
-            <h3 className="text-white font-bold mb-4 uppercase tracking-wider text-sm">Contact</h3>
+            <h3 className="text-white font-bold mb-4 uppercase tracking-wider text-sm">{t('footer.contact')}</h3>
             <a
               href="mailto:hello@thestormwatcher.com"
               className="flex items-center gap-2 text-[#94a3b8] text-sm hover:text-white transition-colors mb-6"
@@ -59,8 +62,8 @@ const Footer = () => {
 
         {/* Coming Soon — Mobile Apps */}
         <div className="border-t border-white/10 pt-8 mb-8 text-center">
-          <p className="text-xs font-bold uppercase tracking-widest text-[#475569] mb-1">Coming Soon</p>
-          <p className="text-[#94a3b8] text-sm mb-5">Available soon on mobile</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-[#475569] mb-1">{t('footer.comingSoon')}</p>
+          <p className="text-[#94a3b8] text-sm mb-5">{t('footer.mobileSoon')}</p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <div className="cursor-not-allowed opacity-50">
               <img

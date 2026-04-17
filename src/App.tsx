@@ -4,6 +4,7 @@ import { SpeedInsights } from '@vercel/speed-insights/react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
+import { useLanguage } from './contexts/LanguageContext';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import PlanGuard from './components/PlanGuard';
@@ -22,12 +23,15 @@ const ISS = lazy(() => import('./pages/ISS'));
 // TODO: Remove when Stripe payments are live — pricing page hidden until payment system is ready
 // const Pricing = lazy(() => import('./pages/Pricing'));
 
-const LoadingFallback = () => (
-  <div className="flex flex-col items-center justify-center min-h-[calc(100vh-16rem)] gap-4">
-    <div className="w-12 h-12 border-4 border-[#f97316]/20 border-t-[#f97316] rounded-full animate-spin"></div>
-    <div className="text-[#f97316] font-bold tracking-widest text-sm uppercase animate-pulse">Loading</div>
-  </div>
-);
+const LoadingFallback = () => {
+  const { t } = useLanguage();
+  return (
+    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-16rem)] gap-4">
+      <div className="w-12 h-12 border-4 border-[#f97316]/20 border-t-[#f97316] rounded-full animate-spin"></div>
+      <div className="text-[#f97316] font-bold tracking-widest text-sm uppercase animate-pulse">{t('app.loading')}</div>
+    </div>
+  );
+};
 
 function AppRoutes() {
   const { user } = useAuth();

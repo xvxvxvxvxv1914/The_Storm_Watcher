@@ -1,10 +1,9 @@
 import { Link } from 'react-router-dom';
 import { Lock, Sparkles } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 type Plan = 'free' | 'pro' | 'premium';
-
-const PLAN_RANK: Record<Plan, number> = { free: 0, pro: 1, premium: 2 };
 
 interface PlanGuardProps {
   requiredPlan: Plan;
@@ -12,7 +11,8 @@ interface PlanGuardProps {
 }
 
 const PlanGuard = ({ requiredPlan, children }: PlanGuardProps) => {
-  const { user, profile } = useAuth();
+  const { user } = useAuth();
+  const { t } = useLanguage();
 
   // TODO: Remove when Stripe payments are live
   const hasAccess = true; // Temporarily unlocked — all features free until payments are ready
@@ -48,15 +48,15 @@ const PlanGuard = ({ requiredPlan, children }: PlanGuardProps) => {
           <div className="flex items-center justify-center gap-2 mb-2">
             <Sparkles className="w-4 h-4" style={{ color: gradientFrom }} />
             <span className="text-xs font-bold uppercase tracking-widest" style={{ color: gradientFrom }}>
-              {planLabel} Feature
+              {planLabel === 'Pro' ? t('planguard.proFeature') : t('planguard.premiumFeature')}
             </span>
           </div>
 
           <h2 className="text-xl font-bold text-white mb-3">
-            Unlock this with Pro or Premium
+            {t('planguard.unlockTitle')}
           </h2>
           <p className="text-[#64748b] text-sm mb-7 leading-relaxed">
-            Available on <span className="font-semibold" style={{ color: gradientFrom }}>Pro</span> and <span className="font-semibold text-[#7c3aed]">Premium</span> plans.
+            {t('planguard.availableOn').split('Pro')[0]}<span className="font-semibold" style={{ color: gradientFrom }}>Pro</span>{t('planguard.availableOn').split('Pro')[1]?.split('Premium')[0]}<span className="font-semibold text-[#7c3aed]">Premium</span>{t('planguard.availableOn').split('Premium')[1]}
           </p>
 
           {!user ? (
@@ -65,7 +65,7 @@ const PlanGuard = ({ requiredPlan, children }: PlanGuardProps) => {
               className="block w-full py-3 rounded-lg font-bold text-white transition-all hover:scale-105 hover:shadow-lg"
               style={{ background: `linear-gradient(to right, ${gradientFrom}, ${gradientTo})`, boxShadow: `0 0 0 0 ${gradientFrom}` }}
             >
-              Sign In to Upgrade
+              {t('planguard.signInUpgrade')}
             </Link>
           ) : (
             <Link
@@ -73,7 +73,7 @@ const PlanGuard = ({ requiredPlan, children }: PlanGuardProps) => {
               className="block w-full py-3 rounded-lg font-bold text-white transition-all hover:scale-105 hover:shadow-lg"
               style={{ background: `linear-gradient(to right, ${gradientFrom}, ${gradientTo})` }}
             >
-              Upgrade to Pro or Premium
+              {t('planguard.upgradePro')}
             </Link>
           )}
         </div>

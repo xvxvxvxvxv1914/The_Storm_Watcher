@@ -168,7 +168,7 @@ const Dashboard = () => {
           </p>
           {countdown && (
             <p className="text-[#64748b] text-sm mt-1">
-              Next space weather update in:{' '}
+              {t('dashboard.nextUpdate')}{' '}
               <span className="text-[#f97316] font-mono font-bold tracking-wider">{countdown}</span>
             </p>
           )}

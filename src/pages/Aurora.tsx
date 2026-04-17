@@ -243,7 +243,7 @@ const Aurora = () => {
               </h3>
             </div>
             <div className="text-6xl font-bold mb-3" style={getKpGradientStyle(kpValue)}>{kpValue.toFixed(1)}</div>
-            <div className="text-[#94a3b8] text-sm uppercase tracking-wider">Current Value</div>
+            <div className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('aurora.currentValue')}</div>
           </div>
 
           <div className={`glass-surface rounded-2xl p-8 ${visibility.bgGlow} hover:scale-105 transition-transform`}>
@@ -256,7 +256,7 @@ const Aurora = () => {
               </h3>
             </div>
             <div className={`text-4xl font-bold mb-3 ${visibility.color}`}>{t(visibility.intensityKey)}</div>
-            <div className="text-[#94a3b8] text-sm uppercase tracking-wider">Aurora Strength</div>
+            <div className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('aurora.strength')}</div>
           </div>
 
           <div className="glass-surface rounded-2xl p-8 hover:glow-purple transition-all hover:scale-105">
@@ -269,25 +269,25 @@ const Aurora = () => {
               </h3>
             </div>
             <div className="text-6xl font-bold text-white mb-3">{visibility.latitude}°</div>
-            <div className="text-[#94a3b8] text-sm uppercase tracking-wider">Latitude North</div>
+            <div className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('aurora.latNorth')}</div>
           </div>
         </div>
 
         <div className="glass-surface rounded-2xl p-8 mb-8">
           <h3 className="text-2xl font-bold text-white mb-6 uppercase tracking-wide">
-            Видимост в Европа
+            {t('aurora.visibilityEurope')}
           </h3>
           <div className="space-y-3">
             {[
-              { city: 'Рейкявик, Исландия', lat: 64, minKp: 0 },
-              { city: 'Хелзинки, Финландия', lat: 60, minKp: 3 },
-              { city: 'Стокхолм, Швеция', lat: 59, minKp: 4 },
-              { city: 'Копенхаген, Дания', lat: 56, minKp: 5 },
-              { city: 'Берлин, Германия', lat: 52, minKp: 6 },
-              { city: 'Варшава, Полша', lat: 52, minKp: 6 },
-              { city: 'Прага, Чехия', lat: 50, minKp: 7 },
-              { city: 'Виена, Австрия', lat: 48, minKp: 7 },
-              { city: 'София, България', lat: 42, minKp: 8 },
+              { city: t('aurora.city.reykjavik'), lat: 64, minKp: 0 },
+              { city: t('aurora.city.helsinki'), lat: 60, minKp: 3 },
+              { city: t('aurora.city.stockholm'), lat: 59, minKp: 4 },
+              { city: t('aurora.city.copenhagen'), lat: 56, minKp: 5 },
+              { city: t('aurora.city.berlin'), lat: 52, minKp: 6 },
+              { city: t('aurora.city.warsaw'), lat: 52, minKp: 6 },
+              { city: t('aurora.city.prague'), lat: 50, minKp: 7 },
+              { city: t('aurora.city.vienna'), lat: 48, minKp: 7 },
+              { city: t('aurora.city.sofia'), lat: 42, minKp: 8 },
             ].map(({ city, minKp }) => {
               const visible = kpValue >= minKp;
               const chance = Math.min(100, Math.max(0, ((kpValue - minKp + 1) / 3) * 100));
@@ -305,14 +305,14 @@ const Aurora = () => {
                       }}
                     />
                   </div>
-                  <div className={`text-sm font-bold w-20 text-right flex-shrink-0 ${visible ? 'text-[#10b981]' : 'text-[#475569]'}`}>
-                    {visible ? `~${Math.round(chance)}%` : 'Не се вижда'}
+                  <div className={`text-sm font-bold w-24 text-right flex-shrink-0 ${visible ? 'text-[#10b981]' : 'text-[#475569]'}`}>
+                    {visible ? `~${Math.round(chance)}%` : t('aurora.notVisible')}
                   </div>
                 </div>
               );
             })}
           </div>
-          <p className="text-[#475569] text-xs mt-4">* Приблизителна вероятност при текущото Kp = {kpValue.toFixed(1)} и ясно небе</p>
+          <p className="text-[#475569] text-xs mt-4">* {t('aurora.approxChance')} {kpValue.toFixed(1)}</p>
         </div>
 
         
@@ -328,7 +328,7 @@ const Aurora = () => {
             {isGlobeLoading && auroraData.length === 0 ? (
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <div className="w-12 h-12 border-4 border-[#10b981]/20 border-t-[#10b981] rounded-full animate-spin mb-4" />
-                <div className="text-[#10b981] font-bold tracking-widest text-sm uppercase animate-pulse">Loading Aurora Model</div>
+                <div className="text-[#10b981] font-bold tracking-widest text-sm uppercase animate-pulse">{t('aurora.loadingModel')}</div>
               </div>
             ) : (
               <Globe
