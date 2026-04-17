@@ -51,10 +51,10 @@ const PlanGuard = ({ requiredPlan, children }: PlanGuardProps) => {
           </div>
 
           <h2 className="text-xl font-bold text-white mb-3">
-            Unlock {planLabel} to access this
+            Unlock this with Pro or Premium
           </h2>
           <p className="text-[#64748b] text-sm mb-7 leading-relaxed">
-            Upgrade to <span className="font-semibold" style={{ color: gradientFrom }}>{planLabel}</span> and get full access to this section and more.
+            Available on <span className="font-semibold" style={{ color: gradientFrom }}>Pro</span> and <span className="font-semibold text-[#7c3aed]">Premium</span> plans.
           </p>
 
           {!user ? (
@@ -71,7 +71,7 @@ const PlanGuard = ({ requiredPlan, children }: PlanGuardProps) => {
               className="block w-full py-3 rounded-lg font-bold text-white transition-all hover:scale-105 hover:shadow-lg"
               style={{ background: `linear-gradient(to right, ${gradientFrom}, ${gradientTo})` }}
             >
-              Upgrade to {planLabel}
+              Upgrade to Pro or Premium
             </Link>
           )}
         </div>
