@@ -340,7 +340,7 @@ const Mood = () => {
                     <Tooltip
                       contentStyle={{ backgroundColor: 'rgba(10,0,21,0.95)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
                       itemStyle={{ color: '#fff' }}
-                      formatter={(value: any, name: any) => [`${value} гласа`, name]}
+                      formatter={(value: unknown, name: unknown) => [`${Number(value)} гласа`, String(name)]}
                     />
                   </PieChart>
                 </ResponsiveContainer>

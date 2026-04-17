@@ -4,9 +4,16 @@ import { Calendar, TrendingUp, AlertCircle, Sun } from 'lucide-react';
 import { getKpForecast, getStormStatus, getKpGradientStyle } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 
+interface ForecastItem {
+  time: string;
+  fullTime: string;
+  kp: number;
+  date: Date;
+}
+
 const Forecast = () => {
   const { t } = useLanguage();
-  const [forecastData, setForecastData] = useState<any[]>([]);
+  const [forecastData, setForecastData] = useState<ForecastItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [, setLastUpdated] = useState<Date>(new Date());
 
@@ -76,7 +83,7 @@ const Forecast = () => {
   };
 
   const groupByDay = () => {
-    const grouped: { [key: string]: any[] } = {};
+    const grouped: { [key: string]: ForecastItem[] } = {};
     forecastData.forEach((item) => {
       const dayKey = item.date.toLocaleDateString('en-US', {
         month: 'long',
@@ -242,10 +249,12 @@ const Forecast = () => {
                     }
                     return value;
                   }}
-                  formatter={(value: any, name: any) => {
-                    if (name === 'kp') return [value.toFixed(2), 'Avg Kp'];
-                    if (name === 'maxKp') return [value.toFixed(2), 'Max Kp'];
-                    return [value.toFixed(2), name];
+                  formatter={(value: unknown, name: unknown) => {
+                    const numValue = Number(value);
+                    const strName = String(name);
+                    if (strName === 'kp') return [numValue.toFixed(2), 'Avg Kp'];
+                    if (strName === 'maxKp') return [numValue.toFixed(2), 'Max Kp'];
+                    return [numValue.toFixed(2), strName];
                   }}
                 />
                 <Bar

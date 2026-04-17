@@ -151,7 +151,7 @@ const UV = () => {
                 contentStyle={{ backgroundColor: 'rgba(10,0,21,0.95)', border: '1px solid rgba(251,191,36,0.3)', borderRadius: '12px', padding: '12px' }}
                 labelStyle={{ color: '#fbbf24', fontWeight: 'bold' }}
                 itemStyle={{ color: '#fff' }}
-                formatter={(v: any) => [v, t('uv.chartTooltip')]}
+                formatter={(v: unknown) => [Number(v), t('uv.chartTooltip')]}
               />
               <ReferenceLine y={3} stroke="#10b981" strokeDasharray="4 4" label={{ value: 'Low 3', fill: '#10b981', fontSize: 11 }} />
               <ReferenceLine y={6} stroke="#eab308" strokeDasharray="4 4" label={{ value: 'Moderate 6', fill: '#eab308', fontSize: 11 }} />
