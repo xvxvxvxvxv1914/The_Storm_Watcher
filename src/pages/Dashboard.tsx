@@ -253,7 +253,7 @@ const Dashboard = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <h3 className="text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
               <Radio className="w-6 h-6 text-[#f97316]" />
-              Kp Индекс — История
+              {t('dashboard.history')}
             </h3>
             <div className="flex gap-2">
               {(['24h', '48h', '72h'] as const).map((range) => (

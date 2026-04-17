@@ -851,6 +851,7 @@ const translations: Record<Language, Record<string, string>> = {
     'dashboard.tooltip.bz': 'La componente sur del campo magnético interplanetario (IMF). Cuando Bz es negativa, el campo magnético terrestre se abre y el viento solar entra — el factor clave para las auroras. Bz por debajo de -10 nT = actividad fuerte.',
     'dashboard.tooltip.xray': 'Intensidad de la radiación de rayos X del Sol. Clases: A y B = tranquilo, C = moderado, M = fuerte, X = extremo. Las llamaradas M y X pueden causar apagones de radio y tormentas geomagnéticas.',
     'dashboard.kpHistory': 'Índice Kp — Últimas 24 horas',
+    'dashboard.history': 'Índice Kp — Historia',
     'dashboard.windHistory': 'Velocidad del viento solar — Últimas 24 horas',
 
     // Forecast
@@ -1143,6 +1144,7 @@ const translations: Record<Language, Record<string, string>> = {
     'dashboard.tooltip.bz': 'La composante sud du champ magnétique interplanétaire (IMF). Quand Bz est négatif, le champ magnétique terrestre s\'ouvre et le vent solaire entre — le déclencheur clé des aurores. Bz en dessous de -10 nT = forte activité.',
     'dashboard.tooltip.xray': 'L\'intensité du rayonnement X du Soleil. Classes : A et B = calme, C = modéré, M = fort, X = extrême. Les éruptions M et X peuvent provoquer des pannes radio et des tempêtes géomagnétiques.',
     'dashboard.kpHistory': 'Indice Kp — 24 dernières heures',
+    'dashboard.history': 'Indice Kp — Historique',
     'dashboard.windHistory': 'Vitesse du vent solaire — 24 dernières heures',
 
     // Forecast
@@ -1435,6 +1437,7 @@ const translations: Record<Language, Record<string, string>> = {
     'dashboard.tooltip.bz': 'Die südliche Komponente des interplanetaren Magnetfeldes (IMF). Wenn Bz negativ ist, öffnet sich das Erdmagnetfeld und der Sonnenwind tritt ein — der Schlüsselauslöser für Polarlichter. Bz unter -10 nT = starke Aktivität.',
     'dashboard.tooltip.xray': 'Die Intensität der Röntgenstrahlung der Sonne. Klassen: A und B = ruhig, C = mäßig, M = stark, X = extrem. M- und X-Klasse-Eruptionen können Funkausfälle und geomagnetische Stürme verursachen.',
     'dashboard.kpHistory': 'Kp-Index — Letzte 24 Stunden',
+    'dashboard.history': 'Kp-Index — Verlauf',
     'dashboard.windHistory': 'Sonnenwindgeschwindigkeit — Letzte 24 Stunden',
 
     // Forecast
@@ -1727,6 +1730,7 @@ const translations: Record<Language, Record<string, string>> = {
     'dashboard.tooltip.bz': 'Южная компонента межпланетного магнитного поля (IMF). Когда Bz отрицательна, магнитное поле Земли открывается и солнечный ветер проникает внутрь — ключевой триггер полярных сияний. Bz ниже -10 нТл = сильная активность.',
     'dashboard.tooltip.xray': 'Интенсивность рентгеновского излучения Солнца. Классы: A и B = тихо, C = умеренно, M = сильно, X = экстремально. Вспышки классов M и X могут вызывать радиопомехи и геомагнитные бури.',
     'dashboard.kpHistory': 'Kp Индекс — Последние 24 часа',
+    'dashboard.history': 'Kp Индекс — История',
     'dashboard.windHistory': 'Скорость солнечного ветра — Последние 24 часа',
 
     // Forecast
@@ -2019,6 +2023,7 @@ const translations: Record<Language, Record<string, string>> = {
     'dashboard.tooltip.bz': '行星际磁场（IMF）的南向分量。当Bz为负值（指向南方）时，地球磁场打开，太阳风进入——这是极光的关键触发因素。Bz低于-10 nT=强烈活动。',
     'dashboard.tooltip.xray': '太阳X射线辐射强度。等级：A和B=平静，C=中等，M=强烈，X=极端。M和X级耀斑可能导致无线电中断和地磁暴。',
     'dashboard.kpHistory': 'Kp指数 — 过去24小时',
+    'dashboard.history': 'Kp指数 — 历史',
     'dashboard.windHistory': '太阳风速度 — 过去24小时',
 
     // Forecast
@@ -2311,6 +2316,7 @@ const translations: Record<Language, Record<string, string>> = {
     'dashboard.tooltip.bz': '惑星間磁場（IMF）の南向き成分。Bzが負（南向き）の場合、地球の磁場が開いて太陽風が流入——オーロラの重要なトリガー。Bz -10 nT以下=強い活動。',
     'dashboard.tooltip.xray': '太陽からのX線放射強度。クラス：AとB=静穏、C=中程度、M=強い、X=極端。MクラスとXクラスのフレアは電波障害や地磁気嵐を引き起こす可能性があります。',
     'dashboard.kpHistory': 'Kp指数 — 過去24時間',
+    'dashboard.history': 'Kp指数 — 履歴',
     'dashboard.windHistory': '太陽風速度 — 過去24時間',
 
     // Forecast
