@@ -428,7 +428,8 @@ const Home = () => {
             <p className="text-[#94a3b8] text-sm leading-relaxed">See which upcoming nights have the best aurora visibility based on solar forecasts and your location.</p>
           </div>
 
-          <div className="glass-surface rounded-2xl p-7 hover:glow-purple transition-all group">
+          <div className="glass-surface rounded-2xl p-7 hover:glow-purple transition-all group relative opacity-60">
+            <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#7c3aed]/20 text-[#a78bfa] border border-[#7c3aed]/30">Coming Soon</span>
             <div className="w-14 h-14 bg-gradient-to-br from-[#7c3aed] to-[#6d28d9] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Bot className="w-7 h-7 text-white" />
             </div>
@@ -452,7 +453,8 @@ const Home = () => {
             <p className="text-[#94a3b8] text-sm leading-relaxed">Get notified the moment a geomagnetic storm reaches your chosen threshold — before it peaks.</p>
           </div>
 
-          <div className="glass-surface rounded-2xl p-7 hover:glow-green transition-all group">
+          <div className="glass-surface rounded-2xl p-7 hover:glow-green transition-all group relative opacity-60">
+            <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#06b6d4]/20 text-[#22d3ee] border border-[#06b6d4]/30">Coming Soon</span>
             <div className="w-14 h-14 bg-gradient-to-br from-[#06b6d4] to-[#0891b2] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Camera className="w-7 h-7 text-white" />
             </div>
@@ -460,7 +462,8 @@ const Home = () => {
             <p className="text-[#94a3b8] text-sm leading-relaxed">Users upload aurora photos verified by AI. See what others are capturing around the world.</p>
           </div>
 
-          <div className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group">
+          <div className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group relative opacity-60">
+            <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#f59e0b]/20 text-[#fbbf24] border border-[#f59e0b]/30">Coming Soon</span>
             <div className="w-14 h-14 bg-gradient-to-br from-[#f59e0b] to-[#d97706] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Trophy className="w-7 h-7 text-white" />
             </div>
@@ -468,7 +471,8 @@ const Home = () => {
             <p className="text-[#94a3b8] text-sm leading-relaxed">Earn badges and points for spotting and reporting auroras. Leaderboard updated in real time.</p>
           </div>
 
-          <div className="glass-surface rounded-2xl p-7 hover:glow-purple transition-all group">
+          <div className="glass-surface rounded-2xl p-7 hover:glow-purple transition-all group relative opacity-60">
+            <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#ec4899]/20 text-[#f472b6] border border-[#ec4899]/30">Coming Soon</span>
             <div className="w-14 h-14 bg-gradient-to-br from-[#ec4899] to-[#be185d] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Video className="w-7 h-7 text-white" />
             </div>
@@ -476,7 +480,8 @@ const Home = () => {
             <p className="text-[#94a3b8] text-sm leading-relaxed">Watch live aurora cameras from Norway, Iceland and Finland — powered by Cloudflare Stream.</p>
           </div>
 
-          <div className="glass-surface rounded-2xl p-7 hover:glow-green transition-all group">
+          <div className="glass-surface rounded-2xl p-7 hover:glow-green transition-all group relative opacity-60">
+            <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#10b981]/20 text-[#34d399] border border-[#10b981]/30">Coming Soon</span>
             <div className="w-14 h-14 bg-gradient-to-br from-[#10b981] to-[#059669] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Smartphone className="w-7 h-7 text-white" />
             </div>
