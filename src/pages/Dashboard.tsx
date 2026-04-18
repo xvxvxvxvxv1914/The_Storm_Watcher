@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, ReferenceLine } from 'recharts';
 import { Activity, Wind, Compass, Sun, Radio } from 'lucide-react';
 import { getKpIndex, getSolarWind, getMagField, getXrayFlux, getKpHistory3Day, getStormStatus, getXrayClass, getKpGradientStyle } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 
-const InfoTooltip = ({ text }: { text: string }) => (
+const InfoTooltip = React.memo(({ text }: { text: string }) => (
   <div className="absolute top-3 right-3 group z-20">
     <div className="w-5 h-5 rounded-full bg-white/10 border border-white/20 flex items-center justify-center cursor-help text-[#94a3b8] hover:text-white hover:bg-white/20 transition-colors" style={{ fontSize: '11px', fontWeight: 700 }}>
       i
@@ -13,7 +13,7 @@ const InfoTooltip = ({ text }: { text: string }) => (
       {text}
     </div>
   </div>
-);
+));
 
 const Dashboard = () => {
   const { t } = useLanguage();

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Sun, Menu, X, Globe, User, LogOut, ChevronDown, Settings } from 'lucide-react';
 import { useLanguage, languages } from '../contexts/LanguageContext';
@@ -338,4 +338,4 @@ const Navigation = () => {
   );
 };
 
-export default Navigation;
+export default React.memo(Navigation);

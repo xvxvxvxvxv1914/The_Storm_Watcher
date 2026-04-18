@@ -137,6 +137,7 @@ const ISS = () => {
           </div>
 
           <div ref={globeContainerRef} className="w-full" />
+          <div style={{ minHeight: Math.max(280, Math.round(globeWidth * 0.74)) }} className="w-full flex flex-col items-center justify-center">
           {loadingPos ? (
             <div className="flex justify-center py-16">
               <div className="w-10 h-10 border-4 border-[#f97316]/20 border-t-[#f97316] rounded-full animate-spin" />
@@ -188,6 +189,7 @@ const ISS = () => {
           <div className="flex gap-6 pb-5 text-xs text-[#64748b]">
             <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#f97316] inline-block" />{t('iss.locIss')}</span>
             <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#10b981] inline-block" />{t('iss.locYou')}</span>
+          </div>
           </div>
         </div>
 
