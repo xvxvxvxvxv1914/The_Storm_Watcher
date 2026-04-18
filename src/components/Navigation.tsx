@@ -225,7 +225,7 @@ const Navigation = () => {
 
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden text-white p-2"
+            className="lg:hidden text-white p-2"
             aria-label="Toggle menu"
           >
             {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -234,7 +234,7 @@ const Navigation = () => {
       </div>
 
       {isMenuOpen && (
-        <div className="md:hidden glass-surface border-t border-white/10">
+        <div className="lg:hidden glass-surface border-t border-white/10">
           <div className="px-4 py-4 space-y-3">
             {navLinks.map((link) => (
               <Link
