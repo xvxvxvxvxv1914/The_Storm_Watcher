@@ -1,12 +1,31 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Sun, Menu, X, Globe, User, LogOut, ChevronDown, Settings } from 'lucide-react';
+import { Sun, Menu, X, Globe, User, LogOut, ChevronDown, Settings, AlertTriangle } from 'lucide-react';
 import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import PushNotificationBell from './PushNotificationBell';
+import { getKpIndex } from '../services/noaaApi';
 
 const Navigation = () => {
+  const [stormKp, setStormKp] = useState<number | null>(null);
+  const isStorm = stormKp !== null && stormKp >= 5;
+
+  useEffect(() => {
+    const check = async () => {
+      try {
+        const data = await getKpIndex();
+        if (data?.length) {
+          const latest = data[data.length - 1];
+          setStormKp(latest.kp_index || latest.estimated_kp || 0);
+        }
+      } catch { /* silent */ }
+    };
+    check();
+    const interval = setInterval(check, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -232,6 +251,18 @@ const Navigation = () => {
           </button>
         </div>
       </div>
+
+      {isStorm && (
+        <div className="bg-gradient-to-r from-[#ef4444] via-[#f97316] to-[#7c3aed] px-4 py-2 pulse-alert">
+          <div className="max-w-7xl mx-auto flex items-center justify-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-white shrink-0" />
+            <span className="text-white font-bold uppercase tracking-wider text-xs sm:text-sm">
+              {t('home.stormBanner')} {stormKp?.toFixed(1)}
+            </span>
+            <AlertTriangle className="w-4 h-4 text-white shrink-0" />
+          </div>
+        </div>
+      )}
 
       {isMenuOpen && (
         <div className="lg:hidden glass-surface border-t border-white/10">

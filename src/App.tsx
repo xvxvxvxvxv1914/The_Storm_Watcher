@@ -1,15 +1,13 @@
-import { Suspense, lazy, useEffect, useState } from 'react';
+import { Suspense, lazy } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AlertTriangle } from 'lucide-react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import { useLanguage } from './contexts/LanguageContext';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import PlanGuard from './components/PlanGuard';
-import { getKpIndex } from './services/noaaApi';
 
 const Home = lazy(() => import('./pages/Home'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
@@ -38,41 +36,10 @@ const LoadingFallback = () => {
 function AppRoutes() {
   const { user } = useAuth();
   const { theme } = useTheme();
-  const { t } = useLanguage();
-  const [stormKp, setStormKp] = useState<number | null>(null);
-  const isStorm = stormKp !== null && stormKp >= 5;
-
-  useEffect(() => {
-    const check = async () => {
-      try {
-        const data = await getKpIndex();
-        if (data?.length) {
-          const latest = data[data.length - 1];
-          setStormKp(latest.kp_index || latest.estimated_kp || 0);
-        }
-      } catch { /* silent */ }
-    };
-    check();
-    const interval = setInterval(check, 5 * 60 * 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <div className={`min-h-screen ${theme === 'light' ? 'bg-slate-100' : 'bg-[#0a0a1a]'}`}>
       <Navigation />
-      {isStorm && (
-        <div className="fixed left-0 right-0 z-40 storm-banner pulse-alert">
-          <div className="bg-gradient-to-r from-[#ef4444] via-[#f97316] to-[#7c3aed] px-6 py-3">
-            <div className="max-w-7xl mx-auto flex items-center justify-center gap-3">
-              <AlertTriangle className="w-5 h-5 text-white" />
-              <span className="text-white font-bold uppercase tracking-wider text-sm">
-                {t('home.stormBanner')} {stormKp?.toFixed(1)}
-              </span>
-              <AlertTriangle className="w-5 h-5 text-white" />
-            </div>
-          </div>
-        </div>
-      )}
       <Suspense fallback={<LoadingFallback />}>
         <Routes>
           <Route path="/" element={<Home />} />
