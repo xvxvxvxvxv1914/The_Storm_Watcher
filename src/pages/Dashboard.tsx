@@ -125,6 +125,12 @@ const Dashboard = () => {
   const stormStatus = getStormStatus(kpValue);
   const xrayClass = getXrayClass(xrayFlux);
 
+  const filteredKpHistory = useMemo(() => {
+    if (timeRange === '24h') return kpHistory3Day.slice(-8);
+    if (timeRange === '48h') return kpHistory3Day.slice(-16);
+    return kpHistory3Day.slice(-24);
+  }, [kpHistory3Day, timeRange]);
+
   const stars = useMemo(() =>
     [...Array(50)].map((_, i) => ({
       id: i,
@@ -275,7 +281,7 @@ const Dashboard = () => {
           </div>
           {kpHistory3Day.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={timeRange === '24h' ? kpHistory3Day.slice(-8) : timeRange === '48h' ? kpHistory3Day.slice(-16) : kpHistory3Day.slice(-24)}>
+              <LineChart data={filteredKpHistory}>
                 <defs>
                   <linearGradient id="kpGradient3" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#f97316" stopOpacity={0.3}/>

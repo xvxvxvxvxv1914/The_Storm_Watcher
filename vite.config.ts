@@ -14,6 +14,8 @@ export default defineConfig({
         manualChunks: {
           'globe': ['react-globe.gl'],
           'recharts': ['recharts'],
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'supabase': ['@supabase/supabase-js'],
         },
       },
     },

@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Bell, BellOff, Check } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const PushNotificationBell = () => {
+  const { t } = useLanguage();
   const [permission, setPermission] = useState<NotificationPermission>('default');
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -13,7 +15,7 @@ const PushNotificationBell = () => {
 
   const requestPermission = async () => {
     if (!('Notification' in window)) {
-      alert('Браузърът ти не поддържа известия.');
+      alert(t('push.noSupport'));
       return;
     }
 
@@ -22,7 +24,7 @@ const PushNotificationBell = () => {
 
     if (result === 'granted') {
       new Notification('The Storm Watcher', {
-        body: 'Ще получаваш известия при силни геомагнитни бури!',
+        body: t('push.grantedMsg'),
         icon: '/favicon.svg',
       });
     }
@@ -58,10 +60,10 @@ const PushNotificationBell = () => {
       {showTooltip && (
         <div className="absolute right-0 top-10 w-52 glass-surface rounded-xl px-3 py-2 text-xs text-[#94a3b8] border border-white/10 z-50 pointer-events-none">
           {isGranted
-            ? 'Известията са включени'
+            ? t('push.enabled')
             : isDenied
-            ? 'Известията са блокирани в браузъра'
-            : 'Включи известия за бури'}
+            ? t('push.denied')
+            : t('push.enable')}
         </div>
       )}
     </div>

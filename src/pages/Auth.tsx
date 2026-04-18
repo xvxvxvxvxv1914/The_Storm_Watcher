@@ -49,18 +49,18 @@ export default function Auth() {
             <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[#f97316] to-[#fbbf24] rounded-full mb-6">
               <Mail className="w-10 h-10 text-white" />
             </div>
-            <h2 className="text-2xl font-bold text-white mb-3">Провери имейла си</h2>
+            <h2 className="text-2xl font-bold text-white mb-3">{t('auth.checkEmail')}</h2>
             <p className="text-slate-400 mb-6 leading-relaxed">
-              Изпратихме линк за потвърждение на <span className="text-white font-medium">{email}</span>. Кликни върху него за да активираш профила си.
+              {t('auth.checkEmailSent')} <span className="text-white font-medium">{email}</span>. {t('auth.checkEmailActivate')}
             </p>
             <p className="text-slate-500 text-sm">
-              Не виждаш имейла? Провери папката Spam.
+              {t('auth.checkEmailSpam')}
             </p>
             <button
               onClick={() => { setConfirmationSent(false); setIsLogin(true); }}
               className="mt-6 text-[#f97316] hover:text-[#fbbf24] text-sm font-medium transition"
             >
-              Обратно към вход
+              {t('auth.backToSignIn')}
             </button>
           </div>
         </div>

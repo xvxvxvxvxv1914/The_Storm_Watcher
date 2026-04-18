@@ -130,10 +130,11 @@ const Aurora = () => {
               opacity: 0.45,
               blending: THREE.AdditiveBlending,
               depthWrite: false,
+              depthTest: false,
             });
             const mesh = new THREE.Mesh(geo, mat);
             mesh.rotation.y = -Math.PI / 2;
-            mesh.renderOrder = 1;
+            mesh.renderOrder = 2;
             mesh.userData = { isCityLights: true };
             scene.add(mesh);
           });

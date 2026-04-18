@@ -20,6 +20,25 @@ interface HourlyData {
   terrible: number;
 }
 
+const MOODS = [
+  { type: 'great', labelKey: 'mood.great', icon: ThumbsUp, color: 'bg-green-500', textColor: 'text-green-500' },
+  { type: 'good', labelKey: 'mood.good', icon: Smile, color: 'bg-emerald-500', textColor: 'text-emerald-500' },
+  { type: 'okay', labelKey: 'mood.okay', icon: Meh, color: 'bg-yellow-500', textColor: 'text-yellow-500' },
+  { type: 'bad', labelKey: 'mood.bad', icon: Frown, color: 'bg-orange-500', textColor: 'text-orange-500' },
+  { type: 'terrible', labelKey: 'mood.terrible', icon: ThumbsDown, color: 'bg-red-500', textColor: 'text-red-500' },
+];
+
+const SYMPTOM_KEYS = [
+  'mood.symptom.headache',
+  'mood.symptom.dizzy',
+  'mood.symptom.anxiety',
+  'mood.symptom.insomnia',
+  'mood.symptom.fatigue',
+  'mood.symptom.irritability',
+  'mood.symptom.concentration',
+  'mood.symptom.palpitations',
+];
+
 const Mood = () => {
   const { t } = useLanguage();
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
@@ -31,25 +50,6 @@ const Mood = () => {
   const [hasSubmittedToday, setHasSubmittedToday] = useState(false);
   const [loading, setLoading] = useState(true);
   const [submitMessage, setSubmitMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-
-  const moods = [
-    { type: 'great', labelKey: 'mood.great', icon: ThumbsUp, color: 'bg-green-500', textColor: 'text-green-500' },
-    { type: 'good', labelKey: 'mood.good', icon: Smile, color: 'bg-emerald-500', textColor: 'text-emerald-500' },
-    { type: 'okay', labelKey: 'mood.okay', icon: Meh, color: 'bg-yellow-500', textColor: 'text-yellow-500' },
-    { type: 'bad', labelKey: 'mood.bad', icon: Frown, color: 'bg-orange-500', textColor: 'text-orange-500' },
-    { type: 'terrible', labelKey: 'mood.terrible', icon: ThumbsDown, color: 'bg-red-500', textColor: 'text-red-500' },
-  ];
-
-  const symptomKeys = [
-    'mood.symptom.headache',
-    'mood.symptom.dizzy',
-    'mood.symptom.anxiety',
-    'mood.symptom.insomnia',
-    'mood.symptom.fatigue',
-    'mood.symptom.irritability',
-    'mood.symptom.concentration',
-    'mood.symptom.palpitations',
-  ];
 
   useEffect(() => {
     fetchKp();
@@ -165,7 +165,7 @@ const Mood = () => {
     );
   };
 
-  const getMoodInfo = (moodType: string) => moods.find((m) => m.type === moodType);
+  const getMoodInfo = (moodType: string) => MOODS.find((m) => m.type === moodType);
 
   if (loading) {
     return (
@@ -229,7 +229,7 @@ const Mood = () => {
             <h2 className="text-2xl font-semibold text-white mb-6">{t('mood.rateTitle')}</h2>
 
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-8">
-              {moods.map((mood) => {
+              {MOODS.map((mood) => {
                 const Icon = mood.icon;
                 const isSelected = selectedMood === mood.type;
                 return (
@@ -257,7 +257,7 @@ const Mood = () => {
                   {t('mood.symptomsQuestion')}
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {symptomKeys.map((key) => {
+                  {SYMPTOM_KEYS.map((key) => {
                     const isSelected = selectedSymptoms.includes(key);
                     return (
                       <button
@@ -308,7 +308,7 @@ const Mood = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Pie chart */}
               <div>
-                <h3 className="text-lg font-semibold text-white mb-4 text-center">Разпределение</h3>
+                <h3 className="text-lg font-semibold text-white mb-4 text-center">{t('mood.distribution')}</h3>
                 <ResponsiveContainer width="100%" height={280}>
                   <PieChart>
                     <Pie
@@ -340,7 +340,7 @@ const Mood = () => {
                     <Tooltip
                       contentStyle={{ backgroundColor: 'rgba(10,0,21,0.95)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
                       itemStyle={{ color: '#fff' }}
-                      formatter={(value: unknown, name: unknown) => [`${Number(value)} гласа`, String(name)]}
+                      formatter={(value: unknown, name: unknown) => [`${Number(value)} ${t('mood.votes')}`, String(name)]}
                     />
                   </PieChart>
                 </ResponsiveContainer>
@@ -358,9 +358,8 @@ const Mood = () => {
                 </div>
               </div>
 
-              {/* Bar chart по часове */}
               <div>
-                <h3 className="text-lg font-semibold text-white mb-4 text-center">По часове (последните 12ч)</h3>
+                <h3 className="text-lg font-semibold text-white mb-4 text-center">{t('mood.byHour')}</h3>
                 <ResponsiveContainer width="100%" height={280}>
                   <BarChart data={hourlyData} barSize={8}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />

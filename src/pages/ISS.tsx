@@ -1,7 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, lazy, Suspense } from 'react';
 import { MapPin, Clock, Eye, Satellite } from 'lucide-react';
-import Globe from 'react-globe.gl';
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const Globe = lazy(() => import('react-globe.gl')) as any;
 import { getIssPosition, getIssPasses, IssPosition, IssPass } from '../services/issApi';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -144,6 +145,7 @@ const ISS = () => {
             </div>
           ) : (
             <>
+              <Suspense fallback={<div style={{ width: globeWidth, height: Math.max(280, Math.round(globeWidth * 0.74)), background: '#050510' }} />}>
               <Globe
                 ref={globeRef}
                 width={globeWidth}
@@ -161,6 +163,7 @@ const ISS = () => {
                 pointLabel="label"
                 enablePointerInteraction={true}
               />
+            </Suspense>
 
               {/* Stats */}
               {position && (

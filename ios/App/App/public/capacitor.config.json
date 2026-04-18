@@ -1,0 +1,6 @@
+{
+	"appId": "com.stormwatcher.app",
+	"appName": "The Storm Watcher",
+	"webDir": "dist",
+	"packageClassList": []
+}
