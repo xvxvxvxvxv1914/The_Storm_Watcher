@@ -106,21 +106,7 @@ const Home = () => {
       <div className="magnetic-orb" style={{ bottom: '-150px', left: '-150px' }} />
 
 
-      {isStorm && (
-        <div className="fixed top-12 md:top-16 left-0 right-0 z-40 pulse-alert">
-          <div className="bg-gradient-to-r from-[#ef4444] via-[#f97316] to-[#7c3aed] px-6 py-4">
-            <div className="max-w-7xl mx-auto flex items-center justify-center gap-3">
-              <AlertTriangle className="w-6 h-6 text-white" />
-              <span className="text-white font-bold uppercase tracking-wider">
-                {t('home.stormBanner')} {kpValue?.toFixed(1)}
-              </span>
-              <AlertTriangle className="w-6 h-6 text-white" />
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className="relative overflow-hidden" style={{ paddingTop: isStorm ? '60px' : '0' }}>
+      <div className="relative overflow-hidden">
         {particles.map((p) => (
           <div
             key={p.id}

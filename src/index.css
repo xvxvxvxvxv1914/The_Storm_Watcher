@@ -130,6 +130,16 @@
   animation: pulse-glow 2s infinite;
 }
 
+.storm-banner {
+  top: calc(env(safe-area-inset-top) + 3rem);
+}
+
+@media (min-width: 768px) {
+  .storm-banner {
+    top: calc(env(safe-area-inset-top) + 4rem);
+  }
+}
+
 .solar-particle {
   position: absolute;
   width: 4px;
