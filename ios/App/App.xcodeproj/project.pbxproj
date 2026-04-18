@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1009ADBD41293A974E1A73DE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D8D90DF087D7DD743D2E2AE /* Foundation.framework */; };
 		2FAD9763203C412B000D30F8 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
 		4D22ABE92AF431CB00220026 /* CapApp-SPM in Frameworks */ = {isa = PBXBuildFile; productRef = 4D22ABE82AF431CB00220026 /* CapApp-SPM */; };
 		50379B232058CBB4000EE86E /* capacitor.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 50379B222058CBB4000EE86E /* capacitor.config.json */; };
@@ -15,10 +16,41 @@
 		504EC30F1FED79650016851F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 504EC30E1FED79650016851F /* Assets.xcassets */; };
 		504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC3101FED79650016851F /* LaunchScreen.storyboard */; };
 		50B271D11FEDC1A000F3C39B /* public in Resources */ = {isa = PBXBuildFile; fileRef = 50B271D01FEDC1A000F3C39B /* public */; };
+		6FC48FCAF85EFC402BC1BE29 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A797BAB4578BF25154FA20E7 /* SwiftUI.framework */; };
+		A15A39C09A001FA4F93FC155 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 885BD254D35C263539A1E1CD /* WidgetKit.framework */; };
+		A28578B704472BD76E2BF114 /* StormWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B8681A45E2D9E1C1E5AB3AA9 /* StormWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		C8CB2BF0C84A5B2025533CA0 /* StormWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A6074084139212F00B8465A /* StormWidget.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		1629A84735E1945CFA99E2B3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 504EC2FC1FED79650016851F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 85E6822B050A57D72A7F2483;
+			remoteInfo = StormWidget;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		35D5FA49841AA4139BA21C94 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				A28578B704472BD76E2BF114 /* StormWidget.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		13F58B548E122DDD2ABE5FBA /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = Info.plist; path = StormWidget/Info.plist; sourceTree = "<group>"; };
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
+		4A6074084139212F00B8465A /* StormWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = StormWidget.swift; path = StormWidget/StormWidget.swift; sourceTree = "<group>"; };
+		4D8D90DF087D7DD743D2E2AE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		50379B222058CBB4000EE86E /* capacitor.config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = capacitor.config.json; sourceTree = "<group>"; };
 		504EC3041FED79650016851F /* App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = App.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		504EC3071FED79650016851F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -27,10 +59,23 @@
 		504EC3111FED79650016851F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		504EC3131FED79650016851F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50B271D01FEDC1A000F3C39B /* public */ = {isa = PBXFileReference; lastKnownFileType = folder; path = public; sourceTree = "<group>"; };
+		885BD254D35C263539A1E1CD /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		958DCC722DB07C7200EA8C5F /* debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = debug.xcconfig; path = ../debug.xcconfig; sourceTree = SOURCE_ROOT; };
+		A797BAB4578BF25154FA20E7 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		B8681A45E2D9E1C1E5AB3AA9 /* StormWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = StormWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		302FD73C13F4D7BED9D5280F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1009ADBD41293A974E1A73DE /* Foundation.framework in Frameworks */,
+				A15A39C09A001FA4F93FC155 /* WidgetKit.framework in Frameworks */,
+				6FC48FCAF85EFC402BC1BE29 /* SwiftUI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		504EC3011FED79650016851F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -42,12 +87,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2BC44D6C3A1925772F414F5A /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				4D8D90DF087D7DD743D2E2AE /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
 		504EC2FB1FED79650016851F = {
 			isa = PBXGroup;
 			children = (
 				958DCC722DB07C7200EA8C5F /* debug.xcconfig */,
 				504EC3061FED79650016851F /* App */,
 				504EC3051FED79650016851F /* Products */,
+				FFAE150A05B9120AF5E96B4B /* Frameworks */,
+				E423A040771F6446620FEBD9 /* StormWidget */,
 			);
 			sourceTree = "<group>";
 		};
@@ -55,6 +110,7 @@
 			isa = PBXGroup;
 			children = (
 				504EC3041FED79650016851F /* App.app */,
+				B8681A45E2D9E1C1E5AB3AA9 /* StormWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -74,6 +130,25 @@
 			path = App;
 			sourceTree = "<group>";
 		};
+		E423A040771F6446620FEBD9 /* StormWidget */ = {
+			isa = PBXGroup;
+			children = (
+				4A6074084139212F00B8465A /* StormWidget.swift */,
+				13F58B548E122DDD2ABE5FBA /* Info.plist */,
+			);
+			name = StormWidget;
+			sourceTree = "<group>";
+		};
+		FFAE150A05B9120AF5E96B4B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2BC44D6C3A1925772F414F5A /* iOS */,
+				885BD254D35C263539A1E1CD /* WidgetKit.framework */,
+				A797BAB4578BF25154FA20E7 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -84,10 +159,12 @@
 				504EC3001FED79650016851F /* Sources */,
 				504EC3011FED79650016851F /* Frameworks */,
 				504EC3021FED79650016851F /* Resources */,
+				35D5FA49841AA4139BA21C94 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				366A513026B4FFD9853E01FE /* PBXTargetDependency */,
 			);
 			name = App;
 			packageProductDependencies = (
@@ -96,6 +173,23 @@
 			productName = App;
 			productReference = 504EC3041FED79650016851F /* App.app */;
 			productType = "com.apple.product-type.application";
+		};
+		85E6822B050A57D72A7F2483 /* StormWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F0E60E19F11CC7A5CFB95935 /* Build configuration list for PBXNativeTarget "StormWidget" */;
+			buildPhases = (
+				B896A7E72E11BC83E2902AB1 /* Sources */,
+				302FD73C13F4D7BED9D5280F /* Frameworks */,
+				48B80C6E45734E88C6BCF9CB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = StormWidget;
+			productName = StormWidget;
+			productReference = B8681A45E2D9E1C1E5AB3AA9 /* StormWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -130,11 +224,19 @@
 			projectRoot = "";
 			targets = (
 				504EC3031FED79650016851F /* App */,
+				85E6822B050A57D72A7F2483 /* StormWidget */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		48B80C6E45734E88C6BCF9CB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		504EC3021FED79650016851F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -159,7 +261,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B896A7E72E11BC83E2902AB1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C8CB2BF0C84A5B2025533CA0 /* StormWidget.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		366A513026B4FFD9853E01FE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = StormWidget;
+			target = 85E6822B050A57D72A7F2483 /* StormWidget */;
+			targetProxy = 1629A84735E1945CFA99E2B3 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		504EC30B1FED79650016851F /* Main.storyboard */ = {
@@ -334,6 +453,39 @@
 			};
 			name = Release;
 		};
+		ED84FB4DC55722BFA587D07C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = StormWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.stormwatcher.app.StormWidget;
+				PRODUCT_NAME = StormWidget;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		FE6E19A2528EB0E5A59DFFC5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = StormWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.stormwatcher.app.StormWidget;
+				PRODUCT_NAME = StormWidget;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -351,6 +503,15 @@
 			buildConfigurations = (
 				504EC3171FED79650016851F /* Debug */,
 				504EC3181FED79650016851F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F0E60E19F11CC7A5CFB95935 /* Build configuration list for PBXNativeTarget "StormWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FE6E19A2528EB0E5A59DFFC5 /* Release */,
+				ED84FB4DC55722BFA587D07C /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

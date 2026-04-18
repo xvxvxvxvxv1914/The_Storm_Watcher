@@ -113,7 +113,7 @@ const SunTimes = () => {
   const today = days[0];
 
   return (
-    <div className="min-h-screen pt-28 md:pt-24 pb-16">
+    <div className="min-h-screen pt-24 md:pt-20 pb-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}

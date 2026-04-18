@@ -82,7 +82,7 @@ const Navigation = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass-surface" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-12 md:h-16">
+        <div className="flex items-center justify-between h-[29px] md:h-12">
           <Link to="/" className="flex items-center gap-3 group">
             <div className="relative">
               <Sun className="w-8 h-8 text-[#f97316] group-hover:text-[#fbbf24] transition-colors" />
