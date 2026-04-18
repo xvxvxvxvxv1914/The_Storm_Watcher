@@ -8,6 +8,16 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'globe': ['react-globe.gl'],
+          'recharts': ['recharts'],
+        },
+      },
+    },
+  },
   server: {
     proxy: {
       '/donki': {
