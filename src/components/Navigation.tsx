@@ -244,7 +244,11 @@ const Navigation = () => {
       </div>
 
       {isStorm && (
-        <div className="bg-gradient-to-r from-[#ef4444] via-[#f97316] to-[#7c3aed] px-4 py-2 pulse-alert">
+        <div
+          role="alert"
+          aria-live="assertive"
+          className="bg-gradient-to-r from-[#ef4444] via-[#f97316] to-[#7c3aed] px-4 py-2 pulse-alert"
+        >
           <div className="max-w-7xl mx-auto flex items-center justify-center gap-2">
             <AlertTriangle className="w-4 h-4 text-white shrink-0" />
             <span className="text-white font-bold uppercase tracking-wider text-xs sm:text-sm">
