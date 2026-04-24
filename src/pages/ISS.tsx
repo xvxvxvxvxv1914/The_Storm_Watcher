@@ -46,7 +46,7 @@ const ISS = () => {
     fetchPos();
     const interval = setInterval(fetchPos, 5000);
     return () => clearInterval(interval);
-  }, [position]);
+  }, []);
 
   // Point globe at ISS when position updates
   useEffect(() => {
@@ -55,7 +55,8 @@ const ISS = () => {
     }
   }, [position?.latitude, position?.longitude]);
 
-  // Pass predictions
+  // Pass predictions + reverse geocode — run once on mount only.
+  // Nominatim limits 1 req/s and will block abusers; never re-run on ISS position changes.
   useEffect(() => {
     const load = async (lat: number, lon: number) => {
       setUserCoords({ lat, lon });
@@ -67,19 +68,23 @@ const ISS = () => {
       } finally {
         setLoadingPasses(false);
       }
-      const geo = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
-      ).then(r => r.json());
-      const city = geo.address?.city || geo.address?.town || geo.address?.village || '';
-      const country = geo.address?.country || '';
-      setLocationName([city, country].filter(Boolean).join(', '));
+      try {
+        const geo = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
+        ).then(r => r.json());
+        const city = geo.address?.city || geo.address?.town || geo.address?.village || '';
+        const country = geo.address?.country || '';
+        setLocationName([city, country].filter(Boolean).join(', '));
+      } catch {
+        // silent — location name is optional
+      }
     };
 
     navigator.geolocation?.getCurrentPosition(
       (pos) => load(pos.coords.latitude, pos.coords.longitude),
       () => { load(42.7, 23.3); setLocationName('Sofia, Bulgaria (default)'); },
     );
-  }, [position]);
+  }, []);
 
   const getElevationColor = (el: number) => {
     if (el >= 60) return '#10b981';
