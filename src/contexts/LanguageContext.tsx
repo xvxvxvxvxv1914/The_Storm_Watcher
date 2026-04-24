@@ -36,6 +36,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     localStorage.setItem('language', language);
+    document.documentElement.lang = language;
 
     const cached = cache.get(language);
     if (cached) {
