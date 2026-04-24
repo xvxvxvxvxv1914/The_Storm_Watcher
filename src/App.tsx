@@ -8,6 +8,7 @@ import { useLanguage } from './contexts/LanguageContext';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import PlanGuard from './components/PlanGuard';
+import ErrorBoundary from './components/ErrorBoundary';
 
 const Home = lazy(() => import('./pages/Home'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
@@ -40,24 +41,26 @@ function AppRoutes() {
   return (
     <div className={`min-h-screen ${theme === 'light' ? 'bg-slate-100' : 'bg-[#0a0a1a]'}`}>
       <Navigation />
-      <Suspense fallback={<LoadingFallback />}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/auth" element={user && user.email_confirmed_at ? <Navigate to="/dashboard" replace /> : <Auth />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/forecast" element={<Forecast />} />
-          <Route path="/aurora" element={<PlanGuard requiredPlan="pro"><Aurora /></PlanGuard>} />
-          <Route path="/alerts" element={<PlanGuard requiredPlan="pro"><Alerts /></PlanGuard>} />
-          <Route path="/mood" element={<Mood />} />
-          <Route path="/uv" element={<UV />} />
-          <Route path="/sun" element={<SunTimes />} />
-          <Route path="/sky" element={<SkyVisibility />} />
-          <Route path="/iss" element={<ISS />} />
-          {/* TODO: Remove when Stripe payments are live */}
-          <Route path="/pricing" element={<Navigate to="/" replace />} />
-          {/* <Route path="/pricing" element={<Pricing />} /> */}
-        </Routes>
-      </Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={<LoadingFallback />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/auth" element={user && user.email_confirmed_at ? <Navigate to="/dashboard" replace /> : <Auth />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/forecast" element={<Forecast />} />
+            <Route path="/aurora" element={<PlanGuard requiredPlan="pro"><Aurora /></PlanGuard>} />
+            <Route path="/alerts" element={<PlanGuard requiredPlan="pro"><Alerts /></PlanGuard>} />
+            <Route path="/mood" element={<Mood />} />
+            <Route path="/uv" element={<UV />} />
+            <Route path="/sun" element={<SunTimes />} />
+            <Route path="/sky" element={<SkyVisibility />} />
+            <Route path="/iss" element={<ISS />} />
+            {/* TODO: Remove when Stripe payments are live */}
+            <Route path="/pricing" element={<Navigate to="/" replace />} />
+            {/* <Route path="/pricing" element={<Pricing />} /> */}
+          </Routes>
+        </Suspense>
+      </ErrorBoundary>
       <Footer />
     </div>
   );

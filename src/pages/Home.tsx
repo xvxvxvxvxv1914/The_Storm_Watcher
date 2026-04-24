@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Activity, AlertTriangle, Zap, Radio, Calendar, Bot, Globe, Bell, Camera, Trophy, Video, Smartphone, Check, Share2, Copy, Twitter } from 'lucide-react';
+import { Activity, AlertTriangle, Zap, Radio, Calendar, Bot, Globe, Bell, Camera, Trophy, Video, Check, Share2, Copy, Twitter } from 'lucide-react';
 import { getKpIndex, getSolarWind, getXrayFlux, getXrayClass, getStormStatus, getKpGradientStyle } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -380,7 +380,8 @@ const Home = () => {
             <p className="text-[#94a3b8] text-sm leading-relaxed">Live map showing the aurora oval in real time. See exactly where the northern lights are visible right now.</p>
           </div>
 
-          <div className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group">
+          <div className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group relative opacity-60">
+            <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#fbbf24]/20 text-[#fbbf24] border border-[#fbbf24]/30">Coming Soon</span>
             <div className="w-14 h-14 bg-gradient-to-br from-[#fbbf24] to-[#f97316] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Bell className="w-7 h-7 text-white" />
             </div>
@@ -415,14 +416,6 @@ const Home = () => {
             <p className="text-[#94a3b8] text-sm leading-relaxed">Watch live aurora cameras from Norway, Iceland and Finland — powered by Cloudflare Stream.</p>
           </div>
 
-          <div className="glass-surface rounded-2xl p-7 hover:glow-green transition-all group relative opacity-60">
-            <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#10b981]/20 text-[#34d399] border border-[#10b981]/30">Coming Soon</span>
-            <div className="w-14 h-14 bg-gradient-to-br from-[#10b981] to-[#059669] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-              <Smartphone className="w-7 h-7 text-white" />
-            </div>
-            <h3 className="text-lg font-bold text-white mb-2">PWA</h3>
-            <p className="text-[#94a3b8] text-sm leading-relaxed">Add The Storm Watcher to your home screen and use it like a native app. No app store needed.</p>
-          </div>
         </div>
       </div>
       {/* Data Sources */}

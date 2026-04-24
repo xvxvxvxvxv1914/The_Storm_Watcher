@@ -20,45 +20,22 @@ const Forecast = () => {
   const fetchForecast = React.useCallback(async () => {
     try {
       const data = await getKpForecast();
-      if (data && data.length > 0) {
-        const formattedData = data.map((item) => {
-          const date = new Date(item.time_tag);
-          return {
-            time: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-            fullTime: date.toLocaleString(),
-            kp: item.kp_index || item.estimated_kp || 0,
-            date: date,
-          };
-        });
-        setForecastData(formattedData);
-      } else {
-        generateDemoData();
-      }
+      const formattedData = (data ?? []).map((item) => {
+        const date = new Date(item.time_tag);
+        return {
+          time: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+          fullTime: date.toLocaleString(),
+          kp: item.kp_index || item.estimated_kp || 0,
+          date: date,
+        };
+      });
+      setForecastData(formattedData);
       setLastUpdated(new Date());
       setLoading(false);
-    } catch (error) {
-      console.error('Error fetching forecast:', error);
-      generateDemoData();
+    } catch {
+      setForecastData([]);
       setLoading(false);
     }
-  }, []);
-
-  const generateDemoData = React.useCallback(() => {
-    // const demoData = [];
-    const now = new Date();
-    // Generate 3-hour interval data
-    const rawData = [];
-    for (let i = 0; i < 27 * 8; i++) {
-      const date = new Date(now.getTime() + i * 3 * 60 * 60 * 1000);
-      const kp = Math.random() * 7 + Math.sin(i / 10) * 2 + 2;
-      rawData.push({
-        time: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-        fullTime: date.toLocaleString(),
-        kp: Math.max(0, Math.min(9, kp)),
-        date: date,
-      });
-    }
-    setForecastData(rawData);
   }, []);
 
   useEffect(() => {
