@@ -2,12 +2,15 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [react()],
   base: './',
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
+  // Strip console.* and debugger from production bundles only — dev keeps them
+  // for debugging. Replace with Sentry integration in Phase 6.
+  esbuild: command === 'build' ? { drop: ['console', 'debugger'] } : undefined,
   build: {
     rollupOptions: {
       output: {
@@ -29,4 +32,4 @@ export default defineConfig({
       },
     },
   },
-});
+}));

@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /auth
+Disallow: /auth/
+
+Sitemap: https://thestormwatcher.com/sitemap.xml
