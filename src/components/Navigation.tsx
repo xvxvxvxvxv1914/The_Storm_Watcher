@@ -116,6 +116,8 @@ const Navigation = () => {
                   className={`relative flex items-center gap-1 px-2 xl:px-3 py-1 text-xs xl:text-sm font-semibold transition-colors whitespace-nowrap ${
                     isMoreActive ? 'text-[#10b981]' : 'text-[#94a3b8] hover:text-white'
                   }`}
+                  aria-haspopup="menu"
+                  aria-expanded={isMoreOpen}
                 >
                   More
                   <ChevronDown className={`w-3 h-3 transition-transform ${isMoreOpen ? 'rotate-180' : ''}`} />
