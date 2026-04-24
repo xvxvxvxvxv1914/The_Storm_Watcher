@@ -150,6 +150,7 @@ const Navigation = () => {
               onClick={toggleTheme}
               className="text-xl shrink-0 leading-none hover:opacity-80 transition-opacity"
               title={theme === 'dark' ? t('nav.switchLight') : t('nav.switchDark')}
+              aria-label={theme === 'dark' ? t('nav.switchLight') : t('nav.switchDark')}
             >
               {theme === 'dark' ? '🌙' : '☀️'}
             </button>
@@ -158,6 +159,9 @@ const Navigation = () => {
               <button
                 onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
                 className="flex items-center gap-1.5 text-xs xl:text-sm font-bold text-[#94a3b8] hover:text-white transition-colors"
+                aria-label="Select language"
+                aria-haspopup="menu"
+                aria-expanded={isLangMenuOpen}
               >
                 <Globe className="w-4 h-4" />
                 {languages.find(l => l.code === language)?.flag}
