@@ -47,6 +47,7 @@ const PushNotificationBell = () => {
             : 'text-[#94a3b8] hover:text-white hover:bg-white/5'
         }`}
         disabled={isDenied}
+        aria-label={isGranted ? t('push.enabled') : isDenied ? t('push.denied') : t('push.enable')}
       >
         {isGranted ? (
           <><Bell className="w-4 h-4" /><Check className="w-3 h-3" /></>
