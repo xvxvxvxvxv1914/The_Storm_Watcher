@@ -197,6 +197,9 @@ const Navigation = () => {
                 <button
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                   className="flex items-center gap-1.5 xl:gap-2 px-2.5 xl:px-4 py-2 rounded-lg bg-[#f97316]/10 text-[#f97316] hover:bg-[#f97316]/20 transition-colors"
+                  aria-label="User menu"
+                  aria-haspopup="menu"
+                  aria-expanded={isUserMenuOpen}
                 >
                   <User className="w-4 h-4" />
                   <span className="hidden 2xl:inline text-sm font-medium max-w-[140px] truncate">
