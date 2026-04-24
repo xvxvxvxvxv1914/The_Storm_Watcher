@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<title>The Storm Watcher — Roadmap на одита</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.55;
+    color: #1f2937;
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #fff;
+  }
+  h1 { font-size: 22pt; color: #0f172a; margin: 0 0 8px; letter-spacing: -0.5px; }
+  h2 {
+    font-size: 15pt;
+    color: #0f172a;
+    margin: 28px 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #f97316;
+    page-break-after: avoid;
+  }
+  h3 {
+    font-size: 12pt;
+    color: #1e293b;
+    margin: 18px 0 6px;
+    page-break-after: avoid;
+  }
+  h4 { font-size: 10.5pt; margin: 12px 0 4px; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+  p { margin: 6px 0; }
+  .cover {
+    page-break-after: always;
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #f8fafc;
+    margin: -20px -20px 0;
+  }
+  .cover h1 { color: #fbbf24; font-size: 36pt; margin-bottom: 16px; }
+  .cover .sub { color: #94a3b8; font-size: 14pt; margin-bottom: 32px; }
+  .cover .meta { color: #64748b; font-size: 10pt; margin-top: auto; }
+  .cover .brand { color: #f97316; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; font-size: 10pt; margin-bottom: 20px; }
+  .callout {
+    background: #fff7ed;
+    border-left: 4px solid #f97316;
+    padding: 10px 14px;
+    margin: 12px 0;
+    border-radius: 0 6px 6px 0;
+    font-size: 10pt;
+  }
+  .callout.danger { background: #fef2f2; border-left-color: #ef4444; }
+  .callout.info { background: #eff6ff; border-left-color: #3b82f6; }
+  .callout.success { background: #f0fdf4; border-left-color: #10b981; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 9.5pt;
+    page-break-inside: avoid;
+  }
+  th {
+    background: #f1f5f9;
+    text-align: left;
+    padding: 6px 8px;
+    border: 1px solid #cbd5e1;
+    font-weight: 600;
+    color: #0f172a;
+  }
+  td {
+    padding: 6px 8px;
+    border: 1px solid #e2e8f0;
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: #f8fafc; }
+  .sev-high { color: #dc2626; font-weight: 700; }
+  .sev-med { color: #d97706; font-weight: 600; }
+  .sev-low { color: #059669; font-weight: 500; }
+  code {
+    font-family: "SF Mono", Monaco, Consolas, monospace;
+    font-size: 9.5pt;
+    background: #f1f5f9;
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: #0f172a;
+  }
+  pre {
+    font-family: "SF Mono", Monaco, Consolas, monospace;
+    font-size: 9pt;
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 10px 12px;
+    border-radius: 6px;
+    overflow-x: auto;
+    page-break-inside: avoid;
+  }
+  .phase {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 14px 0;
+    page-break-inside: avoid;
+    background: #fafbfc;
+  }
+  .phase.p1 { border-left: 6px solid #ef4444; }
+  .phase.p2 { border-left: 6px solid #f97316; }
+  .phase.p3 { border-left: 6px solid #fbbf24; }
+  .phase.p4 { border-left: 6px solid #10b981; }
+  .phase.p5 { border-left: 6px solid #06b6d4; }
+  .phase.p6 { border-left: 6px solid #7c3aed; }
+  .phase-header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .phase-num {
+    font-size: 9pt;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .p1 .phase-num { background: #ef4444; }
+  .p2 .phase-num { background: #f97316; }
+  .p3 .phase-num { background: #eab308; }
+  .p4 .phase-num { background: #10b981; }
+  .p5 .phase-num { background: #06b6d4; }
+  .p6 .phase-num { background: #7c3aed; }
+  .phase-title { font-size: 13pt; font-weight: 600; color: #0f172a; }
+  .phase-meta { font-size: 9pt; color: #64748b; margin-left: auto; }
+  .task-grid {
+    display: grid;
+    grid-template-columns: 28px 1fr 64px 64px;
+    gap: 4px 10px;
+    font-size: 9.5pt;
+    margin: 8px 0;
+  }
+  .task-grid > div { padding: 4px 0; }
+  .task-grid .task-head {
+    font-weight: 600;
+    font-size: 8.5pt;
+    text-transform: uppercase;
+    color: #64748b;
+    border-bottom: 1px solid #e2e8f0;
+    letter-spacing: 0.5px;
+  }
+  .task-grid .task-id { color: #94a3b8; font-weight: 600; }
+  .task-grid .task-effort { text-align: center; font-weight: 600; }
+  .eff-s { color: #10b981; }
+  .eff-m { color: #f97316; }
+  .eff-l { color: #ef4444; }
+  .legend {
+    font-size: 9pt;
+    color: #64748b;
+    margin: 8px 0;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .legend .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  ul, ol { margin: 4px 0 6px 20px; padding: 0; }
+  li { margin: 2px 0; }
+  .toc { columns: 2; column-gap: 30px; font-size: 10pt; }
+  .toc a { text-decoration: none; color: #0f172a; }
+  .toc .tnum { color: #f97316; font-weight: 600; margin-right: 6px; }
+  @media print {
+    body { max-width: none; padding: 0; }
+    h2 { page-break-before: auto; }
+    .no-print { display: none; }
+    a { color: #1e293b; text-decoration: none; }
+  }
+  .print-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 18px;
+    background: #f97316;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(249,115,22,0.4);
+    font-size: 11pt;
+  }
+  svg { max-width: 100%; height: auto; }
+  .page-break { page-break-before: always; }
+</style>
+</head>
+<body>
+
+<button class="print-btn no-print" onclick="window.print()">📄 Save as PDF (Cmd+P)</button>
+
+<!-- COVER PAGE -->
+<div class="cover">
+  <div class="brand">★ The Storm Watcher</div>
+  <h1>Roadmap на одита</h1>
+  <p class="sub">Детайлен план за довършване, оптимизация и нови функционалности — на база технически одит от април 2026.</p>
+  <p class="sub" style="font-size: 11pt; color: #cbd5e1;">
+    6 фази · 55 конкретни задачи · ~12 седмици at 1 dev · графика на зависимости, приоритетна матрица и acceptance criteria.
+  </p>
+  <div class="meta">
+    <strong>Генериран:</strong> 24 април 2026<br>
+    <strong>Автор:</strong> Claude Opus 4.7 · за Николай Добрев<br>
+    <strong>Commit base:</strong> <code style="background: rgba(255,255,255,0.1); color: #fbbf24;">fab3aaf</code>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<h2>Съдържание</h2>
+<div class="toc">
+  <p><span class="tnum">0.</span><a href="#summary">Обобщение и стратегия</a></p>
+  <p><span class="tnum">1.</span><a href="#roadmap">Roadmap — времева графика</a></p>
+  <p><span class="tnum">2.</span><a href="#deps">Графика на зависимостите</a></p>
+  <p><span class="tnum">3.</span><a href="#matrix">Приоритетна матрица на новите фичи</a></p>
+  <p><span class="tnum">4.</span><a href="#phase1">Фаза 1 — Основи</a></p>
+  <p><span class="tnum">5.</span><a href="#phase2">Фаза 2 — Auth & user-facing</a></p>
+  <p><span class="tnum">6.</span><a href="#phase3">Фаза 3 — PWA, push & performance</a></p>
+  <p><span class="tnum">7.</span><a href="#phase4">Фаза 4 — Stripe & plan gating</a></p>
+  <p><span class="tnum">8.</span><a href="#phase5">Фаза 5 — Core feature expansion</a></p>
+  <p><span class="tnum">9.</span><a href="#phase6">Фаза 6 — Polish & tests</a></p>
+  <p><span class="tnum">10.</span><a href="#risks">Рискове и mitigation</a></p>
+  <p><span class="tnum">11.</span><a href="#acceptance">Acceptance checklist</a></p>
+</div>
+
+<!-- SUMMARY -->
+<h2 id="summary">0 · Обобщение и стратегия</h2>
+
+<p>
+  Проектът е <strong>функциониращ MVP</strong> с добра визуална идентичност, 8 езика и многобройни специализирани space-weather страници.
+  Техническото ниво е <strong>юношеско</strong> — работи, но носи дългове, които ще се усетят при растеж.
+  Приоритетите в този roadmap следват принципа: <strong>(1)</strong> първо затваряме известните бъгове, <strong>(2)</strong> после правим приложението наистина да прави това което маркетингът обещава, <strong>(3)</strong> след това оптимизираме, <strong>(4)</strong> и чак накрая добавяме нови фичи.
+</p>
+
+<div class="callout info">
+  <strong>Ключов принцип:</strong> Не добавяй нова фича преди съществуващите да са пълноценно функциониращи.
+  Home обещава "PWA", "Push alerts", "AI Assistant" — нито едно не работи реално. Това е по-важно от нова фича.
+</div>
+
+<h3>Какво е готово (commit <code>fab3aaf</code>)</h3>
+<ul>
+  <li>✅ Счупените <code>/profile</code> и <code>/settings</code> линкове премахнати от Navigation</li>
+  <li>✅ ISS Nominatim rate-limit bug оправен (dependency array <code>[position]</code> → <code>[]</code>)</li>
+  <li>✅ TTL in-memory кеш + single-flight dedup в <code>noaaApi.ts</code></li>
+  <li>✅ Миграция за <code>profile.plan</code> колона създадена (но <strong>не е пусната в Supabase</strong>)</li>
+  <li>✅ Security patch: <code>@xmldom/xmldom</code> 0.8.12 → 0.8.13</li>
+</ul>
+
+<h3>Какво остава</h3>
+<p>
+  По-долу са изброени <strong>55 задачи в 6 фази</strong>. Те са подредени по зависимост и ROI (return on investment), не по severity.
+  Всяка задача има оценка на effort: <span class="eff-s">S (~1-2 часа)</span>, <span class="eff-m">M (~半ден-1 ден)</span>, <span class="eff-l">L (2+ дни)</span>.
+</p>
+
+<!-- ROADMAP GANTT -->
+<h2 id="roadmap" class="page-break">1 · Roadmap — времева графика</h2>
+
+<p>Приблизителна оценка при <strong>един разработчик, 6 часа/ден</strong>. Фазите са линейни — всяка следваща зависи от предишните. Паралелизация е възможна ако се добави втори dev, но само от Фаза 4 нататък.</p>
+
+<div class="legend">
+  <span><span class="dot" style="background:#ef4444"></span>Фаза 1 — Основи</span>
+  <span><span class="dot" style="background:#f97316"></span>Фаза 2 — Auth</span>
+  <span><span class="dot" style="background:#eab308"></span>Фаза 3 — PWA/Push</span>
+  <span><span class="dot" style="background:#10b981"></span>Фаза 4 — Stripe</span>
+  <span><span class="dot" style="background:#06b6d4"></span>Фаза 5 — Features</span>
+  <span><span class="dot" style="background:#7c3aed"></span>Фаза 6 — Polish</span>
+</div>
+
+<svg viewBox="0 0 800 310" xmlns="http://www.w3.org/2000/svg" style="margin-top: 10px;">
+  <!-- grid -->
+  <g stroke="#e2e8f0" stroke-width="1">
+    <line x1="120" y1="30" x2="120" y2="270" />
+    <line x1="220" y1="30" x2="220" y2="270" />
+    <line x1="320" y1="30" x2="320" y2="270" />
+    <line x1="420" y1="30" x2="420" y2="270" />
+    <line x1="520" y1="30" x2="520" y2="270" />
+    <line x1="620" y1="30" x2="620" y2="270" />
+    <line x1="720" y1="30" x2="720" y2="270" />
+  </g>
+  <!-- week labels -->
+  <g fill="#64748b" font-size="9" text-anchor="middle" font-family="Arial">
+    <text x="170" y="22">Седм 1-2</text>
+    <text x="270" y="22">Седм 3-4</text>
+    <text x="370" y="22">Седм 5-6</text>
+    <text x="470" y="22">Седм 7-8</text>
+    <text x="570" y="22">Седм 9-10</text>
+    <text x="670" y="22">Седм 11-12</text>
+  </g>
+  <!-- phase bars -->
+  <g font-family="Arial" font-size="10">
+    <!-- Phase 1 -->
+    <text x="115" y="60" text-anchor="end" fill="#0f172a" font-weight="600">Фаза 1</text>
+    <rect x="120" y="48" width="110" height="20" fill="#ef4444" rx="3" />
+    <text x="125" y="62" fill="#fff" font-size="9" font-weight="600">Основи · 10 дни</text>
+
+    <!-- Phase 2 -->
+    <text x="115" y="95" text-anchor="end" fill="#0f172a" font-weight="600">Фаза 2</text>
+    <rect x="230" y="83" width="100" height="20" fill="#f97316" rx="3" />
+    <text x="235" y="97" fill="#fff" font-size="9" font-weight="600">Auth · 8-10 дни</text>
+
+    <!-- Phase 3 -->
+    <text x="115" y="130" text-anchor="end" fill="#0f172a" font-weight="600">Фаза 3</text>
+    <rect x="330" y="118" width="140" height="20" fill="#eab308" rx="3" />
+    <text x="335" y="132" fill="#fff" font-size="9" font-weight="600">PWA + Push · 12-14 дни</text>
+
+    <!-- Phase 4 -->
+    <text x="115" y="165" text-anchor="end" fill="#0f172a" font-weight="600">Фаза 4</text>
+    <rect x="470" y="153" width="100" height="20" fill="#10b981" rx="3" />
+    <text x="475" y="167" fill="#fff" font-size="9" font-weight="600">Stripe · 8-10 дни</text>
+
+    <!-- Phase 5 -->
+    <text x="115" y="200" text-anchor="end" fill="#0f172a" font-weight="600">Фаза 5</text>
+    <rect x="470" y="188" width="200" height="20" fill="#06b6d4" rx="3" fill-opacity="0.9" />
+    <text x="475" y="202" fill="#fff" font-size="9" font-weight="600">Нови фичи · continuous</text>
+
+    <!-- Phase 6 -->
+    <text x="115" y="235" text-anchor="end" fill="#0f172a" font-weight="600">Фаза 6</text>
+    <rect x="570" y="223" width="150" height="20" fill="#7c3aed" rx="3" />
+    <text x="575" y="237" fill="#fff" font-size="9" font-weight="600">Polish · 10 дни</text>
+  </g>
+  <!-- milestones -->
+  <g>
+    <circle cx="230" cy="280" r="5" fill="#ef4444" />
+    <text x="230" y="298" fill="#334155" font-size="8.5" text-anchor="middle" font-family="Arial">v1.1 stable</text>
+
+    <circle cx="470" cy="280" r="5" fill="#f97316" />
+    <text x="470" y="298" fill="#334155" font-size="8.5" text-anchor="middle" font-family="Arial">v1.5 PWA</text>
+
+    <circle cx="720" cy="280" r="5" fill="#10b981" />
+    <text x="720" y="298" fill="#334155" font-size="8.5" text-anchor="middle" font-family="Arial">v2.0 paid</text>
+  </g>
+</svg>
+
+<!-- DEPENDENCIES -->
+<h2 id="deps">2 · Графика на зависимостите</h2>
+<p>Стрелки показват "X трябва да е готово преди Y". Ако блок е на същото ниво — могат да се правят паралелно.</p>
+
+<svg viewBox="0 0 800 380" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="10">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 Z" fill="#64748b" />
+    </marker>
+  </defs>
+
+  <!-- Level 1: Foundation -->
+  <g>
+    <rect x="20" y="20" width="170" height="40" fill="#fef2f2" stroke="#ef4444" stroke-width="2" rx="6" />
+    <text x="105" y="38" text-anchor="middle" fill="#991b1b" font-weight="600">Pусни Supabase миграция</text>
+    <text x="105" y="53" text-anchor="middle" fill="#7f1d1d" font-size="8.5">plan column</text>
+
+    <rect x="210" y="20" width="170" height="40" fill="#fef2f2" stroke="#ef4444" stroke-width="2" rx="6" />
+    <text x="295" y="38" text-anchor="middle" fill="#991b1b" font-weight="600">Реални Supabase ключове</text>
+    <text x="295" y="53" text-anchor="middle" fill="#7f1d1d" font-size="8.5">махни .env.local dummy</text>
+
+    <rect x="400" y="20" width="170" height="40" fill="#fef2f2" stroke="#ef4444" stroke-width="2" rx="6" />
+    <text x="485" y="38" text-anchor="middle" fill="#991b1b" font-weight="600">ErrorBoundary</text>
+    <text x="485" y="53" text-anchor="middle" fill="#7f1d1d" font-size="8.5">около Suspense</text>
+
+    <rect x="590" y="20" width="170" height="40" fill="#fef2f2" stroke="#ef4444" stroke-width="2" rx="6" />
+    <text x="675" y="38" text-anchor="middle" fill="#991b1b" font-weight="600">Махни false promises</text>
+    <text x="675" y="53" text-anchor="middle" fill="#7f1d1d" font-size="8.5">App badges, "PWA" label</text>
+  </g>
+
+  <!-- Level 2: Auth -->
+  <g>
+    <rect x="20" y="110" width="170" height="40" fill="#fff7ed" stroke="#f97316" stroke-width="2" rx="6" />
+    <text x="105" y="128" text-anchor="middle" fill="#9a3412" font-weight="600">Mood rate-limit</text>
+    <text x="105" y="143" text-anchor="middle" fill="#7c2d12" font-size="8.5">Supabase Edge Function</text>
+
+    <rect x="210" y="110" width="170" height="40" fill="#fff7ed" stroke="#f97316" stroke-width="2" rx="6" />
+    <text x="295" y="128" text-anchor="middle" fill="#9a3412" font-weight="600">OAuth UI бутони</text>
+    <text x="295" y="143" text-anchor="middle" fill="#7c2d12" font-size="8.5">Google / Apple / Facebook</text>
+
+    <rect x="400" y="110" width="170" height="40" fill="#fff7ed" stroke="#f97316" stroke-width="2" rx="6" />
+    <text x="485" y="128" text-anchor="middle" fill="#9a3412" font-weight="600">Forgot password flow</text>
+    <text x="485" y="143" text-anchor="middle" fill="#7c2d12" font-size="8.5">reset via email</text>
+
+    <rect x="590" y="110" width="170" height="40" fill="#fff7ed" stroke="#f97316" stroke-width="2" rx="6" />
+    <text x="675" y="128" text-anchor="middle" fill="#9a3412" font-weight="600">Profile + Settings pages</text>
+    <text x="675" y="143" text-anchor="middle" fill="#7c2d12" font-size="8.5">реални routes</text>
+  </g>
+
+  <!-- Level 3: PWA/Push/Perf -->
+  <g>
+    <rect x="20" y="200" width="170" height="40" fill="#fefce8" stroke="#eab308" stroke-width="2" rx="6" />
+    <text x="105" y="218" text-anchor="middle" fill="#854d0e" font-weight="600">PWA manifest + SW</text>
+    <text x="105" y="233" text-anchor="middle" fill="#713f12" font-size="8.5">stale-while-revalidate</text>
+
+    <rect x="210" y="200" width="170" height="40" fill="#fefce8" stroke="#eab308" stroke-width="2" rx="6" />
+    <text x="295" y="218" text-anchor="middle" fill="#854d0e" font-weight="600">Web Push + backend cron</text>
+    <text x="295" y="233" text-anchor="middle" fill="#713f12" font-size="8.5">истински Kp notifications</text>
+
+    <rect x="400" y="200" width="170" height="40" fill="#fefce8" stroke="#eab308" stroke-width="2" rx="6" />
+    <text x="485" y="218" text-anchor="middle" fill="#854d0e" font-weight="600">Lazy locale bundles</text>
+    <text x="485" y="233" text-anchor="middle" fill="#713f12" font-size="8.5">разбий LanguageContext</text>
+
+    <rect x="590" y="200" width="170" height="40" fill="#fefce8" stroke="#eab308" stroke-width="2" rx="6" />
+    <text x="675" y="218" text-anchor="middle" fill="#854d0e" font-weight="600">Vite 5 → 8 upgrade</text>
+    <text x="675" y="233" text-anchor="middle" fill="#713f12" font-size="8.5">moderate CVE fix</text>
+  </g>
+
+  <!-- Level 4: Stripe -->
+  <g>
+    <rect x="120" y="290" width="170" height="40" fill="#f0fdf4" stroke="#10b981" stroke-width="2" rx="6" />
+    <text x="205" y="308" text-anchor="middle" fill="#065f46" font-weight="600">Stripe Checkout + webhook</text>
+    <text x="205" y="323" text-anchor="middle" fill="#064e3b" font-size="8.5">update plan from server</text>
+
+    <rect x="310" y="290" width="170" height="40" fill="#f0fdf4" stroke="#10b981" stroke-width="2" rx="6" />
+    <text x="395" y="308" text-anchor="middle" fill="#065f46" font-weight="600">Pricing page reactivate</text>
+    <text x="395" y="323" text-anchor="middle" fill="#064e3b" font-size="8.5">/pricing route</text>
+
+    <rect x="500" y="290" width="170" height="40" fill="#f0fdf4" stroke="#10b981" stroke-width="2" rx="6" />
+    <text x="585" y="308" text-anchor="middle" fill="#065f46" font-weight="600">PlanGuard реална логика</text>
+    <text x="585" y="323" text-anchor="middle" fill="#064e3b" font-size="8.5">махни hasAccess = true</text>
+  </g>
+
+  <!-- arrows connecting levels -->
+  <g stroke="#64748b" stroke-width="1.5" fill="none">
+    <path d="M 105 62 L 105 108" marker-end="url(#arr)" />
+    <path d="M 295 62 L 295 108" marker-end="url(#arr)" />
+    <path d="M 485 62 L 485 108" marker-end="url(#arr)" />
+    <path d="M 295 152 L 295 198" marker-end="url(#arr)" />
+    <path d="M 485 152 L 485 198" marker-end="url(#arr)" />
+    <path d="M 675 152 L 675 198" marker-end="url(#arr)" />
+    <path d="M 295 242 L 295 280" marker-end="url(#arr)" />
+    <path d="M 485 242 L 485 280" marker-end="url(#arr)" />
+  </g>
+
+  <text x="400" y="360" text-anchor="middle" fill="#64748b" font-size="9">Новите фичи от Фаза 5 могат да се правят паралелно с Фаза 4 от момента в който Фаза 3 е готова.</text>
+</svg>
+
+<!-- PRIORITY MATRIX -->
+<h2 id="matrix" class="page-break">3 · Приоритетна матрица на новите фичи</h2>
+<p>
+  Този scatter plot показва <strong>стойност (за потребителя)</strong> срещу <strong>effort (за теб)</strong> за всички предложени нови фичи.
+  <strong>Горен ляв квадрант</strong> = направи първо. <strong>Долен десен</strong> = направи последно или пропусни.
+</p>
+
+<svg viewBox="0 0 800 420" xmlns="http://www.w3.org/2000/svg" font-family="Arial">
+  <!-- background quadrants -->
+  <rect x="80" y="40" width="310" height="160" fill="#f0fdf4" opacity="0.5" />
+  <rect x="390" y="40" width="310" height="160" fill="#fefce8" opacity="0.5" />
+  <rect x="80" y="200" width="310" height="160" fill="#fff7ed" opacity="0.5" />
+  <rect x="390" y="200" width="310" height="160" fill="#fef2f2" opacity="0.5" />
+
+  <!-- axes -->
+  <line x1="80" y1="360" x2="700" y2="360" stroke="#64748b" stroke-width="2" />
+  <line x1="80" y1="40" x2="80" y2="360" stroke="#64748b" stroke-width="2" />
+
+  <!-- quadrant labels -->
+  <text x="230" y="60" text-anchor="middle" fill="#047857" font-size="10" font-weight="700">QUICK WINS — прави първо</text>
+  <text x="540" y="60" text-anchor="middle" fill="#854d0e" font-size="10" font-weight="700">BIG BETS — планирай</text>
+  <text x="230" y="220" text-anchor="middle" fill="#9a3412" font-size="10" font-weight="700">FILL-INS — прави в свободно време</text>
+  <text x="540" y="220" text-anchor="middle" fill="#991b1b" font-size="10" font-weight="700">AVOID — пропусни</text>
+
+  <!-- axis labels -->
+  <text x="390" y="395" text-anchor="middle" fill="#0f172a" font-size="11" font-weight="700">Effort →</text>
+  <text x="30" y="200" text-anchor="middle" fill="#0f172a" font-size="11" font-weight="700" transform="rotate(-90 30 200)">User Value →</text>
+
+  <!-- grid ticks -->
+  <text x="80" y="378" text-anchor="middle" fill="#64748b" font-size="9">Low</text>
+  <text x="390" y="378" text-anchor="middle" fill="#64748b" font-size="9">Medium</text>
+  <text x="700" y="378" text-anchor="middle" fill="#64748b" font-size="9">High</text>
+  <text x="70" y="363" text-anchor="end" fill="#64748b" font-size="9">Low</text>
+  <text x="70" y="205" text-anchor="end" fill="#64748b" font-size="9">Med</text>
+  <text x="70" y="45" text-anchor="end" fill="#64748b" font-size="9">High</text>
+
+  <!-- data points -->
+  <g font-size="9">
+    <!-- Quick Wins (top-left) -->
+    <circle cx="140" cy="100" r="7" fill="#10b981" stroke="#065f46" stroke-width="1.5" />
+    <text x="152" y="103" fill="#0f172a">Notify when Kp ≥ X</text>
+
+    <circle cx="200" cy="130" r="7" fill="#10b981" stroke="#065f46" stroke-width="1.5" />
+    <text x="212" y="133" fill="#0f172a">Favorite locations</text>
+
+    <circle cx="130" cy="170" r="7" fill="#10b981" stroke="#065f46" stroke-width="1.5" />
+    <text x="142" y="173" fill="#0f172a">Skeleton loaders</text>
+
+    <circle cx="170" cy="90" r="7" fill="#10b981" stroke="#065f46" stroke-width="1.5" />
+    <text x="182" y="93" fill="#0f172a">27-day Kp history</text>
+
+    <circle cx="250" cy="80" r="7" fill="#10b981" stroke="#065f46" stroke-width="1.5" />
+    <text x="262" y="83" fill="#0f172a">Share-as-image (Storm Score)</text>
+
+    <circle cx="280" cy="160" r="7" fill="#10b981" stroke="#065f46" stroke-width="1.5" />
+    <text x="292" y="163" fill="#0f172a">Preload hints + optimization</text>
+
+    <!-- Big Bets (top-right) -->
+    <circle cx="450" cy="85" r="7" fill="#f59e0b" stroke="#854d0e" stroke-width="1.5" />
+    <text x="462" y="88" fill="#0f172a">Aurora Calendar</text>
+
+    <circle cx="520" cy="110" r="7" fill="#f59e0b" stroke="#854d0e" stroke-width="1.5" />
+    <text x="532" y="113" fill="#0f172a">Real Web Push + backend</text>
+
+    <circle cx="600" cy="90" r="7" fill="#f59e0b" stroke="#854d0e" stroke-width="1.5" />
+    <text x="532" y="128" fill="#0f172a" font-size="8.5" opacity="0.8">AI Assistant (Claude)</text>
+
+    <circle cx="480" cy="140" r="7" fill="#f59e0b" stroke="#854d0e" stroke-width="1.5" />
+    <text x="492" y="143" fill="#0f172a">Email digest</text>
+
+    <circle cx="560" cy="170" r="7" fill="#f59e0b" stroke="#854d0e" stroke-width="1.5" />
+    <text x="572" y="173" fill="#0f172a">Compare mode (2 cities)</text>
+
+    <circle cx="650" cy="130" r="7" fill="#f59e0b" stroke="#854d0e" stroke-width="1.5" />
+    <text x="550" y="185" fill="#0f172a" font-size="8.5" opacity="0.8">Community photos (Pro)</text>
+
+    <!-- Fill-Ins (bottom-left) -->
+    <circle cx="140" cy="260" r="7" fill="#f97316" stroke="#9a3412" stroke-width="1.5" />
+    <text x="152" y="263" fill="#0f172a">Unit toggle (km/s ↔ mi/s)</text>
+
+    <circle cx="180" cy="290" r="7" fill="#f97316" stroke="#9a3412" stroke-width="1.5" />
+    <text x="192" y="293" fill="#0f172a">Auto dark/light</text>
+
+    <circle cx="220" cy="320" r="7" fill="#f97316" stroke="#9a3412" stroke-width="1.5" />
+    <text x="232" y="323" fill="#0f172a">RSS feed</text>
+
+    <circle cx="300" cy="280" r="7" fill="#f97316" stroke="#9a3412" stroke-width="1.5" />
+    <text x="312" y="283" fill="#0f172a">"Is it safe to fly?"</text>
+
+    <!-- Avoid (bottom-right) -->
+    <circle cx="550" cy="310" r="7" fill="#ef4444" stroke="#991b1b" stroke-width="1.5" />
+    <text x="445" y="330" fill="#64748b" font-size="9">Multi-satellite tracking (Hubble/Starlink)</text>
+
+    <circle cx="650" cy="280" r="7" fill="#ef4444" stroke="#991b1b" stroke-width="1.5" />
+    <text x="560" y="295" fill="#64748b" font-size="9">Aurora Hunt gamification</text>
+
+    <circle cx="680" cy="340" r="7" fill="#ef4444" stroke="#991b1b" stroke-width="1.5" />
+    <text x="590" y="350" fill="#64748b" font-size="9">Livestream (Cloudflare Stream)</text>
+  </g>
+</svg>
+
+<!-- PHASE 1 -->
+<h2 id="phase1" class="page-break">4 · Фаза 1 — Основи (10 дни)</h2>
+
+<div class="phase p1">
+  <div class="phase-header">
+    <span class="phase-num">Phase 1</span>
+    <span class="phase-title">Затваряне на известните бъгове + честен маркетинг</span>
+    <span class="phase-meta">10 дни · blocker за всичко останало</span>
+  </div>
+  <p>
+    Целта на тази фаза е приложението да <strong>не лъже потребителите</strong> и да има базова устойчивост при грешки.
+    Нищо нова функционалност — само честност и стабилност.
+  </p>
+
+  <h4>Задачи</h4>
+  <div class="task-grid">
+    <div class="task-head">#</div>
+    <div class="task-head">Описание</div>
+    <div class="task-head">Priority</div>
+    <div class="task-head">Effort</div>
+
+    <div class="task-id">1.1</div>
+    <div>Пусни миграция <code>20260424140000_add_profile_plan.sql</code> в production Supabase (Dashboard → SQL Editor → paste → Run). Верифицирай: <code>SELECT plan FROM profiles LIMIT 1;</code></div>
+    <div class="sev-high">HIGH</div>
+    <div class="task-effort eff-s">S</div>
+
+    <div class="task-id">1.2</div>
+    <div>Лепни реалните Supabase <code>VITE_SUPABASE_URL</code> и <code>VITE_SUPABASE_ANON_KEY</code> в <code>.env</code> (не <code>.env.local</code>). Конфигурирай Vercel environment variables за production deploy.</div>
+    <div class="sev-high">HIGH</div>
+    <div class="task-effort eff-s">S</div>
+
+    <div class="task-id">1.3</div>
+    <div>Премахни App Store / Google Play badges от <code>Footer.tsx</code> докато няма реално публикувани приложения. Алтернатива — сложи "Coming Q3 2026" text label.</div>
+    <div class="sev-med">MED</div>
+    <div class="task-effort eff-s">S</div>
+
+    <div class="task-id">1.4</div>
+    <div>В <code>Home.tsx</code> махни feature cards, които нямат реална имплементация (Aurora Hunt, Livestream, Community Photos) — или ги премести в отделна секция "Roadmap" с честен ETA.</div>
+    <div class="sev-med">MED</div>
+    <div class="task-effort eff-s">S</div>
+
+    <div class="task-id">1.5</div>
+    <div>Добави React <code>&lt;ErrorBoundary&gt;</code> компонент около <code>&lt;Suspense&gt;</code> в <code>App.tsx</code>. Fallback UI с "Something went wrong" + reset бутон.</div>
+    <div class="sev-med">MED</div>
+    <div class="task-effort eff-s">S</div>
+
+    <div class="task-id">1.6</div>
+    <div>Оправи <code>Forecast.tsx</code> — при грешка от NOAA, не показвай <code>generateDemoData()</code> (случайни синусоиди). Покажи "No data available" error state.</div>
+    <div class="sev-high">HIGH</div>
+    <div class="task-effort eff-s">S</div>
+
+    <div class="task-id">1.7</div>
+    <div>Смени <code>package.json</code> name от <code>vite-react-typescript-starter</code> на <code>storm-watcher</code>.</div>
+    <div class="sev-low">LOW</div>
+    <div class="task-effort eff-s">S</div>
+
+    <div class="task-id">1.8</div>
+    <div>Махни 26-те <code>console.error</code> от services (или ги замени с no-op wrapper, който се дърпа само при <code>import.meta.env.DEV</code>).</div>
+    <div class="sev-low">LOW</div>
+    <div class="task-effort eff-s">S</div>
+
+    <div class="task-id">1.9</div>
+    <div>Добави <code>public/robots.txt</code> и базов <code>public/sitemap.xml</code> (static, ръчно написан с 13-те routes).</div>
+    <div class="sev-med">MED</div>
+    <div class="task-effort eff-s">S</div>
+
+    <div class="task-id">1.10</div>
+    <div>Премести server-side proxy логика от <code>vite.config.ts</code> + <code>vercel.json</code> в Supabase Edge Function <code>donki-proxy</code>. Позволява Capacitor iOS app да работи без DONKI CORS.</div>
+    <div class="sev-med">MED</div>
+    <div class="task-effort eff-m">M</div>
+  </div>
+
+  <div class="callout success">
+    <strong>Acceptance criteria за Фаза 1:</strong>
+    <ul>
+      <li>Никой feature, показван на Home.tsx като "работещ", не е фалшив.</li>
+      <li>Всеки route хваща грешки и показва дружелюбен fallback.</li>
+      <li>Нулеви counsol.error в production build.</li>
+      <li>Profile тeeraoperating с plan колона в prod Supabase.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- PHASE 2 -->
+<h2 id="phase2">5 · Фаза 2 — Auth & user-facing</h2>
+
+<div class="phase p2">
+  <div class="phase-header">
+    <span class="phase-num">Phase 2</span>
+    <span class="phase-title">Auth flow завършване + Profile/Settings pages</span>
+    <span class="phase-meta">8-10 дни · blocker за Stripe</span>
+  </div>
+  <p>
+    Целта: всеки login path работи, потребителите могат да възстановят парола, Mood не може да бъде abusen.
+    Започваш гraduallиsen да връщаш <code>/profile</code> и <code>/settings</code> routes (премахнати в Фаза 1) — но вече с реално съдържание.
+  </p>
+
+  <h4>Задачи</h4>
+  <div class="task-grid">
+    <div class="task-head">#</div>
+    <div class="task-head">Описание</div>
+    <div class="task-head">Priority</div>
+    <div class="task-head">Effort</div>
+
+    <div class="task-id">2.1</div>
+    <div>Добави OAuth бутони в <code>Auth.tsx</code> (Google, Apple, Facebook). Използвай съществуващите <code>signInWithGoogle/Apple/Facebook</code> от <code>AuthContext.tsx</code>. Подготвa brand guidelines compliant бутони.</div>
+    <div class="sev-high">HIGH</div>
+    <div class="task-effort eff-m">M</div>
+
+    <div class="task-id">2.2</div>
+    <div>Forgot password flow: нов route <code>/auth/reset</code>. В <code>Auth.tsx</code> добави "Forgot password?" линк → извиква <code>supabase.auth.resetPasswordForEmail()</code>. На <code>/auth/reset</code> потребителят въвежда нова парола.</div>
+    <div class="sev-high">HIGH</div>
+    <div class="task-effort eff-m">M</div>
+
+    <div class="task-id">2.3</div>
+    <div>Mood rate-limit: Supabase Edge Function <code>submit-mood</code>. Hashва client IP (<code>request.headers.get('x-forwarded-for')</code>), проверява брой insert-и за 24h, отхвърля ако &gt; 1.</div>
+    <div class="sev-high">HIGH</div>
+    <div class="task-effort eff-m">M</div>
+
+    <div class="task-id">2.4</div>
+    <div>Профилна страница <code>/profile</code>: edit full_name, upload avatar (<code>browser-image-compression</code> + Supabase Storage), show email &amp; plan &amp; "Member since".</div>
+    <div class="sev-med">MED</div>
+    <div class="task-effort eff-l">L</div>
+
+    <div class="task-id">2.5</div>
+    <div>Settings страница <code>/settings</code>: preferred location (GPS/manual), default язик, notification preferences (Kp threshold picker), Unit toggle (km/s ↔ mi/s, °C ↔ °F).</div>
+    <div class="sev-med">MED</div>
+    <div class="task-effort eff-l">L</div>
+
+    <div class="task-id">2.6</div>
+    <div>Email verification: в Auth.tsx-а, ако <code>user.email_confirmed_at</code> е <code>null</code> след signup, redirect към "Please check email" вместо /dashboard.</div>
+    <div class="sev-med">MED</div>
+    <div class="task-effort eff-s">S</div>
+
+    <div class="task-id">2.7</div>
+    <div>Добави password strength indicator в signup form (3 bars green/yellow/red според ентропия, не bcrypt).</div>
+    <div class="sev-low">LOW</div>
+    <div class="task-effort eff-s">S</div>
+
+    <div class="task-id">2.8</div>
+    <div>Добави "Delete my account" в Settings. Извикване на Supabase <code>auth.admin.deleteUser()</code> през Edge Function. GDPR compliance.</div>
+    <div class="sev-med">MED</div>
+    <div class="task-effort eff-m">M</div>
+
+    <div class="task-id">2.9</div>
+    <div>Lazy loading на Language locale bundles: разбий <code>LanguageContext.tsx</code> на <code>locales/{en,bg,es,...}.json</code>. <code>const loadLocale = lang =&gt; import(\`../locales/\${lang}.json\`)</code>. Намалява main bundle с ~200KB.</div>
+    <div class="sev-med">MED</div>
+    <div class="task-effort eff-m">M</div>
+  </div>
+
+  <div class="callout success">
+    <strong>Acceptance criteria за Фаза 2:</strong>
+    <ul>
+      <li>Потребител може да се запише и логне с Google / Apple / Facebook.</li>
+      <li>Забравена парола flow работи end-to-end.</li>
+      <li>Mood submission е rate-limited на сървъра.</li>
+      <li>Main bundle е &lt; 350KB gzip (currently ~550KB).</li>
+    </ul>
+  </div>
+</div>
+
+<!-- PHASE 3 -->
+<h2 id="phase3" class="page-break">6 · Фаза 3 — PWA, push & performance</h2>
+
+<div class="phase p3">
+  <div class="phase-header">
+    <span class="phase-num">Phase 3</span>
+    <span class="phase-title">Истински PWA, реални push notifications, performance</span>
+    <span class="phase-meta">12-14 дни · Home обещава — сега го правим</span>
+  </div>
+  <p>
+    Home.tsx рекламира "Push alerts" и "PWA" от година. Тук най-накрая го правим реално.
+    Това е най-голямата фаза — истинска backend работа + ServiceWorker + Web Push protocol.
+  </p>
+
+  <h4>Задачи</h4>
+  <div class="task-grid">
+    <div class="task-head">#</div>
+    <div class="task-head">Описание</div>
+    <div class="task-head">Priority</div>
+    <div class="task-head">Effort</div>
+
+    <div class="task-id">3.1</div>
+    <div>Генерирай <code>public/manifest.webmanifest</code> (name, short_name, theme_color #f97316, icons 192/512). Добави <code>&lt;link rel="manifest"&gt;</code> в <code>index.html</code>.</div>
+    <div class="sev-high">HIGH</div>
+    <div class="task-effort eff-s">S</div>
+
+    <div class="task-id">3.2</div>
+    <div>Инсталирай <code>vite-plugin-pwa</code>. Конфигурирай generateSW с <code>workbox-window</code>. Strategy: NOAA/NASA API calls = NetworkFirst с fallback на cache (stale-while-revalidate 5 min).</div>
+    <div class="sev-high">HIGH</div>
+    <div class="task-effort eff-m">M</div>
+
+    <div class="task-id">3.3</div>
+    <div>VAPID keys generator: <code>npx web-push generate-vapid-keys</code>. Public key в Vercel env, private в Supabase env.</div>
+    <div class="sev-high">HIGH</div>
+    <div class="task-effort eff-s">S</div>
+
+    <div class="task-id">3.4</div>
+    <div>Нова таблица <code>push_subscriptions</code> в Supabase (user_id, endpoint, p256dh, auth, threshold_kp). RLS: user чете/пише свои.</div>
+    <div class="sev-high">HIGH</div>
+    <div class="task-effort eff-s">S</div>
+
+    <div class="task-id">3.5</div>
+    <div>В <code>PushNotificationBell.tsx</code> — замени fake <code>new Notification()</code> с <code>registration.pushManager.subscribe()</code>. Запиши subscription в DB.</div>
+    <div class="sev-high">HIGH</div>
+    <div class="task-effort eff-m">M</div>
+
+    <div class="task-id">3.6</div>
+    <div>Supabase Edge Function <code>send-kp-alerts</code>: cron every 5 min. Fetch-ва NOAA, ако Kp &gt;= threshold за даден subscriber и не е пращан в последните 2 часа → push чрез <code>web-push</code> library.</div>
+    <div class="sev-high">HIGH</div>
+    <div class="task-effort eff-l">L</div>
+
+    <div class="task-id">3.7</div>
+    <div>ServiceWorker обработва <code>push</code> event: <code>self.registration.showNotification()</code> с title "Geomagnetic Storm", body с Kp стойност, action "View dashboard".</div>
+    <div class="sev-high">HIGH</div>
+    <div class="task-effort eff-m">M</div>
+
+    <div class="task-id">3.8</div>
+    <div>Добави <code>react-helmet-async</code> за route-level SEO (unique title, description, og:image за всяка страница).</div>
+    <div class="sev-med">MED</div>
+    <div class="task-effort eff-m">M</div>
+
+    <div class="task-id">3.9</div>
+    <div>Замени 100 stars + 20 particles от Home.tsx с един <code>&lt;canvas&gt;</code> + requestAnimationFrame. ~80% DOM reduction.</div>
+    <div class="sev-med">MED</div>
+    <div class="task-effort eff-m">M</div>
+
+    <div class="task-id">3.10</div>
+    <div>Vite 5 → 8 upgrade. Съпътстващи промени: <code>vite.config.ts</code> proxy syntax, <code>manualChunks</code> signature, <code>@vitejs/plugin-react</code> major. Затваря 2 moderate CVE.</div>
+    <div class="sev-med">MED</div>
+    <div class="task-effort eff-m">M</div>
+
+    <div class="task-id">3.11</div>
+    <div>iOS Capacitor push notifications чрез APNs (@capacitor/push-notifications plugin). Бонус, ако искаш App Store версия.</div>
+    <div class="sev-low">LOW</div>
+    <div class="task-effort eff-l">L</div>
+
+    <div class="task-id">3.12</div>
+    <div>Замени <code>axios</code> с native <code>fetch</code> в всичките 5 service файла. -11KB gzip.</div>
+    <div class="sev-low">LOW</div>
+    <div class="task-effort eff-s">S</div>
+
+    <div class="task-id">3.13</div>
+    <div>Image optimization: Vercel ще го прави, но за Capacitor build-а конвертирай PNG/JPG в WebP/AVIF чрез <code>sharp</code> в build script.</div>
+    <div class="sev-low">LOW</div>
+    <div class="task-effort eff-s">S</div>
+  </div>
+
+  <div class="callout success">
+    <strong>Acceptance criteria за Фаза 3:</strong>
+    <ul>
+      <li>Lighthouse PWA score ≥ 90.</li>
+      <li>"Add to Home Screen" работи в Chrome Android и Safari iOS.</li>
+      <li>Потребител получава push известие при Kp &gt;= 5 дори когато браузърът е затворен.</li>
+      <li>Main bundle &lt; 250KB gzip.</li>
+      <li>Всички 13 страници имат unique SEO meta.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- PHASE 4 -->
+<h2 id="phase4">7 · Фаза 4 — Stripe & plan gating</h2>
+
+<div class="phase p4">
+  <div class="phase-header">
+    <span class="phase-num">Phase 4</span>
+    <span class="phase-title">Реална монетизация</span>
+    <span class="phase-meta">8-10 дни · започва приход</span>
+  </div>
+  <p>
+    Сега, когато <code>profile.plan</code> колоната съществува (Фаза 1) и има реални push notifications + PWA (Фаза 3), може да заключим някои фичи зад paywall.
+    Pricing page вече е частично написана — трябва само да я свържем.
+  </p>
+
+  <h4>Задачи</h4>
+  <div class="task-grid">
+    <div class="task-head">#</div>
+    <div class="task-head">Описание</div>
+    <div class="task-head">Priority</div>
+    <div class="task-head">Effort</div>
+
+    <div class="task-id">4.1</div>
+    <div>Създай Stripe account, дефинирай 2 Products (Pro $4.99/mo, Premium $9.99/mo). Генерирай Payment Links за първоначален тест.</div>
+    <div class="sev-high">HIGH</div>
+    <div class="task-effort eff-s">S</div>
+
+    <div class="task-id">4.2</div>
+    <div>Supabase Edge Function <code>stripe-checkout</code>: създава Stripe Checkout Session, запомня <code>user_id</code> в <code>client_reference_id</code>.</div>
+    <div class="sev-high">HIGH</div>
+    <div class="task-effort eff-m">M</div>
+
+    <div class="task-id">4.3</div>
+    <div>Supabase Edge Function <code>stripe-webhook</code>: listen-ва <code>checkout.session.completed</code> &amp; <code>customer.subscription.updated/deleted</code>. Update <code>profiles.plan</code> и <code>profiles.stripe_customer_id</code>.</div>
+    <div class="sev-high">HIGH</div>
+    <div class="task-effort eff-m">M</div>
+
+    <div class="task-id">4.4</div>
+    <div>Нова миграция: добави <code>stripe_customer_id text</code> и <code>subscription_status text</code> колони в profiles. RLS: samo user чете свои.</div>
+    <div class="sev-high">HIGH</div>
+    <div class="task-effort eff-s">S</div>
+
+    <div class="task-id">4.5</div>
+    <div>Махни TODO коментарите от App.tsx &amp; Home.tsx. Restore <code>/pricing</code> route. Update Pricing.tsx да ползва Stripe Checkout Session URL.</div>
+    <div class="sev-high">HIGH</div>
+    <div class="task-effort eff-s">S</div>
+
+    <div class="task-id">4.6</div>
+    <div>PlanGuard.tsx — махни <code>hasAccess = true</code> workaround, върни оригиналната plan-based логика.</div>
+    <div class="sev-high">HIGH</div>
+    <div class="task-effort eff-s">S</div>
+
+    <div class="task-id">4.7</div>
+    <div>Customer Portal: Stripe Billing Portal link в Settings page. "Manage subscription" → Stripe-hosted UI за cancel/upgrade/invoice downloads.</div>
+    <div class="sev-med">MED</div>
+    <div class="task-effort eff-s">S</div>
+
+    <div class="task-id">4.8</div>
+    <div>GrowthBook / feature flags за gradual rollout на paywall (напр. 10% of users първата седмица).</div>
+    <div class="sev-low">LOW</div>
+    <div class="task-effort eff-m">M</div>
+
+    <div class="task-id">4.9</div>
+    <div>Email receipts &amp; dunning: Stripe вече ги прави, но добави в Supabase notification за успешен upgrade ("You're Pro now!").</div>
+    <div class="sev-low">LOW</div>
+    <div class="task-effort eff-s">S</div>
+  </div>
+
+  <div class="callout danger">
+    <strong>Внимание:</strong> никога не update-вай <code>profiles.plan</code> от клиентски код.
+    Единственият legitim източник е Stripe webhook-а със <code>service_role</code> key.
+    <code>AuthContext.updateProfile()</code> вече има allowlist — <strong>не добавяй plan в него</strong>.
+  </div>
+
+  <div class="callout success">
+    <strong>Acceptance criteria за Фаза 4:</strong>
+    <ul>
+      <li>Test user успява да upgrade-не до Pro чрез Stripe Checkout и веднага получи Pro features.</li>
+      <li>Cancel на subscription чрез Stripe Portal сваля до Free след края на billing period.</li>
+      <li>Webhook retry-ите работят (idempotent insert).</li>
+    </ul>
+  </div>
+</div>
+
+<!-- PHASE 5 -->
+<h2 id="phase5" class="page-break">8 · Фаза 5 — Core feature expansion</h2>
+
+<div class="phase p5">
+  <div class="phase-header">
+    <span class="phase-num">Phase 5</span>
+    <span class="phase-title">Нови функционалности — по приоритетна матрица</span>
+    <span class="phase-meta">continuous · започва с Фаза 3</span>
+  </div>
+  <p>
+    Тази фаза не е линейна — всяка фича е независима. Приоритетът се взима от матрицата в раздел 3.
+    Започваме с Quick Wins (лесни + висока стойност), после Big Bets (важни, но иска време).
+  </p>
+
+  <h4>5A · Quick Wins (прави първи)</h4>
+  <div class="task-grid">
+    <div class="task-head">#</div>
+    <div class="task-head">Описание</div>
+    <div class="task-head">Plan</div>
+    <div class="task-head">Effort</div>
+
+    <div class="task-id">5A.1</div>
+    <div><strong>Notify when Kp ≥ X</strong> — UI slider в Settings (0-9), запазва в <code>push_subscriptions.threshold_kp</code>. Free users: threshold fixed at 5. Pro: настройваем 3-9.</div>
+    <div style="font-size: 8.5pt">Free + Pro</div>
+    <div class="task-effort eff-m">M</div>
+
+    <div class="task-id">5A.2</div>
+    <div><strong>Favorite locations</strong> — нова таблица <code>favorite_locations</code>. Използва се в UV/Sky/Sun страниците вместо geolocation всеки път. Max 3 за Free, 10 за Pro.</div>
+    <div style="font-size: 8.5pt">Free + Pro</div>
+    <div class="task-effort eff-m">M</div>
+
+    <div class="task-id">5A.3</div>
+    <div><strong>Skeleton loaders</strong> — замени spinner-ите в Home, Dashboard, Forecast със skeleton cards. Възприемано първо време -40%.</div>
+    <div style="font-size: 8.5pt">Всички</div>
+    <div class="task-effort eff-m">M</div>
+
+    <div class="task-id">5A.4</div>
+    <div><strong>27-day Kp history chart</strong> — от <code>getKpHistory3Day</code> агрегирай повече. Sparkline на Home + full chart на Dashboard. Образователно ("solar rotation period").</div>
+    <div style="font-size: 8.5pt">Всички</div>
+    <div class="task-effort eff-m">M</div>
+
+    <div class="task-id">5A.5</div>
+    <div><strong>Share-as-image for Storm Score</strong> — Canvas API генерира PNG с branded дизайн. OG image API route <code>/api/og/storm-score</code>. Viral potential за социални медии.</div>
+    <div style="font-size: 8.5pt">Всички</div>
+    <div class="task-effort eff-m">M</div>
+
+    <div class="task-id">5A.6</div>
+    <div><strong>NOAA preload hints</strong> в index.html: <code>&lt;link rel="preload" as="fetch" href="/json/planetary_k_index_1m.json" crossorigin&gt;</code>. -200-400ms до първи рендер.</div>
+    <div style="font-size: 8.5pt">Всички</div>
+    <div class="task-effort eff-s">S</div>
+
+    <div class="task-id">5A.7</div>
+    <div><strong>Aurora quality index</strong> — комбиниран score от Bz (50%), Bt (20%), solar wind speed (20%), density (10%). Показва се на Aurora страницата. Научно по-точно от само Kp.</div>
+    <div style="font-size: 8.5pt">Всички</div>
+    <div class="task-effort eff-m">M</div>
+  </div>
+
+  <h4>5B · Big Bets (планирай внимателно)</h4>
+  <div class="task-grid">
+    <div class="task-head">#</div>
+    <div class="task-head">Описание</div>
+    <div class="task-head">Plan</div>
+    <div class="task-head">Effort</div>
+
+    <div class="task-id">5B.1</div>
+    <div><strong>Aurora Calendar</strong> (Home промоция) — 27-дневна прогноза + лунна фаза (tenki.js) + best-viewing nights. UI: calendar grid с color-coded клетки.</div>
+    <div style="font-size: 8.5pt">Pro</div>
+    <div class="task-effort eff-l">L</div>
+
+    <div class="task-id">5B.2</div>
+    <div><strong>AI Assistant</strong> (Premium feature от Home) — Claude Haiku 4.5 през Anthropic API. Context: current Kp, recent CMEs, user location. 50 въпроса/месец за Premium. ~$0.25/1M tokens.</div>
+    <div style="font-size: 8.5pt">Premium</div>
+    <div class="task-effort eff-l">L</div>
+
+    <div class="task-id">5B.3</div>
+    <div><strong>Email digest</strong> — daily/weekly бюлетин със summary. Supabase Edge Function + Resend API ($0 up to 3k emails/month).</div>
+    <div style="font-size: 8.5pt">Pro</div>
+    <div class="task-effort eff-m">M</div>
+
+    <div class="task-id">5B.4</div>
+    <div><strong>Compare mode</strong> — 2 града, 7 нощи, split-screen. Използва същите Sky + Aurora API-та с параметрирани locations.</div>
+    <div style="font-size: 8.5pt">Pro</div>
+    <div class="task-effort eff-m">M</div>
+
+    <div class="task-id">5B.5</div>
+    <div><strong>Aurora Visibility API</strong> (instead of hardcoded 9 cities) — изчислява магнитна ширина от геогр. координати + текущ Kp → visibility %. Purely math, no extra API call.</div>
+    <div style="font-size: 8.5pt">Всички</div>
+    <div class="task-effort eff-m">M</div>
+
+    <div class="task-id">5B.6</div>
+    <div><strong>Community photos (верифицирани от AI)</strong> — Supabase Storage + Claude Vision за spam filter (< $0.001/image). Home обещано.</div>
+    <div style="font-size: 8.5pt">Pro</div>
+    <div class="task-effort eff-l">L</div>
+
+    <div class="task-id">5B.7</div>
+    <div><strong>NIGGG magnetometer</strong> (Home обещано) — scrape НИГГГ-БАН JSON feed, добави към Dashboard като "Local magnetometer (Bulgaria)". Уникално за български потребители.</div>
+    <div style="font-size: 8.5pt">Всички</div>
+    <div class="task-effort eff-m">M</div>
+  </div>
+
+  <h4>5C · Fill-Ins (прави в свободно време)</h4>
+  <p style="font-size: 9.5pt; color: #475569;">
+    Unit toggle (km/s ↔ mi/s), auto dark/light по <code>prefers-color-scheme</code>, RSS feed за alerts, "Is it safe to fly?" калкулатор, solar event timeline (30 дни).
+  </p>
+
+  <h4>5D · Avoid (пропусни)</h4>
+  <p style="font-size: 9.5pt; color: #64748b;">
+    Multi-satellite tracking (Hubble/Starlink), Aurora Hunt gamification, Cloudflare Stream livestream. Висок effort, нисък ROI за общата аудитория.
+  </p>
+</div>
+
+<!-- PHASE 6 -->
+<h2 id="phase6">9 · Фаза 6 — Polish & tests</h2>
+
+<div class="phase p6">
+  <div class="phase-header">
+    <span class="phase-num">Phase 6</span>
+    <span class="phase-title">Technical debt, accessibility, test coverage</span>
+    <span class="phase-meta">10 дни · continuous от момента в който Фаза 4 приключи</span>
+  </div>
+
+  <h4>Задачи</h4>
+  <div class="task-grid">
+    <div class="task-head">#</div>
+    <div class="task-head">Описание</div>
+    <div class="task-head">Priority</div>
+    <div class="task-head">Effort</div>
+
+    <div class="task-id">6.1</div>
+    <div>Dark/Light mode като CSS custom properties вместо hack в <code>index.css:181-191</code>. Дефинирай <code>--bg-primary</code>, <code>--text-primary</code> и т.н.</div>
+    <div class="sev-med">MED</div>
+    <div class="task-effort eff-m">M</div>
+
+    <div class="task-id">6.2</div>
+    <div>Accessibility audit — ARIA labels на всички data displays (Kp Index, Storm Score), <code>role="status"</code> за live updates, screen reader tested.</div>
+    <div class="sev-med">MED</div>
+    <div class="task-effort eff-m">M</div>
+
+    <div class="task-id">6.3</div>
+    <div>Vitest setup + unit tests за <code>noaaApi.ts</code> cache logic, <code>uvApi.ts</code> getUvLevel, donki proxy handling. Target: 60% coverage на services/.</div>
+    <div class="sev-med">MED</div>
+    <div class="task-effort eff-l">L</div>
+
+    <div class="task-id">6.4</div>
+    <div>Playwright E2E за 3 critical flows: signup → email verify, mood submission, storm push notification delivery.</div>
+    <div class="sev-low">LOW</div>
+    <div class="task-effort eff-l">L</div>
+
+    <div class="task-id">6.5</div>
+    <div>Замени <code>recharts</code> със <code>lightweight-charts</code> (Trading View's chart library) — 25KB вместо 100KB. Изисква пренаписване на 4 chart компонента.</div>
+    <div class="sev-low">LOW</div>
+    <div class="task-effort eff-l">L</div>
+
+    <div class="task-id">6.6</div>
+    <div>Session ID clean up при logout (<code>lib/supabase.ts:12</code>). Сега остава завинаги в localStorage.</div>
+    <div class="sev-low">LOW</div>
+    <div class="task-effort eff-s">S</div>
+
+    <div class="task-id">6.7</div>
+    <div>Onboarding tour — първо посещение показва 4-стъпен tooltip walkthrough за Kp, Bz, X-ray flux. Използвай <code>react-joyride</code>.</div>
+    <div class="sev-low">LOW</div>
+    <div class="task-effort eff-m">M</div>
+
+    <div class="task-id">6.8</div>
+    <div>Sentry integration — replace console.error с <code>Sentry.captureException</code>. Production errors видими в един dashboard.</div>
+    <div class="sev-low">LOW</div>
+    <div class="task-effort eff-s">S</div>
+
+    <div class="task-id">6.9</div>
+    <div>CI/CD — GitHub Actions workflow: на всеки PR пусни <code>npm run typecheck && npm run build</code>. Blocks merge при failure.</div>
+    <div class="sev-med">MED</div>
+    <div class="task-effort eff-s">S</div>
+
+    <div class="task-id">6.10</div>
+    <div>Analytics — <code>@vercel/analytics</code> вече е интегрирано. Добави custom events за conversion funnels (signup, upgrade, push enable).</div>
+    <div class="sev-low">LOW</div>
+    <div class="task-effort eff-s">S</div>
+  </div>
+</div>
+
+<!-- RISKS -->
+<h2 id="risks" class="page-break">10 · Рискове и mitigation</h2>
+
+<table>
+  <thead>
+    <tr><th style="width: 25%">Риск</th><th>Вероятност</th><th>Impact</th><th>Mitigation</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Nominatim ban след ISS bug fix не е пуснат</strong></td>
+      <td class="sev-high">High</td>
+      <td class="sev-high">Critical</td>
+      <td>Deploy fab3aaf веднага. Long-term — proxy през Supabase Edge Function с caching.</td>
+    </tr>
+    <tr>
+      <td><strong>NOAA API downtime</strong></td>
+      <td class="sev-med">Medium</td>
+      <td class="sev-high">High</td>
+      <td>Cache layer в ТТаска 3.2 (stale-while-revalidate). Последните валидни данни се показват с "Last updated X min ago" badge.</td>
+    </tr>
+    <tr>
+      <td><strong>Stripe webhook пропуснат/дублиран</strong></td>
+      <td class="sev-med">Medium</td>
+      <td class="sev-high">High</td>
+      <td>Idempotent insert (UPSERT по stripe_event_id в stripe_events таблица). Retry automatic от Stripe до 3 дни.</td>
+    </tr>
+    <tr>
+      <td><strong>Supabase row-level security bypass</strong></td>
+      <td class="sev-low">Low</td>
+      <td class="sev-high">Critical</td>
+      <td>Никога не ползвай <code>service_role</code> от клиент. Редовно проверявай RLS policies със <code>supabase db lint</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Vite 8 upgrade breaks build</strong></td>
+      <td class="sev-med">Medium</td>
+      <td class="sev-med">Medium</td>
+      <td>Направи в отделен branch. Тествай всеки route manually + <code>npm run build</code>. Rollback план — запази package-lock.json на v5.</td>
+    </tr>
+    <tr>
+      <td><strong>Push subscription expires / browser clears</strong></td>
+      <td class="sev-high">High</td>
+      <td class="sev-low">Low</td>
+      <td>Handle 410 Gone response от push service — delete subscription. SW resubscribe on next visit.</td>
+    </tr>
+    <tr>
+      <td><strong>Claude API cost overrun (AI Assistant)</strong></td>
+      <td class="sev-low">Low</td>
+      <td class="sev-med">Medium</td>
+      <td>Hard rate limit: 50 msgs/month/Premium user в Edge Function. Spending alert в Anthropic dashboard.</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ACCEPTANCE -->
+<h2 id="acceptance">11 · Финален acceptance checklist</h2>
+
+<p>Преди да обявиш v2.0 "paid" release, всички точки трябва да са &check;:</p>
+
+<table>
+  <thead><tr><th style="width: 30%">Категория</th><th>Критерий</th><th style="width: 80px">Статус</th></tr></thead>
+  <tbody>
+    <tr><td>Security</td><td>0 high-severity <code>npm audit</code> findings</td><td>☐</td></tr>
+    <tr><td>Security</td><td>RLS policies тествани за всички tables (anon не чете други users)</td><td>☐</td></tr>
+    <tr><td>Security</td><td>Stripe webhook signature validation работи</td><td>☐</td></tr>
+    <tr><td>Performance</td><td>Lighthouse Performance ≥ 85 mobile</td><td>☐</td></tr>
+    <tr><td>Performance</td><td>Main bundle &lt; 250KB gzip</td><td>☐</td></tr>
+    <tr><td>Performance</td><td>First Contentful Paint &lt; 1.5s на 3G</td><td>☐</td></tr>
+    <tr><td>PWA</td><td>Lighthouse PWA ≥ 90</td><td>☐</td></tr>
+    <tr><td>PWA</td><td>"Add to Home Screen" работи Chrome + Safari</td><td>☐</td></tr>
+    <tr><td>PWA</td><td>Offline fallback page</td><td>☐</td></tr>
+    <tr><td>Auth</td><td>Signup + login + OAuth + forgot password end-to-end</td><td>☐</td></tr>
+    <tr><td>Auth</td><td>GDPR "Delete my account" работи</td><td>☐</td></tr>
+    <tr><td>Push</td><td>Push notification delivered когато Kp ≥ user threshold</td><td>☐</td></tr>
+    <tr><td>Push</td><td>Notification работи когато tab е затворен</td><td>☐</td></tr>
+    <tr><td>Paywall</td><td>Free → Pro upgrade flow (Stripe Checkout) работи</td><td>☐</td></tr>
+    <tr><td>Paywall</td><td>Pro features реално gated (Aurora, Alerts pages)</td><td>☐</td></tr>
+    <tr><td>Paywall</td><td>Cancel → downgrade в края на billing period</td><td>☐</td></tr>
+    <tr><td>Content</td><td>Всички "Coming Soon" labels имат ETA или са махнати</td><td>☐</td></tr>
+    <tr><td>Content</td><td>App Store / Google Play badges махнати (или реални)</td><td>☐</td></tr>
+    <tr><td>Accessibility</td><td>Lighthouse Accessibility ≥ 90</td><td>☐</td></tr>
+    <tr><td>SEO</td><td>Всеки route има unique title + meta description</td><td>☐</td></tr>
+    <tr><td>SEO</td><td>sitemap.xml + robots.txt deployed</td><td>☐</td></tr>
+    <tr><td>Testing</td><td>≥ 60% coverage на services/</td><td>☐</td></tr>
+    <tr><td>Testing</td><td>3 E2E happy paths минават в CI</td><td>☐</td></tr>
+    <tr><td>Monitoring</td><td>Sentry error tracking активен</td><td>☐</td></tr>
+    <tr><td>Monitoring</td><td>Vercel Analytics conversion funnels дефинирани</td><td>☐</td></tr>
+  </tbody>
+</table>
+
+<div class="callout info" style="margin-top: 30px;">
+  <strong>Бележка за темпо:</strong>
+  Оценката за 12 седмици при 1 developer е реалистична при focused work.
+  Ако работиш 2-3h вечер — удвои срока. Препоръчвам да завършваш минимум една фаза преди да minimera switch-неш към следваща, иначе half-done фичи се натрупват.
+</div>
+
+<div class="callout success" style="margin-top: 20px;">
+  <strong>Следваща стъпка:</strong>
+  Започни с <strong>1.1</strong> (пусни миграцията в Supabase) и <strong>1.2</strong> (реални env ключове). Това разблокира всичко останало.
+  Кажи "готово 1.1 и 1.2" когато си свършен и ще продължим с 1.3-1.10.
+</div>
+
+<p style="text-align: center; color: #94a3b8; font-size: 9pt; margin-top: 40px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
+  Roadmap генериран на 24 април 2026 · The Storm Watcher · commit <code>fab3aaf</code>
+</p>
+
+</body>
+</html>
