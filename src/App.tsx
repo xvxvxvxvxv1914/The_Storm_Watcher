@@ -41,6 +41,7 @@ function AppRoutes() {
   return (
     <div className={`min-h-screen ${theme === 'light' ? 'bg-slate-100' : 'bg-[#0a0a1a]'}`}>
       <Navigation />
+      <main id="main">
       <ErrorBoundary>
         <Suspense fallback={<LoadingFallback />}>
           <Routes>
@@ -61,6 +62,7 @@ function AppRoutes() {
           </Routes>
         </Suspense>
       </ErrorBoundary>
+      </main>
       <Footer />
     </div>
   );
