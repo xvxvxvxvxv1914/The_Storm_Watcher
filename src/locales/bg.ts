@@ -92,8 +92,6 @@ const bg: Record<string, string> = {
   'home.feature.hunt.desc': 'Спечелете значки и точки за забелязване и докладване на аврора. Класацията се обновява в реално време.',
   'home.feature.livestream.title': 'Livestream',
   'home.feature.livestream.desc': 'Гледайте камери на живо от Норвегия, Исландия и Финландия — базирано на Cloudflare Stream.',
-  'home.feature.pwa.title': 'PWA',
-  'home.feature.pwa.desc': 'Добавете The Storm Watcher към началния екран и го използвайте като нативно приложение. Без нужда от App Store.',
   'home.stormBanner': 'ГЕОМАГНИТНА БУРЯ — Kp',
   'home.trustedSources': 'Доверени източници на данни',
   'home.trustedSourcesDesc': 'Прогнозите ни са базирани на NOAA Space Weather Prediction Center, NASA DONKI, ESA Space Weather Service и Националния институт по геофизика и геодезия (България).',

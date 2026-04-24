@@ -92,8 +92,6 @@ const en: Record<string, string> = {
   'home.feature.hunt.desc': 'Earn badges and points for spotting and reporting auroras. Leaderboard updated in real time.',
   'home.feature.livestream.title': 'Livestream',
   'home.feature.livestream.desc': 'Watch live aurora cameras from Norway, Iceland and Finland — powered by Cloudflare Stream.',
-  'home.feature.pwa.title': 'PWA',
-  'home.feature.pwa.desc': 'Add The Storm Watcher to your home screen and use it like a native app. No app store needed.',
   'home.trustedSources': 'Trusted data sources',
   'home.trustedSourcesDesc': 'Our forecasts are powered by NOAA Space Weather Prediction Center, NASA DONKI, ESA Space Weather Service, and the National Institute of Geophysics and Geodesy (Bulgaria).',
   'home.stormBanner': 'GEOMAGNETIC STORM IN PROGRESS — Kp',

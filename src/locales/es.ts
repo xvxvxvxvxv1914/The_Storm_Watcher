@@ -92,8 +92,6 @@ const es: Record<string, string> = {
   'home.feature.hunt.desc': 'Gana insignias y puntos por avistar y reportar auroras. Clasificación actualizada en tiempo real.',
   'home.feature.livestream.title': 'Livestream',
   'home.feature.livestream.desc': 'Mira cámaras de auroras en vivo desde Noruega, Islandia y Finlandia — impulsado por Cloudflare Stream.',
-  'home.feature.pwa.title': 'PWA',
-  'home.feature.pwa.desc': 'Añade The Storm Watcher a tu pantalla de inicio y úsalo como una app nativa. Sin necesidad de tienda de aplicaciones.',
   'home.stormBanner': 'TORMENTA GEOMAGNÉTICA — Kp',
   'home.trustedSources': 'Fuentes de datos de confianza',
   'home.trustedSourcesDesc': 'Nuestras predicciones utilizan datos del Centro de Predicción del Clima Espacial de NOAA, NASA DONKI, ESA Space Weather Service y el Instituto Nacional de Geofísica y Geodesia (Bulgaria).',
