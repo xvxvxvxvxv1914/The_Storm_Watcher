@@ -1,63 +1,68 @@
 /* eslint-disable react-refresh/only-export-components */
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
-import { Sun, MapPin, AlertTriangle } from 'lucide-react';
+import { Sun, AlertTriangle } from 'lucide-react';
 import { getUvIndex, getUvLevel, UvData } from '../services/uvApi';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSettings } from '../contexts/SettingsContext';
+import LocationPicker from '../components/LocationPicker';
 
 const UV = () => {
   const { t } = useLanguage();
+  const { settings } = useSettings();
   const [uvData, setUvData] = useState<UvData | null>(null);
   const [loading, setLoading] = useState(true);
   const [locationError, setLocationError] = useState(false);
   const [locationName, setLocationName] = useState<string>('');
+  const [currentLat, setCurrentLat] = useState(0);
+  const [currentLon, setCurrentLon] = useState(0);
 
-  useEffect(() => {
-    if (!navigator.geolocation) {
+  const loadForCoords = useCallback(async (lat: number, lon: number, name?: string) => {
+    setLoading(true);
+    setLocationError(false);
+    try {
+      const data = await getUvIndex(lat, lon);
+      setUvData(data);
+      setCurrentLat(lat);
+      setCurrentLon(lon);
+      if (name) {
+        setLocationName(name);
+      } else {
+        try {
+          const geo = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
+          ).then(r => r.json());
+          const city = geo.address?.city || geo.address?.town || geo.address?.village || '';
+          const country = geo.address?.country || '';
+          setLocationName([city, country].filter(Boolean).join(', '));
+        } catch {
+          setLocationName(`${lat.toFixed(2)}, ${lon.toFixed(2)}`);
+        }
+      }
+    } catch {
       setLocationError(true);
+    } finally {
       setLoading(false);
-      return;
     }
+  }, []);
 
+  const requestGPS = useCallback(() => {
+    if (!navigator.geolocation) { loadForCoords(42.7, 23.3, t('uv.defaultLocation')); return; }
     navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        try {
-          const { latitude, longitude } = pos.coords;
-          const data = await getUvIndex(latitude, longitude);
-          setUvData(data);
-
-          // Reverse geocode is best-effort and should not break UV rendering.
-          try {
-            const geo = await fetch(
-              `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
-            ).then(r => r.json());
-            const city = geo.address?.city || geo.address?.town || geo.address?.village || '';
-            const country = geo.address?.country || '';
-            setLocationName([city, country].filter(Boolean).join(', '));
-          } catch {
-            setLocationName(t('uv.currentLocation') || t('uv.currentLoc'));
-          }
-        } catch {
-          setLocationError(true);
-        } finally {
-          setLoading(false);
-        }
-      },
-      async () => {
-        // Fallback to Sofia if geolocation denied
-        try {
-          const data = await getUvIndex(42.7, 23.3);
-          setUvData(data);
-          setLocationName(t('uv.defaultLocation') || t('uv.sofiaDef'));
-        } catch {
-          setLocationError(true);
-        } finally {
-          setLoading(false);
-        }
-      },
+      (pos) => loadForCoords(pos.coords.latitude, pos.coords.longitude),
+      () => loadForCoords(42.7, 23.3, t('uv.defaultLocation')),
       { timeout: 5000 }
     );
+  }, [loadForCoords, t]);
+
+  useEffect(() => {
+    if (settings.preferredLat !== null && settings.preferredLon !== null) {
+      loadForCoords(settings.preferredLat, settings.preferredLon, settings.preferredLocationName || undefined);
+    } else {
+      requestGPS();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (loading) {
@@ -96,12 +101,13 @@ const UV = () => {
           <h1 className="text-5xl font-bold text-white mb-2 uppercase tracking-tight">
             UV <span className="gradient-solar">Index</span>
           </h1>
-          {locationName && (
-            <div className="flex items-center gap-2 text-[#94a3b8]">
-              <MapPin className="w-4 h-4" />
-              <span className="text-sm">{locationName}</span>
-            </div>
-          )}
+          <LocationPicker
+            lat={currentLat}
+            lon={currentLon}
+            locationName={locationName}
+            onSelect={(lat, lon, name) => loadForCoords(lat, lon, name)}
+            onRequestGPS={requestGPS}
+          />
         </div>
 
         {/* Current UV */}

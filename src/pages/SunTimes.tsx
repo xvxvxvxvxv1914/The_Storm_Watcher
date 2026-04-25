@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Sunrise, Sunset, Sun, MapPin, Clock } from 'lucide-react';
+import { Sunrise, Sunset, Sun, Clock } from 'lucide-react';
 import { getSunData, SunDay } from '../services/uvApi';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSettings } from '../contexts/SettingsContext';
+import LocationPicker from '../components/LocationPicker';
 
 const formatDaylight = (seconds: number) => {
   const h = Math.floor(seconds / 3600);
@@ -79,28 +81,50 @@ const SunArc = ({ sunrise, sunset }: { sunrise: string; sunset: string }) => {
 
 const SunTimes = () => {
   const { t } = useLanguage();
+  const { settings } = useSettings();
   const [days, setDays] = useState<SunDay[]>([]);
   const [loading, setLoading] = useState(true);
   const [locationName, setLocationName] = useState('');
+  const [currentLat, setCurrentLat] = useState(0);
+  const [currentLon, setCurrentLon] = useState(0);
+
+  const loadForCoords = useCallback(async (lat: number, lon: number, name?: string) => {
+    setLoading(true);
+    const data = await getSunData(lat, lon);
+    setDays(data);
+    setCurrentLat(lat);
+    setCurrentLon(lon);
+    setLoading(false);
+    if (name) {
+      setLocationName(name);
+    } else {
+      try {
+        const geo = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
+        ).then(r => r.json());
+        const city = geo.address?.city || geo.address?.town || geo.address?.village || '';
+        const country = geo.address?.country || '';
+        setLocationName([city, country].filter(Boolean).join(', '));
+      } catch {
+        setLocationName(`${lat.toFixed(2)}, ${lon.toFixed(2)}`);
+      }
+    }
+  }, []);
+
+  const requestGPS = useCallback(() => {
+    navigator.geolocation?.getCurrentPosition(
+      (pos) => loadForCoords(pos.coords.latitude, pos.coords.longitude),
+      () => loadForCoords(42.7, 23.3, t('uv.defaultLocation')),
+    );
+  }, [loadForCoords, t]);
 
   useEffect(() => {
-    const load = async (lat: number, lon: number) => {
-      const data = await getSunData(lat, lon);
-      setDays(data);
-      setLoading(false);
-
-      const geo = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
-      ).then(r => r.json());
-      const city = geo.address?.city || geo.address?.town || geo.address?.village || '';
-      const country = geo.address?.country || '';
-      setLocationName([city, country].filter(Boolean).join(', '));
-    };
-
-    navigator.geolocation?.getCurrentPosition(
-      (pos) => load(pos.coords.latitude, pos.coords.longitude),
-      () => load(42.7, 23.3).then(() => setLocationName(t('uv.defaultLocation'))),
-    );
+    if (settings.preferredLat !== null && settings.preferredLon !== null) {
+      loadForCoords(settings.preferredLat, settings.preferredLon, settings.preferredLocationName || undefined);
+    } else {
+      requestGPS();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (loading) {
@@ -126,12 +150,13 @@ const SunTimes = () => {
           <h1 className="text-5xl font-bold text-white mb-2 uppercase tracking-tight">
             <span className="gradient-solar">{t('sun.title')}</span> {t('sun.times')}
           </h1>
-          {locationName && (
-            <div className="flex items-center gap-2 text-[#94a3b8]">
-              <MapPin className="w-4 h-4" />
-              <span className="text-sm">{locationName}</span>
-            </div>
-          )}
+          <LocationPicker
+            lat={currentLat}
+            lon={currentLon}
+            locationName={locationName}
+            onSelect={(lat, lon, name) => loadForCoords(lat, lon, name)}
+            onRequestGPS={requestGPS}
+          />
         </div>
 
         {/* Sun arc */}
