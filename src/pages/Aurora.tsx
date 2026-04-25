@@ -6,6 +6,7 @@ import GlobeOrig from 'react-globe.gl';
 const Globe = GlobeOrig as any;
 import * as THREE from 'three';
 import { getKpIndex, getKpGradientStyle, getAuroraModel, getMagField, getSolarWind, AuroraOvationPoint } from '../services/noaaApi';
+import { calcAuroraVisibility } from '../utils/auroraVisibility';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Aurora = () => {
@@ -372,18 +373,18 @@ const Aurora = () => {
           </h3>
           <div className="space-y-3">
             {[
-              { city: t('aurora.city.reykjavik'), lat: 64, minKp: 0 },
-              { city: t('aurora.city.helsinki'), lat: 60, minKp: 3 },
-              { city: t('aurora.city.stockholm'), lat: 59, minKp: 4 },
-              { city: t('aurora.city.copenhagen'), lat: 56, minKp: 5 },
-              { city: t('aurora.city.berlin'), lat: 52, minKp: 6 },
-              { city: t('aurora.city.warsaw'), lat: 52, minKp: 6 },
-              { city: t('aurora.city.prague'), lat: 50, minKp: 7 },
-              { city: t('aurora.city.vienna'), lat: 48, minKp: 7 },
-              { city: t('aurora.city.sofia'), lat: 42, minKp: 8 },
-            ].map(({ city, minKp }) => {
-              const visible = kpValue >= minKp;
-              const chance = Math.min(100, Math.max(0, ((kpValue - minKp + 1) / 3) * 100));
+              { city: t('aurora.city.reykjavik'), lat: 64.1, lon: -21.9 },
+              { city: t('aurora.city.helsinki'),   lat: 60.2, lon:  24.9 },
+              { city: t('aurora.city.stockholm'),  lat: 59.3, lon:  18.1 },
+              { city: t('aurora.city.copenhagen'), lat: 55.7, lon:  12.6 },
+              { city: t('aurora.city.berlin'),     lat: 52.5, lon:  13.4 },
+              { city: t('aurora.city.warsaw'),     lat: 52.2, lon:  21.0 },
+              { city: t('aurora.city.prague'),     lat: 50.1, lon:  14.4 },
+              { city: t('aurora.city.vienna'),     lat: 48.2, lon:  16.4 },
+              { city: t('aurora.city.sofia'),      lat: 42.7, lon:  23.3 },
+            ].map(({ city, lat, lon }) => {
+              const chance = calcAuroraVisibility(lat, lon, kpValue);
+              const visible = chance > 0;
               return (
                 <div key={city} className="flex items-center gap-2 sm:gap-4">
                   <div className="w-24 sm:w-48 text-xs sm:text-sm text-[#94a3b8] flex-shrink-0">{city}</div>
@@ -391,7 +392,7 @@ const Aurora = () => {
                     <div
                       className="h-full rounded-full transition-all duration-700"
                       style={{
-                        width: `${visible ? Math.max(10, chance) : 2}%`,
+                        width: `${visible ? Math.max(4, chance) : 2}%`,
                         background: visible
                           ? 'linear-gradient(90deg, #10b981, #fbbf24)'
                           : 'rgba(148,163,184,0.2)',
@@ -399,7 +400,7 @@ const Aurora = () => {
                     />
                   </div>
                   <div className={`text-xs sm:text-sm font-bold w-14 sm:w-24 text-right flex-shrink-0 ${visible ? 'text-[#10b981]' : 'text-[#475569]'}`}>
-                    {visible ? `~${Math.round(chance)}%` : t('aurora.notVisible')}
+                    {visible ? `~${chance}%` : t('aurora.notVisible')}
                   </div>
                 </div>
               );
