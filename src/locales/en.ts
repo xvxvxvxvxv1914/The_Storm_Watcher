@@ -375,6 +375,8 @@ const en: Record<string, string> = {
   'iss.locIss': 'ISS location',
   'iss.locYou': 'Your location',
   'dashboard.swTooltip': 'Solar wind speed over the last 24 hours.',
+  'dashboard.kp7day': 'Kp Index — Last 7 Days',
+  'dashboard.kp7dayNote': "Daily maximum Kp. Solar activity repeats every ~27 days — the Sun's rotation period.",
 
   // Profile page
   'profile.title': 'My Profile',

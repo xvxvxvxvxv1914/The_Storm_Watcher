@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { Activity, AlertTriangle, Zap, Radio, Calendar, Bot, Globe, Bell, Camera, Trophy, Video, Check, Share2, Copy, Twitter } from 'lucide-react';
-import { getKpIndex, getSolarWind, getXrayFlux, getXrayClass, getStormStatus, getKpGradientStyle } from '../services/noaaApi';
+import { getKpIndex, getSolarWind, getXrayFlux, getXrayClass, getStormStatus, getKpGradientStyle, getKpHistory3Day } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import StarField from '../components/StarField';
 import { Skeleton } from '../components/Skeleton';
@@ -19,6 +19,7 @@ const Home = () => {
   const [kpValue, setKpValue] = useState<number | null>(null);
   const [windSpeed, setWindSpeed] = useState<number | null>(null);
   const [xrayClass, setXrayClass] = useState<string | null>(null);
+  const [kpSparkData, setKpSparkData] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
   const [shareOpen, setShareOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -37,10 +38,11 @@ const Home = () => {
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        const [kpData, windData, xrayData] = await Promise.all([
+        const [kpData, windData, xrayData, historyData] = await Promise.all([
           getKpIndex(),
           getSolarWind(),
           getXrayFlux(),
+          getKpHistory3Day(),
         ]);
         if (kpData && kpData.length > 0) {
           const latest = kpData[kpData.length - 1];
@@ -53,6 +55,9 @@ const Home = () => {
         }
         if (xrayData && xrayData.length > 0) {
           setXrayClass(getXrayClass(xrayData[xrayData.length - 1].flux || 0));
+        }
+        if (historyData && historyData.length > 0) {
+          setKpSparkData(historyData.slice(-24).map(d => d.Kp));
         }
         setLoading(false);
       } catch (error) {
@@ -70,6 +75,30 @@ const Home = () => {
 
   const stormStatus = kpValue !== null ? getStormStatus(kpValue) : null;
   const isStorm = kpValue !== null && kpValue >= 5;
+
+  const KpSparkline = ({ data }: { data: number[] }) => {
+    if (data.length < 2) return null;
+    const w = 200, h = 40;
+    const pts = data.map((v, i) =>
+      `${((i / (data.length - 1)) * w).toFixed(1)},${(h - (Math.min(v, 9) / 9) * h).toFixed(1)}`
+    ).join(' ');
+    const max = Math.max(...data);
+    const color = max >= 5 ? '#f97316' : max >= 3 ? '#eab308' : '#10b981';
+    return (
+      <div className="flex flex-col items-center gap-1 mt-4">
+        <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} className="overflow-visible">
+          <defs>
+            <linearGradient id="sparkGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor={color} stopOpacity="0.4" />
+              <stop offset="100%" stopColor={color} stopOpacity="1" />
+            </linearGradient>
+          </defs>
+          <polyline points={pts} fill="none" stroke="url(#sparkGrad)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        <span className="text-[10px] text-[#64748b] uppercase tracking-widest">3-day Kp trend</span>
+      </div>
+    );
+  };
 
   return (
     <div className="min-h-screen relative">
@@ -158,27 +187,30 @@ const Home = () => {
             )}
 
             {!loading && (
-              <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
-                <div className="glass-surface rounded-xl px-5 py-3 flex items-center gap-3">
-                  <Activity className="w-4 h-4 text-[#f97316]" />
-                  <span className="text-[#94a3b8] text-sm uppercase tracking-wider">Kp</span>
-                  <span className="text-white font-bold">{kpValue?.toFixed(1)}</span>
+              <>
+                <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
+                  <div className="glass-surface rounded-xl px-5 py-3 flex items-center gap-3">
+                    <Activity className="w-4 h-4 text-[#f97316]" />
+                    <span className="text-[#94a3b8] text-sm uppercase tracking-wider">Kp</span>
+                    <span className="text-white font-bold">{kpValue?.toFixed(1)}</span>
+                  </div>
+                  {windSpeed !== null && windSpeed > 0 && (
+                    <div className="glass-surface rounded-xl px-5 py-3 flex items-center gap-3">
+                      <Zap className="w-4 h-4 text-[#7c3aed]" />
+                      <span className="text-[#94a3b8] text-sm uppercase tracking-wider">Solar Wind</span>
+                      <span className="text-white font-bold">{windSpeed.toFixed(0)} km/s</span>
+                    </div>
+                  )}
+                  {xrayClass && (
+                    <div className="glass-surface rounded-xl px-5 py-3 flex items-center gap-3">
+                      <Radio className="w-4 h-4 text-[#fbbf24]" />
+                      <span className="text-[#94a3b8] text-sm uppercase tracking-wider">X-ray</span>
+                      <span className="text-white font-bold">Class {xrayClass}</span>
+                    </div>
+                  )}
                 </div>
-                {windSpeed !== null && windSpeed > 0 && (
-                  <div className="glass-surface rounded-xl px-5 py-3 flex items-center gap-3">
-                    <Zap className="w-4 h-4 text-[#7c3aed]" />
-                    <span className="text-[#94a3b8] text-sm uppercase tracking-wider">Solar Wind</span>
-                    <span className="text-white font-bold">{windSpeed.toFixed(0)} km/s</span>
-                  </div>
-                )}
-                {xrayClass && (
-                  <div className="glass-surface rounded-xl px-5 py-3 flex items-center gap-3">
-                    <Radio className="w-4 h-4 text-[#fbbf24]" />
-                    <span className="text-[#94a3b8] text-sm uppercase tracking-wider">X-ray</span>
-                    <span className="text-white font-bold">Class {xrayClass}</span>
-                  </div>
-                )}
-              </div>
+                {kpSparkData.length > 1 && <KpSparkline data={kpSparkData} />}
+              </>
             )}
           </div>
         </div>

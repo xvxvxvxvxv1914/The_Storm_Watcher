@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, ReferenceLine } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, ReferenceLine, BarChart, Bar, Cell } from 'recharts';
 import { Activity, Wind, Compass, Sun, Radio } from 'lucide-react';
 import { getKpIndex, getSolarWind, getMagField, getXrayFlux, getKpHistory3Day, getStormStatus, getXrayClass, getKpGradientStyle } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -26,6 +26,7 @@ const Dashboard = () => {
   const [xrayFlux, setXrayFlux] = useState<number>(0);
   const [windHistory, setWindHistory] = useState<{ time: string; speed: number }[]>([]);
   const [kpHistory3Day, setKpHistory3Day] = useState<{ time: string; kp: number }[]>([]);
+  const [kpHistoryRaw, setKpHistoryRaw] = useState<{ time_tag: string; Kp: number }[]>([]);
   const [timeRange, setTimeRange] = useState<'24h' | '48h' | '72h'>('24h');
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [loading, setLoading] = useState(true);
@@ -50,6 +51,7 @@ const Dashboard = () => {
       }
 
       if (kp3dayData && kp3dayData.length > 0) {
+        setKpHistoryRaw(kp3dayData);
         const history = kp3dayData.map((item) => ({
           time: new Date(item.time_tag.replace(' ', 'T') + 'Z').toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
           kp: item.Kp || 0,
@@ -133,6 +135,22 @@ const Dashboard = () => {
     if (timeRange === '48h') return kpHistory3Day.slice(-16);
     return kpHistory3Day.slice(-24);
   }, [kpHistory3Day, timeRange]);
+
+  const dailyKp = useMemo(() => {
+    const byDay: Record<string, number[]> = {};
+    kpHistoryRaw.forEach(({ time_tag, Kp }) => {
+      const day = time_tag.split('T')[0];
+      if (!byDay[day]) byDay[day] = [];
+      byDay[day].push(Kp);
+    });
+    return Object.entries(byDay)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([day, vals]) => ({
+        day: new Date(day + 'T12:00:00Z').toLocaleDateString('en', { month: 'short', day: 'numeric' }),
+        avg: parseFloat((vals.reduce((s, v) => s + v, 0) / vals.length).toFixed(1)),
+        max: parseFloat(Math.max(...vals).toFixed(1)),
+      }));
+  }, [kpHistoryRaw]);
 
   if (loading) {
     return (
@@ -340,6 +358,41 @@ const Dashboard = () => {
             </div>
           )}
         </div>
+
+        {dailyKp.length > 0 && (
+          <div className="glass-surface rounded-2xl p-8 mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-6">
+              <h3 className="text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
+                <Activity className="w-6 h-6 text-[#f97316]" />
+                {t('dashboard.kp7day') || 'Kp — Last 7 Days'}
+              </h3>
+              <p className="text-xs text-[#64748b] max-w-xs leading-relaxed">
+                {t('dashboard.kp7dayNote') || 'Daily maximum Kp. Solar activity repeats every ~27 days — the Sun\'s rotation period.'}
+              </p>
+            </div>
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={dailyKp} barCategoryGap="20%">
+                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                <XAxis dataKey="day" stroke="#6b7280" tick={{ fontSize: 12 }} />
+                <YAxis stroke="#6b7280" domain={[0, 9]} tick={{ fontSize: 12 }} />
+                <Tooltip
+                  contentStyle={{ backgroundColor: 'rgba(10,0,21,0.95)', border: '1px solid rgba(249,115,22,0.3)', borderRadius: '12px', padding: '12px' }}
+                  labelStyle={{ color: '#f97316', fontWeight: 'bold' }}
+                  itemStyle={{ color: '#fff' }}
+                  formatter={(v) => [`Kp ${v}`, 'Max']}
+                />
+                <Bar dataKey="max" radius={[4, 4, 0, 0]}>
+                  {dailyKp.map((entry, i) => (
+                    <Cell
+                      key={i}
+                      fill={entry.max >= 7 ? '#ef4444' : entry.max >= 5 ? '#f97316' : entry.max >= 4 ? '#eab308' : '#10b981'}
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        )}
       </div>
     </div>
   );
