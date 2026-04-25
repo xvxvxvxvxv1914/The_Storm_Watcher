@@ -1,7 +1,7 @@
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import { useLanguage } from './contexts/LanguageContext';
@@ -39,6 +39,16 @@ const LoadingFallback = () => {
 function AppRoutes() {
   const { user } = useAuth();
   const { theme } = useTheme();
+  const navigate = useNavigate();
+
+  // After email confirmation Supabase lands the user back on the site with
+  // #access_token=...&type=signup in the hash. Redirect them to /dashboard
+  // once the session resolves instead of leaving them on the homepage.
+  useEffect(() => {
+    if (user?.email_confirmed_at && window.location.hash.includes('type=signup')) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [user, navigate]);
 
   return (
     <div className={`min-h-screen ${theme === 'light' ? 'bg-slate-100' : 'bg-[#0a0a1a]'}`}>
