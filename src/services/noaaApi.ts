@@ -123,8 +123,18 @@ export const getAlerts = (): Promise<Alert[]> =>
 export const getKpForecast = (): Promise<KpIndexData[]> =>
   cached('kp-forecast', TTL_FORECAST, async () => {
     try {
-      const response = await axios.get(`${NOAA_BASE_URL}/json/planetary_k_index_forecast.json`);
-      return response.data;
+      // NOAA retired /json/planetary_k_index_forecast.json — this endpoint is the
+      // current one. Shape: { time_tag, kp, observed, noaa_scale }. We only need
+      // the rows where observed === 'predicted' for a true forecast view.
+      const response = await axios.get<Array<{ time_tag: string; kp: number; observed: string }>>(
+        `${NOAA_BASE_URL}/products/noaa-planetary-k-index-forecast.json`
+      );
+      return (response.data ?? [])
+        .filter((row) => row.observed === 'predicted')
+        .map((row) => ({
+          time_tag: row.time_tag,
+          kp_index: row.kp,
+        }));
     } catch (error) {
       console.error('Error fetching data in getKpForecast:', error);
       return [];
