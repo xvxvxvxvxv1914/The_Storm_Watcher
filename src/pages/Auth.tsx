@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { track } from '@vercel/analytics';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Mail, Lock, User, ArrowLeft } from 'lucide-react';
@@ -72,19 +73,20 @@ export default function Auth() {
       if (mode === 'forgot') {
         const { error } = await resetPassword(email);
         if (error) setError(error.message);
-        else setResetSent(true);
+        else { track('password_reset_requested'); setResetSent(true); }
       } else if (mode === 'signup') {
         const { error } = await signUp(email, password, fullName);
         if (error) {
           setError(error.message);
         } else {
+          track('signup_success', { method: 'email' });
           await signOut();
           setConfirmationSent(true);
         }
       } else {
         const { error } = await signIn(email, password);
         if (error) setError(error.message);
-        else navigate('/dashboard');
+        else { track('login_success', { method: 'email' }); navigate('/dashboard'); }
       }
     } catch {
       setError(t('auth.error'));
@@ -96,6 +98,7 @@ export default function Auth() {
   const handleOAuth = async (provider: 'google' | 'facebook' | 'apple') => {
     setError('');
     setLoading(true);
+    track('login_attempt', { method: provider });
     const fn = provider === 'google' ? signInWithGoogle : provider === 'facebook' ? signInWithFacebook : signInWithApple;
     const { error } = await fn();
     if (error) {

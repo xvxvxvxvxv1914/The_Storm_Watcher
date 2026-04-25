@@ -1,4 +1,7 @@
-const DONKI_BASE = '/donki';
+// Web builds: Vite dev proxy → /donki, Vercel → vercel.json rewrite.
+// Capacitor iOS: no proxy available, so set VITE_DONKI_BASE_URL to the
+// Supabase Edge Function URL (donki-proxy) in the Capacitor build config.
+const DONKI_BASE = import.meta.env.VITE_DONKI_BASE_URL ?? '/donki';
 
 export interface CmeAnalysis {
   isMostAccurate: boolean;

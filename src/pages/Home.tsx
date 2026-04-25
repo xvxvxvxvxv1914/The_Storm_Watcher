@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { Activity, AlertTriangle, Zap, Radio, Calendar, Bot, Globe, Bell, Camera, Trophy, Video, Check, Share2, Copy, Twitter, ImageDown } from 'lucide-react';
+import { track } from '@vercel/analytics';
 import { generateStormScoreImage } from '../utils/generateStormImage';
 import { getKpIndex, getSolarWind, getXrayFlux, getXrayClass, getStormStatus, getKpGradientStyle, getKpHistory3Day } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -261,7 +262,7 @@ const Home = () => {
                           href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          onClick={() => setShareOpen(false)}
+                          onClick={() => { track('storm_score_shared', { method: 'twitter', score }); setShareOpen(false); }}
                           className="flex items-center gap-3 px-4 py-2 text-sm text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors"
                         >
                           <Twitter className="w-4 h-4 text-[#1d9bf0]" />
@@ -279,6 +280,7 @@ const Home = () => {
                         </a>
                         <button
                           onClick={() => {
+                            track('storm_score_shared', { method: 'copy', score });
                             navigator.clipboard.writeText('https://thestormwatcher.com');
                             setCopied(true);
                             setTimeout(() => { setCopied(false); setShareOpen(false); }, 1500);
@@ -290,6 +292,7 @@ const Home = () => {
                         </button>
                         <button
                           onClick={async () => {
+                            track('storm_score_shared', { method: 'image', score });
                             setShareOpen(false);
                             const blob = await generateStormScoreImage({
                               score,

@@ -2,6 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --tsw-bg:            #000008;
+  --tsw-fg:            #f8fafc;
+  --tsw-fg-muted:      #94a3b8;
+  --tsw-fg-subtle:     #64748b;
+  --tsw-surface-bg:    rgba(255, 255, 255, 0.03);
+  --tsw-surface-border:rgba(255, 255, 255, 0.10);
+}
+
+html.light {
+  --tsw-bg:            #f1f5f9;
+  --tsw-fg:            #0f172a;
+  --tsw-fg-muted:      #64748b;
+  --tsw-fg-subtle:     #94a3b8;
+  --tsw-surface-bg:    rgba(255, 255, 255, 0.88);
+  --tsw-surface-border:rgba(0, 0, 0, 0.09);
+}
+
 @layer base {
   * {
     font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
@@ -12,8 +30,8 @@
   }
 
   body {
-    background: #000008;
-    color: #f8fafc;
+    background: var(--tsw-bg);
+    color: var(--tsw-fg);
     overflow-x: hidden;
   }
 
@@ -46,8 +64,8 @@
   }
 
   .glass-surface {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--tsw-surface-bg);
+    border: 1px solid var(--tsw-surface-border);
     backdrop-filter: blur(10px);
   }
 
@@ -184,17 +202,7 @@ html.light .skeleton {
   }
 }
 
-/* Light mode overrides */
-html.light body {
-  background: #f1f5f9;
-  color: #0f172a;
-}
-
-html.light .glass-surface {
-  background: rgba(255, 255, 255, 0.88) !important;
-  border-color: rgba(0, 0, 0, 0.09) !important;
-}
-
+/* Light mode — structural overrides still needed for Tailwind hardcoded classes */
 html.light .star-field {
   display: none;
 }

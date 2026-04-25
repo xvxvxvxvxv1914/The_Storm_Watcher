@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Bell, BellOff, Check, Loader2 } from 'lucide-react';
+import { track } from '@vercel/analytics';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useSettings } from '../contexts/SettingsContext';
@@ -89,6 +90,7 @@ const PushNotificationBell = () => {
         { onConflict: 'user_id,endpoint' }
       );
 
+      track('push_enabled', { kp_threshold: settings.kpThreshold });
       setSubscribed(true);
     } catch {
       // Permission denied or browser blocked — state already reflects this
@@ -111,6 +113,7 @@ const PushNotificationBell = () => {
           .eq('user_id', user.id)
           .eq('endpoint', sub.endpoint);
       }
+      track('push_disabled');
       setSubscribed(false);
     } catch {
       // ignore
