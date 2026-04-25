@@ -5,13 +5,17 @@ import GlobeOrig from 'react-globe.gl';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Globe = GlobeOrig as any;
 import * as THREE from 'three';
-import { getKpIndex, getKpGradientStyle, getAuroraModel, AuroraOvationPoint } from '../services/noaaApi';
+import { getKpIndex, getKpGradientStyle, getAuroraModel, getMagField, getSolarWind, AuroraOvationPoint } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Aurora = () => {
   const { t } = useLanguage();
   const [kpValue, setKpValue] = useState<number>(0);
   const [auroraData, setAuroraData] = useState<AuroraOvationPoint[]>([]);
+  const [bz, setBz] = useState<number>(0);
+  const [bt, setBt] = useState<number>(0);
+  const [windSpeed, setWindSpeed] = useState<number>(0);
+  const [windDensity, setWindDensity] = useState<number>(0);
   const [isGlobeLoading, setIsGlobeLoading] = useState(true);
   const [globeWidth, setGlobeWidth] = useState(800);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -201,6 +205,27 @@ const Aurora = () => {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const fetchSpace = async () => {
+      try {
+        const [magData, windData] = await Promise.all([getMagField(), getSolarWind()]);
+        if (magData.length) {
+          const latest = magData[magData.length - 1];
+          setBz(latest.bz_gsm ?? 0);
+          setBt(latest.bt ?? 0);
+        }
+        if (windData.length) {
+          const active = windData.find(d => d.active) ?? windData[windData.length - 1];
+          setWindSpeed(active.proton_speed ?? 0);
+          setWindDensity(active.proton_density ?? 0);
+        }
+      } catch { /* silent */ }
+    };
+    fetchSpace();
+    const interval = setInterval(fetchSpace, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
   const getVisibilityInfo = (kp: number) => {
     if (kp >= 7) return { latitude: 50, color: 'text-[#ef4444]', intensityKey: 'aurora.intensityVeryHigh', bgGlow: 'glow-red' };
     if (kp >= 6) return { latitude: 55, color: 'text-[#f97316]', intensityKey: 'aurora.intensityHigh', bgGlow: 'glow-orange' };
@@ -210,6 +235,23 @@ const Aurora = () => {
   };
 
   const visibility = getVisibilityInfo(kpValue);
+
+  const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
+  const auroraQuality = Math.round(
+    clamp((-bz / 30) * 100, 0, 100) * 0.5 +
+    clamp((bt / 30) * 100, 0, 100) * 0.2 +
+    clamp(((windSpeed - 300) / 500) * 100, 0, 100) * 0.2 +
+    clamp((windDensity / 20) * 100, 0, 100) * 0.1
+  );
+  const qualityLabel = auroraQuality >= 76 ? 'Excellent' : auroraQuality >= 51 ? 'Good' : auroraQuality >= 26 ? 'Moderate' : 'Low';
+  const qualityColor = auroraQuality >= 76 ? '#10b981' : auroraQuality >= 51 ? '#f97316' : auroraQuality >= 26 ? '#eab308' : '#64748b';
+  const qualityDesc = auroraQuality >= 76
+    ? 'Exceptional aurora display likely tonight'
+    : auroraQuality >= 51
+    ? 'Moderate aurora activity expected'
+    : auroraQuality >= 26
+    ? 'Weak aurora possible in polar regions'
+    : 'Quiet conditions — aurora unlikely';
 
   const stars = useMemo(() =>
     [...Array(50)].map((_, i) => ({
@@ -290,6 +332,38 @@ const Aurora = () => {
             <div className="text-6xl font-bold text-white mb-3">{visibility.latitude}°</div>
             <div className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('aurora.latNorth')}</div>
           </div>
+        </div>
+
+        {/* Aurora Quality Index */}
+        <div className="glass-surface rounded-2xl p-5 sm:p-8 mb-6 md:mb-8 border border-white/5">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
+            <div className="shrink-0">
+              <div className="text-xs text-[#64748b] uppercase tracking-widest mb-1 font-semibold">Aurora Quality Index</div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-6xl font-bold" style={{ color: qualityColor }}>{auroraQuality}</span>
+                <span className="text-[#94a3b8] text-lg">/100</span>
+                <span className="ml-2 text-sm font-semibold px-3 py-1 rounded-full" style={{ color: qualityColor, background: qualityColor + '20' }}>{qualityLabel}</span>
+              </div>
+            </div>
+            <div className="flex-1">
+              <div className="h-3 rounded-full bg-white/5 overflow-hidden mb-3">
+                <div
+                  className="h-full rounded-full transition-all duration-1000"
+                  style={{ width: `${auroraQuality}%`, background: `linear-gradient(90deg, ${qualityColor}80, ${qualityColor})` }}
+                />
+              </div>
+              <p className="text-[#94a3b8] text-sm mb-3">{qualityDesc}</p>
+              <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-[#64748b]">
+                <span>Bz <span className={bz < 0 ? 'text-[#10b981]' : 'text-[#94a3b8]'}>{bz.toFixed(1)} nT</span></span>
+                <span>Bt <span className="text-[#94a3b8]">{bt.toFixed(1)} nT</span></span>
+                <span>Wind <span className="text-[#94a3b8]">{Math.round(windSpeed)} km/s</span></span>
+                <span>Density <span className="text-[#94a3b8]">{windDensity.toFixed(1)} cm⁻³</span></span>
+              </div>
+            </div>
+          </div>
+          <p className="text-[10px] text-[#374151] mt-4">
+            Bz 50% · Bt 20% · Solar wind speed 20% · Density 10%. More accurate than Kp alone.
+          </p>
         </div>
 
         <div className="glass-surface rounded-2xl p-4 sm:p-8 mb-6 md:mb-8">

@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { Activity, AlertTriangle, Zap, Radio, Calendar, Bot, Globe, Bell, Camera, Trophy, Video, Check, Share2, Copy, Twitter } from 'lucide-react';
+import { Activity, AlertTriangle, Zap, Radio, Calendar, Bot, Globe, Bell, Camera, Trophy, Video, Check, Share2, Copy, Twitter, ImageDown } from 'lucide-react';
+import { generateStormScoreImage } from '../utils/generateStormImage';
 import { getKpIndex, getSolarWind, getXrayFlux, getXrayClass, getStormStatus, getKpGradientStyle, getKpHistory3Day } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import StarField from '../components/StarField';
@@ -286,6 +287,32 @@ const Home = () => {
                         >
                           <Copy className="w-4 h-4 text-[#10b981]" />
                           {copied ? t('home.stormScore.copied') : t('home.stormScore.copy')}
+                        </button>
+                        <button
+                          onClick={async () => {
+                            setShareOpen(false);
+                            const blob = await generateStormScoreImage({
+                              score,
+                              status,
+                              kp: kpValue ?? 0,
+                              windSpeed,
+                              xrayClass,
+                            });
+                            if (navigator.canShare?.({ files: [new File([blob], 'storm-score.png', { type: 'image/png' })] })) {
+                              await navigator.share({ files: [new File([blob], 'storm-score.png', { type: 'image/png' })] });
+                            } else {
+                              const url = URL.createObjectURL(blob);
+                              const a = document.createElement('a');
+                              a.href = url;
+                              a.download = `storm-score-${score}.png`;
+                              a.click();
+                              URL.revokeObjectURL(url);
+                            }
+                          }}
+                          className="w-full flex items-center gap-3 px-4 py-2 text-sm text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors"
+                        >
+                          <ImageDown className="w-4 h-4 text-[#7c3aed]" />
+                          {t('home.stormScore.saveImage') || 'Save as image'}
                         </button>
                       </div>
                     );

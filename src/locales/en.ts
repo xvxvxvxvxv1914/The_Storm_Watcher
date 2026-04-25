@@ -73,6 +73,7 @@ const en: Record<string, string> = {
   'home.stormScore.shareFb': 'Share on Facebook',
   'home.stormScore.copy': 'Copy link',
   'home.stormScore.copied': 'Copied!',
+  'home.stormScore.saveImage': 'Save as image',
   'home.stormScore.quiet': 'Quiet',
   'home.stormScore.unsettled': 'Unsettled',
   'home.stormScore.storm': 'Storm',
