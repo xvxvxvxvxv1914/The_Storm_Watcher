@@ -138,16 +138,27 @@ const Mood = () => {
     if (!selectedMood) return;
 
     const sessionId = getSessionId();
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
 
-    const { error } = await supabase.from('mood_entries').insert({
-      user_session_id: sessionId,
-      mood_type: selectedMood,
-      symptoms: selectedSymptoms,
-      kp_index: currentKp,
-    });
+    try {
+      const res = await fetch(`${supabaseUrl}/functions/v1/submit-mood`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          session_id: sessionId,
+          mood_type: selectedMood,
+          symptoms: selectedSymptoms,
+          kp_index: currentKp,
+        }),
+      });
 
-    if (error) {
-      console.error('Error submitting mood:', error);
+      if (res.status === 429) {
+        setHasSubmittedToday(true);
+        setSubmitMessage({ type: 'error', text: t('mood.alreadySubmitted') });
+        return;
+      }
+      if (!res.ok) throw new Error('submit failed');
+    } catch {
       setSubmitMessage({ type: 'error', text: t('mood.error') });
       return;
     }
