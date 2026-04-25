@@ -1,5 +1,4 @@
 import type React from 'react';
-import axios from 'axios';
 
 const NOAA_BASE_URL = 'https://services.swpc.noaa.gov';
 
@@ -26,6 +25,12 @@ const cached = async <T,>(key: string, ttlMs: number, fetcher: () => Promise<T>)
     .finally(() => inflight.delete(key));
   inflight.set(key, promise);
   return promise;
+};
+
+const getJson = async <T,>(url: string): Promise<T> => {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json() as Promise<T>;
 };
 
 export interface KpIndexData {
@@ -68,8 +73,7 @@ const TTL_FORECAST = 900_000; // 15 min — forecast updates every ~3 hours
 export const getKpIndex = (): Promise<KpIndexData[]> =>
   cached('kp', TTL_1M, async () => {
     try {
-      const response = await axios.get(`${NOAA_BASE_URL}/json/planetary_k_index_1m.json`);
-      return response.data;
+      return await getJson<KpIndexData[]>(`${NOAA_BASE_URL}/json/planetary_k_index_1m.json`);
     } catch (error) {
       console.error('Error fetching data in getKpIndex:', error);
       return [];
@@ -79,8 +83,7 @@ export const getKpIndex = (): Promise<KpIndexData[]> =>
 export const getXrayFlux = (): Promise<XrayData[]> =>
   cached('xray', TTL_1M, async () => {
     try {
-      const response = await axios.get(`${NOAA_BASE_URL}/json/goes/primary/xrays-1-day.json`);
-      return response.data;
+      return await getJson<XrayData[]>(`${NOAA_BASE_URL}/json/goes/primary/xrays-1-day.json`);
     } catch (error) {
       console.error('Error fetching data in getXrayFlux:', error);
       return [];
@@ -90,8 +93,7 @@ export const getXrayFlux = (): Promise<XrayData[]> =>
 export const getSolarWind = (): Promise<SolarWindData[]> =>
   cached('wind', TTL_1M, async () => {
     try {
-      const response = await axios.get(`${NOAA_BASE_URL}/json/rtsw/rtsw_wind_1m.json`);
-      return response.data;
+      return await getJson<SolarWindData[]>(`${NOAA_BASE_URL}/json/rtsw/rtsw_wind_1m.json`);
     } catch (error) {
       console.error('Error fetching data in getSolarWind:', error);
       return [];
@@ -101,8 +103,7 @@ export const getSolarWind = (): Promise<SolarWindData[]> =>
 export const getMagField = (): Promise<MagFieldData[]> =>
   cached('mag', TTL_1M, async () => {
     try {
-      const response = await axios.get(`${NOAA_BASE_URL}/json/rtsw/rtsw_mag_1m.json`);
-      return response.data;
+      return await getJson<MagFieldData[]>(`${NOAA_BASE_URL}/json/rtsw/rtsw_mag_1m.json`);
     } catch (error) {
       console.error('Error fetching data in getMagField:', error);
       return [];
@@ -112,8 +113,7 @@ export const getMagField = (): Promise<MagFieldData[]> =>
 export const getAlerts = (): Promise<Alert[]> =>
   cached('alerts', TTL_5M, async () => {
     try {
-      const response = await axios.get(`${NOAA_BASE_URL}/products/alerts.json`);
-      return response.data;
+      return await getJson<Alert[]>(`${NOAA_BASE_URL}/products/alerts.json`);
     } catch (error) {
       console.error('Error fetching data in getAlerts:', error);
       return [];
@@ -126,10 +126,10 @@ export const getKpForecast = (): Promise<KpIndexData[]> =>
       // NOAA retired /json/planetary_k_index_forecast.json — this endpoint is the
       // current one. Shape: { time_tag, kp, observed, noaa_scale }. We only need
       // the rows where observed === 'predicted' for a true forecast view.
-      const response = await axios.get<Array<{ time_tag: string; kp: number; observed: string }>>(
+      const data = await getJson<Array<{ time_tag: string; kp: number; observed: string }>>(
         `${NOAA_BASE_URL}/products/noaa-planetary-k-index-forecast.json`
       );
-      return (response.data ?? [])
+      return (data ?? [])
         .filter((row) => row.observed === 'predicted')
         .map((row) => ({
           time_tag: row.time_tag,
@@ -150,22 +150,18 @@ export interface AuroraOvationPoint {
 export const getAuroraModel = (): Promise<AuroraOvationPoint[]> =>
   cached('aurora', TTL_5M, async () => {
     try {
-      const response = await axios.get(`${NOAA_BASE_URL}/json/ovation_aurora_latest.json`);
-      if (response.data && response.data.coordinates) {
+      const data = await getJson<{ coordinates?: [number, number, number][] }>(
+        `${NOAA_BASE_URL}/json/ovation_aurora_latest.json`
+      );
+      if (data && data.coordinates) {
         // Only keep points with intensity > 0 to optimize Globe rendering
-        return response.data.coordinates
-          .filter((c: [number, number, number]) => c[2] > 0)
-          .map((c: [number, number, number]) => {
+        return data.coordinates
+          .filter((c) => c[2] > 0)
+          .map((c) => {
             // Normalize longitude from 0-359 to -180 to 180 for react-globe.gl
             let lng = c[0];
-            if (lng > 180) {
-              lng = lng - 360;
-            }
-            return {
-              lng: lng,
-              lat: c[1],
-              intensity: c[2],
-            };
+            if (lng > 180) lng = lng - 360;
+            return { lng, lat: c[1], intensity: c[2] };
           });
       }
       return [];
@@ -178,8 +174,9 @@ export const getAuroraModel = (): Promise<AuroraOvationPoint[]> =>
 export const getKpHistory3Day = (): Promise<{ time_tag: string; Kp: number }[]> =>
   cached('kp-history-3d', TTL_5M, async () => {
     try {
-      const response = await axios.get(`${NOAA_BASE_URL}/products/noaa-planetary-k-index.json`);
-      return response.data;
+      return await getJson<{ time_tag: string; Kp: number }[]>(
+        `${NOAA_BASE_URL}/products/noaa-planetary-k-index.json`
+      );
     } catch (error) {
       console.error('Error fetching data in getKpHistory3Day:', error);
       return [];

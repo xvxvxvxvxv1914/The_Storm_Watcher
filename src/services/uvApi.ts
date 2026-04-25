@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 export interface UvHourlyData {
   time: string;
   uv_index: number;
@@ -14,32 +12,32 @@ export interface UvData {
 
 export const getUvIndex = async (lat: number, lon: number): Promise<UvData> => {
   try {
-  const response = await axios.get('https://api.open-meteo.com/v1/forecast', {
-    params: {
-      latitude: lat,
-      longitude: lon,
+    const params = new URLSearchParams({
+      latitude: String(lat),
+      longitude: String(lon),
       hourly: 'uv_index',
       daily: 'uv_index_max',
       timezone: 'auto',
-      forecast_days: 1,
-    },
-  });
+      forecast_days: '1',
+    });
+    const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
 
-  const data = response.data;
-  const now = new Date();
-  const currentHour = now.getHours();
+    const now = new Date();
+    const currentHour = now.getHours();
 
-  const hourly: UvHourlyData[] = data.hourly.time.map((t: string, i: number) => ({
-    time: new Date(t).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }),
-    uv_index: Math.round(data.hourly.uv_index[i] * 10) / 10,
-  }));
+    const hourly: UvHourlyData[] = data.hourly.time.map((t: string, i: number) => ({
+      time: new Date(t).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }),
+      uv_index: Math.round(data.hourly.uv_index[i] * 10) / 10,
+    }));
 
-  return {
-    current: data.hourly.uv_index[currentHour] ?? 0,
-    max: data.daily.uv_index_max[0] ?? 0,
-    hourly,
-    timezone: data.timezone,
-  };
+    return {
+      current: data.hourly.uv_index[currentHour] ?? 0,
+      max: data.daily.uv_index_max[0] ?? 0,
+      hourly,
+      timezone: data.timezone,
+    };
   } catch (error) {
     console.error('Error fetching UV Index:', error);
     return { current: 0, max: 0, hourly: [], timezone: 'UTC' };
@@ -57,36 +55,35 @@ export interface SunDay {
 
 export const getSunData = async (lat: number, lon: number): Promise<SunDay[]> => {
   try {
-  const response = await axios.get('https://api.open-meteo.com/v1/forecast', {
-    params: {
-      latitude: lat,
-      longitude: lon,
+    const params = new URLSearchParams({
+      latitude: String(lat),
+      longitude: String(lon),
       daily: 'sunrise,sunset,daylight_duration',
       timezone: 'auto',
-      forecast_days: 3,
-    },
-  });
+      forecast_days: '3',
+    });
+    const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const { daily } = await res.json();
 
-  const { daily } = response.data;
+    return daily.time.map((_: string, i: number) => {
+      const sunrise = new Date(daily.sunrise[i]);
+      const sunset = new Date(daily.sunset[i]);
 
-  return daily.time.map((_: string, i: number) => {
-    const sunrise = new Date(daily.sunrise[i]);
-    const sunset = new Date(daily.sunset[i]);
+      const goldenMorningEnd = new Date(sunrise.getTime() + 60 * 60 * 1000);
+      const goldenEveningStart = new Date(sunset.getTime() - 60 * 60 * 1000);
 
-    const goldenMorningEnd = new Date(sunrise.getTime() + 60 * 60 * 1000);
-    const goldenEveningStart = new Date(sunset.getTime() - 60 * 60 * 1000);
+      const fmt = (d: Date) => d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
 
-    const fmt = (d: Date) => d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
-
-    return {
-      date: daily.time[i],
-      sunrise: fmt(sunrise),
-      sunset: fmt(sunset),
-      daylightSeconds: daily.daylight_duration[i],
-      goldenMorningEnd: fmt(goldenMorningEnd),
-      goldenEveningStart: fmt(goldenEveningStart),
-    };
-  });
+      return {
+        date: daily.time[i],
+        sunrise: fmt(sunrise),
+        sunset: fmt(sunset),
+        daylightSeconds: daily.daylight_duration[i],
+        goldenMorningEnd: fmt(goldenMorningEnd),
+        goldenEveningStart: fmt(goldenEveningStart),
+      };
+    });
   } catch (error) {
     console.error('Error fetching Sun Data:', error);
     return [];

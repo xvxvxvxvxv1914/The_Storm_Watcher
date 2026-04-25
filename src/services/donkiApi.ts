@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 const DONKI_BASE = '/donki';
 
 export interface CmeAnalysis {
@@ -44,10 +42,10 @@ const endDate = () => new Date().toISOString().split('T')[0];
 
 export const getDonkiCme = async (): Promise<CmeEvent[]> => {
   try {
-    const response = await axios.get(`${DONKI_BASE}/CME`, {
-      params: { startDate: startDate(), endDate: endDate() },
-    });
-    return response.data || [];
+    const params = new URLSearchParams({ startDate: startDate(), endDate: endDate() });
+    const res = await fetch(`${DONKI_BASE}/CME?${params}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return (await res.json()) || [];
   } catch (error) {
     console.error('Error fetching donki cme:', error);
     return [];
@@ -56,10 +54,10 @@ export const getDonkiCme = async (): Promise<CmeEvent[]> => {
 
 export const getDonkiFlares = async (): Promise<FlareEvent[]> => {
   try {
-    const response = await axios.get(`${DONKI_BASE}/FLR`, {
-      params: { startDate: startDate(), endDate: endDate() },
-    });
-    return response.data || [];
+    const params = new URLSearchParams({ startDate: startDate(), endDate: endDate() });
+    const res = await fetch(`${DONKI_BASE}/FLR?${params}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return (await res.json()) || [];
   } catch (error) {
     console.error('Error fetching donki flares:', error);
     return [];
