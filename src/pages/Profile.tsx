@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, Save, ArrowLeft } from 'lucide-react';
+import { User, Save, ArrowLeft, Trash2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { supabase } from '../lib/supabase';
 import { Link } from 'react-router-dom';
 
 export default function Profile() {
@@ -14,6 +15,8 @@ export default function Profile() {
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [deleting, setDeleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -138,6 +141,60 @@ export default function Profile() {
             {saving ? (t('profile.saving') || 'Saving…') : (t('profile.save') || 'Save Changes')}
           </button>
         </form>
+      </div>
+
+      <div className="glass-surface rounded-2xl p-8 border border-[#ef4444]/20 space-y-4 mt-6">
+        <h2 className="text-lg font-semibold text-[#ef4444]">{t('profile.dangerZone') || 'Danger Zone'}</h2>
+        <p className="text-[#94a3b8] text-sm">{t('profile.deleteWarning') || 'Permanently delete your account and all data. This cannot be undone.'}</p>
+
+        {!confirmDelete ? (
+          <button
+            onClick={() => setConfirmDelete(true)}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-[#ef4444]/40 text-[#ef4444] text-sm font-medium hover:bg-[#ef4444]/10 transition-colors"
+          >
+            <Trash2 className="w-4 h-4" />
+            {t('profile.deleteAccount') || 'Delete Account'}
+          </button>
+        ) : (
+          <div className="space-y-3">
+            <p className="text-[#ef4444] text-sm font-semibold">{t('profile.deleteConfirm') || 'Are you sure? This is permanent.'}</p>
+            <div className="flex gap-3">
+              <button
+                onClick={async () => {
+                  setDeleting(true);
+                  try {
+                    const { data: { session } } = await supabase.auth.getSession();
+                    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+                    const res = await fetch(`${supabaseUrl}/functions/v1/delete-account`, {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session?.access_token}`,
+                      },
+                    });
+                    if (!res.ok) throw new Error('delete failed');
+                    await supabase.auth.signOut();
+                    navigate('/');
+                  } catch {
+                    setError(t('profile.deleteError') || 'Failed to delete account. Please try again.');
+                    setDeleting(false);
+                    setConfirmDelete(false);
+                  }
+                }}
+                disabled={deleting}
+                className="px-5 py-2.5 rounded-xl bg-[#ef4444] text-white text-sm font-semibold hover:bg-[#dc2626] transition-colors disabled:opacity-50"
+              >
+                {deleting ? (t('profile.deleting') || 'Deleting…') : (t('profile.confirmDelete') || 'Yes, delete everything')}
+              </button>
+              <button
+                onClick={() => setConfirmDelete(false)}
+                className="px-5 py-2.5 rounded-xl border border-white/10 text-[#94a3b8] text-sm font-medium hover:text-white hover:bg-white/5 transition-colors"
+              >
+                {t('profile.cancel') || 'Cancel'}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

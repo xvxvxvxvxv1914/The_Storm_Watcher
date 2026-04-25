@@ -1,0 +1,33 @@
+{
+  "name": "The Storm Watcher",
+  "short_name": "Storm Watcher",
+  "description": "Real-time space weather monitoring — Kp index, solar wind, aurora forecast and geomagnetic storm alerts.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a1a",
+  "theme_color": "#0a0a1a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "url": "/dashboard",
+      "description": "Live space weather dashboard"
+    },
+    {
+      "name": "Forecast",
+      "short_name": "Forecast",
+      "url": "/forecast",
+      "description": "3-day Kp index forecast"
+    }
+  ],
+  "categories": ["weather", "science", "education"]
+}
