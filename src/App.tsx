@@ -21,6 +21,7 @@ const UV = lazy(() => import('./pages/UV'));
 const SunTimes = lazy(() => import('./pages/SunTimes'));
 const SkyVisibility = lazy(() => import('./pages/SkyVisibility'));
 const ISS = lazy(() => import('./pages/ISS'));
+const AuthReset = lazy(() => import('./pages/AuthReset'));
 // TODO: Remove when Stripe payments are live — pricing page hidden until payment system is ready
 // const Pricing = lazy(() => import('./pages/Pricing'));
 
@@ -62,6 +63,7 @@ function AppRoutes() {
             <Route path="/sun" element={<SunTimes />} />
             <Route path="/sky" element={<SkyVisibility />} />
             <Route path="/iss" element={<ISS />} />
+            <Route path="/auth/reset" element={<AuthReset />} />
             {/* TODO: Remove when Stripe payments are live */}
             <Route path="/pricing" element={<Navigate to="/" replace />} />
             {/* <Route path="/pricing" element={<Pricing />} /> */}
