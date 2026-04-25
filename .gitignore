@@ -26,3 +26,6 @@ dist-ssr
 ios/DerivedData
 ios/App/Pods
 ios/.xcode.env.local
+
+# Supabase CLI temp files
+supabase/.temp
