@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Sun, Menu, X, Globe, User, LogOut, ChevronDown, AlertTriangle, Settings } from 'lucide-react';
+import { Sun, Menu, X, Globe, User, LogOut, ChevronDown, AlertTriangle, SlidersHorizontal } from 'lucide-react';
 import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -218,8 +218,16 @@ const Navigation = () => {
                       onClick={() => setIsUserMenuOpen(false)}
                       className="w-full text-left px-4 py-2 text-sm font-medium text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors flex items-center gap-2"
                     >
-                      <Settings className="w-4 h-4" />
+                      <User className="w-4 h-4" />
                       {t('nav.profile') || 'Profile'}
+                    </Link>
+                    <Link
+                      to="/settings"
+                      onClick={() => setIsUserMenuOpen(false)}
+                      className="w-full text-left px-4 py-2 text-sm font-medium text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors flex items-center gap-2"
+                    >
+                      <SlidersHorizontal className="w-4 h-4" />
+                      {t('nav.settings') || 'Settings'}
                     </Link>
                     <button
                       onClick={handleLogout}
@@ -330,8 +338,16 @@ const Navigation = () => {
                   onClick={() => setIsMenuOpen(false)}
                   className="block px-4 py-2 rounded-lg text-sm font-medium text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors flex items-center gap-2"
                 >
-                  <Settings className="w-4 h-4" />
+                  <User className="w-4 h-4" />
                   {t('nav.profile') || 'Profile'}
+                </Link>
+                <Link
+                  to="/settings"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="block px-4 py-2 rounded-lg text-sm font-medium text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors flex items-center gap-2"
+                >
+                  <SlidersHorizontal className="w-4 h-4" />
+                  {t('nav.settings') || 'Settings'}
                 </Link>
                 <button
                   onClick={() => {

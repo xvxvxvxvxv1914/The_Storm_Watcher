@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { Activity, AlertTriangle, Zap, Radio, Calendar, Bot, Globe, Bell, Camera, Trophy, Video, Check, Share2, Copy, Twitter } from 'lucide-react';
 import { getKpIndex, getSolarWind, getXrayFlux, getXrayClass, getStormStatus, getKpGradientStyle } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
+import StarField from '../components/StarField';
 
 const getScoreShareStatus = (score: number) => {
   if (score <= 25) return 'Quiet';
@@ -69,60 +70,18 @@ const Home = () => {
   const stormStatus = kpValue !== null ? getStormStatus(kpValue) : null;
   const isStorm = kpValue !== null && kpValue >= 5;
 
-  const stars = useMemo(() =>
-    [...Array(100)].map((_, i) => ({
-      id: i,
-      left: Math.random() * 100,
-      top: Math.random() * 100,
-      delay: Math.random() * 3,
-      duration: 2 + Math.random() * 4,
-    })), []);
-
-  const particles = useMemo(() =>
-    [...Array(20)].map((_, i) => ({
-      id: i,
-      top: Math.random() * 100,
-      delay: Math.random() * 20,
-      duration: 15 + Math.random() * 10,
-    })), []);
-
   return (
     <div className="min-h-screen relative">
       <Helmet>
         <title>The Storm Watcher — Real-Time Space Weather</title>
         <meta name="description" content="Live Kp index, solar wind speed, X-ray flux and geomagnetic storm alerts. Monitor space weather in real time." />
       </Helmet>
-      <div className="star-field">
-        {stars.map((s) => (
-          <div
-            key={s.id}
-            className="star"
-            style={{
-              left: `${s.left}%`,
-              top: `${s.top}%`,
-              animationDelay: `${s.delay}s`,
-              animationDuration: `${s.duration}s`,
-            }}
-          />
-        ))}
-      </div>
+      <StarField />
 
       <div className="solar-orb" style={{ top: '-200px', right: '-200px' }} />
       <div className="magnetic-orb" style={{ bottom: '-150px', left: '-150px' }} />
 
-
       <div className="relative overflow-hidden">
-        {particles.map((p) => (
-          <div
-            key={p.id}
-            className="solar-particle"
-            style={{
-              top: `${p.top}%`,
-              animationDelay: `${p.delay}s`,
-              animationDuration: `${p.duration}s`,
-            }}
-          />
-        ))}
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-24 sm:pt-44 sm:pb-32">
           <div className="text-center">

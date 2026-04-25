@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'r
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import { useLanguage } from './contexts/LanguageContext';
+import { SettingsProvider } from './contexts/SettingsContext';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import PlanGuard from './components/PlanGuard';
@@ -24,6 +25,7 @@ const SkyVisibility = lazy(() => import('./pages/SkyVisibility'));
 const ISS = lazy(() => import('./pages/ISS'));
 const AuthReset = lazy(() => import('./pages/AuthReset'));
 const Profile = lazy(() => import('./pages/Profile'));
+const Settings = lazy(() => import('./pages/Settings'));
 // TODO: Remove when Stripe payments are live — pricing page hidden until payment system is ready
 // const Pricing = lazy(() => import('./pages/Pricing'));
 
@@ -77,6 +79,7 @@ function AppRoutes() {
             <Route path="/iss" element={<ISS />} />
             <Route path="/auth/reset" element={<AuthReset />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/settings" element={<Settings />} />
             {/* TODO: Remove when Stripe payments are live */}
             <Route path="/pricing" element={<Navigate to="/" replace />} />
             {/* <Route path="/pricing" element={<Pricing />} /> */}
@@ -94,9 +97,11 @@ function App() {
     <HelmetProvider>
       <Router>
         <ThemeProvider>
-          <AuthProvider>
-            <AppRoutes />
-          </AuthProvider>
+          <SettingsProvider>
+            <AuthProvider>
+              <AppRoutes />
+            </AuthProvider>
+          </SettingsProvider>
         </ThemeProvider>
         <Analytics />
         <SpeedInsights />
