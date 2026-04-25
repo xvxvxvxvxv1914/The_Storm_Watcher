@@ -19,10 +19,11 @@ interface PushSub {
 }
 
 Deno.serve(async (req: Request) => {
-  // Guard: only accept calls authenticated with the CRON_SECRET header
-  // (set CRON_SECRET in Supabase Edge Function secrets, same value in cron SQL)
+  // Guard: CRON_SECRET must be set in Edge Function secrets.
+  // The cron SQL sends this value in the x-cron-secret header.
+  // If the secret is missing from env, we refuse all requests.
   const cronSecret = Deno.env.get('CRON_SECRET');
-  if (cronSecret && req.headers.get('x-cron-secret') !== cronSecret) {
+  if (!cronSecret || req.headers.get('x-cron-secret') !== cronSecret) {
     return new Response('Unauthorized', { status: 401 });
   }
 

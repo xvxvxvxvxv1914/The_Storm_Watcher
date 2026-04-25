@@ -110,7 +110,7 @@ export default function StarField() {
     <canvas
       ref={canvasRef}
       className="fixed top-0 left-0 pointer-events-none"
-      style={{ width: '100%', height: '100%', zIndex: 0 }}
+      style={{ width: '100vw', height: '100vh', zIndex: 0 }}
     />
   );
 }
