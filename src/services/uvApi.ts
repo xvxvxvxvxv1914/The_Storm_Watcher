@@ -1,5 +1,6 @@
 export interface UvHourlyData {
-  time: string;
+  time: string;     // locale-formatted for display
+  isoTime: string;  // ISO 8601 for charting
   uv_index: number;
 }
 
@@ -29,6 +30,7 @@ export const getUvIndex = async (lat: number, lon: number): Promise<UvData> => {
 
     const hourly: UvHourlyData[] = data.hourly.time.map((t: string, i: number) => ({
       time: new Date(t).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }),
+      isoTime: t,
       uv_index: Math.round(data.hourly.uv_index[i] * 10) / 10,
     }));
 

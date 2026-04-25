@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import SvgBarChart from '../components/charts/SvgBarChart';
 import { Calendar, TrendingUp, AlertCircle, Sun } from 'lucide-react';
 import { getKpForecast, getStormStatus, getKpGradientStyle } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -210,64 +210,18 @@ const Forecast = () => {
             {t('forecast.kpForecast')}
           </h3>
           {dailyChartData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={400}>
-              <BarChart data={dailyChartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-                <XAxis
-                  dataKey="time"
-                  stroke="#6b7280"
-                  height={60}
-                  tick={{ fontSize: 13, fill: '#9ca3af' }}
-                />
-                <YAxis
-                  stroke="#6b7280"
-                  domain={[0, 9]}
-                  tick={{ fontSize: 12 }}
-                  label={{ value: 'Kp Index', angle: -90, position: 'insideLeft', fill: '#9ca3af' }}
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: 'rgba(10, 0, 21, 0.95)',
-                    border: '1px solid rgba(249, 115, 22, 0.3)',
-                    borderRadius: '12px',
-                    padding: '12px',
-                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
-                  }}
-                  labelStyle={{ color: '#f97316', fontWeight: 'bold', marginBottom: '8px' }}
-                  itemStyle={{ color: '#fff' }}
-                  labelFormatter={(value, payload) => {
-                    if (payload && payload[0]) {
-                      return payload[0].payload.fullTime;
-                    }
-                    return value;
-                  }}
-                  formatter={(value: unknown, name: unknown) => {
-                    const numValue = Number(value);
-                    const strName = String(name);
-                    if (strName === 'kp') return [numValue.toFixed(2), 'Avg Kp'];
-                    if (strName === 'maxKp') return [numValue.toFixed(2), 'Max Kp'];
-                    return [numValue.toFixed(2), strName];
-                  }}
-                />
-                <Bar
-                  dataKey="kp"
-                  radius={[8, 8, 0, 0]}
-                  maxBarSize={60}
-                >
-                  {dailyChartData.map((entry, index) => {
-                    let color = '#10b981';
-                    if (entry.kp >= 7) color = '#ef4444';
-                    else if (entry.kp >= 6) color = '#f97316';
-                    else if (entry.kp >= 5) color = '#f59e0b';
-                    else if (entry.kp >= 4) color = '#eab308';
-
-                    return <Cell key={`cell-${index}`} fill={color} />;
-                  })}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+            <SvgBarChart
+              height={280}
+              maxValue={9}
+              formatValue={v => `Kp ${v}`}
+              bars={dailyChartData.map(d => ({
+                label: d.time,
+                value: d.kp,
+                color: d.kp >= 7 ? '#ef4444' : d.kp >= 6 ? '#f97316' : d.kp >= 5 ? '#f59e0b' : d.kp >= 4 ? '#eab308' : '#10b981',
+              }))}
+            />
           ) : (
-            <div className="h-[400px] flex items-center justify-center text-[#94a3b8]">
+            <div className="h-64 flex items-center justify-center text-[#94a3b8]">
               {t('dashboard.noData')}
             </div>
           )}

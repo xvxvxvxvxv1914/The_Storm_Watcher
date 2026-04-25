@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useEffect, useState, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
 import { Sun, AlertTriangle } from 'lucide-react';
 import { getUvIndex, getUvLevel, UvData } from '../services/uvApi';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -86,7 +86,6 @@ const UV = () => {
 
   const level = getUvLevel(uvData.current);
   const maxLevel = getUvLevel(uvData.max);
-  const currentHour = new Date().getHours();
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16">
@@ -146,30 +145,22 @@ const UV = () => {
             <Sun className="w-5 h-5 text-[#fbbf24]" />
             {t('uv.indexToday')}
           </h3>
-          <ResponsiveContainer width="100%" height={280}>
-            <AreaChart data={uvData.hourly}>
-              <defs>
-                <linearGradient id="uvGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#fbbf24" stopOpacity={0.5} />
-                  <stop offset="100%" stopColor="#fbbf24" stopOpacity={0.02} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-              <XAxis dataKey="time" stroke="#6b7280" tick={{ fontSize: 11 }} interval="preserveStartEnd" />
-              <YAxis stroke="#6b7280" tick={{ fontSize: 12 }} domain={[0, 'auto']} />
-              <Tooltip
-                contentStyle={{ backgroundColor: 'rgba(10,0,21,0.95)', border: '1px solid rgba(251,191,36,0.3)', borderRadius: '12px', padding: '12px' }}
-                labelStyle={{ color: '#fbbf24', fontWeight: 'bold' }}
-                itemStyle={{ color: '#fff' }}
-                formatter={(v: unknown) => [Number(v), t('uv.chartTooltip')]}
-              />
-              <ReferenceLine y={3} stroke="#10b981" strokeDasharray="4 4" label={{ value: t('uv.low3'), fill: '#10b981', fontSize: 11 }} />
-              <ReferenceLine y={6} stroke="#eab308" strokeDasharray="4 4" label={{ value: t('uv.mod6'), fill: '#eab308', fontSize: 11 }} />
-              <ReferenceLine y={8} stroke="#f97316" strokeDasharray="4 4" label={{ value: t('uv.high8'), fill: '#f97316', fontSize: 11 }} />
-              <ReferenceLine x={uvData.hourly[currentHour]?.time} stroke="#ffffff50" strokeDasharray="4 4" />
-              <Area type="monotone" dataKey="uv_index" stroke="#fbbf24" strokeWidth={2} fill="url(#uvGradient)" dot={false} />
-            </AreaChart>
-          </ResponsiveContainer>
+          <TimeSeriesChart
+            data={uvData.hourly
+              .filter(h => h.isoTime)
+              .map(h => ({
+                time: Math.floor(new Date(h.isoTime).getTime() / 1000) as TsPoint['time'],
+                value: h.uv_index,
+              }))}
+            color="#fbbf24"
+            type="area"
+            height={280}
+            refLines={[
+              { value: 3, color: '#10b981', label: t('uv.low3') || 'Low 3' },
+              { value: 6, color: '#eab308', label: t('uv.mod6') || 'Moderate 6' },
+              { value: 8, color: '#f97316', label: t('uv.high8') || 'High 8' },
+            ]}
+          />
         </div>
 
         {/* {t('uv.scale')} */}

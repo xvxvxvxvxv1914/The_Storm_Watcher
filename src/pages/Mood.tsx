@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Smile, Frown, Meh, ThumbsUp, ThumbsDown, Users, TrendingUp, CheckCircle, AlertCircle } from 'lucide-react';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
+import SvgDonut from '../components/charts/SvgDonut';
+import SvgStackedBars, { type DataRow } from '../components/charts/SvgStackedBars';
 import { supabase, getSessionId } from '../lib/supabase';
 import { getKpIndex } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -322,45 +323,21 @@ const Mood = () => {
             <p className="text-gray-400 text-center py-8">{t('mood.noData')}</p>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Pie chart */}
+              {/* Donut chart */}
               <div>
                 <h3 className="text-lg font-semibold text-white mb-4 text-center">{t('mood.distribution')}</h3>
-                <ResponsiveContainer width="100%" height={280}>
-                  <PieChart>
-                    <Pie
-                      data={stats.map((s: MoodStats) => ({
-                        name: t(getMoodInfo(s.mood_type)?.labelKey ?? s.mood_type),
-                        value: s.count,
-                        mood: s.mood_type,
-                      }))}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={100}
-                      paddingAngle={3}
-                      dataKey="value"
-                    >
-                      {stats.map((stat: MoodStats) => (
-                        <Cell
-                          key={stat.mood_type}
-                          fill={
-                            stat.mood_type === 'great' ? '#22c55e' :
-                            stat.mood_type === 'good' ? '#10b981' :
-                            stat.mood_type === 'okay' ? '#eab308' :
-                            stat.mood_type === 'bad' ? '#f97316' :
-                            '#ef4444'
-                          }
-                        />
-                      ))}
-                    </Pie>
-                    <Tooltip
-                      contentStyle={{ backgroundColor: 'rgba(10,0,21,0.95)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
-                      itemStyle={{ color: '#fff' }}
-                      formatter={(value: unknown, name: unknown) => [`${Number(value)} ${t('mood.votes')}`, String(name)]}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-                <div className="flex flex-wrap justify-center gap-3 mt-2">
+                <div className="flex justify-center">
+                  <SvgDonut
+                    size={200}
+                    thickness={40}
+                    slices={stats.map((s: MoodStats) => ({
+                      label: t(getMoodInfo(s.mood_type)?.labelKey ?? s.mood_type),
+                      value: s.count,
+                      color: s.mood_type === 'great' ? '#22c55e' : s.mood_type === 'good' ? '#10b981' : s.mood_type === 'okay' ? '#eab308' : s.mood_type === 'bad' ? '#f97316' : '#ef4444',
+                    }))}
+                  />
+                </div>
+                <div className="flex flex-wrap justify-center gap-3 mt-3">
                   {stats.map((stat: MoodStats) => {
                     const moodInfo = getMoodInfo(stat.mood_type);
                     if (!moodInfo) return null;
@@ -376,23 +353,18 @@ const Mood = () => {
 
               <div>
                 <h3 className="text-lg font-semibold text-white mb-4 text-center">{t('mood.byHour')}</h3>
-                <ResponsiveContainer width="100%" height={280}>
-                  <BarChart data={hourlyData} barSize={8}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-                    <XAxis dataKey="hour" stroke="#6b7280" tick={{ fontSize: 11, fill: '#9ca3af' }} />
-                    <YAxis stroke="#6b7280" tick={{ fontSize: 11 }} allowDecimals={false} />
-                    <Tooltip
-                      contentStyle={{ backgroundColor: 'rgba(10,0,21,0.95)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
-                      itemStyle={{ color: '#fff' }}
-                    />
-                    <Legend wrapperStyle={{ fontSize: '12px' }} formatter={(value: string) => t(`mood.${value}`)} />
-                    <Bar dataKey="great" stackId="a" fill="#22c55e" />
-                    <Bar dataKey="good" stackId="a" fill="#10b981" />
-                    <Bar dataKey="okay" stackId="a" fill="#eab308" />
-                    <Bar dataKey="bad" stackId="a" fill="#f97316" />
-                    <Bar dataKey="terrible" stackId="a" fill="#ef4444" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
+                <SvgStackedBars
+                  data={hourlyData as unknown as DataRow[]}
+                  xKey="hour"
+                  height={280}
+                  series={[
+                    { key: 'great',    color: '#22c55e', label: t('mood.great') },
+                    { key: 'good',     color: '#10b981', label: t('mood.good') },
+                    { key: 'okay',     color: '#eab308', label: t('mood.okay') },
+                    { key: 'bad',      color: '#f97316', label: t('mood.bad') },
+                    { key: 'terrible', color: '#ef4444', label: t('mood.terrible') },
+                  ]}
+                />
               </div>
             </div>
           )}

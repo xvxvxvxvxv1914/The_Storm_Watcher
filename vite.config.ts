@@ -32,7 +32,7 @@ export default defineConfig(({ command }) => ({
       output: {
         manualChunks: {
           'globe': ['react-globe.gl'],
-          'recharts': ['recharts'],
+          'lw-charts': ['lightweight-charts'],
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           'supabase': ['@supabase/supabase-js'],
         },
