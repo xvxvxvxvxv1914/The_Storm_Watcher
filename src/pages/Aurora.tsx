@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { MapPin, Eye, Sparkles } from 'lucide-react';
 import GlobeOrig from 'react-globe.gl';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -220,6 +221,10 @@ const Aurora = () => {
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16 relative">
+      <Helmet>
+        <title>Aurora Forecast Globe — The Storm Watcher</title>
+        <meta name="description" content="Live OVATION aurora probability model on an interactive 3D globe. See where the northern lights are visible right now." />
+      </Helmet>
       <div className="star-field">
         {stars.map((s) => (
           <div

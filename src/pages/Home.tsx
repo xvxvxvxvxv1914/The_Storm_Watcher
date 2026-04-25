@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { Activity, AlertTriangle, Zap, Radio, Calendar, Bot, Globe, Bell, Camera, Trophy, Video, Check, Share2, Copy, Twitter } from 'lucide-react';
 import { getKpIndex, getSolarWind, getXrayFlux, getXrayClass, getStormStatus, getKpGradientStyle } from '../services/noaaApi';
@@ -87,6 +88,10 @@ const Home = () => {
 
   return (
     <div className="min-h-screen relative">
+      <Helmet>
+        <title>The Storm Watcher — Real-Time Space Weather</title>
+        <meta name="description" content="Live Kp index, solar wind speed, X-ray flux and geomagnetic storm alerts. Monitor space weather in real time." />
+      </Helmet>
       <div className="star-field">
         {stars.map((s) => (
           <div

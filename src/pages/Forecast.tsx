@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Calendar, TrendingUp, AlertCircle, Sun } from 'lucide-react';
 import { getKpForecast, getStormStatus, getKpGradientStyle } from '../services/noaaApi';
@@ -116,6 +117,10 @@ const Forecast = () => {
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16 relative">
+      <Helmet>
+        <title>Kp Index Forecast — The Storm Watcher</title>
+        <meta name="description" content="3-day Kp index forecast from NOAA. See predicted geomagnetic storm levels and plan your aurora viewing." />
+      </Helmet>
       <div className="star-field">
         {stars.map((s) => (
           <div

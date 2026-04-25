@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { AlertTriangle, Info, AlertOctagon, ShieldAlert, Flame, Wind } from 'lucide-react';
 import { getAlerts, Alert as AlertType } from '../services/noaaApi';
 import { getDonkiCme, getDonkiFlares, CmeEvent, FlareEvent } from '../services/donkiApi';
@@ -84,6 +85,10 @@ const Alerts = () => {
 
   return (
     <div className="min-h-screen pt-20 pb-16 md:pt-24">
+      <Helmet>
+        <title>Space Weather Alerts — The Storm Watcher</title>
+        <meta name="description" content="Real-time NOAA space weather alerts, coronal mass ejections and solar flare events." />
+      </Helmet>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">{t('alerts.title')}</h1>

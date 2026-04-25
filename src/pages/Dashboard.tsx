@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, ReferenceLine } from 'recharts';
 import { Activity, Wind, Compass, Sun, Radio } from 'lucide-react';
 import { getKpIndex, getSolarWind, getMagField, getXrayFlux, getKpHistory3Day, getStormStatus, getXrayClass, getKpGradientStyle } from '../services/noaaApi';
@@ -149,6 +150,10 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16 relative">
+      <Helmet>
+        <title>Dashboard — The Storm Watcher</title>
+        <meta name="description" content="Live space weather dashboard: Kp index, solar wind, magnetic field and X-ray flux charts updated every minute." />
+      </Helmet>
       <div className="star-field">
         {stars.map((s) => (
           <div

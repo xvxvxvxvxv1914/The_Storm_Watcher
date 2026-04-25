@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Cloud, Eye, MapPin, Droplets, Star } from 'lucide-react';
 import { getSkyVisibility, SkyData } from '../services/skyApi';
 import { getKpIndex } from '../services/noaaApi';
@@ -77,6 +78,10 @@ const SkyVisibility = () => {
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16">
+      <Helmet>
+        <title>Sky Visibility Tonight — The Storm Watcher</title>
+        <meta name="description" content="Tonight's stargazing and aurora viewing conditions. Cloud cover, visibility and precipitation forecast for astronomers." />
+      </Helmet>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}

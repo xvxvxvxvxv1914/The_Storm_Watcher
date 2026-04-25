@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Sunrise, Sunset, Sun, MapPin, Clock } from 'lucide-react';
 import { getSunData, SunDay } from '../services/uvApi';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -114,6 +115,10 @@ const SunTimes = () => {
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16">
+      <Helmet>
+        <title>Sunrise & Sunset Times — The Storm Watcher</title>
+        <meta name="description" content="Accurate sunrise, sunset and golden hour times for your location. Plan your photography and outdoor activities." />
+      </Helmet>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}

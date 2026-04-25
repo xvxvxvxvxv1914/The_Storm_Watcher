@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useEffect, useRef, useState, useCallback, lazy, Suspense } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { MapPin, Clock, Eye, Satellite } from 'lucide-react';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Globe = lazy(() => import('react-globe.gl')) as any;
@@ -118,6 +119,10 @@ const ISS = () => {
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16">
+      <Helmet>
+        <title>ISS Tracker — The Storm Watcher</title>
+        <meta name="description" content="Track the International Space Station in real time. See live position, altitude, speed and next pass times over your location." />
+      </Helmet>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}

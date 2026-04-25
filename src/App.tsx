@@ -1,4 +1,5 @@
 import { Suspense, lazy, useEffect } from 'react';
+import { HelmetProvider } from 'react-helmet-async';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
@@ -90,15 +91,17 @@ function AppRoutes() {
 
 function App() {
   return (
-    <Router>
-      <ThemeProvider>
-        <AuthProvider>
-          <AppRoutes />
-        </AuthProvider>
-      </ThemeProvider>
-      <Analytics />
-      <SpeedInsights />
-    </Router>
+    <HelmetProvider>
+      <Router>
+        <ThemeProvider>
+          <AuthProvider>
+            <AppRoutes />
+          </AuthProvider>
+        </ThemeProvider>
+        <Analytics />
+        <SpeedInsights />
+      </Router>
+    </HelmetProvider>
   );
 }
 

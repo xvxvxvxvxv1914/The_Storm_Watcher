@@ -1,9 +1,9 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { Sun, MapPin, AlertTriangle } from 'lucide-react';
 import { getUvIndex, getUvLevel, UvData } from '../services/uvApi';
-
 import { useLanguage } from '../contexts/LanguageContext';
 
 const UV = () => {
@@ -85,6 +85,10 @@ const UV = () => {
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16">
+      <Helmet>
+        <title>UV Index — The Storm Watcher</title>
+        <meta name="description" content="Real-time UV index and sun exposure forecast for your location. Know when to apply sunscreen." />
+      </Helmet>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}
