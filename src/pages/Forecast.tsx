@@ -1,9 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Calendar, TrendingUp, AlertCircle, Sun } from 'lucide-react';
 import { getKpForecast, getStormStatus, getKpGradientStyle } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
+import StarField from '../components/StarField';
+import { Skeleton, SkeletonChart } from '../components/Skeleton';
 
 interface ForecastItem {
   time: string;
@@ -93,18 +95,38 @@ const Forecast = () => {
     });
   };
 
-  const stars = useMemo(() =>
-    [...Array(50)].map((_, i) => ({
-      id: i,
-      left: Math.random() * 100,
-      top: Math.random() * 100,
-      delay: Math.random() * 3,
-    })), []);
-
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-16 h-16 border-4 border-[#f97316]/20 border-t-[#f97316] rounded-full animate-spin"></div>
+      <div className="min-h-screen pt-24 md:pt-20 pb-16 relative">
+        <StarField />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-10">
+            <Skeleton className="h-12 w-80 mb-3" />
+            <Skeleton className="h-4 w-64" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="glass-surface rounded-2xl p-6 border border-white/5">
+                <Skeleton className="h-4 w-24 mb-3" />
+                <Skeleton className="h-10 w-16 mb-2" />
+                <Skeleton className="h-3 w-20" />
+              </div>
+            ))}
+          </div>
+          <SkeletonChart className="mb-6" />
+          <div className="glass-surface rounded-2xl border border-white/5 overflow-hidden">
+            <div className="p-6 border-b border-white/5">
+              <Skeleton className="h-5 w-40" />
+            </div>
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="flex items-center gap-4 px-6 py-4 border-b border-white/5 last:border-0">
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-6 w-12 rounded-lg" />
+                <Skeleton className="h-3 w-16" />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
@@ -121,19 +143,7 @@ const Forecast = () => {
         <title>Kp Index Forecast — The Storm Watcher</title>
         <meta name="description" content="3-day Kp index forecast from NOAA. See predicted geomagnetic storm levels and plan your aurora viewing." />
       </Helmet>
-      <div className="star-field">
-        {stars.map((s) => (
-          <div
-            key={s.id}
-            className="star"
-            style={{
-              left: `${s.left}%`,
-              top: `${s.top}%`,
-              animationDelay: `${s.delay}s`,
-            }}
-          />
-        ))}
-      </div>
+      <StarField />
 
       <div className="magnetic-orb" style={{ top: '200px', left: '-200px' }} />
 

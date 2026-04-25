@@ -5,6 +5,7 @@ import { Activity, AlertTriangle, Zap, Radio, Calendar, Bot, Globe, Bell, Camera
 import { getKpIndex, getSolarWind, getXrayFlux, getXrayClass, getStormStatus, getKpGradientStyle } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import StarField from '../components/StarField';
+import { Skeleton } from '../components/Skeleton';
 
 const getScoreShareStatus = (score: number) => {
   if (score <= 25) return 'Quiet';
@@ -121,7 +122,13 @@ const Home = () => {
 
             {/* Live Kp */}
             {loading ? (
-              <div className="inline-block w-24 h-24 border-4 border-[#f97316]/20 border-t-[#f97316] rounded-full animate-spin my-8" />
+              <div className="my-8 flex flex-col items-center gap-4">
+                <Skeleton className="w-40 h-40 sm:w-56 sm:h-56 rounded-2xl" />
+                <Skeleton className="w-48 h-10 rounded-full" />
+                <div className="flex gap-3 mt-2">
+                  {[...Array(3)].map((_, i) => <Skeleton key={i} className="w-32 h-10 rounded-xl" />)}
+                </div>
+              </div>
             ) : (
               <div className="my-8">
                 <div className="text-xs text-[#64748b] uppercase tracking-widest mb-2 font-semibold">Live · Kp Index</div>
@@ -188,7 +195,10 @@ const Home = () => {
           </p>
 
           {loading ? (
-            <div className="inline-block w-16 h-16 border-4 border-[#f97316]/20 border-t-[#f97316] rounded-full animate-spin" />
+            <div className="flex flex-col items-center gap-4">
+              <Skeleton className="w-32 h-32 sm:w-40 sm:h-40 rounded-2xl" />
+              <Skeleton className="w-40 h-5 rounded" />
+            </div>
           ) : (
             <div className="flex flex-col items-center gap-6">
               {/* Score number + share button */}

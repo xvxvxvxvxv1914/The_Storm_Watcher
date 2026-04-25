@@ -4,6 +4,8 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { Activity, Wind, Compass, Sun, Radio } from 'lucide-react';
 import { getKpIndex, getSolarWind, getMagField, getXrayFlux, getKpHistory3Day, getStormStatus, getXrayClass, getKpGradientStyle } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
+import StarField from '../components/StarField';
+import { SkeletonCard, SkeletonChart, Skeleton } from '../components/Skeleton';
 
 const InfoTooltip = React.memo(({ text }: { text: string }) => (
   <div className="absolute top-3 right-3 group z-20">
@@ -132,18 +134,23 @@ const Dashboard = () => {
     return kpHistory3Day.slice(-24);
   }, [kpHistory3Day, timeRange]);
 
-  const stars = useMemo(() =>
-    [...Array(50)].map((_, i) => ({
-      id: i,
-      left: Math.random() * 100,
-      top: Math.random() * 100,
-      delay: Math.random() * 3,
-    })), []);
-
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-16 h-16 border-4 border-[#f97316]/20 border-t-[#f97316] rounded-full animate-spin"></div>
+      <div className="min-h-screen pt-24 md:pt-20 pb-16 relative">
+        <StarField />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-12">
+            <Skeleton className="h-12 w-72 mb-3" />
+            <Skeleton className="h-4 w-48" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            {[...Array(4)].map((_, i) => <SkeletonCard key={i} />)}
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <SkeletonChart />
+            <SkeletonChart />
+          </div>
+        </div>
       </div>
     );
   }
@@ -154,19 +161,7 @@ const Dashboard = () => {
         <title>Dashboard — The Storm Watcher</title>
         <meta name="description" content="Live space weather dashboard: Kp index, solar wind, magnetic field and X-ray flux charts updated every minute." />
       </Helmet>
-      <div className="star-field">
-        {stars.map((s) => (
-          <div
-            key={s.id}
-            className="star"
-            style={{
-              left: `${s.left}%`,
-              top: `${s.top}%`,
-              animationDelay: `${s.delay}s`,
-            }}
-          />
-        ))}
-      </div>
+      <StarField />
 
       <div className="solar-orb" style={{ top: '100px', right: '-300px' }} />
 
