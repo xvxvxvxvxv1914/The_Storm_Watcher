@@ -226,9 +226,14 @@ const Forecast = () => {
           </h3>
           {Object.keys(groupedData).length > 0 ? (
             <div className="space-y-6">
-              {Object.entries(groupedData).map(([day, items]) => {
+              {Object.entries(groupedData)
+                // NOAA's 3-day forecast cuts off mid-day on day 3 (often a single
+                // 00:00 UTC point on the trailing day). Hide partial days so the
+                // list isn't padded with a lonely card; the chart still includes
+                // every point.
+                .filter(([, items]) => items.length >= 4)
+                .map(([day, items]) => {
               const maxDayKp = Math.max(...items.map(i => i.kp));
-              // const avgDayKp = items.reduce((acc, i) => acc + i.kp, 0) / items.length;
               const status = getStormStatus(maxDayKp);
 
               return (
