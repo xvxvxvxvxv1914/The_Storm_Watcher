@@ -201,7 +201,7 @@ const Dashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <div className={`relative glass-surface rounded-2xl p-6 ${
+          <div data-tour="kp-card" className={`relative glass-surface rounded-2xl p-6 ${
             kpValue >= 5 ? 'glow-red' : kpValue >= 4 ? 'glow-orange' : 'glow-green'
           } hover:scale-105 transition-transform`}>
             <InfoTooltip text={t('dashboard.tooltip.kp')} />
@@ -229,7 +229,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="relative glass-surface rounded-2xl p-6 hover:glow-purple transition-all hover:scale-105">
+          <div data-tour="wind-card" className="relative glass-surface rounded-2xl p-6 hover:glow-purple transition-all hover:scale-105">
             <InfoTooltip text={t('dashboard.tooltip.wind')} />
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-[#7c3aed] to-[#6d28d9] rounded-xl flex items-center justify-center">

@@ -368,6 +368,28 @@ const bg: Record<string, string> = {
   'iss.locIss': 'Позиция на МКС',
   'iss.locYou': 'Вашата позиция',
   'dashboard.swTooltip': 'Скорост на слънчевия вятър за последните 24 часа.',
+
+  // Onboarding tour
+  'onboarding.welcome.title': 'Добре дошъл в The Storm Watcher',
+  'onboarding.welcome.body': '30-секундна обиколка на таблото, известията и настройките. Може да пропуснеш по всяко време.',
+  'onboarding.kp.title': 'Геомагнитна активност (Kp)',
+  'onboarding.kp.body': 'Индексът Kp показва колко смутено е магнитното поле на Земята в момента. Kp ≥ 5 означава геомагнитна буря.',
+  'onboarding.wind.title': 'Скорост на слънчевия вятър',
+  'onboarding.wind.body': 'Заредени частици, идващи от Слънцето. По-бърз вятър = по-силен ефект върху магнитосферата.',
+  'onboarding.push.title': 'Push известия',
+  'onboarding.push.body': 'Натисни камбанката, за да получаваш известия, когато бурята надмине твоя праг.',
+  'onboarding.settings.title': 'Профил и настройки',
+  'onboarding.settings.body': 'Регулирай прага за известия, предпочитаното местоположение и езика от Настройки.',
+  'onboarding.next': 'Напред',
+  'onboarding.back': 'Назад',
+  'onboarding.skip': 'Пропусни',
+  'onboarding.last': 'Разбрах',
+  'onboarding.close': 'Затвори',
+
+  // Settings — onboarding section
+  'settings.help': 'Помощ и обиколка',
+  'settings.tourDesc': 'Покажи отново въвеждащата обиколка, която обяснява таблото, известията и къде се намират настройките.',
+  'settings.restartTour': 'Стартирай отново обиколката',
 };
 
 export default bg;

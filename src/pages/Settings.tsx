@@ -1,17 +1,25 @@
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
-import { ArrowLeft, MapPin, Bell, Ruler, Globe, Check, Loader2, LocateFixed, X } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft, MapPin, Bell, Ruler, Globe, Check, Loader2, LocateFixed, X, HelpCircle } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
 import { useLanguage, languages } from '../contexts/LanguageContext';
+import { useOnboarding } from '../hooks/useOnboarding';
 
 export default function Settings() {
   const { settings, updateSettings } = useSettings();
   const { language, setLanguage, t } = useLanguage();
+  const { reset: resetOnboarding } = useOnboarding();
+  const navigate = useNavigate();
 
   const [saved, setSaved] = useState(false);
   const [locating, setLocating] = useState(false);
   const [locError, setLocError] = useState('');
+
+  const handleRestartTour = () => {
+    resetOnboarding();
+    navigate('/dashboard');
+  };
 
   const [kpThreshold, setKpThreshold] = useState(settings.kpThreshold);
   const [unitSystem, setUnitSystem] = useState(settings.unitSystem);
@@ -218,6 +226,24 @@ export default function Settings() {
                 </button>
               ))}
             </div>
+          </section>
+
+          {/* Help & Onboarding */}
+          <section className="glass-surface rounded-2xl p-6 border border-white/10">
+            <div className="flex items-center gap-3 mb-1">
+              <HelpCircle className="w-5 h-5 text-[#f97316]" />
+              <h2 className="text-lg font-semibold text-white">{t('settings.help') || 'Help & Tour'}</h2>
+            </div>
+            <p className="text-sm text-[#94a3b8] mb-5">
+              {t('settings.tourDesc') || 'Replay the introductory tour that explains the dashboard, push alerts and where to find your settings.'}
+            </p>
+            <button
+              onClick={handleRestartTour}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#f97316]/10 text-[#f97316] hover:bg-[#f97316]/20 transition-colors font-medium text-sm"
+            >
+              <HelpCircle className="w-4 h-4" />
+              {t('settings.restartTour') || 'Restart onboarding tour'}
+            </button>
           </section>
 
           {/* Save */}

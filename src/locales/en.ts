@@ -433,6 +433,28 @@ const en: Record<string, string> = {
   'auth.updating': 'Updating…',
   'auth.passwordUpdated': 'Password updated!',
   'auth.redirecting': 'Redirecting to dashboard…',
+
+  // Onboarding tour
+  'onboarding.welcome.title': 'Welcome to The Storm Watcher',
+  'onboarding.welcome.body': 'A 30-second tour of the dashboard, alerts and settings. You can skip any time.',
+  'onboarding.kp.title': 'Geomagnetic activity (Kp)',
+  'onboarding.kp.body': 'The Kp index summarizes how disturbed Earth\'s magnetic field is right now. Kp ≥ 5 means a geomagnetic storm.',
+  'onboarding.wind.title': 'Solar wind speed',
+  'onboarding.wind.body': 'Charged particles streaming from the Sun. Faster wind = stronger impact on the magnetosphere.',
+  'onboarding.push.title': 'Push notifications',
+  'onboarding.push.body': 'Tap the bell to get notified when the storm crosses your alert threshold.',
+  'onboarding.settings.title': 'Profile and Settings',
+  'onboarding.settings.body': 'Adjust your alert threshold, preferred location and language under Settings.',
+  'onboarding.next': 'Next',
+  'onboarding.back': 'Back',
+  'onboarding.skip': 'Skip tour',
+  'onboarding.last': 'Got it',
+  'onboarding.close': 'Close',
+
+  // Settings — onboarding section
+  'settings.help': 'Help & Tour',
+  'settings.tourDesc': 'Replay the introductory tour that explains the dashboard, push alerts and where to find your settings.',
+  'settings.restartTour': 'Restart onboarding tour',
 };
 
 export default en;

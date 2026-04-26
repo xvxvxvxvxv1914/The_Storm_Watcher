@@ -11,6 +11,7 @@ import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import PlanGuard from './components/PlanGuard';
 import ErrorBoundary from './components/ErrorBoundary';
+import OnboardingTour from './components/OnboardingTour';
 
 const Home = lazy(() => import('./pages/Home'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
@@ -88,6 +89,7 @@ function AppRoutes() {
       </ErrorBoundary>
       </main>
       <Footer />
+      <OnboardingTour />
     </div>
   );
 }

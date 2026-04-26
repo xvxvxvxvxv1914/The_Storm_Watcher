@@ -193,7 +193,7 @@ const Navigation = () => {
             </div>
 
             {user ? (
-              <div className="relative shrink-0">
+              <div data-tour="user-menu" className="relative shrink-0">
                 <button
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                   className="flex items-center gap-1.5 xl:gap-2 px-2.5 xl:px-4 py-2 rounded-lg bg-[#f97316]/10 text-[#f97316] hover:bg-[#f97316]/20 transition-colors"
@@ -241,6 +241,7 @@ const Navigation = () => {
               </div>
             ) : (
               <Link
+                data-tour="user-menu"
                 to="/auth"
                 className="shrink-0 px-2.5 xl:px-4 py-2 rounded-lg bg-gradient-to-r from-[#f97316] to-[#fbbf24] text-white font-medium text-[11px] xl:text-sm hover:shadow-lg hover:shadow-[#f97316]/50 transition-all"
               >

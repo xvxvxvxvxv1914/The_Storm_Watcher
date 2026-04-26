@@ -146,7 +146,7 @@ const PushNotificationBell = () => {
     : t('push.enable');
 
   return (
-    <div className="relative">
+    <div data-tour="push-bell" className="relative">
       <button
         onClick={handleClick}
         onMouseEnter={() => setShowTooltip(true)}
