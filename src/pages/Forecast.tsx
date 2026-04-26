@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import SvgBarChart from '../components/charts/SvgBarChart';
+import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
 import { Calendar, TrendingUp, AlertCircle, Sun } from 'lucide-react';
 import { getKpForecast, getStormStatus, getKpGradientStyle } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -78,22 +78,14 @@ const Forecast = () => {
     return grouped;
   };
 
-  const getDailyChartData = () => {
-    const grouped = groupByDay();
-    return Object.entries(grouped).map(([day, items]) => {
-      const maxKp = Math.max(...items.map(i => i.kp));
-      const avgKp = items.reduce((acc, i) => acc + i.kp, 0) / items.length;
-      const date = items[0].date;
-      return {
-        time: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-        fullTime: day,
-        kp: avgKp,
-        maxKp: maxKp,
-        date: date,
-        itemsCount: items.length
-      };
-    });
-  };
+  // Continuous 3-hour forecast curve. Sorting defends against any
+  // upstream re-ordering — lightweight-charts requires ascending time.
+  const forecastChartData: TsPoint[] = [...forecastData]
+    .sort((a, b) => a.date.getTime() - b.date.getTime())
+    .map(item => ({
+      time: Math.floor(item.date.getTime() / 1000) as TsPoint['time'],
+      value: parseFloat(item.kp.toFixed(2)),
+    }));
 
   if (loading) {
     return (
@@ -135,7 +127,6 @@ const Forecast = () => {
   const avgKp = getAverageKp();
   const stormDays = getDaysWithStorms();
   const groupedData = groupByDay();
-  const dailyChartData = getDailyChartData();
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16 relative">
@@ -209,16 +200,18 @@ const Forecast = () => {
             <Sun className="w-6 h-6 text-[#f97316]" />
             {t('forecast.kpForecast')}
           </h3>
-          {dailyChartData.length > 0 ? (
-            <SvgBarChart
-              height={280}
-              maxValue={9}
-              formatValue={v => `Kp ${v}`}
-              bars={dailyChartData.map(d => ({
-                label: d.time,
-                value: d.kp,
-                color: d.kp >= 7 ? '#ef4444' : d.kp >= 6 ? '#f97316' : d.kp >= 5 ? '#f59e0b' : d.kp >= 4 ? '#eab308' : '#10b981',
-              }))}
+          {forecastChartData.length > 0 ? (
+            <TimeSeriesChart
+              data={forecastChartData}
+              color="#f97316"
+              type="area"
+              height={300}
+              yMin={0}
+              yMax={9}
+              refLines={[
+                { value: 5, color: '#f59e0b', label: 'G1' },
+                { value: 7, color: '#ef4444', label: 'G3' },
+              ]}
             />
           ) : (
             <div className="h-64 flex items-center justify-center text-[#94a3b8]">
