@@ -110,6 +110,25 @@ describe('NOAA cache + single-flight', () => {
     expect(r2).toEqual([{ time_tag: 't', kp_index: 4 }]);
   });
 
+  it('rtsw wind/mag endpoints are sorted ascending by time_tag', async () => {
+    // NOAA returns rtsw feeds newest-first; service must reverse so charts
+    // render and `[length-1]` is the latest sample.
+    mockFetch.mockResolvedValueOnce(okJson([
+      { time_tag: '2026-04-26T12:00:00', proton_speed: 500, active: true },
+      { time_tag: '2026-04-26T11:00:00', proton_speed: 480, active: true },
+      { time_tag: '2026-04-26T10:00:00', proton_speed: 460, active: true },
+    ]));
+    const { getSolarWind } = await import('./noaaApi');
+
+    const wind = await getSolarWind();
+    expect(wind.map(w => w.time_tag)).toEqual([
+      '2026-04-26T10:00:00',
+      '2026-04-26T11:00:00',
+      '2026-04-26T12:00:00',
+    ]);
+    expect(wind[wind.length - 1].proton_speed).toBe(500);
+  });
+
   it('aurora endpoint normalizes longitude to -180..180 and filters intensity 0', async () => {
     mockFetch.mockResolvedValue(
       okJson({

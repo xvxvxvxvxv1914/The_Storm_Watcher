@@ -61,7 +61,8 @@ const Dashboard = () => {
       }
 
       if (windData && windData.length > 0) {
-        const active = windData.find(d => d.active) || windData[windData.length - 1];
+        // findLast — data is ascending, we want the newest active sample.
+        const active = windData.findLast(d => d.active) || windData[windData.length - 1];
         setSolarWindSpeed(active.proton_speed || 0);
 
         const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
@@ -78,7 +79,7 @@ const Dashboard = () => {
       }
 
       if (magData && magData.length > 0) {
-        const active = magData.find(d => d.active) || magData[magData.length - 1];
+        const active = magData.findLast(d => d.active) || magData[magData.length - 1];
         setBz(active.bz_gsm || 0);
       } else {
         setBz(0);

@@ -90,10 +90,18 @@ export const getXrayFlux = (): Promise<XrayData[]> =>
     }
   });
 
+// NOAA's rtsw endpoints return points in descending order (newest first), unlike
+// most other feeds. Sorting at the service boundary keeps every consumer simple:
+// data[data.length - 1] is the latest point and lightweight-charts gets the
+// ascending input it requires.
+const ascByTime = <T extends { time_tag: string }>(rows: T[]): T[] =>
+  [...rows].sort((a, b) => new Date(a.time_tag).getTime() - new Date(b.time_tag).getTime());
+
 export const getSolarWind = (): Promise<SolarWindData[]> =>
   cached('wind', TTL_1M, async () => {
     try {
-      return await getJson<SolarWindData[]>(`${NOAA_BASE_URL}/json/rtsw/rtsw_wind_1m.json`);
+      const data = await getJson<SolarWindData[]>(`${NOAA_BASE_URL}/json/rtsw/rtsw_wind_1m.json`);
+      return ascByTime(data ?? []);
     } catch (error) {
       console.error('Error fetching data in getSolarWind:', error);
       return [];
@@ -103,7 +111,8 @@ export const getSolarWind = (): Promise<SolarWindData[]> =>
 export const getMagField = (): Promise<MagFieldData[]> =>
   cached('mag', TTL_1M, async () => {
     try {
-      return await getJson<MagFieldData[]>(`${NOAA_BASE_URL}/json/rtsw/rtsw_mag_1m.json`);
+      const data = await getJson<MagFieldData[]>(`${NOAA_BASE_URL}/json/rtsw/rtsw_mag_1m.json`);
+      return ascByTime(data ?? []);
     } catch (error) {
       console.error('Error fetching data in getMagField:', error);
       return [];

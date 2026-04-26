@@ -216,7 +216,7 @@ const Aurora = () => {
           setBt(latest.bt ?? 0);
         }
         if (windData.length) {
-          const active = windData.find(d => d.active) ?? windData[windData.length - 1];
+          const active = windData.findLast(d => d.active) ?? windData[windData.length - 1];
           setWindSpeed(active.proton_speed ?? 0);
           setWindDensity(active.proton_density ?? 0);
         }
