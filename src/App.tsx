@@ -2,34 +2,18 @@ import { Suspense, lazy, useEffect } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, useNavigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import { useLanguage } from './contexts/LanguageContext';
 import { SettingsProvider } from './contexts/SettingsContext';
 import { useSwipeNavigation } from './hooks/useSwipeNavigation';
+import { AnimatedRoutes } from './components/AnimatedRoutes';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import PlanGuard from './components/PlanGuard';
 import ErrorBoundary from './components/ErrorBoundary';
 import OnboardingTour from './components/OnboardingTour';
-
-const Home = lazy(() => import('./pages/Home'));
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const Forecast = lazy(() => import('./pages/Forecast'));
-const Aurora = lazy(() => import('./pages/Aurora'));
-const Alerts = lazy(() => import('./pages/Alerts'));
-const Mood = lazy(() => import('./pages/Mood'));
-const Auth = lazy(() => import('./pages/Auth'));
-const UV = lazy(() => import('./pages/UV'));
-const SunTimes = lazy(() => import('./pages/SunTimes'));
-const SkyVisibility = lazy(() => import('./pages/SkyVisibility'));
-const ISS = lazy(() => import('./pages/ISS'));
-const AuthReset = lazy(() => import('./pages/AuthReset'));
-const Profile = lazy(() => import('./pages/Profile'));
-const Settings = lazy(() => import('./pages/Settings'));
-// TODO: Remove when Stripe payments are live — pricing page hidden until payment system is ready
-// const Pricing = lazy(() => import('./pages/Pricing'));
 
 const LoadingFallback = () => {
   const { t } = useLanguage();
@@ -70,25 +54,7 @@ function AppRoutes() {
       <main id="main" className="pt-[env(safe-area-inset-top)]">
       <ErrorBoundary>
         <Suspense fallback={<LoadingFallback />}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/auth" element={user && user.email_confirmed_at ? <Navigate to="/dashboard" replace /> : <Auth />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/forecast" element={<Forecast />} />
-            <Route path="/aurora" element={<PlanGuard requiredPlan="pro"><Aurora /></PlanGuard>} />
-            <Route path="/alerts" element={<PlanGuard requiredPlan="pro"><Alerts /></PlanGuard>} />
-            <Route path="/mood" element={<Mood />} />
-            <Route path="/uv" element={<UV />} />
-            <Route path="/sun" element={<SunTimes />} />
-            <Route path="/sky" element={<SkyVisibility />} />
-            <Route path="/iss" element={<ISS />} />
-            <Route path="/auth/reset" element={<AuthReset />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/settings" element={<Settings />} />
-            {/* TODO: Remove when Stripe payments are live */}
-            <Route path="/pricing" element={<Navigate to="/" replace />} />
-            {/* <Route path="/pricing" element={<Pricing />} /> */}
-          </Routes>
+          <AnimatedRoutes />
         </Suspense>
       </ErrorBoundary>
       </main>

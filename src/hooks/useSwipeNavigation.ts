@@ -17,12 +17,9 @@ export function useSwipeNavigation() {
 
   useEffect(() => {
     const handleTouchStart = (e: TouchEvent) => {
-      // Игнорираме "swipe from edge" за системното връщане на iOS 
       if (e.touches[0].clientX < 30) return;
       
       const target = e.target as HTMLElement;
-      // Игнорираме слайда, ако сме върху карта, графика или таб бар
-      // (ако елементът или неговият родител имат class 'no-swipe', или е canvas/input) 
       if (target.closest('.no-swipe') || target.closest('canvas') || target.tagName.toLowerCase() === 'input' || target.closest('.recharts-wrapper') || target.closest('.tv-lightweight-charts')) {
         return;
       }
@@ -39,17 +36,16 @@ export function useSwipeNavigation() {
       const dx = touchEndX - touchStart.current.x;
       const dy = touchEndY - touchStart.current.y;
 
-      // Засичаме категорично плъзгане по хоризонтала (dx > 80), което не е случайно скролване (dy < 60)
       if (Math.abs(dx) > 80 && Math.abs(dy) < 60) {
         const currentIndex = navOrder.indexOf(location.pathname);
         
         if (currentIndex !== -1) {
           if (dx > 0 && currentIndex > 0) {
             // Плъзгане надясно -> предишна страница
-            navigate(navOrder[currentIndex - 1]);
+            navigate(navOrder[currentIndex - 1], { state: { direction: 'left' } });
           } else if (dx < 0 && currentIndex < navOrder.length - 1) {
             // Плъзгане наляво -> следваща страница
-            navigate(navOrder[currentIndex + 1]);
+            navigate(navOrder[currentIndex + 1], { state: { direction: 'right' } });
           }
         }
       }
