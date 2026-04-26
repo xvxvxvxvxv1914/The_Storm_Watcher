@@ -16,7 +16,9 @@ const ISS = () => {
 
   const handleGlobeResize = useCallback((entries: ResizeObserverEntry[]) => {
     for (const entry of entries) {
-      setGlobeWidth(Math.floor(entry.contentRect.width));
+      if (entry.contentRect.width > 0) {
+        setGlobeWidth(Math.floor(entry.contentRect.width));
+      }
     }
   }, []);
 
@@ -146,8 +148,7 @@ const ISS = () => {
             <span className="text-[#64748b] text-xs">{t('iss.updates5s')}</span>
           </div>
 
-          <div ref={globeContainerRef} className="w-full" />
-          <div style={{ minHeight: Math.max(280, Math.round(globeWidth * 0.74)) }} className="w-full flex flex-col items-center justify-center">
+          <div ref={globeContainerRef} style={{ minHeight: Math.max(280, Math.round(globeWidth * 0.74)) }} className="w-full flex flex-col items-center justify-center relative">
           {loadingPos ? (
             <div className="flex justify-center py-16">
               <div className="w-10 h-10 border-4 border-[#f97316]/20 border-t-[#f97316] rounded-full animate-spin" />
