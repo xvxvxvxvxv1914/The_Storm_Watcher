@@ -30,8 +30,12 @@
 	<string>Main</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
-		<string>armv7</string>
+		<string>arm64</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>The Storm Watcher uses your location to show local UV index, sunrise/sunset times, and aurora visibility for where you are.</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

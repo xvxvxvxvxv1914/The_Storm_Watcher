@@ -32,23 +32,31 @@ struct KpProvider: TimelineProvider {
         var wind = 0
 
         group.enter()
+        // planetary_k_index_1m.json is an array of objects sorted ascending —
+        // newest sample is `.last`.
         let kpUrl = URL(string: "https://services.swpc.noaa.gov/json/planetary_k_index_1m.json")!
         URLSession.shared.dataTask(with: kpUrl) { data, _, _ in
             defer { group.leave() }
-            if let data = data,
-               let json = try? JSONSerialization.jsonObject(with: data) as? [[Any]],
-               let last = json.last, let val = last[1] as? Double {
-                kp = val
-            }
+            guard let data = data,
+                  let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]],
+                  let last = json.last else { return }
+            // Field can be reported as either kp_index or estimated_kp depending
+            // on whether the sample is final or provisional.
+            if let v = last["kp_index"] as? Double { kp = v }
+            else if let v = last["estimated_kp"] as? Double { kp = v }
         }.resume()
 
         group.enter()
+        // rtsw_wind_1m.json returns newest-first, so the latest sample is
+        // `.first`, not `.last` — same gotcha as the web client.
         let windUrl = URL(string: "https://services.swpc.noaa.gov/json/rtsw/rtsw_wind_1m.json")!
         URLSession.shared.dataTask(with: windUrl) { data, _, _ in
             defer { group.leave() }
-            if let data = data,
-               let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]],
-               let last = json.last, let speed = last["proton_speed"] as? Double {
+            guard let data = data,
+                  let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else { return }
+            // Prefer the newest active sample; fall back to the newest entry.
+            let active = json.first(where: { ($0["active"] as? Bool) == true }) ?? json.first
+            if let speed = active?["proton_speed"] as? Double {
                 wind = Int(speed)
             }
         }.resume()
