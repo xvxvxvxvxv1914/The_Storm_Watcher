@@ -5,6 +5,8 @@ import {
   AreaSeries,
   LineSeries,
   type IChartApi,
+  type Time,
+  type TickMarkType,
   type UTCTimestamp,
 } from 'lightweight-charts';
 
@@ -68,6 +70,29 @@ export default function TimeSeriesChart({
         borderColor: 'rgba(255,255,255,0.08)',
         timeVisible: true,
         secondsVisible: false,
+        // lightweight-charts renders the axis in UTC by default. Format ticks
+        // in the browser's local timezone so axis labels match the user's
+        // wall clock — date when crossing a day, otherwise time.
+        tickMarkFormatter: (time: Time, tickMarkType: TickMarkType) => {
+          const d = new Date((time as number) * 1000);
+          // tickMarkType >= 3 is Time / TimeWithSeconds.
+          if (tickMarkType >= 3) {
+            return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          }
+          return d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+        },
+      },
+      localization: {
+        // Crosshair label / tooltip — show full local date+time.
+        timeFormatter: (time: Time) => {
+          const d = new Date((time as number) * 1000);
+          return d.toLocaleString([], {
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+          });
+        },
       },
       crosshair: {
         vertLine: { color: color + '80', width: 1 },
