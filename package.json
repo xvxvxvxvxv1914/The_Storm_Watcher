@@ -11,7 +11,10 @@
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
     "test": "vitest",
     "test:run": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "ios:deploy": "bash scripts/ios-deploy.sh",
+    "ios:open": "npm run build && npx cap sync ios && npx cap open ios",
+    "ios:livereload": "npx cap run ios --livereload --external"
   },
   "dependencies": {
     "@capacitor/cli": "^8.3.1",
