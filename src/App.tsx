@@ -63,7 +63,7 @@ function AppRoutes() {
         Skip to main content
       </a>
       <Navigation />
-      <main id="main" className="pt-[calc(3.5rem+env(safe-area-inset-top))] md:pt-[calc(4rem+env(safe-area-inset-top))]">
+      <main id="main" className="pt-[env(safe-area-inset-top)]">
       <ErrorBoundary>
         <Suspense fallback={<LoadingFallback />}>
           <Routes>
