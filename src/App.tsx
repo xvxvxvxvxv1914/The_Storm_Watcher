@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import { useLanguage } from './contexts/LanguageContext';
 import { SettingsProvider } from './contexts/SettingsContext';
+import { useSwipeNavigation } from './hooks/useSwipeNavigation';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import PlanGuard from './components/PlanGuard';
@@ -44,6 +45,9 @@ function AppRoutes() {
   const { user } = useAuth();
   const { theme } = useTheme();
   const navigate = useNavigate();
+
+  // Активиране на слайдването
+  useSwipeNavigation();
 
   // After email confirmation Supabase lands the user back on the site with
   // #access_token=...&type=signup in the hash. Redirect them to /dashboard
