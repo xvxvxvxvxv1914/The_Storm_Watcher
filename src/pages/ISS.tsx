@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import { useEffect, useRef, useState, useCallback, lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { MapPin, Clock, Eye, Satellite } from 'lucide-react';

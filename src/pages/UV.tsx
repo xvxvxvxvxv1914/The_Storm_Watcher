@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import { useEffect, useState, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
