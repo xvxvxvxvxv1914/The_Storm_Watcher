@@ -15,6 +15,7 @@ import Footer from './components/Footer';
 import PlanGuard from './components/PlanGuard';
 import ErrorBoundary from './components/ErrorBoundary';
 import OnboardingTour from './components/OnboardingTour';
+import ScrollToTop from './components/ScrollToTop';
 
 const LoadingFallback = () => {
   const { t } = useLanguage();
@@ -59,6 +60,7 @@ function AppRoutes() {
       </ErrorBoundary>
       </main>
       <Footer />
+      <ScrollToTop />
       <BottomTabBar />
       <OnboardingTour />
     </div>
