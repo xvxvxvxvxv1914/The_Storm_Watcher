@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { Activity, AlertTriangle, Zap, Radio, Calendar, Bot, Globe, Bell, Camera, Trophy, Video, Check, Share2, Copy, Twitter, ImageDown, Users } from 'lucide-react';
+import { Activity, AlertTriangle, Zap, Radio, Calendar, Bot, Globe, Bell, Camera, Trophy, Video, Share2, Copy, Twitter, ImageDown, Users } from 'lucide-react';
 import { track } from '@vercel/analytics';
 import { generateStormScoreImage } from '../utils/generateStormImage';
 import { getKpIndex, getSolarWind, getXrayFlux, getXrayClass, getStormStatus, getKpGradientStyle, getKpHistory3Day } from '../services/noaaApi';
@@ -569,61 +569,61 @@ const Home = () => {
             <div className="w-14 h-14 bg-gradient-to-br from-[#10b981] to-[#059669] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Calendar className="w-7 h-7 text-white" />
             </div>
-            <h3 className="text-lg font-bold text-white mb-2">Aurora Calendar</h3>
-            <p className="text-[#94a3b8] text-sm leading-relaxed">See which upcoming nights have the best aurora visibility based on solar forecasts and your location.</p>
+            <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.calendar.title')}</h3>
+            <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.calendar.desc')}</p>
           </div>
 
           <div className="glass-surface rounded-2xl p-7 hover:glow-purple transition-all group relative opacity-60">
-            <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#7c3aed]/20 text-[#a78bfa] border border-[#7c3aed]/30">Coming Soon</span>
+            <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#7c3aed]/20 text-[#a78bfa] border border-[#7c3aed]/30">{t('home.comingSoon')}</span>
             <div className="w-14 h-14 bg-gradient-to-br from-[#7c3aed] to-[#6d28d9] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Bot className="w-7 h-7 text-white" />
             </div>
-            <h3 className="text-lg font-bold text-white mb-2">AI Assistant</h3>
-            <p className="text-[#94a3b8] text-sm leading-relaxed">Ask anything — what is Kp index, will there be a storm tonight, is it safe to fly. Powered by Claude AI.</p>
+            <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.ai.title')}</h3>
+            <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.ai.desc')}</p>
           </div>
 
           <div className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group">
             <div className="w-14 h-14 bg-gradient-to-br from-[#f97316] to-[#ef4444] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Globe className="w-7 h-7 text-white" />
             </div>
-            <h3 className="text-lg font-bold text-white mb-2">Global Map + Aurora Oval</h3>
-            <p className="text-[#94a3b8] text-sm leading-relaxed">Live map showing the aurora oval in real time. See exactly where the northern lights are visible right now.</p>
+            <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.map.title')}</h3>
+            <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.map.desc')}</p>
           </div>
 
           <div className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group relative opacity-60">
-            <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#fbbf24]/20 text-[#fbbf24] border border-[#fbbf24]/30">Coming Soon</span>
+            <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#fbbf24]/20 text-[#fbbf24] border border-[#fbbf24]/30">{t('home.comingSoon')}</span>
             <div className="w-14 h-14 bg-gradient-to-br from-[#fbbf24] to-[#f97316] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Bell className="w-7 h-7 text-white" />
             </div>
-            <h3 className="text-lg font-bold text-white mb-2">Push Alerts</h3>
-            <p className="text-[#94a3b8] text-sm leading-relaxed">Get notified the moment a geomagnetic storm reaches your chosen threshold — before it peaks.</p>
+            <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.alerts.title')}</h3>
+            <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.alerts.desc')}</p>
           </div>
 
           <div className="glass-surface rounded-2xl p-7 hover:glow-green transition-all group relative opacity-60">
-            <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#06b6d4]/20 text-[#22d3ee] border border-[#06b6d4]/30">Coming Soon</span>
+            <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#06b6d4]/20 text-[#22d3ee] border border-[#06b6d4]/30">{t('home.comingSoon')}</span>
             <div className="w-14 h-14 bg-gradient-to-br from-[#06b6d4] to-[#0891b2] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Camera className="w-7 h-7 text-white" />
             </div>
-            <h3 className="text-lg font-bold text-white mb-2">Community Photo Gallery</h3>
-            <p className="text-[#94a3b8] text-sm leading-relaxed">Users upload aurora photos verified by AI. See what others are capturing around the world.</p>
+            <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.gallery.title')}</h3>
+            <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.gallery.desc')}</p>
           </div>
 
           <div className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group relative opacity-60">
-            <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#f59e0b]/20 text-[#fbbf24] border border-[#f59e0b]/30">Coming Soon</span>
+            <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#f59e0b]/20 text-[#fbbf24] border border-[#f59e0b]/30">{t('home.comingSoon')}</span>
             <div className="w-14 h-14 bg-gradient-to-br from-[#f59e0b] to-[#d97706] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Trophy className="w-7 h-7 text-white" />
             </div>
-            <h3 className="text-lg font-bold text-white mb-2">Aurora Hunt</h3>
-            <p className="text-[#94a3b8] text-sm leading-relaxed">Earn badges and points for spotting and reporting auroras. Leaderboard updated in real time.</p>
+            <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.hunt.title')}</h3>
+            <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.hunt.desc')}</p>
           </div>
 
           <div className="glass-surface rounded-2xl p-7 hover:glow-purple transition-all group relative opacity-60">
-            <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#ec4899]/20 text-[#f472b6] border border-[#ec4899]/30">Coming Soon</span>
+            <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#ec4899]/20 text-[#f472b6] border border-[#ec4899]/30">{t('home.comingSoon')}</span>
             <div className="w-14 h-14 bg-gradient-to-br from-[#ec4899] to-[#be185d] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Video className="w-7 h-7 text-white" />
             </div>
-            <h3 className="text-lg font-bold text-white mb-2">Livestream</h3>
-            <p className="text-[#94a3b8] text-sm leading-relaxed">Watch live aurora cameras from Norway, Iceland and Finland — powered by Cloudflare Stream.</p>
+            <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.livestream.title')}</h3>
+            <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.livestream.desc')}</p>
           </div>
 
         </div>
@@ -655,75 +655,6 @@ const Home = () => {
         </div>
       </div>
 
-      {/* TODO: Remove when Stripe payments are live — set SHOW_PRICING = true to restore */}
-      {(false as boolean) && (
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 uppercase tracking-wide">
-              Simple, transparent pricing
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
-            {/* Free */}
-            <div className="glass-surface rounded-2xl p-8 border border-white/10">
-              <h3 className="text-xl font-bold text-white mb-1">Free</h3>
-              <div className="text-4xl font-bold text-white mb-1">$0<span className="text-lg text-[#94a3b8] font-normal">/month</span></div>
-              <p className="text-[#64748b] text-sm mb-8">Always free, no credit card needed.</p>
-              <ul className="space-y-3 mb-8">
-                {['Real-time Kp index', 'Storm Score index', '3-day forecast', 'Basic geomagnetic alerts', 'Web access only', 'Install as PWA'].map(f => (
-                  <li key={f} className="flex items-center gap-3 text-[#94a3b8] text-sm">
-                    <Check className="w-4 h-4 text-[#10b981] shrink-0" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <Link to="/auth" className="block w-full py-3 text-center rounded-lg border border-white/20 text-white font-semibold hover:border-[#f97316]/50 transition-all">
-                Get Started
-              </Link>
-            </div>
-
-            {/* Pro */}
-            <div className="glass-surface rounded-2xl p-8 border-2 border-[#f97316] relative">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-[#f97316] to-[#fbbf24] rounded-full text-white text-xs font-bold uppercase tracking-wider">
-                Most Popular
-              </div>
-              <h3 className="text-xl font-bold text-white mb-1">Pro</h3>
-              <div className="text-4xl font-bold text-white mb-1">$4.99<span className="text-lg text-[#94a3b8] font-normal">/month</span></div>
-              <p className="text-[#64748b] text-sm mb-8">For serious aurora chasers.</p>
-              <ul className="space-y-3 mb-8">
-                {['Everything in Free', 'Hourly forecasts up to 7 days', 'Push notifications', 'Aurora visibility map', 'Aurora Calendar', 'Community photo gallery', 'Aurora Hunt gamification', 'Feature voting priority'].map(f => (
-                  <li key={f} className="flex items-center gap-3 text-[#94a3b8] text-sm">
-                    <Check className="w-4 h-4 text-[#f97316] shrink-0" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <Link to="/auth" className="block w-full py-3 text-center rounded-lg bg-gradient-to-r from-[#f97316] to-[#fbbf24] text-white font-bold hover:shadow-lg hover:shadow-[#f97316]/40 transition-all">
-                Get Pro
-              </Link>
-            </div>
-
-            {/* Premium */}
-            <div className="glass-surface rounded-2xl p-8 border border-[#7c3aed]/50">
-              <h3 className="text-xl font-bold text-white mb-1">Premium</h3>
-              <div className="text-4xl font-bold text-white mb-1">$9.99<span className="text-lg text-[#94a3b8] font-normal">/month</span></div>
-              <p className="text-[#64748b] text-sm mb-8">The full storm experience.</p>
-              <ul className="space-y-3 mb-8">
-                {['Everything in Pro', 'AI chatbot assistant', 'Livestream access', 'Full Aurora oval map', '30+ day history'].map(f => (
-                  <li key={f} className="flex items-center gap-3 text-[#94a3b8] text-sm">
-                    <Check className="w-4 h-4 text-[#7c3aed] shrink-0" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <Link to="/auth" className="block w-full py-3 text-center rounded-lg bg-gradient-to-r from-[#7c3aed] to-[#6d28d9] text-white font-bold hover:shadow-lg hover:shadow-[#7c3aed]/40 transition-all">
-                Get Premium
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
       {/* FAQ Section */}
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="text-center mb-14">
@@ -745,7 +676,6 @@ const Home = () => {
           ))}
         </div>
       </div>
-
     </div>
   );
 };

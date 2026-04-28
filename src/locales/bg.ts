@@ -95,6 +95,7 @@ const bg: Record<string, string> = {
   'home.stormBanner': 'ГЕОМАГНИТНА БУРЯ — Kp',
   'home.trustedSources': 'Доверени източници на данни',
   'home.trustedSourcesDesc': 'Прогнозите ни са базирани на NOAA Space Weather Prediction Center, NASA DONKI, ESA Space Weather Service и Националния институт по геофизика и геодезия (България).',
+  'home.comingSoon': 'Очаквайте скоро',
   'home.tagline': 'Наблюдаваме слънцето. Пазим Земята.',
 
   // Dashboard

@@ -43,7 +43,6 @@ export const AnimatedRoutes = () => {
         <Route path="/auth/reset" element={<AnimatedPage><AuthReset /></AnimatedPage>} />
         <Route path="/profile" element={<AnimatedPage><Profile /></AnimatedPage>} />
         <Route path="/settings" element={<AnimatedPage><Settings /></AnimatedPage>} />
-        <Route path="/pricing" element={<Navigate to="/" replace />} />
         <Route path="/faq" element={<AnimatedPage><FAQ /></AnimatedPage>} />
         <Route path="*" element={<AnimatedPage><NotFound /></AnimatedPage>} />
       </Routes>

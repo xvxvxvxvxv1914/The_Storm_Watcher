@@ -55,6 +55,7 @@ const ISS = () => {
     if (globeRef.current && position) {
       globeRef.current.pointOfView({ lat: position.latitude, lng: position.longitude, altitude: 2 }, 1000);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: only re-animate when lat/lng change, not on velocity/visibility updates
   }, [position?.latitude, position?.longitude]);
 
   // Pass predictions + reverse geocode — run once on mount only.

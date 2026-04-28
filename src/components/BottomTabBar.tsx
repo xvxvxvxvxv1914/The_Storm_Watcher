@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Home, LayoutDashboard, TrendingUp, Sparkles, MoreHorizontal,
-  X, Bell, Sun, Eye, Satellite, AlertTriangle, SmilePlus,
+  X, Sun, Eye, Satellite, AlertTriangle, SmilePlus,
   User, LogOut, SlidersHorizontal, Globe, ChevronRight,
 } from 'lucide-react';
 import { useLanguage, languages } from '../contexts/LanguageContext';

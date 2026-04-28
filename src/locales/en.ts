@@ -95,6 +95,7 @@ const en: Record<string, string> = {
   'home.feature.livestream.desc': 'Watch live aurora cameras from Norway, Iceland and Finland — powered by Cloudflare Stream.',
   'home.trustedSources': 'Trusted data sources',
   'home.trustedSourcesDesc': 'Our forecasts are powered by NOAA Space Weather Prediction Center, NASA DONKI, ESA Space Weather Service, and the National Institute of Geophysics and Geodesy (Bulgaria).',
+  'home.comingSoon': 'Coming Soon',
   'home.stormBanner': 'GEOMAGNETIC STORM IN PROGRESS — Kp',
   'home.tagline': 'Monitoring the sun. Protecting the Earth.',
 
