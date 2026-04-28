@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { MapPin, Eye, Sparkles, AlertTriangle, Check, Zap } from 'lucide-react';
+import { MapPin, Eye, Sparkles, AlertTriangle, Check, Zap, Share2, Copy } from 'lucide-react';
 import GlobeOrig from 'react-globe.gl';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Globe = GlobeOrig as any;
@@ -22,6 +22,7 @@ const Aurora = () => {
   const [locationError, setLocationError] = useState(false);
   const [isWeatherLoading, setIsWeatherLoading] = useState(false);
   const [isGlobeLoading, setIsGlobeLoading] = useState(true);
+  const [shareCopied, setShareCopied] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const globeRef = useRef<any>(null);
   const globeContainerRef = useRef<HTMLDivElement>(null);
@@ -512,6 +513,29 @@ const Aurora = () => {
             </div>
           </div>
         </div>
+
+        {/* Share Conditions Button */}
+        {localWeather && (
+          <div className="flex justify-center -mt-4 mb-8">
+            <button
+              onClick={() => {
+                const moonText = getMoonPhase() === 0 ? 'Dark' : 'Bright';
+                const verdict = localWeather.cloudCover < 40 && kpValue >= 4 ? '✅ GO!' : '⏳ WAIT';
+                const text = `🌌 Aurora conditions right now:\n⚡ Kp: ${kpValue.toFixed(1)}\n☁️ Clouds: ${localWeather.cloudCover}%\n🌙 Moon: ${moonText}\n📊 Verdict: ${verdict}\n\nCheck yours → thestormwatcher.com/aurora`;
+                navigator.clipboard.writeText(text);
+                setShareCopied(true);
+                setTimeout(() => setShareCopied(false), 2000);
+              }}
+              className="inline-flex items-center gap-2 px-6 py-3 glass-surface rounded-xl text-sm font-bold uppercase tracking-wider text-[#94a3b8] hover:text-white border border-white/10 hover:border-[#10b981]/30 hover:bg-[#10b981]/10 transition-all hover:scale-105"
+            >
+              {shareCopied ? (
+                <><Check className="w-4 h-4 text-[#10b981]" /> <span className="text-[#10b981]">Copied!</span></>
+              ) : (
+                <><Share2 className="w-4 h-4" /> Share conditions</>
+              )}
+            </button>
+          </div>
+        )}
         
         <div className="glass-surface rounded-3xl overflow-hidden border border-white/10 mb-8 flex flex-col items-center w-full">
           <div className="flex items-center justify-between w-full p-4 border-b border-white/5">
