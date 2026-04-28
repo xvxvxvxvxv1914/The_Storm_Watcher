@@ -21,7 +21,6 @@ const Profile = lazy(() => import('../pages/Profile'));
 const Settings = lazy(() => import('../pages/Settings'));
 const NotFound = lazy(() => import('../pages/NotFound'));
 const FAQ = lazy(() => import('../pages/FAQ'));
-const Webcams = lazy(() => import('../pages/Webcams'));
 
 export const AnimatedRoutes = () => {
   const location = useLocation();
@@ -46,7 +45,6 @@ export const AnimatedRoutes = () => {
         <Route path="/settings" element={<AnimatedPage><Settings /></AnimatedPage>} />
         <Route path="/pricing" element={<Navigate to="/" replace />} />
         <Route path="/faq" element={<AnimatedPage><FAQ /></AnimatedPage>} />
-        <Route path="/webcams" element={<AnimatedPage><Webcams /></AnimatedPage>} />
         <Route path="*" element={<AnimatedPage><NotFound /></AnimatedPage>} />
       </Routes>
     </AnimatePresence>
