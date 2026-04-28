@@ -49,6 +49,8 @@
 /* Begin PBXFileReference section */
 		13F58B548E122DDD2ABE5FBA /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = Info.plist; path = StormWidget/Info.plist; sourceTree = "<group>"; };
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
+		AABB11223344556677889901 /* App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = App.entitlements; sourceTree = "<group>"; };
+		AABB11223344556677889902 /* StormWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = StormWidget.entitlements; path = StormWidget/StormWidget.entitlements; sourceTree = "<group>"; };
 		4A6074084139212F00B8465A /* StormWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = StormWidget.swift; path = StormWidget/StormWidget.swift; sourceTree = "<group>"; };
 		4D8D90DF087D7DD743D2E2AE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		50379B222058CBB4000EE86E /* capacitor.config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = capacitor.config.json; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 				504EC3131FED79650016851F /* Info.plist */,
 				2FAD9762203C412B000D30F8 /* config.xml */,
 				50B271D01FEDC1A000F3C39B /* public */,
+				AABB11223344556677889901 /* App.entitlements */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -135,6 +138,7 @@
 			children = (
 				4A6074084139212F00B8465A /* StormWidget.swift */,
 				13F58B548E122DDD2ABE5FBA /* Info.plist */,
+				AABB11223344556677889902 /* StormWidget.entitlements */,
 			);
 			name = StormWidget;
 			sourceTree = "<group>";
@@ -205,6 +209,19 @@
 						CreatedOnToolsVersion = 9.2;
 						LastSwiftMigration = 1100;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
+					};
+					85E6822B050A57D72A7F2483 = {
+						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};

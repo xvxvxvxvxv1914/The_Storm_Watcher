@@ -1,49 +1,79 @@
 import UIKit
 import Capacitor
+import WidgetKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    private let appGroupID = "group.com.stormwatcher.app"
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
         return true
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
-        // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-        // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
-        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
-        // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
-        // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        refreshWidgetData()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
-        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-        // Called when the app was launched with a url. Feel free to add additional processing here,
-        // but if you want the App API to support tracking app url opens, make sure to keep this call
         return ApplicationDelegateProxy.shared.application(app, open: url, options: options)
     }
 
     func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-        // Called when the app was launched with an activity, including Universal Links.
-        // Feel free to add additional processing here, but if you want the App API to support
-        // tracking app url opens, make sure to keep this call
         return ApplicationDelegateProxy.shared.application(application, continue: userActivity, restorationHandler: restorationHandler)
     }
 
+    // Fetch fresh Kp + wind from NOAA, write to App Group UserDefaults, then
+    // reload the widget timeline so it shows updated data without waiting for
+    // its own background refresh budget.
+    private func refreshWidgetData() {
+        let group = DispatchGroup()
+        var kp = -1.0
+        var wind = -1
+
+        group.enter()
+        let kpUrl = URL(string: "https://services.swpc.noaa.gov/json/planetary_k_index_1m.json")!
+        URLSession.shared.dataTask(with: kpUrl) { data, _, _ in
+            defer { group.leave() }
+            guard let data,
+                  let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]],
+                  let last = json.last else { return }
+            if let v = last["kp_index"] as? Double { kp = v }
+            else if let v = last["estimated_kp"] as? Double { kp = v }
+        }.resume()
+
+        group.enter()
+        let windUrl = URL(string: "https://services.swpc.noaa.gov/json/rtsw/rtsw_wind_1m.json")!
+        URLSession.shared.dataTask(with: windUrl) { data, _, _ in
+            defer { group.leave() }
+            guard let data,
+                  let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else { return }
+            let active = json.first(where: { ($0["active"] as? Bool) == true }) ?? json.first
+            if let speed = active?["proton_speed"] as? Double { wind = Int(speed) }
+        }.resume()
+
+        group.notify(queue: .main) { [weak self] in
+            guard let self else { return }
+            if kp >= 0, wind >= 0,
+               let defaults = UserDefaults(suiteName: self.appGroupID) {
+                defaults.set(kp, forKey: "widget_kp")
+                defaults.set(wind, forKey: "widget_wind")
+                defaults.set(Date().timeIntervalSince1970, forKey: "widget_updated")
+            }
+            WidgetCenter.shared.reloadTimelines(ofKind: "StormWidget")
+        }
+    }
 }

@@ -1,6 +1,11 @@
 import WidgetKit
 import SwiftUI
 
+private let appGroupID = "group.com.stormwatcher.app"
+// Shared data is considered fresh for 5 minutes; beyond that the widget fetches
+// its own data so it stays accurate even when the main app is not running.
+private let sharedDataMaxAge: TimeInterval = 300
+
 struct KpEntry: TimelineEntry {
     let date: Date
     let kp: Double
@@ -27,6 +32,22 @@ struct KpProvider: TimelineProvider {
     }
 
     private func fetchAll(completion: @escaping (KpEntry) -> Void) {
+        // Use data written by the main app if it is fresh enough — avoids a
+        // network round-trip and makes the widget feel instant after the app
+        // is opened.
+        if let defaults = UserDefaults(suiteName: appGroupID) {
+            let updated = defaults.double(forKey: "widget_updated")
+            let cachedKp = defaults.double(forKey: "widget_kp")
+            let cachedWind = defaults.integer(forKey: "widget_wind")
+            if updated > 0,
+               Date().timeIntervalSince1970 - updated < sharedDataMaxAge,
+               cachedKp > 0 {
+                completion(makeEntry(kp: cachedKp, wind: cachedWind))
+                return
+            }
+        }
+
+        // Fallback: fetch directly from NOAA (background refresh, app not running).
         let group = DispatchGroup()
         var kp = 0.0
         var wind = 0
@@ -37,7 +58,7 @@ struct KpProvider: TimelineProvider {
         let kpUrl = URL(string: "https://services.swpc.noaa.gov/json/planetary_k_index_1m.json")!
         URLSession.shared.dataTask(with: kpUrl) { data, _, _ in
             defer { group.leave() }
-            guard let data = data,
+            guard let data,
                   let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]],
                   let last = json.last else { return }
             // Field can be reported as either kp_index or estimated_kp depending
@@ -52,7 +73,7 @@ struct KpProvider: TimelineProvider {
         let windUrl = URL(string: "https://services.swpc.noaa.gov/json/rtsw/rtsw_wind_1m.json")!
         URLSession.shared.dataTask(with: windUrl) { data, _, _ in
             defer { group.leave() }
-            guard let data = data,
+            guard let data,
                   let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else { return }
             // Prefer the newest active sample; fall back to the newest entry.
             let active = json.first(where: { ($0["active"] as? Bool) == true }) ?? json.first
