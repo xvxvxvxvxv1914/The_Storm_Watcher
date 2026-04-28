@@ -3,22 +3,22 @@ import { Video, MapPin, PlaySquare, ExternalLink, Play } from 'lucide-react';
 
 const archives = [
   {
-    id: 'PBnFEo6Bik8',
+    id: 'T75IKSXVXlc',
     title: 'Lights Over Lapland (Archive)',
     location: 'Abisko, Sweden',
   },
   {
-    id: 'fvsONIgCEeo',
+    id: 'miqbNFmbN2Q',
     title: 'Explore.org Northern Lights',
     location: 'Churchill, Manitoba',
   },
   {
-    id: 'WlHq-O2i47E',
+    id: 'jkNm2Vc2Luo',
     title: 'Alaskan Aurora 4K',
     location: 'Fairbanks, Alaska',
   },
   {
-    id: 'YjzOSLhE4xM',
+    id: 'qSINjT2U9xs',
     title: 'Icelandic Aurora Borealis',
     location: 'Reykjavík, Iceland',
   }
@@ -71,13 +71,13 @@ const Webcams = () => {
             </div>
           </div>
           <a
-            href="https://www.youtube.com/watch?v=PBnFEo6Bik8"
+            href="https://www.youtube.com/watch?v=fO9e9jnhYK8"
             target="_blank"
             rel="noopener noreferrer"
             className="relative block w-full pb-[56.25%] bg-[#05050a] group overflow-hidden"
           >
             <img
-              src="https://img.youtube.com/vi/PBnFEo6Bik8/maxresdefault.jpg"
+              src="https://img.youtube.com/vi/fO9e9jnhYK8/maxresdefault.jpg"
               alt="ISS Aurora 4K"
               className="absolute top-0 left-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105"
             />
