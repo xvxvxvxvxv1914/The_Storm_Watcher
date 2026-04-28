@@ -30,14 +30,19 @@ export default defineConfig(({ command }) => ({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          'globe': ['react-globe.gl'],
-          'lw-charts': ['lightweight-charts'],
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'supabase': ['@supabase/supabase-js'],
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('three')) return 'three-vendor';
+            if (id.includes('react-globe.gl') || id.includes('three-globe') || id.includes('data-joint')) return 'globe-vendor';
+            if (id.includes('@supabase')) return 'supabase-vendor';
+            if (id.includes('lightweight-charts')) return 'charts-vendor';
+            if (id.includes('lucide-react')) return 'icons-vendor';
+            return 'vendor';
+          }
         },
       },
     },
+    chunkSizeWarningLimit: 1000,
   },
   server: {
     proxy: {
