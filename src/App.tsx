@@ -10,6 +10,7 @@ import { SettingsProvider } from './contexts/SettingsContext';
 import { useSwipeNavigation } from './hooks/useSwipeNavigation';
 import { AnimatedRoutes } from './components/AnimatedRoutes';
 import Navigation from './components/Navigation';
+import BottomTabBar from './components/BottomTabBar';
 import Footer from './components/Footer';
 import PlanGuard from './components/PlanGuard';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -29,7 +30,6 @@ function AppRoutes() {
   const { user } = useAuth();
   const { theme } = useTheme();
   const navigate = useNavigate();
-
   // Активиране на слайдването
   useSwipeNavigation();
 
@@ -51,7 +51,7 @@ function AppRoutes() {
         Skip to main content
       </a>
       <Navigation />
-      <main id="main" className="pt-[env(safe-area-inset-top)]">
+      <main id="main" className="pt-[env(safe-area-inset-top)] pb-20 lg:pb-0">
       <ErrorBoundary>
         <Suspense fallback={<LoadingFallback />}>
           <AnimatedRoutes />
@@ -59,6 +59,7 @@ function AppRoutes() {
       </ErrorBoundary>
       </main>
       <Footer />
+      <BottomTabBar />
       <OnboardingTour />
     </div>
   );
