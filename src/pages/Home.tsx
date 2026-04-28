@@ -27,6 +27,8 @@ const Home = () => {
   const [shareOpen, setShareOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [pulseData, setPulseData] = useState<{ mood: string; symptom: string; count: number } | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [timeAgo, setTimeAgo] = useState('');
   const shareRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -106,6 +108,7 @@ const Home = () => {
           fetchPulse(),
         ]);
         setLoading(false);
+        setLastUpdated(new Date());
       } catch (error) {
         console.error('Error fetching data:', error);
         setKpValue(0);
@@ -117,6 +120,19 @@ const Home = () => {
     const interval = setInterval(fetchAll, 60000);
     return () => clearInterval(interval);
   }, []);
+
+  // Update "time ago" every 10 seconds
+  useEffect(() => {
+    const tick = () => {
+      if (!lastUpdated) return;
+      const seconds = Math.round((Date.now() - lastUpdated.getTime()) / 1000);
+      if (seconds < 60) setTimeAgo(`${seconds}s ago`);
+      else setTimeAgo(`${Math.floor(seconds / 60)}m ago`);
+    };
+    tick();
+    const timer = setInterval(tick, 10000);
+    return () => clearInterval(timer);
+  }, [lastUpdated]);
 
 
   const stormStatus = kpValue !== null ? getStormStatus(kpValue) : null;
@@ -276,7 +292,14 @@ const Home = () => {
               </div>
             ) : (
               <div className="my-8">
-                <div className="text-xs text-[#64748b] uppercase tracking-widest mb-2 font-semibold">Live · Kp Index</div>
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10b981] opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#10b981]"></span>
+                  </span>
+                  <span className="text-xs text-[#64748b] uppercase tracking-widest font-semibold">Live · Kp Index</span>
+                  {timeAgo && <span className="text-xs text-[#475569]">· {timeAgo}</span>}
+                </div>
                 <div className={`inline-block ${isStorm ? 'pulse-alert' : ''}`}>
                   <div
                     className="text-8xl sm:text-[160px] font-bold leading-none"
