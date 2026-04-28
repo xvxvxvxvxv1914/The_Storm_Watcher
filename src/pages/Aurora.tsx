@@ -188,8 +188,30 @@ const Aurora = () => {
 
         // Aurora overlay — multiple layers at different altitudes (curtain effect)
         scene.children
-          .filter((c: THREE.Object3D) => c.userData?.isAurora)
+          .filter((c: THREE.Object3D) => c.userData?.isAurora || c.userData?.isClouds)
           .forEach((c: THREE.Object3D) => scene.remove(c));
+
+        // Add Clouds Layer
+        new THREE.TextureLoader().load('//unpkg.com/three-globe/example/img/earth-clouds.png', (texture) => {
+          const cloudGeo = new THREE.SphereGeometry(101.2, 64, 32);
+          const cloudMat = new THREE.MeshStandardMaterial({
+            map: texture,
+            transparent: true,
+            opacity: 0.35,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending,
+            side: THREE.DoubleSide
+          });
+          const cloudMesh = new THREE.Mesh(cloudGeo, cloudMat);
+          cloudMesh.userData = { isClouds: true };
+          // Slow rotation for clouds
+          const animateClouds = () => {
+            cloudMesh.rotation.y += 0.0002;
+            requestAnimationFrame(animateClouds);
+          };
+          animateClouds();
+          scene.add(cloudMesh);
+        });
 
         if (auroraTexture) {
           const layers = [
