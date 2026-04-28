@@ -105,6 +105,7 @@ const bg: Record<string, string> = {
   'dashboard.geomagneticActivity': 'Геомагнитна активност',
   'dashboard.solarFlares': 'Слънчеви изригвания',
   'dashboard.noData': 'Няма налични данни',
+  'dashboard.localMagnetometer': 'Локален магнитометър (Панагюрище)',
   'dashboard.speed': 'Скорост',
   'dashboard.density': 'Плътност',
   'dashboard.temperature': 'Температура',

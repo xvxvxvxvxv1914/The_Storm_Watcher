@@ -106,6 +106,7 @@ const en: Record<string, string> = {
   'dashboard.geomagneticActivity': 'Geomagnetic Activity',
   'dashboard.solarFlares': 'Solar Flares',
   'dashboard.noData': 'No data available',
+  'dashboard.localMagnetometer': 'Local Magnetometer (Bulgaria)',
   'dashboard.speed': 'Speed',
   'dashboard.density': 'Density',
   'dashboard.temperature': 'Temperature',

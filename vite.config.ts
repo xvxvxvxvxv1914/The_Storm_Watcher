@@ -49,6 +49,11 @@ export default defineConfig(({ command }) => ({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/donki/, '/DONKI/WS/get'),
       },
+      '/api/niggg': {
+        target: 'https://pagmag.ngic.bg',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/niggg/, ''),
+      },
     },
   },
 }));

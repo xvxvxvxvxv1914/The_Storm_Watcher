@@ -2,8 +2,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
 import SvgBarChart from '../components/charts/SvgBarChart';
-import { Activity, Wind, Compass, Sun, Radio } from 'lucide-react';
+import { Activity, Wind, Compass, Sun, Radio, MapPin } from 'lucide-react';
 import { getKpIndex, getSolarWind, getMagField, getXrayFlux, getKpHistory3Day, getStormStatus, getXrayClass, getKpGradientStyle } from '../services/noaaApi';
+import { fetchNigggData, type NigggDataPoint } from '../services/nigggApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import StarField from '../components/StarField';
 import { SkeletonCard, SkeletonChart, Skeleton } from '../components/Skeleton';
@@ -27,6 +28,7 @@ const Dashboard = () => {
   const [xrayFlux, setXrayFlux] = useState<number>(0);
   const [kpChartData, setKpChartData] = useState<TsPoint[]>([]);
   const [windChartData, setWindChartData] = useState<TsPoint[]>([]);
+  const [nigggData, setNigggData] = useState<NigggDataPoint[]>([]);
   const [kpHistoryRaw, setKpHistoryRaw] = useState<{ time_tag: string; Kp: number }[]>([]);
   const [timeRange, setTimeRange] = useState<'24h' | '48h' | '72h'>('24h');
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
@@ -35,12 +37,13 @@ const Dashboard = () => {
 
   const fetchData = async () => {
     try {
-      const [kpData, windData, magData, xrayData, kp3dayData] = await Promise.all([
+      const [kpData, windData, magData, xrayData, kp3dayData, nigggResult] = await Promise.all([
         getKpIndex(),
         getSolarWind(),
         getMagField(),
         getXrayFlux(),
         getKpHistory3Day(),
+        fetchNigggData(),
       ]);
 
       if (kpData && kpData.length > 0) {
@@ -92,6 +95,12 @@ const Dashboard = () => {
         setXrayFlux(0);
       }
 
+      if (nigggResult && nigggResult.hComponent.length > 0) {
+        setNigggData(nigggResult.hComponent);
+      } else {
+        setNigggData([]);
+      }
+
       setLastUpdated(new Date());
       setLoading(false);
     } catch (error) {
@@ -102,6 +111,7 @@ const Dashboard = () => {
       setXrayFlux(0);
       setKpChartData([]);
       setWindChartData([]);
+      setNigggData([]);
       setLoading(false);
     }
   };
@@ -329,6 +339,30 @@ const Dashboard = () => {
                 { value: 400, color: '#f97316', label: '400 km/s' },
                 { value: 600, color: '#ef4444', label: '600 km/s' },
               ]}
+            />
+          ) : (
+            <div className="h-[300px] flex items-center justify-center text-[#94a3b8]">
+              {t('dashboard.noData')}
+            </div>
+          )}
+        </div>
+
+        <div className="glass-surface rounded-2xl p-8 mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <h3 className="text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
+              <MapPin className="w-6 h-6 text-[#10b981]" />
+              {t('dashboard.localMagnetometer') || 'Local Magnetometer (Bulgaria)'}
+            </h3>
+            <span className="text-xs font-bold uppercase tracking-wider text-[#94a3b8] px-3 py-1 bg-white/5 rounded-full border border-white/10">
+              Source: NIGGG
+            </span>
+          </div>
+          {nigggData.length > 0 ? (
+            <TimeSeriesChart
+              data={nigggData as TsPoint[]}
+              color="#10b981"
+              type="line"
+              height={300}
             />
           ) : (
             <div className="h-[300px] flex items-center justify-center text-[#94a3b8]">

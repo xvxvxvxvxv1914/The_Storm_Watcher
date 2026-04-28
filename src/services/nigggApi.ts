@@ -1,0 +1,100 @@
+export interface NigggDataPoint {
+  time: number;
+  value: number;
+}
+
+export interface NigggDataSet {
+  hComponent: NigggDataPoint[];
+  fComponent: NigggDataPoint[];
+}
+
+export const fetchNigggData = async (): Promise<NigggDataSet> => {
+  try {
+    // We want the last 24-48 hours. Let's fetch yesterday and today.
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    // Format DD-MM-YYYY or YYYY-MM-DD. The PHP script accepts both, but YYYY-MM-DD is safer.
+    const d1 = yesterday.toISOString().split('T')[0];
+    const d2 = today.toISOString().split('T')[0];
+
+    const formData = new URLSearchParams();
+    formData.append('chdate1', d1);
+    formData.append('chdate2', d2);
+
+    // During dev, use Vite proxy. In production, we might need a real proxy if CORS blocks it.
+    // For now, we point to the proxy endpoint.
+    const baseUrl = import.meta.env.DEV ? '/api/niggg/pagcal2.php' : 'https://pagmag.ngic.bg/pagcal2.php';
+
+    const res = await fetch(baseUrl, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch NIGGG data: ${res.status}`);
+    }
+
+    const text = await res.text();
+    if (!text.trim()) {
+       return { hComponent: [], fComponent: [] };
+    }
+
+    const json = JSON.parse(text);
+    
+    // Custom JSON array structure from NIGGG:
+    // json[0] = number of days
+    // json[1] = H component array
+    // json[4] = F component array
+    // json[5] = Array of date strings e.g. ["27-04-2026", "28-04-2026"]
+
+    const daysCount = json[0] || 0;
+    const hData = json[1] || [];
+    const fData = json[4] || [];
+    const dateStrings = json[5] || [];
+
+    const hComponent: NigggDataPoint[] = [];
+    const fComponent: NigggDataPoint[] = [];
+
+    // The data arrays have exactly 1440 points (minutes) per day.
+    let globalIndex = 0;
+
+    for (let dayIdx = 0; dayIdx < daysCount; dayIdx++) {
+      // Parse the date string "DD-MM-YYYY"
+      const dateStr = dateStrings[dayIdx];
+      if (!dateStr) continue;
+
+      const [dd, mm, yyyy] = dateStr.split('-');
+      // Create date object at UTC midnight for this date
+      const baseDate = new Date(Date.UTC(parseInt(yyyy), parseInt(mm) - 1, parseInt(dd)));
+      const baseTimestamp = Math.floor(baseDate.getTime() / 1000);
+
+      for (let min = 0; min < 1440; min++) {
+        const hVal = hData[globalIndex];
+        const fVal = fData[globalIndex];
+        
+        const timestamp = baseTimestamp + (min * 60);
+
+        // Filter out missing/invalid values (> 1e300)
+        if (hVal !== null && hVal !== undefined && hVal < 1e100) {
+          hComponent.push({ time: timestamp, value: Number(hVal.toFixed(2)) });
+        }
+        
+        if (fVal !== null && fVal !== undefined && fVal < 1e100) {
+          fComponent.push({ time: timestamp, value: Number(fVal.toFixed(2)) });
+        }
+
+        globalIndex++;
+      }
+    }
+
+    return { hComponent, fComponent };
+  } catch (error) {
+    console.error('Error fetching NIGGG data:', error);
+    return { hComponent: [], fComponent: [] };
+  }
+};
