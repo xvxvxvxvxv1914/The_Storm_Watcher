@@ -191,27 +191,36 @@ const Aurora = () => {
           .filter((c: THREE.Object3D) => c.userData?.isAurora || c.userData?.isClouds)
           .forEach((c: THREE.Object3D) => scene.remove(c));
 
-        // Add Clouds Layer
-        new THREE.TextureLoader().load('//unpkg.com/three-globe/example/img/earth-clouds.png', (texture) => {
-          const cloudGeo = new THREE.SphereGeometry(101.2, 64, 32);
-          const cloudMat = new THREE.MeshStandardMaterial({
-            map: texture,
-            transparent: true,
-            opacity: 0.35,
-            depthWrite: false,
-            blending: THREE.AdditiveBlending,
-            side: THREE.DoubleSide
-          });
-          const cloudMesh = new THREE.Mesh(cloudGeo, cloudMat);
-          cloudMesh.userData = { isClouds: true };
-          // Slow rotation for clouds
-          const animateClouds = () => {
-            cloudMesh.rotation.y += 0.0002;
-            requestAnimationFrame(animateClouds);
-          };
-          animateClouds();
-          scene.add(cloudMesh);
-        });
+        // Add Clouds Layer with error handling
+        const cloudLoader = new THREE.TextureLoader();
+        cloudLoader.load(
+          '//unpkg.com/three-globe/example/img/earth-clouds.png',
+          (texture) => {
+            const cloudGeo = new THREE.SphereGeometry(101.2, 64, 32);
+            const cloudMat = new THREE.MeshStandardMaterial({
+              map: texture,
+              transparent: true,
+              opacity: 0.3,
+              depthWrite: false,
+              blending: THREE.AdditiveBlending,
+              side: THREE.FrontSide
+            });
+            const cloudMesh = new THREE.Mesh(cloudGeo, cloudMat);
+            cloudMesh.userData = { isClouds: true };
+            
+            // Animation logic
+            const rotateClouds = () => {
+              if (cloudMesh.parent) { // Only rotate if still in scene
+                cloudMesh.rotation.y += 0.0002;
+                requestAnimationFrame(rotateClouds);
+              }
+            };
+            rotateClouds();
+            scene.add(cloudMesh);
+          },
+          undefined,
+          (err) => console.error('Cloud texture failed to load', err)
+        );
 
         if (auroraTexture) {
           const layers = [
