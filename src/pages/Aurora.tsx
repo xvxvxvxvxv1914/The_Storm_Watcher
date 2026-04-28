@@ -1,12 +1,13 @@
-import { useEffect, useMemo, useState, useRef, useCallback, lazy, Suspense } from 'react';
+import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { MapPin, Eye, Sparkles, AlertTriangle, Check, Zap } from 'lucide-react';
+import GlobeOrig from 'react-globe.gl';
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const Globe = GlobeOrig as any;
 import * as THREE from 'three';
 import { getKpIndex, getKpGradientStyle, getAuroraModel, getMagField, getSolarWind, getWeatherData, type AuroraOvationPoint, type WeatherData } from '../services/noaaApi';
+import { calcAuroraVisibility } from '../utils/auroraVisibility';
 import { useLanguage } from '../contexts/LanguageContext';
-
-// Lazy load the Globe to improve performance
-const Globe = lazy(() => import('react-globe.gl'));
 
 const Aurora = () => {
   const { t } = useLanguage();
@@ -527,21 +528,15 @@ const Aurora = () => {
                 <div className="text-[#10b981] font-bold tracking-widest text-sm uppercase animate-pulse">{t('aurora.loadingModel')}</div>
               </div>
             ) : (
-              <Suspense fallback={
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <div className="w-12 h-12 border-4 border-[#10b981]/20 border-t-[#10b981] rounded-full animate-spin mb-4" />
-                </div>
-              }>
-                <Globe
-                  ref={globeRef}
-                  width={globeWidth}
-                  height={Math.max(320, Math.round(globeWidth * 0.75))}
-                  backgroundColor="rgba(0,0,0,0)"
-                  globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
-                  atmosphereColor="rgba(0,180,60,0.15)"
-                  atmosphereAltitude={0.15}
-                />
-              </Suspense>
+              <Globe
+                ref={globeRef}
+                width={globeWidth}
+                height={Math.max(320, Math.round(globeWidth * 0.75))}
+                backgroundColor="rgba(0,0,0,0)"
+                globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
+                atmosphereColor="rgba(0,180,60,0.15)"
+                atmosphereAltitude={0.15}
+              />
             )}
           </div>
           
