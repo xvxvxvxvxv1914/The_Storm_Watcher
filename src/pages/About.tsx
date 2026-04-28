@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Shield, Database, Users, AlertCircle, Heart, Code } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -23,6 +24,10 @@ const About = () => {
 
   return (
     <div className="min-h-screen pt-28 md:pt-24 pb-16 relative">
+      <Helmet>
+        <title>{t('about.title')} | The Storm Watcher</title>
+        <meta name="description" content={t('about.subtitle')} />
+      </Helmet>
       <div className="star-field">
         {stars.map((s) => (
           <div

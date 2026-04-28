@@ -105,8 +105,76 @@ const Home = () => {
   return (
     <div className="min-h-screen relative">
       <Helmet>
-        <title>The Storm Watcher — Real-Time Space Weather</title>
-        <meta name="description" content="Live Kp index, solar wind speed, X-ray flux and geomagnetic storm alerts. Monitor space weather in real time." />
+        <title>
+          {kpValue !== null && kpValue >= 5
+            ? `⚠️ ALERT: ${t(stormStatus?.statusKey || 'storm.g1')} Active! | Kp: ${kpValue.toFixed(1)} | The Storm Watcher`
+            : `${kpValue !== null ? `Current Kp: ${kpValue.toFixed(1)} (${t(stormStatus?.statusKey || 'storm.quiet')})` : 'Real-Time Space Weather'} | The Storm Watcher`}
+        </title>
+        <meta 
+          name="description" 
+          content={kpValue !== null 
+            ? `Live Kp index: ${kpValue.toFixed(1)} (${t(stormStatus?.statusKey || 'storm.quiet')}). Solar wind: ${windSpeed?.toFixed(0) || '---'} km/s. Monitor geomagnetic storms and aurora forecasts in real time.`
+            : "Real-time space weather monitoring — Kp index, solar wind, aurora forecast and geomagnetic storm alerts."
+          } 
+        />
+        <meta property="og:title" content={kpValue !== null && kpValue >= 5 ? `⚠️ ALERT: Geomagnetic Storm Kp ${kpValue.toFixed(1)}` : "The Storm Watcher — Live Space Weather"} />
+        <meta property="og:description" content={kpValue !== null ? `Current Kp index is ${kpValue.toFixed(1)}. Track the solar storm live!` : "Real-time space weather monitoring and aurora forecasts."} />
+        <meta name="twitter:title" content={kpValue !== null && kpValue >= 5 ? `⚠️ ALERT: Solar Storm Kp ${kpValue.toFixed(1)}` : "The Storm Watcher"} />
+        <script type="application/ld+json">
+          {JSON.stringify([
+            {
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              "name": "The Storm Watcher",
+              "operatingSystem": "Web",
+              "applicationCategory": "ScientificApplication",
+              "description": "Real-time space weather monitoring and aurora forecasts.",
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+              }
+            },
+            {
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              "mainEntity": [
+                {
+                  "@type": "Question",
+                  "name": t('home.faq.q1'),
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": t('home.faq.a1')
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": t('home.faq.q2'),
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": t('home.faq.a2')
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": t('home.faq.q3'),
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": t('home.faq.a3')
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": t('home.faq.q4'),
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": t('home.faq.a4')
+                  }
+                }
+              ]
+            }
+          ])}
+        </script>
       </Helmet>
       <StarField />
 
@@ -549,7 +617,27 @@ const Home = () => {
             </div>
           </div>
         </div>
-      )}
+      {/* FAQ Section */}
+      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div className="text-center mb-14">
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 uppercase tracking-wide">
+            {t('home.faq.title')}
+          </h2>
+        </div>
+        <div className="space-y-6">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="glass-surface rounded-2xl p-8 border border-white/5">
+              <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-3">
+                <span className="w-8 h-8 rounded-lg bg-[#f97316]/20 flex items-center justify-center text-[#f97316] text-sm font-bold">?</span>
+                {t(`home.faq.q${i}`)}
+              </h3>
+              <p className="text-[#94a3b8] leading-relaxed">
+                {t(`home.faq.a${i}`)}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
 
     </div>
   );

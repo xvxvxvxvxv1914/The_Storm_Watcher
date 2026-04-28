@@ -455,6 +455,39 @@ const en: Record<string, string> = {
   'settings.help': 'Help & Tour',
   'settings.tourDesc': 'Replay the introductory tour that explains the dashboard, push alerts and where to find your settings.',
   'settings.restartTour': 'Restart onboarding tour',
+
+  // About Page
+  'about.title': 'About The Storm Watcher',
+  'about.subtitle': 'Your personal radar for space weather and the northern lights.',
+  'about.whatTitle': 'What is this project?',
+  'about.whatText': 'The Storm Watcher is a platform created for astronomy enthusiasts, aurora photographers, and people sensitive to magnetic storms. Our mission is to turn complex scientific data into understandable and useful information.',
+  'about.dataTitle': 'Where does the data come from?',
+  'about.dataText': 'We don\'t guess. We use direct API connections to the world\'s largest scientific institutes. Data is updated every 60 seconds.',
+  'about.dataSources': 'Our sources:',
+  'about.dataSource1': 'NOAA Space Weather Prediction Center (USA)',
+  'about.dataSource2': 'NASA DONKI (Space Weather Database)',
+  'about.dataSource3': 'ESA Space Weather Service Network',
+  'about.dataSource4': 'National Institute of Geophysics, Geodesy and Geography (Bulgaria)',
+  'about.dataSource5': 'Open-Meteo & Aurora Ovation Model',
+  'about.whoTitle': 'Who is it for?',
+  'about.whoText': 'For aurora hunters who don\'t want to miss the moment. For pilots and radio amateurs. For people who want to know why they have a headache during a magnetic storm.',
+  'about.freeTitle': 'Free forever',
+  'about.freeText': 'Basic storm monitoring features will remain free for everyone.',
+  'about.builtWith': 'Technologies',
+  'about.builtWithText': 'Built with React, Vite, Tailwind CSS, and Supabase for maximum speed.',
+  'about.disclaimerTitle': 'Important Disclaimer',
+  'about.disclaimerText': 'Data is for informational purposes. While we use the most accurate sources, space weather is difficult to predict.',
+
+  // FAQ Section
+  'home.faq.title': 'Frequently Asked Questions',
+  'home.faq.q1': 'What is the Kp index?',
+  'home.faq.a1': 'The Kp index is a scale from 0 to 9 used to measure geomagnetic activity. A higher index indicates a stronger magnetic storm and a higher likelihood of seeing the aurora at lower latitudes.',
+  'home.faq.q2': 'When can I see the Northern Lights?',
+  'home.faq.a2': 'A Kp index of at least 5 is typically needed for visible aurora. In Central Europe, Kp 7-8 is usually required, along with clear skies and minimal light pollution.',
+  'home.faq.q3': 'Are geomagnetic storms dangerous to humans?',
+  'home.faq.a3': 'Geomagnetic storms primarily affect technological systems like satellites and power grids. While some people report headaches or fatigue, there is no definitive medical evidence of direct health risks to humans on the ground.',
+  'home.faq.q4': 'How accurate are solar storm forecasts?',
+  'home.faq.a4': 'Space weather forecasts are highly accurate for short-term predictions (1-2 hours) using satellite data. Long-term forecasts are probabilistic and can change as solar conditions evolve.',
 };
 
 export default en;
