@@ -58,27 +58,26 @@ const Webcams = () => {
         </p>
       </div>
 
-      {/* Featured ISS Live Stream */}
+      {/* Featured ISS Archive Stream */}
       <div className="mb-16">
         <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-          <Radio className="w-6 h-6 text-red-500 animate-pulse" />
-          Featured: NASA ISS Live Stream
+          <PlaySquare className="w-6 h-6 text-red-500" />
+          Featured: Earth from Space (4K Archive)
         </h2>
         <div className="glass-surface rounded-3xl overflow-hidden border border-red-500/30 shadow-2xl shadow-red-500/10">
           <div className="p-4 sm:p-6 border-b border-white/5 bg-white/5 flex items-center justify-between">
             <div>
-              <h3 className="text-xl font-bold text-white">Earth from Space</h3>
-              <p className="text-sm text-[#94a3b8] mt-1">Watch for auroras when the station crosses the night side of Earth.</p>
+              <h3 className="text-xl font-bold text-white">ISS Aurora Time-Lapse</h3>
+              <p className="text-sm text-[#94a3b8] mt-1">Stunning 4K footage of the Northern Lights captured from the International Space Station.</p>
             </div>
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-red-500/10 border border-red-500/20 rounded-full">
-              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-              <span className="text-xs font-bold text-red-500 uppercase tracking-wider">Live</span>
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded-full">
+              <span className="text-xs font-bold text-[#94a3b8] uppercase tracking-wider">4K Archive</span>
             </div>
           </div>
           <div className="relative w-full pb-[56.25%] bg-[#05050a]">
             <iframe
-              src="https://www.youtube.com/embed/xRPjKQtRXR8?autoplay=0&mute=1"
-              title="ISS Live Stream"
+              src="https://www.youtube.com/embed/PBnFEo6Bik8?autoplay=0&mute=1&loop=1&playlist=PBnFEo6Bik8"
+              title="ISS Aurora 4K"
               className="absolute top-0 left-0 w-full h-full border-0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
