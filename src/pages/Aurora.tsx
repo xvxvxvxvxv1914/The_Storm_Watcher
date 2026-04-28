@@ -27,19 +27,18 @@ const Aurora = () => {
 
   const getMoonPhase = () => {
     const date = new Date();
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
     const day = date.getDate();
     
     // Simple Moon phase approximation
-    let c = 0, e = 0, jd = 0, b = 0;
-    if (month < 3) { year - 1; month + 12; }
-    ++month;
-    c = 365.25 * year;
-    e = 30.6 * month;
-    jd = c + e + day - 694039.09; // jd is total days since new moon 1900
+    if (month < 3) { year--; month += 12; }
+    month++;
+    const c = 365.25 * year;
+    const e = 30.6 * month;
+    let jd = c + e + day - 694039.09; // jd is total days since new moon 1900
     jd /= 29.5305882; // divide by the moon cycle
-    b = Math.floor(jd); // int(jd)
+    const b = Math.floor(jd); // int(jd)
     jd -= b; // get fractional part of jd
     return Math.round(jd * 8); // scale fraction from 0-8 and round
   };
