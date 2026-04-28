@@ -325,33 +325,39 @@ const Home = () => {
                 {kpSparkData.length > 1 && <KpSparkline data={kpSparkData} />}
 
                 {/* Community Pulse Widget */}
-                {pulseData && (
-                  <div className="mt-12 flex justify-center">
-                    <Link 
-                      to="/mood"
-                      className="glass-surface rounded-2xl px-6 py-4 border border-white/5 hover:border-[#f97316]/30 transition-all group max-w-sm"
-                    >
-                      <div className="flex items-center gap-4 text-left">
-                        <div className="w-12 h-12 rounded-xl bg-[#f97316]/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                          <Users className="w-6 h-6 text-[#f97316]" />
-                        </div>
-                        <div>
-                          <div className="text-xs text-[#64748b] uppercase tracking-widest font-bold mb-0.5">
-                            {t('home.pulse.title')}
-                          </div>
-                          <div className="text-white font-semibold text-sm leading-tight">
-                            {pulseData.symptom 
-                              ? `${t('home.pulse.topSymptom')}: ${t(pulseData.symptom)}`
-                              : `${t('home.pulse.mostCommon')}: ${t(`mood.${pulseData.mood}`)}`}
-                          </div>
-                          <div className="text-[10px] text-[#475569] mt-1 uppercase tracking-wide">
-                            {pulseData.count} {t('home.pulse.participants')} · 24h
-                          </div>
-                        </div>
+                <div className="mt-12 flex justify-center">
+                  <Link 
+                    to="/mood"
+                    className="glass-surface rounded-2xl px-6 py-4 border border-white/5 hover:border-[#f97316]/30 transition-all group max-w-sm"
+                  >
+                    <div className="flex items-center gap-4 text-left">
+                      <div className="w-12 h-12 rounded-xl bg-[#f97316]/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Users className="w-6 h-6 text-[#f97316]" />
                       </div>
-                    </Link>
-                  </div>
-                )}
+                      <div>
+                        <div className="text-xs text-[#64748b] uppercase tracking-widest font-bold mb-0.5">
+                          {t('home.pulse.title')}
+                        </div>
+                        {pulseData ? (
+                          <>
+                            <div className="text-white font-semibold text-sm leading-tight">
+                              {pulseData.symptom 
+                                ? `${t('home.pulse.topSymptom')}: ${t(pulseData.symptom)}`
+                                : `${t('home.pulse.mostCommon')}: ${t(`mood.${pulseData.mood}`)}`}
+                            </div>
+                            <div className="text-[10px] text-[#475569] mt-1 uppercase tracking-wide">
+                              {pulseData.count} {t('home.pulse.participants')} · 24h
+                            </div>
+                          </>
+                        ) : (
+                          <div className="text-[#475569] text-xs italic">
+                            {t('home.pulse.noData')}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
+                </div>
               </>
             )}
           </div>
