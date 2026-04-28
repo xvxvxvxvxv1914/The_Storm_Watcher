@@ -222,7 +222,7 @@ const Aurora = () => {
     if (globeRef.current) {
       globeRef.current.pointOfView({ lat: 90, lng: 0, altitude: 2 }, 1000);
     }
-  }, [auroraData]););
+  }, [auroraData]);
 
   useEffect(() => {
     const fetchKp = async () => {
