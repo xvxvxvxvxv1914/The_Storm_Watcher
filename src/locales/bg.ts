@@ -431,6 +431,23 @@ const bg: Record<string, string> = {
   'home.pulse.topSymptom': 'Водещ симптом',
   'home.pulse.participants': 'участници',
   'home.pulse.noData': 'Очакваме първите оценки за днес...',
+
+  // Aurora Visibility Checklist
+  'aurora.visibility.title': 'Условия за наблюдение при теб',
+  'aurora.visibility.desc': 'Проверка в реално време на локалните условия за твоето местоположение.',
+  'aurora.visibility.checking': 'Проверяваме локалните условия...',
+  'aurora.visibility.clouds': 'Облачност',
+  'aurora.visibility.clear': 'Ясно небе',
+  'aurora.visibility.cloudy': 'Облачно',
+  'aurora.visibility.kp': 'Kp Индекс',
+  'aurora.visibility.kpHigh': 'Достатъчна активност',
+  'aurora.visibility.kpLow': 'Ниска активност',
+  'aurora.visibility.moon': 'Луна',
+  'aurora.visibility.moonDark': 'Тъмно небе',
+  'aurora.visibility.moonBright': 'Силна лунна светлина',
+  'aurora.visibility.go': 'GO! Идеални условия',
+  'aurora.visibility.wait': 'Изчакай по-добри условия',
+  'aurora.visibility.noLocation': 'Моля, разреши локация за автоматична проверка.',
 };
 
 export default bg;

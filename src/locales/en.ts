@@ -496,6 +496,23 @@ const en: Record<string, string> = {
   'home.pulse.topSymptom': 'Top Symptom',
   'home.pulse.participants': 'participants',
   'home.pulse.noData': 'Waiting for today\'s first reports...',
+
+  // Aurora Visibility Checklist
+  'aurora.visibility.title': 'Local Viewing Conditions',
+  'aurora.visibility.desc': 'Real-time check of local conditions for your current location.',
+  'aurora.visibility.checking': 'Checking local conditions...',
+  'aurora.visibility.clouds': 'Cloud Cover',
+  'aurora.visibility.clear': 'Clear Skies',
+  'aurora.visibility.cloudy': 'Cloudy',
+  'aurora.visibility.kp': 'Kp Index',
+  'aurora.visibility.kpHigh': 'Sufficient Activity',
+  'aurora.visibility.kpLow': 'Low Activity',
+  'aurora.visibility.moon': 'Moon Phase',
+  'aurora.visibility.moonDark': 'Dark Skies',
+  'aurora.visibility.moonBright': 'Bright Moonlight',
+  'aurora.visibility.go': 'GO! Perfect Conditions',
+  'aurora.visibility.wait': 'Wait for Better Conditions',
+  'aurora.visibility.noLocation': 'Please enable location for automatic check.',
 };
 
 export default en;

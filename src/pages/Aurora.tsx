@@ -5,7 +5,7 @@ import GlobeOrig from 'react-globe.gl';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Globe = GlobeOrig as any;
 import * as THREE from 'three';
-import { getKpIndex, getKpGradientStyle, getAuroraModel, getMagField, getSolarWind, AuroraOvationPoint } from '../services/noaaApi';
+import { getKpIndex, getKpGradientStyle, getAuroraModel, getMagField, getSolarWind, getWeatherData, type AuroraOvationPoint, type WeatherData } from '../services/noaaApi';
 import { calcAuroraVisibility } from '../utils/auroraVisibility';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -17,11 +17,51 @@ const Aurora = () => {
   const [bt, setBt] = useState<number>(0);
   const [windSpeed, setWindSpeed] = useState<number>(0);
   const [windDensity, setWindDensity] = useState<number>(0);
-  const [isGlobeLoading, setIsGlobeLoading] = useState(true);
   const [globeWidth, setGlobeWidth] = useState(800);
+  const [localWeather, setLocalWeather] = useState<WeatherData | null>(null);
+  const [locationError, setLocationError] = useState(false);
+  const [isWeatherLoading, setIsWeatherLoading] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const globeRef = useRef<any>(null);
   const globeContainerRef = useRef<HTMLDivElement>(null);
+
+  const getMoonPhase = () => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    
+    // Simple Moon phase approximation
+    let c = 0, e = 0, jd = 0, b = 0;
+    if (month < 3) { year - 1; month + 12; }
+    ++month;
+    c = 365.25 * year;
+    e = 30.6 * month;
+    jd = c + e + day - 694039.09; // jd is total days since new moon 1900
+    jd /= 29.5305882; // divide by the moon cycle
+    b = Math.floor(jd); // int(jd)
+    jd -= b; // get fractional part of jd
+    return Math.round(jd * 8); // scale fraction from 0-8 and round
+  };
+
+  useEffect(() => {
+    const fetchLocalWeather = async () => {
+      if (!navigator.geolocation) return;
+      setIsWeatherLoading(true);
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          const data = await getWeatherData(pos.coords.latitude, pos.coords.longitude);
+          setLocalWeather(data);
+          setIsWeatherLoading(false);
+        },
+        () => {
+          setLocationError(true);
+          setIsWeatherLoading(false);
+        }
+      );
+    };
+    fetchLocalWeather();
+  }, []);
 
   const handleGlobeResize = useCallback((entries: ResizeObserverEntry[]) => {
     for (const entry of entries) {
@@ -409,6 +449,69 @@ const Aurora = () => {
           <p className="text-[#475569] text-xs mt-4">* {t('aurora.approxChance')} {kpValue.toFixed(1)}</p>
         </div>
 
+        {/* Visibility Checklist */}
+        <div className="glass-surface rounded-2xl p-6 sm:p-8 mb-8 border border-white/5 overflow-hidden relative">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="flex-1">
+              <h3 className="text-xl font-bold text-white mb-2 uppercase tracking-wide flex items-center gap-2">
+                <Eye className="w-5 h-5 text-[#10b981]" />
+                {t('aurora.visibility.title')}
+              </h3>
+              <p className="text-[#94a3b8] text-sm">{t('aurora.visibility.desc')}</p>
+            </div>
+            
+            <div className="flex flex-wrap items-center gap-4 sm:gap-8">
+              {isWeatherLoading ? (
+                <div className="flex items-center gap-2 text-[#94a3b8] text-sm animate-pulse">
+                  <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                  {t('aurora.visibility.checking')}
+                </div>
+              ) : locationError ? (
+                <div className="text-[#ef4444] text-sm flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4" />
+                  {t('aurora.visibility.noLocation')}
+                </div>
+              ) : localWeather ? (
+                <>
+                  {/* Clouds */}
+                  <div className="flex flex-col items-center">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-1 ${localWeather.cloudCover < 30 ? 'bg-[#10b981]/20 text-[#10b981]' : 'bg-[#ef4444]/20 text-[#ef4444]'}`}>
+                      {localWeather.cloudCover < 30 ? <Check className="w-5 h-5" /> : <Zap className="w-5 h-5 rotate-180" />}
+                    </div>
+                    <div className="text-[10px] uppercase tracking-widest text-[#64748b] font-bold">{t('aurora.visibility.clouds')}</div>
+                    <div className="text-xs text-white font-medium">{localWeather.cloudCover}%</div>
+                  </div>
+
+                  {/* Kp */}
+                  <div className="flex flex-col items-center">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-1 ${kpValue >= 4 ? 'bg-[#10b981]/20 text-[#10b981]' : 'bg-[#eab308]/20 text-[#eab308]'}`}>
+                      {kpValue >= 4 ? <Check className="w-5 h-5" /> : <Zap className="w-5 h-5" />}
+                    </div>
+                    <div className="text-[10px] uppercase tracking-widest text-[#64748b] font-bold">{t('aurora.visibility.kp')}</div>
+                    <div className="text-xs text-white font-medium">{kpValue >= 4 ? t('aurora.visibility.kpHigh') : t('aurora.visibility.kpLow')}</div>
+                  </div>
+
+                  {/* Moon */}
+                  <div className="flex flex-col items-center">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-1 ${getMoonPhase() === 0 || getMoonPhase() === 4 ? 'bg-[#10b981]/20 text-[#10b981]' : 'bg-[#fbbf24]/20 text-[#fbbf24]'}`}>
+                      {getMoonPhase() === 0 || getMoonPhase() === 4 ? <Check className="w-5 h-5" /> : <Sparkles className="w-5 h-5" />}
+                    </div>
+                    <div className="text-[10px] uppercase tracking-widest text-[#64748b] font-bold">{t('aurora.visibility.moon')}</div>
+                    <div className="text-xs text-white font-medium">{getMoonPhase() === 0 ? t('aurora.visibility.moonDark') : t('aurora.visibility.moonBright')}</div>
+                  </div>
+
+                  {/* Final Verdict */}
+                  <div className={`ml-4 px-6 py-3 rounded-xl flex items-center gap-3 border ${localWeather.cloudCover < 40 && kpValue >= 4 ? 'bg-[#10b981]/10 border-[#10b981]/30 text-[#10b981]' : 'bg-white/5 border-white/10 text-[#94a3b8]'}`}>
+                    <div className={`w-3 h-3 rounded-full animate-pulse ${localWeather.cloudCover < 40 && kpValue >= 4 ? 'bg-[#10b981]' : 'bg-[#94a3b8]'}`} />
+                    <span className="font-bold text-sm uppercase tracking-wider">
+                      {localWeather.cloudCover < 40 && kpValue >= 4 ? t('aurora.visibility.go') : t('aurora.visibility.wait')}
+                    </span>
+                  </div>
+                </>
+              ) : null}
+            </div>
+          </div>
+        </div>
         
         <div className="glass-surface rounded-3xl overflow-hidden border border-white/10 mb-8 flex flex-col items-center w-full">
           <div className="flex items-center justify-between w-full p-4 border-b border-white/5">

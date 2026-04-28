@@ -219,3 +219,28 @@ export const getXrayClass = (flux: number): string => {
   if (flux < 1e-5) return 'M';
   return 'X';
 };
+
+export interface WeatherData {
+  cloudCover: number;
+  temperature: number;
+  weatherCode: number;
+}
+
+export const getWeatherData = (lat: number, lon: number): Promise<WeatherData | null> =>
+  cached(`weather-${lat}-${lon}`, TTL_5M, async () => {
+    try {
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,cloud_cover,weather_code&timezone=auto`;
+      const data = await getJson<any>(url);
+      if (data && data.current) {
+        return {
+          cloudCover: data.current.cloud_cover,
+          temperature: data.current.temperature_2m,
+          weatherCode: data.current.weather_code,
+        };
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching weather data:', error);
+      return null;
+    }
+  });
