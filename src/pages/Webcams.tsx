@@ -3,22 +3,22 @@ import { Video, MapPin, PlaySquare, ExternalLink, Play } from 'lucide-react';
 
 const archives = [
   {
-    id: 'T75IKSXVXlc',
+    id: 'PBnFEo6Bik8',
     title: 'Lights Over Lapland (Archive)',
     location: 'Abisko, Sweden',
   },
   {
-    id: 'miqbNFmbN2Q',
+    id: 'fvsONIgCEeo',
     title: 'Explore.org Northern Lights',
     location: 'Churchill, Manitoba',
   },
   {
-    id: 'jkNm2Vc2Luo',
+    id: 'WlHq-O2i47E',
     title: 'Alaskan Aurora 4K',
     location: 'Fairbanks, Alaska',
   },
   {
-    id: 'qSINjT2U9xs',
+    id: 'YjzOSLhE4xM',
     title: 'Icelandic Aurora Borealis',
     location: 'Reykjavík, Iceland',
   }
@@ -78,7 +78,7 @@ const Webcams = () => {
             className="relative block w-full pb-[56.25%] bg-[#05050a] group overflow-hidden"
           >
             <img
-              src="https://img.youtube.com/vi/zPH5KtjJFaQ/maxresdefault.jpg"
+              src="https://img.youtube.com/vi/zPH5KtjJFaQ/hqdefault.jpg"
               alt="ISS Live Stream"
               className="absolute top-0 left-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105"
             />
@@ -114,7 +114,7 @@ const Webcams = () => {
                 className="relative block w-full pb-[56.25%] bg-[#05050a] overflow-hidden"
               >
                 <img
-                  src={`https://img.youtube.com/vi/${cam.id}/maxresdefault.jpg`}
+                  src={`https://img.youtube.com/vi/${cam.id}/hqdefault.jpg`}
                   alt={cam.title}
                   className="absolute top-0 left-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105"
                 />
