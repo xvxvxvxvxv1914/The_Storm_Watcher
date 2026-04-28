@@ -12,6 +12,10 @@ const Footer = () => {
     { to: '/aurora', label: t('nav.aurora') },
     { to: '/alerts', label: t('nav.alerts') },
     { to: '/mood', label: t('nav.mood') },
+    { to: '/uv', label: 'UV Index' },
+    { to: '/iss', label: 'ISS Tracker' },
+    { to: '/sun', label: 'Sun Times' },
+    { to: '/sky', label: 'Sky Visibility' },
   ];
 
   return (
@@ -60,9 +64,12 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-white/10 pt-8">
+        <div className="border-t border-white/10 pt-8 flex flex-col items-center gap-2">
           <p className="text-center text-[#94a3b8] text-sm">
-            © 2026 The Storm Watcher. All rights reserved.
+            © {new Date().getFullYear()} The Storm Watcher. All rights reserved.
+          </p>
+          <p className="text-center text-[#475569] text-xs">
+            Data powered by <a href="https://www.swpc.noaa.gov/" target="_blank" rel="noopener noreferrer" className="hover:text-[#94a3b8] transition-colors underline">NOAA SWPC</a> · <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" className="hover:text-[#94a3b8] transition-colors underline">Open-Meteo</a>
           </p>
         </div>
       </div>

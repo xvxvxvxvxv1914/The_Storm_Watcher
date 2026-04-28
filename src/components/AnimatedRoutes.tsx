@@ -19,6 +19,7 @@ const ISS = lazy(() => import('../pages/ISS'));
 const AuthReset = lazy(() => import('../pages/AuthReset'));
 const Profile = lazy(() => import('../pages/Profile'));
 const Settings = lazy(() => import('../pages/Settings'));
+const NotFound = lazy(() => import('../pages/NotFound'));
 
 export const AnimatedRoutes = () => {
   const location = useLocation();
@@ -42,6 +43,7 @@ export const AnimatedRoutes = () => {
         <Route path="/profile" element={<AnimatedPage><Profile /></AnimatedPage>} />
         <Route path="/settings" element={<AnimatedPage><Settings /></AnimatedPage>} />
         <Route path="/pricing" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<AnimatedPage><NotFound /></AnimatedPage>} />
       </Routes>
     </AnimatePresence>
   );
