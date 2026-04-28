@@ -30,15 +30,13 @@ export default defineConfig(({ command }) => ({
   build: {
     rollupOptions: {
       output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('three')) return 'three-vendor';
-            if (id.includes('react-globe.gl') || id.includes('three-globe') || id.includes('data-joint')) return 'globe-vendor';
-            if (id.includes('@supabase')) return 'supabase-vendor';
-            if (id.includes('lightweight-charts')) return 'charts-vendor';
-            if (id.includes('lucide-react')) return 'icons-vendor';
-            return 'vendor';
-          }
+        manualChunks: {
+          'three-vendor': ['three'],
+          'globe-vendor': ['react-globe.gl', 'three-globe'],
+          'supabase-vendor': ['@supabase/supabase-js'],
+          'charts-vendor': ['lightweight-charts'],
+          'icons-vendor': ['lucide-react'],
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
         },
       },
     },
