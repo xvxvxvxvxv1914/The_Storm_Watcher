@@ -16,6 +16,7 @@ const Footer = () => {
     { to: '/iss', label: 'ISS Tracker' },
     { to: '/sun', label: 'Sun Times' },
     { to: '/sky', label: 'Sky Visibility' },
+    { to: '/faq', label: 'Aurora FAQ' },
   ];
 
   return (
