@@ -29,10 +29,10 @@ const archives = [
 ];
 
 const liveLinks = [
-  { name: 'Lights Over Lapland', url: 'https://www.youtube.com/@LightsOverLapland/live' },
-  { name: 'Explore.org Churchill', url: 'https://www.youtube.com/@ExploreDogs/live' },
-  { name: 'UAF Alaska', url: 'https://www.youtube.com/@UAFGeophysicalInstitute/live' },
-  { name: 'Live Aurora Network', url: 'https://www.youtube.com/@LiveAuroraNetwork/live' },
+  { name: 'Lights Over Lapland', url: 'https://lightsoverlapland.com/aurora-webcam/' },
+  { name: 'Explore.org Churchill', url: 'https://explore.org/livecams/aurora-borealis-northern-lights/northern-lights-cam' },
+  { name: 'UAF Alaska All-Sky', url: 'https://allsky.gi.alaska.edu/' },
+  { name: 'Live Aurora Network', url: 'https://liveauroranetwork.com/' },
 ];
 
 const Webcams = () => {
