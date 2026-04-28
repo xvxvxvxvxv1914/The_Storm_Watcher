@@ -188,38 +188,8 @@ const Aurora = () => {
 
         // Aurora overlay — multiple layers at different altitudes (curtain effect)
         scene.children
-          .filter((c: THREE.Object3D) => c.userData?.isAurora || c.userData?.isClouds)
+          .filter((c: THREE.Object3D) => c.userData?.isAurora)
           .forEach((c: THREE.Object3D) => scene.remove(c));
-
-        // Add Clouds Layer with error handling
-        const cloudLoader = new THREE.TextureLoader();
-        cloudLoader.load(
-          '//unpkg.com/three-globe/example/img/earth-clouds.png',
-          (texture) => {
-            const cloudGeo = new THREE.SphereGeometry(101.2, 64, 32);
-            const cloudMat = new THREE.MeshBasicMaterial({
-              map: texture,
-              transparent: true,
-              opacity: 0.5,
-              depthWrite: false,
-              side: THREE.FrontSide
-            });
-            const cloudMesh = new THREE.Mesh(cloudGeo, cloudMat);
-            cloudMesh.userData = { isClouds: true };
-            
-            // Animation logic
-            const rotateClouds = () => {
-              if (cloudMesh.parent) { // Only rotate if still in scene
-                cloudMesh.rotation.y += 0.0002;
-                requestAnimationFrame(rotateClouds);
-              }
-            };
-            rotateClouds();
-            scene.add(cloudMesh);
-          },
-          undefined,
-          (err) => console.error('Cloud texture failed to load', err)
-        );
 
         if (auroraTexture) {
           const layers = [
@@ -234,7 +204,6 @@ const Aurora = () => {
               transparent: true,
               opacity,
               blending: THREE.AdditiveBlending,
-              depthWrite: false,
               side: THREE.FrontSide,
             });
             const mesh = new THREE.Mesh(geo, mat);
@@ -248,6 +217,54 @@ const Aurora = () => {
       }
     }, 1000);
   }, [auroraData, auroraTexture]);
+
+  // Dedicated Cloud Effect
+  useEffect(() => {
+    if (!globeRef.current) return;
+    
+    const timeout = setTimeout(() => {
+      try {
+        const scene = globeRef.current.scene();
+        if (!scene) return;
+
+        // Cleanup existing clouds
+        scene.children
+          .filter((c: THREE.Object3D) => c.userData?.isClouds)
+          .forEach((c: THREE.Object3D) => scene.remove(c));
+
+        const cloudLoader = new THREE.TextureLoader();
+        cloudLoader.setCrossOrigin('anonymous');
+        cloudLoader.load(
+          'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_clouds_2048.png',
+          (texture) => {
+            const cloudGeo = new THREE.SphereGeometry(101.5, 64, 32);
+            const cloudMat = new THREE.MeshBasicMaterial({
+              map: texture,
+              transparent: true,
+              opacity: 0.5,
+              depthWrite: false,
+              side: THREE.DoubleSide
+            });
+            const cloudMesh = new THREE.Mesh(cloudGeo, cloudMat);
+            cloudMesh.userData = { isClouds: true };
+            
+            const rotateClouds = () => {
+              if (cloudMesh.parent) {
+                cloudMesh.rotation.y += 0.00015;
+                requestAnimationFrame(rotateClouds);
+              }
+            };
+            rotateClouds();
+            scene.add(cloudMesh);
+          }
+        );
+      } catch (e) {
+        console.error('Cloud layer error:', e);
+      }
+    }, 2000); // Wait a bit longer for globe to initialize
+
+    return () => clearTimeout(timeout);
+  }, [globeWidth]); // Re-run if globe resizes to ensure it's still there);
 
   useEffect(() => {
     if (globeRef.current) {
