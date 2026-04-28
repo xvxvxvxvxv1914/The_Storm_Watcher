@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { Activity, AlertTriangle, Zap, Radio, Calendar, Bot, Globe, Bell, Camera, Trophy, Video, Check, Share2, Copy, Twitter, ImageDown } from 'lucide-react';
+import { Activity, AlertTriangle, Zap, Radio, Calendar, Bot, Globe, Bell, Camera, Trophy, Video, Check, Share2, Copy, Twitter, ImageDown, Users } from 'lucide-react';
 import { track } from '@vercel/analytics';
 import { generateStormScoreImage } from '../utils/generateStormImage';
 import { getKpIndex, getSolarWind, getXrayFlux, getXrayClass, getStormStatus, getKpGradientStyle, getKpHistory3Day } from '../services/noaaApi';
@@ -62,7 +62,8 @@ const Home = () => {
             });
           });
 
-          const topMood = Object.entries(moodCounts).sort((a, b) => b[1] - a[1])[0][0];
+          const moodEntries = Object.entries(moodCounts).sort((a, b) => b[1] - a[1]);
+          const topMood = moodEntries.length > 0 ? moodEntries[0][0] : 'neutral';
           const topSymptom = Object.entries(symptomCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || '';
           
           setPulseData({ mood: topMood, symptom: topSymptom, count: data.length });
