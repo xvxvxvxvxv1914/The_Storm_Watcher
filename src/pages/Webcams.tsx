@@ -71,15 +71,23 @@ const Webcams = () => {
               <span className="text-xs font-bold text-red-500 uppercase tracking-wider">Live</span>
             </div>
           </div>
-          <div className="relative w-full pb-[56.25%] bg-[#05050a]">
-            <iframe
-              src="https://www.youtube.com/embed/zPH5KtjJFaQ?autoplay=1&mute=1"
-              title="ISS Live Stream"
-              className="absolute top-0 left-0 w-full h-full border-0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
+          <a
+            href="https://www.youtube.com/watch?v=zPH5KtjJFaQ"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="relative block w-full pb-[56.25%] bg-[#05050a] group overflow-hidden"
+          >
+            <img
+              src="https://img.youtube.com/vi/zPH5KtjJFaQ/maxresdefault.jpg"
+              alt="ISS Live Stream"
+              className="absolute top-0 left-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105"
             />
-          </div>
+            <div className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-all duration-500">
+              <div className="w-20 h-20 bg-red-600/90 rounded-full flex items-center justify-center shadow-lg shadow-red-600/50 group-hover:scale-110 transition-transform duration-300">
+                <Play className="w-8 h-8 text-white ml-1" fill="currentColor" />
+              </div>
+            </div>
+          </a>
         </div>
       </div>
 
