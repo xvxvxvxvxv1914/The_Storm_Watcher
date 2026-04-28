@@ -305,8 +305,8 @@ const Aurora = () => {
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16 relative">
       <Helmet>
-        <title>Aurora Forecast Globe — The Storm Watcher</title>
-        <meta name="description" content="Live OVATION aurora probability model on an interactive 3D globe. See where the northern lights are visible right now." />
+        <title>Can I see the Aurora tonight? Live Forecast & Checklist | The Storm Watcher</title>
+        <meta name="description" content="Check your local aurora visibility in seconds. Interactive 3D OVATION model, real-time cloud cover, moon phase, and Kp index checklist for perfect aurora hunting." />
         <link rel="canonical" href={window.location.origin + window.location.pathname} />
       </Helmet>
       <div className="star-field">

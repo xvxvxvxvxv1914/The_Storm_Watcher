@@ -151,19 +151,19 @@ const Home = () => {
       <Helmet>
         <title>
           {kpValue !== null && kpValue >= 5
-            ? `⚠️ ALERT: ${t(stormStatus?.statusKey || 'storm.g1')} Active! | Kp: ${kpValue.toFixed(1)} | The Storm Watcher`
-            : `${kpValue !== null ? `Current Kp: ${kpValue.toFixed(1)} (${t(stormStatus?.statusKey || 'storm.quiet')})` : 'Real-Time Space Weather'} | The Storm Watcher`}
+            ? `⚠️ Solar Storm Alert: Kp ${kpValue.toFixed(1)} | Real-Time Space Weather`
+            : `Live Kp Index: ${kpValue?.toFixed(1) ?? '0.0'} | Real-Time Aurora & Space Weather Forecast`}
         </title>
         <link rel="canonical" href={window.location.origin + window.location.pathname} />
         <meta 
           name="description" 
           content={kpValue !== null 
-            ? `Live Kp index: ${kpValue.toFixed(1)} (${t(stormStatus?.statusKey || 'storm.quiet')}). Solar wind: ${windSpeed?.toFixed(0) || '---'} km/s. Monitor geomagnetic storms and aurora forecasts in real time.`
-            : "Real-time space weather monitoring — Kp index, solar wind, aurora forecast and geomagnetic storm alerts."
+            ? `Monitor current solar activity: Kp index ${kpValue.toFixed(1)}. Track real-time solar wind speeds, X-ray flares, and geomagnetic storm alerts to plan your aurora hunting.`
+            : "Get live space weather updates. Track Kp index, solar wind, and geomagnetic storm alerts in real-time. The ultimate dashboard for aurora hunters and space weather enthusiasts."
           } 
         />
-        <meta property="og:title" content={kpValue !== null && kpValue >= 5 ? `⚠️ ALERT: Geomagnetic Storm Kp ${kpValue.toFixed(1)}` : "The Storm Watcher — Live Space Weather"} />
-        <meta property="og:description" content={kpValue !== null ? `Current Kp index is ${kpValue.toFixed(1)}. Track the solar storm live!` : "Real-time space weather monitoring and aurora forecasts."} />
+        <meta property="og:title" content={kpValue !== null && kpValue >= 5 ? `⚠️ LIVE ALERT: Geomagnetic Storm Kp ${kpValue.toFixed(1)}` : "The Storm Watcher — Real-Time Space Weather Dashboard"} />
+        <meta property="og:description" content={kpValue !== null ? `Current Kp index is ${kpValue.toFixed(1)}. Solar wind is at ${windSpeed?.toFixed(0) || '---'} km/s. See if a storm is coming!` : "Monitor solar activity and aurora forecasts with our professional-grade live dashboard."} />
         <meta name="twitter:title" content={kpValue !== null && kpValue >= 5 ? `⚠️ ALERT: Solar Storm Kp ${kpValue.toFixed(1)}` : "The Storm Watcher"} />
         <script type="application/ld+json">
           {JSON.stringify([
