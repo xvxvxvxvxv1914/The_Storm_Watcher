@@ -21,6 +21,7 @@ const Aurora = () => {
   const [localWeather, setLocalWeather] = useState<WeatherData | null>(null);
   const [locationError, setLocationError] = useState(false);
   const [isWeatherLoading, setIsWeatherLoading] = useState(false);
+  const [isGlobeLoading, setIsGlobeLoading] = useState(true);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const globeRef = useRef<any>(null);
   const globeContainerRef = useRef<HTMLDivElement>(null);
