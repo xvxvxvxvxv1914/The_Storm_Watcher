@@ -77,6 +77,7 @@ const BottomTabBar = () => {
       <nav
         className="lg:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 backdrop-blur-xl"
         style={{ paddingBottom: 'env(safe-area-inset-bottom)', background: 'rgba(8, 8, 20, 0.92)' }}
+        aria-label="Main navigation"
       >
         <div className="flex items-stretch">
           {tabs.map(({ to, icon: Icon, labelKey }) => {
@@ -99,6 +100,7 @@ const BottomTabBar = () => {
           })}
           <button
             onClick={() => setMoreOpen(true)}
+            aria-label="Open more menu"
             className="flex flex-col items-center justify-center flex-1 py-2 gap-0.5"
           >
             <MoreHorizontal
@@ -132,7 +134,7 @@ const BottomTabBar = () => {
 
             <div className="flex items-center justify-between px-5 py-3 border-b border-white/10">
               <span className="text-white font-bold text-base">More</span>
-              <button onClick={() => setMoreOpen(false)} className="text-[#94a3b8] p-1">
+              <button onClick={() => setMoreOpen(false)} aria-label="Close menu" className="text-[#94a3b8] p-1">
                 <X className="w-5 h-5" />
               </button>
             </div>

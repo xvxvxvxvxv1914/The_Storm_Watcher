@@ -16,6 +16,7 @@ import PlanGuard from './components/PlanGuard';
 import ErrorBoundary from './components/ErrorBoundary';
 import OnboardingTour from './components/OnboardingTour';
 import ScrollToTop from './components/ScrollToTop';
+import CookieConsent from './components/CookieConsent';
 
 const LoadingFallback = () => {
   const { t } = useLanguage();
@@ -62,6 +63,7 @@ function AppRoutes() {
       <Footer />
       <ScrollToTop />
       <BottomTabBar />
+      <CookieConsent />
       <OnboardingTour />
     </div>
   );
