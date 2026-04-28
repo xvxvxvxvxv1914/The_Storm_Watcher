@@ -4,6 +4,8 @@ interface StormImageParams {
   kp: number;
   windSpeed: number | null;
   xrayClass: string | null;
+  communityMood?: string;
+  communitySymptom?: string;
 }
 
 function scoreColor(score: number): string {
@@ -102,18 +104,28 @@ export async function generateStormScoreImage(params: StormImageParams): Promise
 
   // Stats row
   const stats: string[] = [`Kp ${kp.toFixed(1)}`];
-  if (windSpeed && windSpeed > 0) stats.push(`Solar Wind ${Math.round(windSpeed)} km/s`);
-  if (xrayClass) stats.push(`X-ray Class ${xrayClass}`);
+  if (windSpeed && windSpeed > 0) stats.push(`Wind ${Math.round(windSpeed)} km/s`);
+  if (xrayClass) stats.push(`X-ray ${xrayClass}`);
   const statsText = stats.join('   •   ');
-  ctx.font = '20px "Space Grotesk", Arial, sans-serif';
-  ctx.fillStyle = '#94a3b8';
+  ctx.font = 'bold 24px "Space Grotesk", Arial, sans-serif';
+  ctx.fillStyle = '#f8fafc';
   ctx.textAlign = 'center';
-  ctx.fillText(statsText, W / 2, 535);
+  ctx.fillText(statsText, W / 2, 530);
+
+  // Community Pulse (if available)
+  if (params.communityMood || params.communitySymptom) {
+    ctx.font = 'italic 18px "Space Grotesk", Arial, sans-serif';
+    ctx.fillStyle = '#94a3b8';
+    const pulseText = params.communitySymptom 
+      ? `Community Report: High prevalence of ${params.communitySymptom}`
+      : `Community Mood: ${params.communityMood}`;
+    ctx.fillText(pulseText, W / 2, 570);
+  }
 
   // Bottom tagline
-  ctx.font = '16px "Space Grotesk", Arial, sans-serif';
-  ctx.fillStyle = '#374151';
-  ctx.fillText('Real-time space weather monitoring', W / 2, 588);
+  ctx.font = '14px "Space Grotesk", Arial, sans-serif';
+  ctx.fillStyle = '#475569';
+  ctx.fillText('Real-time space weather monitoring via thestormwatcher.com', W / 2, 605);
 
   return new Promise(resolve => canvas.toBlob(b => resolve(b!), 'image/png'));
 }

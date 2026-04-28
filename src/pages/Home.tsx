@@ -440,6 +440,8 @@ const Home = () => {
                               kp: kpValue ?? 0,
                               windSpeed,
                               xrayClass,
+                              communityMood: pulseData?.mood ? t(`mood.${pulseData.mood}`) : undefined,
+                              communitySymptom: pulseData?.symptom ? t(pulseData.symptom) : undefined,
                             });
                             if (navigator.canShare?.({ files: [new File([blob], 'storm-score.png', { type: 'image/png' })] })) {
                               await navigator.share({ files: [new File([blob], 'storm-score.png', { type: 'image/png' })] });
