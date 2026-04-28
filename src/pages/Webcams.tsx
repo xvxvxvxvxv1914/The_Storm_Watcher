@@ -4,40 +4,39 @@ import { Video, MapPin, Radio } from 'lucide-react';
 const webcams = [
   {
     id: 'abisko',
-    title: 'Lights Over Lapland',
+    title: 'Lights Over Lapland (Archive)',
     location: 'Abisko, Sweden',
-    // Uses YouTube's live_stream URL format with Channel ID for permanent live links
-    url: 'https://www.youtube.com/embed/live_stream?channel=UCD1R4Htc7h7A5sKqU6sVwzw&autoplay=0&mute=1',
+    url: 'https://www.youtube.com/embed/PBnFEo6Bik8?autoplay=0&mute=1&loop=1&playlist=PBnFEo6Bik8',
   },
   {
     id: 'churchill',
-    title: 'Explore.org Zenith Cam',
+    title: 'Explore.org Northern Lights',
     location: 'Churchill, Manitoba, Canada',
-    url: 'https://www.youtube.com/embed/live_stream?channel=UCjI_H_Y5pWf-iXgN6X6Nl3Q&autoplay=0&mute=1',
+    url: 'https://www.youtube.com/embed/fvsONIgCEeo?autoplay=0&mute=1&loop=1&playlist=fvsONIgCEeo',
   },
   {
     id: 'fairbanks',
-    title: 'UAF Geophysical Institute',
+    title: 'Alaskan Aurora 4K',
     location: 'Fairbanks, Alaska, USA',
-    url: 'https://www.youtube.com/embed/live_stream?channel=UCB1A2bC-B-U2_MhhG8O-v6A&autoplay=0&mute=1',
+    url: 'https://www.youtube.com/embed/WlHq-O2i47E?autoplay=0&mute=1&loop=1&playlist=WlHq-O2i47E',
   },
   {
-    id: 'banff',
-    title: 'Sunshine Village',
-    location: 'Banff, Alberta, Canada',
-    url: 'https://www.youtube.com/embed/live_stream?channel=UC8Vq2v-088BqR39z3lO2Vhw&autoplay=0&mute=1',
+    id: 'tromso',
+    title: 'Norwegian Sky 4K',
+    location: 'Tromsø, Norway',
+    url: 'https://www.youtube.com/embed/XjR2B1b504g?autoplay=0&mute=1&loop=1&playlist=XjR2B1b504g',
   },
   {
-    id: 'svalbard',
-    title: 'Svalbard Global Seed Vault',
-    location: 'Spitsbergen, Norway',
-    url: 'https://www.youtube.com/embed/live_stream?channel=UCT3iF7lGf7iYxK9G7v3Z0Vw&autoplay=0&mute=1', // Placeholder/General channel
+    id: 'iceland',
+    title: 'Icelandic Aurora Borealis',
+    location: 'Reykjavík, Iceland',
+    url: 'https://www.youtube.com/embed/YjzOSLhE4xM?autoplay=0&mute=1&loop=1&playlist=YjzOSLhE4xM',
   },
   {
     id: 'iss',
     title: 'ISS Live Stream (View from Space)',
     location: 'Low Earth Orbit',
-    url: 'https://www.youtube.com/embed/live_stream?channel=UC4A_zuCTErGWE4nB_8YXIUA&autoplay=0&mute=1',
+    url: 'https://www.youtube.com/embed/xRPjKQtRXR8?autoplay=0&mute=1', // Reliable 24/7 NASA stream
   }
 ];
 
