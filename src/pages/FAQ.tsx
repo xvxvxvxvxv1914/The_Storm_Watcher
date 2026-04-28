@@ -100,7 +100,7 @@ const FAQ = () => {
   };
 
   return (
-    <div className="min-h-screen px-4 pt-24 pb-12 md:pt-32 max-w-3xl mx-auto relative z-10">
+    <div className="min-h-screen px-4 pt-32 pb-12 sm:pt-44 sm:pb-24 max-w-3xl mx-auto relative z-10">
       <Helmet>
         <title>Aurora FAQ — Northern Lights Guide | The Storm Watcher</title>
         <meta name="description" content="Everything you need to know about the Northern Lights, Kp index, solar wind, and how to see the aurora. Expert answers to common space weather questions." />
