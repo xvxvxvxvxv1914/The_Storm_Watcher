@@ -3,12 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { track } from '@vercel/analytics';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Mail, Lock, User, ArrowLeft } from 'lucide-react';
+import { Mail, Lock, User, ArrowLeft, Zap } from 'lucide-react';
 
 type Mode = 'login' | 'signup' | 'forgot';
 
-// Rough password strength — not a replacement for the server-side policy, but
-// enough to steer users away from "password123" in the signup form.
 const scorePassword = (pw: string): { level: 0 | 1 | 2 | 3 | 4; label: string; color: string } => {
   if (!pw) return { level: 0, label: '', color: '#475569' };
   let score = 0;
@@ -105,22 +103,23 @@ export default function Auth() {
       setError(error.message);
       setLoading(false);
     }
-    // on success Supabase redirects — no further state needed.
   };
 
   if (confirmationSent) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-4 py-12">
-        <div className="max-w-md w-full">
-          <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-slate-700 text-center">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[#f97316] to-[#fbbf24] rounded-full mb-6">
+      <div className="min-h-screen flex items-center justify-center px-4 py-12 relative overflow-hidden">
+        <div className="magnetic-orb" style={{ top: '-80px', right: '-120px' }} />
+        <div className="solar-orb" style={{ bottom: '-100px', left: '-100px' }} />
+        <div className="max-w-md w-full relative z-10">
+          <div className="glass-surface rounded-3xl p-8 border border-white/10 text-center">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[#f97316] to-[#fbbf24] rounded-full mb-6 glow-orange">
               <Mail className="w-10 h-10 text-white" />
             </div>
             <h2 className="text-2xl font-bold text-white mb-3">{t('auth.checkEmail')}</h2>
-            <p className="text-slate-400 mb-6 leading-relaxed">
+            <p className="text-[#94a3b8] mb-6 leading-relaxed">
               {t('auth.checkEmailSent')} <span className="text-white font-medium">{email}</span>. {t('auth.checkEmailActivate')}
             </p>
-            <p className="text-slate-500 text-sm">{t('auth.checkEmailSpam')}</p>
+            <p className="text-[#475569] text-sm">{t('auth.checkEmailSpam')}</p>
             <button
               onClick={() => { setConfirmationSent(false); setMode('login'); }}
               className="mt-6 text-[#f97316] hover:text-[#fbbf24] text-sm font-medium transition"
@@ -135,17 +134,19 @@ export default function Auth() {
 
   if (resetSent) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-4 py-12">
-        <div className="max-w-md w-full">
-          <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-slate-700 text-center">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full mb-6">
+      <div className="min-h-screen flex items-center justify-center px-4 py-12 relative overflow-hidden">
+        <div className="magnetic-orb" style={{ top: '-80px', right: '-120px' }} />
+        <div className="solar-orb" style={{ bottom: '-100px', left: '-100px' }} />
+        <div className="max-w-md w-full relative z-10">
+          <div className="glass-surface rounded-3xl p-8 border border-white/10 text-center">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[#10b981] to-[#059669] rounded-full mb-6 glow-green">
               <Mail className="w-10 h-10 text-white" />
             </div>
             <h2 className="text-2xl font-bold text-white mb-3">Check your email</h2>
-            <p className="text-slate-400 mb-6 leading-relaxed">
+            <p className="text-[#94a3b8] mb-6 leading-relaxed">
               If an account exists for <span className="text-white font-medium">{email}</span>, a password reset link has been sent.
             </p>
-            <p className="text-slate-500 text-sm">{t('auth.checkEmailSpam')}</p>
+            <p className="text-[#475569] text-sm">{t('auth.checkEmailSpam')}</p>
             <button
               onClick={() => { setResetSent(false); setMode('login'); }}
               className="mt-6 text-[#f97316] hover:text-[#fbbf24] text-sm font-medium transition inline-flex items-center gap-2"
@@ -165,28 +166,29 @@ export default function Auth() {
     : mode === 'signup' ? t('auth.signUpDescription') : t('auth.signInDescription');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-4 py-12">
-      <div className="max-w-md w-full">
-        <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl shadow-2xl p-5 sm:p-6 md:p-8 border border-slate-700">
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 relative overflow-hidden">
+      <div className="magnetic-orb" style={{ top: '-80px', right: '-120px' }} />
+      <div className="solar-orb" style={{ bottom: '-100px', left: '-100px' }} />
+
+      <div className="max-w-md w-full relative z-10">
+        <div className="glass-surface rounded-3xl p-5 sm:p-6 md:p-8 border border-white/10">
           <div className="text-center mb-5 sm:mb-7">
-            <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full mb-3 sm:mb-4">
-              <svg className="w-7 h-7 sm:w-8 sm:h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
+            <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-[#f97316] to-[#fbbf24] rounded-full mb-3 sm:mb-4 glow-orange">
+              <Zap className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
             </div>
             <h1 className="text-white font-bold leading-tight text-[clamp(1.25rem,4.8vw,2rem)]">{title}</h1>
           </div>
 
           {mode !== 'forgot' && (
             <>
-              <div className="grid grid-cols-2 mb-5 sm:mb-6 bg-slate-700/40 rounded-lg p-1 sm:p-1.5 min-h-[40px] sm:min-h-[46px] gap-1">
+              <div className="grid grid-cols-2 mb-5 sm:mb-6 bg-white/5 rounded-xl p-1 sm:p-1.5 min-h-[40px] sm:min-h-[46px] gap-1 border border-white/5">
                 <button
                   type="button"
                   onClick={() => { setMode('login'); setError(''); }}
-                  className={`min-w-0 flex items-center justify-center py-2 px-2 sm:px-3 text-[clamp(0.72rem,2.7vw,0.92rem)] sm:text-sm leading-none font-semibold rounded-md border transition-all whitespace-nowrap ${
+                  className={`min-w-0 flex items-center justify-center py-2 px-2 sm:px-3 text-[clamp(0.72rem,2.7vw,0.92rem)] sm:text-sm leading-none font-semibold rounded-lg transition-all whitespace-nowrap ${
                     mode === 'login'
-                      ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white border-emerald-400/40 shadow-lg'
-                      : 'text-slate-200 border-slate-500/40 hover:text-white hover:border-slate-400/60'
+                      ? 'bg-gradient-to-r from-[#f97316] to-[#fbbf24] text-white shadow-lg'
+                      : 'text-[#94a3b8] hover:text-white'
                   }`}
                 >
                   {t('auth.signIn')}
@@ -194,10 +196,10 @@ export default function Auth() {
                 <button
                   type="button"
                   onClick={() => { setMode('signup'); setError(''); }}
-                  className={`min-w-0 flex items-center justify-center py-2 px-2 sm:px-3 text-[clamp(0.72rem,2.7vw,0.92rem)] sm:text-sm leading-none font-semibold rounded-md border transition-all whitespace-nowrap ${
+                  className={`min-w-0 flex items-center justify-center py-2 px-2 sm:px-3 text-[clamp(0.72rem,2.7vw,0.92rem)] sm:text-sm leading-none font-semibold rounded-lg transition-all whitespace-nowrap ${
                     mode === 'signup'
-                      ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white border-emerald-400/40 shadow-lg'
-                      : 'text-slate-200 border-slate-500/40 hover:text-white hover:border-slate-400/60'
+                      ? 'bg-gradient-to-r from-[#f97316] to-[#fbbf24] text-white shadow-lg'
+                      : 'text-[#94a3b8] hover:text-white'
                   }`}
                 >
                   {t('auth.signUp')}
@@ -209,7 +211,7 @@ export default function Auth() {
                   type="button"
                   onClick={() => handleOAuth('google')}
                   disabled={loading}
-                  className="w-full flex items-center justify-center gap-3 py-2.5 rounded-lg bg-white text-slate-900 font-medium hover:bg-slate-100 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full flex items-center justify-center gap-3 py-2.5 rounded-xl bg-white text-[#0a0a1a] font-medium hover:bg-white/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <GoogleIcon />
                   Continue with Google
@@ -218,7 +220,7 @@ export default function Auth() {
                   type="button"
                   onClick={() => handleOAuth('apple')}
                   disabled={loading}
-                  className="w-full flex items-center justify-center gap-3 py-2.5 rounded-lg bg-black text-white font-medium hover:bg-slate-900 transition border border-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full flex items-center justify-center gap-3 py-2.5 rounded-xl bg-white/10 text-white font-medium hover:bg-white/15 transition border border-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <AppleIcon />
                   Continue with Apple
@@ -227,7 +229,7 @@ export default function Auth() {
                   type="button"
                   onClick={() => handleOAuth('facebook')}
                   disabled={loading}
-                  className="w-full flex items-center justify-center gap-3 py-2.5 rounded-lg bg-[#1877F2] text-white font-medium hover:bg-[#145ab8] transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full flex items-center justify-center gap-3 py-2.5 rounded-xl bg-[#1877F2]/20 text-white font-medium hover:bg-[#1877F2]/30 transition border border-[#1877F2]/30 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <FacebookIcon />
                   Continue with Facebook
@@ -235,17 +237,17 @@ export default function Auth() {
               </div>
 
               <div className="flex items-center gap-3 mb-5">
-                <div className="flex-1 h-px bg-slate-700" />
-                <span className="text-xs text-slate-500 uppercase tracking-wider">{t('auth.orContinueWith')}</span>
-                <div className="flex-1 h-px bg-slate-700" />
+                <div className="flex-1 h-px bg-white/10" />
+                <span className="text-xs text-[#475569] uppercase tracking-wider">{t('auth.orContinueWith')}</span>
+                <div className="flex-1 h-px bg-white/10" />
               </div>
             </>
           )}
 
-          <p className="text-slate-400 text-center text-sm mb-6">{description}</p>
+          <p className="text-[#94a3b8] text-center text-sm mb-6">{description}</p>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/50 rounded-lg">
+            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl">
               <p className="text-red-400 text-sm">{error}</p>
             </div>
           )}
@@ -253,14 +255,14 @@ export default function Auth() {
           <form onSubmit={handleEmailAuth} className="space-y-4">
             {mode === 'signup' && (
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">{t('auth.fullName')}</label>
+                <label className="block text-sm font-medium text-[#94a3b8] mb-2">{t('auth.fullName')}</label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#475569]" />
                   <input
                     type="text"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
+                    className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-[#475569] focus:outline-none focus:ring-2 focus:ring-[#f97316]/50 focus:border-[#f97316]/50 transition"
                     placeholder={t('auth.fullNamePlaceholder')}
                     required
                   />
@@ -269,14 +271,14 @@ export default function Auth() {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">{t('auth.email')}</label>
+              <label className="block text-sm font-medium text-[#94a3b8] mb-2">{t('auth.email')}</label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#475569]" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
+                  className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-[#475569] focus:outline-none focus:ring-2 focus:ring-[#f97316]/50 focus:border-[#f97316]/50 transition"
                   placeholder={t('auth.emailPlaceholder')}
                   required
                 />
@@ -286,7 +288,7 @@ export default function Auth() {
             {mode !== 'forgot' && (
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm font-medium text-slate-300">{t('auth.password')}</label>
+                  <label className="block text-sm font-medium text-[#94a3b8]">{t('auth.password')}</label>
                   {mode === 'login' && (
                     <button
                       type="button"
@@ -298,12 +300,12 @@ export default function Auth() {
                   )}
                 </div>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#475569]" />
                   <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
+                    className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-[#475569] focus:outline-none focus:ring-2 focus:ring-[#f97316]/50 focus:border-[#f97316]/50 transition"
                     placeholder={t('auth.passwordPlaceholder')}
                     required
                     minLength={8}
@@ -311,7 +313,7 @@ export default function Auth() {
                 </div>
                 {mode === 'signup' && password.length > 0 && (
                   <div className="mt-2 flex items-center gap-2">
-                    <div className="flex-1 h-1.5 rounded-full bg-slate-700 overflow-hidden">
+                    <div className="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
                       <div
                         className="h-full transition-all duration-300"
                         style={{ width: `${(strength.level / 4) * 100}%`, background: strength.color }}
@@ -326,7 +328,7 @@ export default function Auth() {
             <button
               type="submit"
               disabled={loading || (mode === 'signup' && strength.level < 2)}
-              className="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-lg transition transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="w-full py-3 bg-gradient-to-r from-[#f97316] to-[#fbbf24] hover:from-[#ea580c] hover:to-[#f59e0b] text-white font-bold uppercase tracking-wider rounded-xl transition transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none glow-orange"
             >
               {loading
                 ? t('auth.loading')
@@ -339,7 +341,7 @@ export default function Auth() {
               <button
                 type="button"
                 onClick={() => { setMode('login'); setError(''); }}
-                className="w-full text-center text-sm text-slate-400 hover:text-white transition inline-flex items-center justify-center gap-2"
+                className="w-full text-center text-sm text-[#94a3b8] hover:text-white transition inline-flex items-center justify-center gap-2"
               >
                 <ArrowLeft className="w-4 h-4" />
                 {t('auth.backToSignIn')}
