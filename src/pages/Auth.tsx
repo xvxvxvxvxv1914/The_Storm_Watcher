@@ -206,41 +206,14 @@ export default function Auth() {
                 </button>
               </div>
 
+              {/* OAuth buttons — hidden until providers are configured in Supabase
               <div className="space-y-2 mb-5">
-                <button
-                  type="button"
-                  onClick={() => handleOAuth('google')}
-                  disabled={loading}
-                  className="w-full flex items-center justify-center gap-3 py-2.5 rounded-xl bg-white text-[#0a0a1a] font-medium hover:bg-white/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <GoogleIcon />
-                  Continue with Google
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleOAuth('apple')}
-                  disabled={loading}
-                  className="w-full flex items-center justify-center gap-3 py-2.5 rounded-xl bg-white/10 text-white font-medium hover:bg-white/15 transition border border-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <AppleIcon />
-                  Continue with Apple
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleOAuth('facebook')}
-                  disabled={loading}
-                  className="w-full flex items-center justify-center gap-3 py-2.5 rounded-xl bg-[#1877F2]/20 text-white font-medium hover:bg-[#1877F2]/30 transition border border-[#1877F2]/30 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <FacebookIcon />
-                  Continue with Facebook
-                </button>
+                ...
               </div>
-
               <div className="flex items-center gap-3 mb-5">
-                <div className="flex-1 h-px bg-white/10" />
-                <span className="text-xs text-[#475569] uppercase tracking-wider">{t('auth.orContinueWith')}</span>
-                <div className="flex-1 h-px bg-white/10" />
+                ...
               </div>
+              */}
             </>
           )}
 
