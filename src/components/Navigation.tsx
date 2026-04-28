@@ -66,6 +66,7 @@ const Navigation = () => {
   ];
 
   const moreLinks = [
+    { to: '/webcams', label: t('nav.webcams') || 'Live Webcams' },
     { to: '/uv', label: t('nav.uv') || 'UV' },
     { to: '/sun', label: t('nav.sun') || 'Sun' },
     { to: '/sky', label: t('nav.sky') || 'Sky Tonight' },
