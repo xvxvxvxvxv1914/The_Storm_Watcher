@@ -197,12 +197,11 @@ const Aurora = () => {
           '//unpkg.com/three-globe/example/img/earth-clouds.png',
           (texture) => {
             const cloudGeo = new THREE.SphereGeometry(101.2, 64, 32);
-            const cloudMat = new THREE.MeshStandardMaterial({
+            const cloudMat = new THREE.MeshBasicMaterial({
               map: texture,
               transparent: true,
-              opacity: 0.3,
+              opacity: 0.5,
               depthWrite: false,
-              blending: THREE.AdditiveBlending,
               side: THREE.FrontSide
             });
             const cloudMesh = new THREE.Mesh(cloudGeo, cloudMat);
