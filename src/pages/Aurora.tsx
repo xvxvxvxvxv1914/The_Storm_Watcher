@@ -307,6 +307,7 @@ const Aurora = () => {
       <Helmet>
         <title>Aurora Forecast Globe — The Storm Watcher</title>
         <meta name="description" content="Live OVATION aurora probability model on an interactive 3D globe. See where the northern lights are visible right now." />
+        <link rel="canonical" href={window.location.origin + window.location.pathname} />
       </Helmet>
       <div className="star-field">
         {stars.map((s) => (

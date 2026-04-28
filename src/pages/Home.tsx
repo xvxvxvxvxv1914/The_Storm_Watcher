@@ -154,6 +154,7 @@ const Home = () => {
             ? `⚠️ ALERT: ${t(stormStatus?.statusKey || 'storm.g1')} Active! | Kp: ${kpValue.toFixed(1)} | The Storm Watcher`
             : `${kpValue !== null ? `Current Kp: ${kpValue.toFixed(1)} (${t(stormStatus?.statusKey || 'storm.quiet')})` : 'Real-Time Space Weather'} | The Storm Watcher`}
         </title>
+        <link rel="canonical" href={window.location.origin + window.location.pathname} />
         <meta 
           name="description" 
           content={kpValue !== null 
