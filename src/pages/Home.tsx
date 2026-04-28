@@ -8,6 +8,7 @@ import { getKpIndex, getSolarWind, getXrayFlux, getXrayClass, getStormStatus, ge
 import { useLanguage } from '../contexts/LanguageContext';
 import StarField from '../components/StarField';
 import { Skeleton } from '../components/Skeleton';
+import { supabase } from '../lib/supabase';
 
 const getScoreShareStatus = (score: number) => {
   if (score <= 25) return 'Quiet';
@@ -25,6 +26,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [shareOpen, setShareOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [pulseData, setPulseData] = useState<{ mood: string; symptom: string; count: number } | null>(null);
   const shareRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -38,29 +40,70 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
+    const fetchPulse = async () => {
+      try {
+        const twentyFourHoursAgo = new Date();
+        twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
+
+        const { data, error } = await supabase
+          .from('mood_entries')
+          .select('mood_type, symptoms')
+          .gte('created_at', twentyFourHoursAgo.toISOString());
+
+        if (error) throw error;
+        if (data && data.length > 0) {
+          const moodCounts: Record<string, number> = {};
+          const symptomCounts: Record<string, number> = {};
+          
+          data.forEach(entry => {
+            moodCounts[entry.mood_type] = (moodCounts[entry.mood_type] || 0) + 1;
+            entry.symptoms?.forEach((s: string) => {
+              symptomCounts[s] = (symptomCounts[s] || 0) + 1;
+            });
+          });
+
+          const topMood = Object.entries(moodCounts).sort((a, b) => b[1] - a[1])[0][0];
+          const topSymptom = Object.entries(symptomCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || '';
+          
+          setPulseData({ mood: topMood, symptom: topSymptom, count: data.length });
+        }
+      } catch (err) {
+        console.error('Error fetching pulse:', err);
+      }
+    };
+
     const fetchAll = async () => {
       try {
-        const [kpData, windData, xrayData, historyData] = await Promise.all([
-          getKpIndex(),
-          getSolarWind(),
-          getXrayFlux(),
-          getKpHistory3Day(),
+        await Promise.all([
+          (async () => {
+            const kpData = await getKpIndex();
+            if (kpData && kpData.length > 0) {
+              const latest = kpData[kpData.length - 1];
+              setKpValue(latest.kp_index || latest.estimated_kp || 0);
+            } else {
+              setKpValue(0);
+            }
+          })(),
+          (async () => {
+            const windData = await getSolarWind();
+            if (windData && windData.length > 0) {
+              setWindSpeed(windData[windData.length - 1].proton_speed || 0);
+            }
+          })(),
+          (async () => {
+            const xrayData = await getXrayFlux();
+            if (xrayData && xrayData.length > 0) {
+              setXrayClass(getXrayClass(xrayData[xrayData.length - 1].flux || 0));
+            }
+          })(),
+          (async () => {
+            const historyData = await getKpHistory3Day();
+            if (historyData && historyData.length > 0) {
+              setKpSparkData(historyData.slice(-24).map(d => d.Kp));
+            }
+          })(),
+          fetchPulse(),
         ]);
-        if (kpData && kpData.length > 0) {
-          const latest = kpData[kpData.length - 1];
-          setKpValue(latest.kp_index || latest.estimated_kp || 0);
-        } else {
-          setKpValue(0);
-        }
-        if (windData && windData.length > 0) {
-          setWindSpeed(windData[windData.length - 1].proton_speed || 0);
-        }
-        if (xrayData && xrayData.length > 0) {
-          setXrayClass(getXrayClass(xrayData[xrayData.length - 1].flux || 0));
-        }
-        if (historyData && historyData.length > 0) {
-          setKpSparkData(historyData.slice(-24).map(d => d.Kp));
-        }
         setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -280,6 +323,35 @@ const Home = () => {
                   )}
                 </div>
                 {kpSparkData.length > 1 && <KpSparkline data={kpSparkData} />}
+
+                {/* Community Pulse Widget */}
+                {pulseData && (
+                  <div className="mt-12 flex justify-center">
+                    <Link 
+                      to="/mood"
+                      className="glass-surface rounded-2xl px-6 py-4 border border-white/5 hover:border-[#f97316]/30 transition-all group max-w-sm"
+                    >
+                      <div className="flex items-center gap-4 text-left">
+                        <div className="w-12 h-12 rounded-xl bg-[#f97316]/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <Users className="w-6 h-6 text-[#f97316]" />
+                        </div>
+                        <div>
+                          <div className="text-xs text-[#64748b] uppercase tracking-widest font-bold mb-0.5">
+                            {t('home.pulse.title')}
+                          </div>
+                          <div className="text-white font-semibold text-sm leading-tight">
+                            {pulseData.symptom 
+                              ? `${t('home.pulse.topSymptom')}: ${t(pulseData.symptom)}`
+                              : `${t('home.pulse.mostCommon')}: ${t(`mood.${pulseData.mood}`)}`}
+                          </div>
+                          <div className="text-[10px] text-[#475569] mt-1 uppercase tracking-wide">
+                            {pulseData.count} {t('home.pulse.participants')} · 24h
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                )}
               </>
             )}
           </div>

@@ -488,6 +488,14 @@ const en: Record<string, string> = {
   'home.faq.a3': 'Geomagnetic storms primarily affect technological systems like satellites and power grids. While some people report headaches or fatigue, there is no definitive medical evidence of direct health risks to humans on the ground.',
   'home.faq.q4': 'How accurate are solar storm forecasts?',
   'home.faq.a4': 'Space weather forecasts are highly accurate for short-term predictions (1-2 hours) using satellite data. Long-term forecasts are probabilistic and can change as solar conditions evolve.',
+
+  // Community Pulse Widget
+  'home.pulse.title': 'Community Pulse',
+  'home.pulse.desc': 'How users are feeling during current activity (last 24h)',
+  'home.pulse.mostCommon': 'Most Common Mood',
+  'home.pulse.topSymptom': 'Top Symptom',
+  'home.pulse.participants': 'participants',
+  'home.pulse.noData': 'Waiting for today\'s first reports...',
 };
 
 export default en;
