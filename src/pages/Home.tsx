@@ -267,10 +267,11 @@ const Home = () => {
             {/* Live Kp */}
             {loading ? (
               <div className="my-8 flex flex-col items-center gap-4">
-                <Skeleton className="w-40 h-40 sm:w-56 sm:h-56 rounded-2xl" />
-                <Skeleton className="w-48 h-10 rounded-full" />
+                {/* Adjusted height to match 8xl (96px) and 160px text more closely to prevent CLS */}
+                <Skeleton className="w-40 h-24 sm:w-64 sm:h-40 rounded-2xl" />
+                <Skeleton className="w-48 h-8 rounded-full" />
                 <div className="flex gap-3 mt-2">
-                  {[...Array(3)].map((_, i) => <Skeleton key={i} className="w-32 h-10 rounded-xl" />)}
+                  {[...Array(3)].map((_, i) => <Skeleton key={i} className="w-24 h-8 rounded-xl" />)}
                 </div>
               </div>
             ) : (
