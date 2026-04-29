@@ -17,6 +17,7 @@
     "ios:livereload": "npx cap run ios --livereload --external"
   },
   "dependencies": {
+    "@capacitor/android": "^8.3.1",
     "@capacitor/cli": "^8.3.1",
     "@capacitor/core": "^8.3.1",
     "@capacitor/ios": "^8.3.1",
