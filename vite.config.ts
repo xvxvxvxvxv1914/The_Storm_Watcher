@@ -43,6 +43,9 @@ export default defineConfig(({ command }) => ({
     chunkSizeWarningLimit: 1000,
   },
   server: {
+    watch: {
+      ignored: ['**/android/**', '**/ios/**'],
+    },
     proxy: {
       '/donki': {
         target: 'https://kauai.ccmc.gsfc.nasa.gov',
@@ -52,6 +55,7 @@ export default defineConfig(({ command }) => ({
       '/api/niggg': {
         target: 'https://pagmag.ngic.bg',
         changeOrigin: true,
+        secure: false,
         rewrite: (path) => path.replace(/^\/api\/niggg/, ''),
       },
     },

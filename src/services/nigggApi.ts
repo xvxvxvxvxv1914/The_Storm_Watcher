@@ -15,9 +15,16 @@ export const fetchNigggData = async (): Promise<NigggDataSet> => {
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
 
-    // Format DD-MM-YYYY or YYYY-MM-DD. The PHP script accepts both, but YYYY-MM-DD is safer.
-    const d1 = yesterday.toISOString().split('T')[0];
-    const d2 = today.toISOString().split('T')[0];
+    // Format DD-MM-YYYY required by the PHP script.
+    const formatDate = (date: Date) => {
+      const d = String(date.getDate()).padStart(2, '0');
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const y = date.getFullYear();
+      return `${d}-${m}-${y}`;
+    };
+
+    const d1 = formatDate(yesterday);
+    const d2 = formatDate(today);
 
     const formData = new URLSearchParams();
     formData.append('chdate1', d1);
