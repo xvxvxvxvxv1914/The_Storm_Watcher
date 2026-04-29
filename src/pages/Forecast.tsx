@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
-import { Calendar, TrendingUp, AlertCircle, Sun } from 'lucide-react';
+import { Calendar, TrendingUp, AlertCircle, Sun, MapPin, Info, Activity, Radio } from 'lucide-react';
 import { getKpForecast, getStormStatus, getKpGradientStyle } from '../services/noaaApi';
+import { fetchNigggData, type NigggDataPoint } from '../services/nigggApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import StarField from '../components/StarField';
 import { Skeleton, SkeletonChart } from '../components/Skeleton';
@@ -17,13 +18,18 @@ interface ForecastItem {
 const Forecast = () => {
   const { t } = useLanguage();
   const [forecastData, setForecastData] = useState<ForecastItem[]>([]);
+  const [nigggData, setNigggData] = useState<NigggDataPoint[]>([]);
   const [loading, setLoading] = useState(true);
   const [, setLastUpdated] = useState<Date>(new Date());
 
   const fetchForecast = React.useCallback(async () => {
     try {
-      const data = await getKpForecast();
-      const formattedData = (data ?? []).map((item) => {
+      const [kpData, nigggResult] = await Promise.all([
+        getKpForecast(),
+        fetchNigggData(),
+      ]);
+
+      const formattedData = (kpData ?? []).map((item) => {
         const date = new Date(item.time_tag);
         return {
           time: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
@@ -33,10 +39,17 @@ const Forecast = () => {
         };
       });
       setForecastData(formattedData);
+      
+      if (nigggResult && nigggResult.hComponent.length > 0) {
+        // Take the last 10 points for the table
+        setNigggData(nigggResult.hComponent.slice(-10).reverse());
+      }
+
       setLastUpdated(new Date());
       setLoading(false);
     } catch {
       setForecastData([]);
+      setNigggData([]);
       setLoading(false);
     }
   }, []);
@@ -194,30 +207,82 @@ const Forecast = () => {
             </div>
           </div>
         </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+          <div className="lg:col-span-2 glass-surface rounded-2xl p-8 h-fit">
+            <h3 className="text-2xl font-bold text-white mb-6 uppercase tracking-wide flex items-center gap-3">
+              <Sun className="w-6 h-6 text-[#f97316]" />
+              {t('forecast.kpForecast')}
+            </h3>
+            {forecastChartData.length > 0 ? (
+              <TimeSeriesChart
+                data={forecastChartData}
+                color="#f97316"
+                type="area"
+                height={300}
+                yMin={0}
+                yMax={9}
+                refLines={[
+                  { value: 5, color: '#f59e0b', label: 'G1' },
+                  { value: 7, color: '#ef4444', label: 'G3' },
+                ]}
+              />
+            ) : (
+              <div className="h-64 flex items-center justify-center text-[#94a3b8]">
+                {t('dashboard.noData')}
+              </div>
+            )}
+          </div>
 
-        <div className="glass-surface rounded-2xl p-8 mb-8">
-          <h3 className="text-2xl font-bold text-white mb-6 uppercase tracking-wide flex items-center gap-3">
-            <Sun className="w-6 h-6 text-[#f97316]" />
-            {t('forecast.kpForecast')}
-          </h3>
-          {forecastChartData.length > 0 ? (
-            <TimeSeriesChart
-              data={forecastChartData}
-              color="#f97316"
-              type="area"
-              height={300}
-              yMin={0}
-              yMax={9}
-              refLines={[
-                { value: 5, color: '#f59e0b', label: 'G1' },
-                { value: 7, color: '#ef4444', label: 'G3' },
-              ]}
-            />
-          ) : (
-            <div className="h-64 flex items-center justify-center text-[#94a3b8]">
-              {t('dashboard.noData')}
+          <div className="glass-surface rounded-2xl p-8 flex flex-col h-full">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-white uppercase tracking-wide flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-[#10b981]" />
+                {t('dashboard.localMagnetometer') || 'Bulgaria Local Data'}
+              </h3>
+              <div className="group relative">
+                <Info className="w-4 h-4 text-[#94a3b8] cursor-help hover:text-white transition-colors" />
+                <div className="absolute right-0 top-6 w-48 p-2 rounded-lg bg-[#0a0a1a] border border-white/10 text-[10px] text-[#94a3b8] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
+                  Real-time magnetic field intensity from Panagyurishte (PAG) station. Source: NIGGG.
+                </div>
+              </div>
             </div>
-          )}
+            
+            <div className="flex-grow overflow-hidden">
+              {nigggData.length > 0 ? (
+                <div className="space-y-2">
+                  <div className="grid grid-cols-2 text-[10px] uppercase font-bold text-[#64748b] pb-2 border-b border-white/5">
+                    <span>Time</span>
+                    <span className="text-right">H-Component (nT)</span>
+                  </div>
+                  <div className="space-y-1 max-h-[300px] overflow-y-auto custom-scrollbar pr-2">
+                    {nigggData.map((pt, idx) => (
+                      <div key={idx} className="grid grid-cols-2 py-2 px-3 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
+                        <span className="text-xs text-[#94a3b8] font-mono">
+                          {new Date(pt.time * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                        <span className="text-sm font-bold text-[#10b981] text-right font-mono">
+                          {pt.value.toLocaleString()}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-[10px] text-[#475569] mt-4 italic">
+                    * Updated every minute from official NIGGG observatory.
+                  </p>
+                </div>
+              ) : (
+                <div className="h-full flex flex-col items-center justify-center text-[#64748b] gap-3 py-12">
+                  <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
+                    <Activity className="w-5 h-5 opacity-50" />
+                  </div>
+                  <span className="text-xs uppercase tracking-widest font-medium italic">
+                    {t('dashboard.noData')}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         <div className="glass-surface rounded-2xl p-8">

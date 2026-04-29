@@ -10,10 +10,10 @@ export interface NigggDataSet {
 
 export const fetchNigggData = async (): Promise<NigggDataSet> => {
   try {
-    // We want the last 24-48 hours. Let's fetch yesterday and today.
+    // We want the last 72 hours to ensure we catch working data.
     const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
+    const threeDaysAgo = new Date(today);
+    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
 
     // Format DD-MM-YYYY required by the PHP script.
     const formatDate = (date: Date) => {
@@ -23,7 +23,7 @@ export const fetchNigggData = async (): Promise<NigggDataSet> => {
       return `${d}-${m}-${y}`;
     };
 
-    const d1 = formatDate(yesterday);
+    const d1 = formatDate(threeDaysAgo);
     const d2 = formatDate(today);
 
     const formData = new URLSearchParams();
