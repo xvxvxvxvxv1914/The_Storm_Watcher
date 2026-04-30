@@ -373,7 +373,7 @@ const Dashboard = () => {
               <TimeSeriesChart
                 data={nigggData as TsPoint[]}
                 color={nigggStatus.color}
-                type="line"
+                type="baseline"
                 height={280}
                 refLines={[
                   { value: 0, color: '#ffffff25', label: '0' },

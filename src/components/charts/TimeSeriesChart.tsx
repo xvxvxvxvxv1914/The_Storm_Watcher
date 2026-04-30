@@ -4,6 +4,7 @@ import {
   ColorType,
   AreaSeries,
   LineSeries,
+  BaselineSeries,
   type IChartApi,
   type Time,
   type TickMarkType,
@@ -24,7 +25,7 @@ interface RefLine {
 interface Props {
   data: TsPoint[];
   color: string;
-  type?: 'line' | 'area';
+  type?: 'line' | 'area' | 'baseline';
   height?: number;
   refLines?: RefLine[];
   yMin?: number;
@@ -113,6 +114,18 @@ export default function TimeSeriesChart({
         lineColor: color,
         topColor: color + '50',
         bottomColor: color + '05',
+        lineWidth: 2,
+        priceLineVisible: false,
+      });
+    } else if (type === 'baseline') {
+      series = chart.addSeries(BaselineSeries, {
+        baseValue: { type: 'price', price: 0 },
+        topLineColor: '#ef4444',
+        topFillColor1: '#ef444430',
+        topFillColor2: '#ef444408',
+        bottomLineColor: '#10b981',
+        bottomFillColor1: '#10b98108',
+        bottomFillColor2: '#10b98130',
         lineWidth: 2,
         priceLineVisible: false,
       });
