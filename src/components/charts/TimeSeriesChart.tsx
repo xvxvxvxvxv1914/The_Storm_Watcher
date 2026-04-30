@@ -123,9 +123,9 @@ export default function TimeSeriesChart({
         topLineColor: '#f97316',
         topFillColor1: '#ef444445',
         topFillColor2: '#f9731618',
-        bottomLineColor: '#10b981',
-        bottomFillColor1: '#10b98130',
-        bottomFillColor2: '#eab30812',
+        bottomLineColor: '#f97316',
+        bottomFillColor1: '#ef444445',
+        bottomFillColor2: '#10b98118',
         lineWidth: 2,
         priceLineVisible: false,
       });
