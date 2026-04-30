@@ -120,12 +120,12 @@ export default function TimeSeriesChart({
     } else if (type === 'baseline') {
       series = chart.addSeries(BaselineSeries, {
         baseValue: { type: 'price', price: 0 },
-        topLineColor: '#ef4444',
-        topFillColor1: '#ef444430',
-        topFillColor2: '#ef444408',
+        topLineColor: '#f97316',
+        topFillColor1: '#ef444445',
+        topFillColor2: '#f9731618',
         bottomLineColor: '#10b981',
-        bottomFillColor1: '#10b98108',
-        bottomFillColor2: '#10b98130',
+        bottomFillColor1: '#10b98130',
+        bottomFillColor2: '#eab30812',
         lineWidth: 2,
         priceLineVisible: false,
       });
