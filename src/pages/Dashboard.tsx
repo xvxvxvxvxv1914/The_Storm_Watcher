@@ -4,7 +4,7 @@ import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesCh
 import SvgBarChart from '../components/charts/SvgBarChart';
 import { Activity, Wind, Compass, Sun, Radio, MapPin } from 'lucide-react';
 import { getKpIndex, getSolarWind, getMagField, getXrayFlux, getKpHistory3Day, getStormStatus, getXrayClass, getKpGradientStyle } from '../services/noaaApi';
-import { fetchNigggData, type NigggDataPoint } from '../services/nigggApi';
+import { fetchNigggData, toDeltaSeries, getNigggStormStatus, type NigggDataPoint } from '../services/nigggApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import StarField from '../components/StarField';
 import { SkeletonCard, SkeletonChart, Skeleton } from '../components/Skeleton';
@@ -96,9 +96,7 @@ const Dashboard = () => {
       }
 
       if (nigggResult && nigggResult.hComponent.length > 0) {
-        const vals = nigggResult.hComponent;
-        const baseline = vals.reduce((s, p) => s + p.value, 0) / vals.length;
-        setNigggData(vals.map(p => ({ time: p.time, value: Number((p.value - baseline).toFixed(2)) })));
+        setNigggData(toDeltaSeries(nigggResult.hComponent));
       } else {
         setNigggData([]);
       }
@@ -142,6 +140,12 @@ const Dashboard = () => {
 
   const stormStatus = getStormStatus(kpValue);
   const xrayClass = getXrayClass(xrayFlux);
+
+  const nigggStatus = useMemo(() => {
+    if (nigggData.length === 0) return null;
+    const minDelta = Math.min(...nigggData.map(p => p.value));
+    return { ...getNigggStormStatus(minDelta), minDelta };
+  }, [nigggData]);
 
   const filteredKpChart = useMemo(() => {
     const hoursBack = timeRange === '24h' ? 24 : timeRange === '48h' ? 48 : 72;
@@ -359,34 +363,26 @@ const Dashboard = () => {
               Source: NIGGG
             </span>
           </div>
-          {nigggData.length > 0 ? (() => {
-            const minDelta = Math.min(...nigggData.map(p => p.value));
-            const status = minDelta < -50
-              ? { label: 'STORM', color: '#ef4444', bg: 'bg-red-500/10 border-red-500/30', desc: 'Магнитна буря — смущения в електрониката и навигацията.' }
-              : minDelta < -20
-              ? { label: 'DISTURBED', color: '#f97316', bg: 'bg-orange-500/10 border-orange-500/30', desc: 'Магнитно смущение — слаба нестабилност.' }
-              : { label: 'CALM', color: '#10b981', bg: 'bg-emerald-500/10 border-emerald-500/30', desc: 'Магнитното поле е спокойно.' };
-            return (
-              <>
-                <div className={`flex items-center gap-4 px-5 py-4 rounded-xl border mb-5 ${status.bg}`}>
-                  <span className="text-2xl font-black tracking-widest" style={{ color: status.color }}>{status.label}</span>
-                  <span className="text-sm text-[#94a3b8]">{status.desc}</span>
-                  <span className="ml-auto text-xs text-[#64748b] font-mono">min ΔH: {minDelta.toFixed(1)} nT</span>
-                </div>
-                <TimeSeriesChart
-                  data={nigggData as TsPoint[]}
-                  color={status.color}
-                  type="line"
-                  height={280}
-                  refLines={[
-                    { value: 0, color: '#ffffff25', label: '0' },
-                    { value: -20, color: '#f9731660', label: '-20 nT' },
-                    { value: -50, color: '#ef444460', label: '-50 nT' },
-                  ]}
-                />
-              </>
-            );
-          })() : (
+          {nigggStatus ? (
+            <>
+              <div className={`flex items-center gap-4 px-5 py-4 rounded-xl border mb-5 ${nigggStatus.bg}`}>
+                <span className="text-2xl font-black tracking-widest" style={{ color: nigggStatus.color }}>{nigggStatus.label}</span>
+                <span className="text-sm text-[#94a3b8]">{nigggStatus.desc}</span>
+                <span className="ml-auto text-xs text-[#64748b] font-mono">min ΔH: {nigggStatus.minDelta.toFixed(1)} nT</span>
+              </div>
+              <TimeSeriesChart
+                data={nigggData as TsPoint[]}
+                color={nigggStatus.color}
+                type="line"
+                height={280}
+                refLines={[
+                  { value: 0, color: '#ffffff25', label: '0' },
+                  { value: -20, color: '#f9731660', label: '-20 nT' },
+                  { value: -50, color: '#ef444460', label: '-50 nT' },
+                ]}
+              />
+            </>
+          ) : (
             <div className="h-[300px] flex items-center justify-center text-[#94a3b8]">
               {t('dashboard.noData')}
             </div>

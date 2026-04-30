@@ -8,6 +8,24 @@ export interface NigggDataSet {
   fComponent: NigggDataPoint[];
 }
 
+export interface NigggStormStatus {
+  label: 'CALM' | 'DISTURBED' | 'STORM';
+  color: string;
+  bg: string;
+  desc: string;
+}
+
+export const toDeltaSeries = (pts: NigggDataPoint[]): NigggDataPoint[] => {
+  const baseline = pts.reduce((s, p) => s + p.value, 0) / pts.length;
+  return pts.map(p => ({ time: p.time, value: Number((p.value - baseline).toFixed(2)) }));
+};
+
+export const getNigggStormStatus = (minDelta: number): NigggStormStatus => {
+  if (minDelta < -50) return { label: 'STORM',     color: '#ef4444', bg: 'bg-red-500/10 border-red-500/30',     desc: 'Магнитна буря — смущения в електрониката и навигацията.' };
+  if (minDelta < -20) return { label: 'DISTURBED', color: '#f97316', bg: 'bg-orange-500/10 border-orange-500/30', desc: 'Магнитно смущение — слаба нестабилност.' };
+  return                      { label: 'CALM',      color: '#10b981', bg: 'bg-emerald-500/10 border-emerald-500/30', desc: 'Магнитното поле е спокойно.' };
+};
+
 export const fetchNigggData = async (): Promise<NigggDataSet> => {
   try {
     // We want the last 72 hours to ensure we catch working data.

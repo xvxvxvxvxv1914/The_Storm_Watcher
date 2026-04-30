@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
 import { Calendar, TrendingUp, AlertCircle, Sun, MapPin, Info, Activity } from 'lucide-react';
 import { getKpForecast, getStormStatus, getKpGradientStyle } from '../services/noaaApi';
-import { fetchNigggData, type NigggDataPoint } from '../services/nigggApi';
+import { fetchNigggData, toDeltaSeries, type NigggDataPoint } from '../services/nigggApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import StarField from '../components/StarField';
 import { Skeleton, SkeletonChart } from '../components/Skeleton';
@@ -41,10 +41,7 @@ const Forecast = () => {
       setForecastData(formattedData);
       
       if (nigggResult && nigggResult.hComponent.length > 0) {
-        const vals = nigggResult.hComponent;
-        const baseline = vals.reduce((s, p) => s + p.value, 0) / vals.length;
-        const delta = vals.map(p => ({ time: p.time, value: Number((p.value - baseline).toFixed(2)) }));
-        setNigggData(delta.slice(-10).reverse());
+        setNigggData(toDeltaSeries(nigggResult.hComponent).slice(-10).reverse());
       }
 
       setLastUpdated(new Date());

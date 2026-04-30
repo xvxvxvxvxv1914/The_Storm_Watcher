@@ -69,8 +69,6 @@ export interface Alert {
 const TTL_1M = 60_000;      // 1-min feeds
 const TTL_5M = 300_000;     // slower-changing data (history, alerts)
 const TTL_FORECAST = 900_000; // 15 min — forecast updates every ~3 hours
-const TTL_GFZ = 900_000;    // GFZ Kp updates every ~15 min (3-hour index)
-
 const GFZ_BASE = '/api/gfz/app/json/';
 
 interface GfzResponse {
@@ -81,19 +79,22 @@ interface GfzResponse {
 
 const toGfzDate = (d: Date) => d.toISOString().split('.')[0] + 'Z';
 
-const fetchGfzKp = async (start: Date, end: Date): Promise<GfzResponse> => {
-  const url = `${GFZ_BASE}?start=${encodeURIComponent(toGfzDate(start))}&end=${encodeURIComponent(toGfzDate(end))}&index=Kp`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`GFZ HTTP ${res.status}`);
-  return res.json() as Promise<GfzResponse>;
-};
+// Single shared fetch + cache for both getKpIndex and getKpHistory3Day.
+// Fetches 3 days so both consumers get what they need from one request.
+const getGfzKp3Day = (): Promise<GfzResponse> =>
+  cached('gfz-kp', TTL_FORECAST, async () => {
+    const end = new Date();
+    const start = new Date(end.getTime() - 3 * 24 * 60 * 60 * 1000);
+    const url = `${GFZ_BASE}?start=${encodeURIComponent(toGfzDate(start))}&end=${encodeURIComponent(toGfzDate(end))}&index=Kp`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`GFZ HTTP ${res.status}`);
+    return res.json() as Promise<GfzResponse>;
+  });
 
 export const getKpIndex = (): Promise<KpIndexData[]> =>
-  cached('kp', TTL_GFZ, async () => {
+  cached('kp', TTL_FORECAST, async () => {
     try {
-      const end = new Date();
-      const start = new Date(end.getTime() - 48 * 60 * 60 * 1000);
-      const data = await fetchGfzKp(start, end);
+      const data = await getGfzKp3Day();
       return (data.datetime ?? []).map((dt, i) => ({
         time_tag: dt.replace('Z', ''),
         kp_index: data.Kp[i] ?? 0,
@@ -205,12 +206,10 @@ export const getAuroraModel = (): Promise<AuroraOvationPoint[]> =>
   });
 
 export const getKpHistory3Day = (): Promise<{ time_tag: string; Kp: number }[]> =>
-  cached('kp-history-3d', TTL_GFZ, async () => {
+  cached('kp-history-3d', TTL_FORECAST, async () => {
     try {
-      const end = new Date();
-      const start = new Date(end.getTime() - 3 * 24 * 60 * 60 * 1000);
-      const data = await fetchGfzKp(start, end);
-      return (data.datetime ?? []).map((dt, i) => ({
+      const data = await getGfzKp3Day();
+      return (data.datetime ?? []).map((dt: string, i: number) => ({
         time_tag: dt.replace('Z', ''),
         Kp: data.Kp[i] ?? 0,
       }));
