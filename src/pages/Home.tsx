@@ -639,14 +639,14 @@ const Home = () => {
           </p>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {[
-              { name: 'NOAA SWPC', sub: 'Space Weather Prediction Center', color: 'from-[#0ea5e9] to-[#0284c7]', flag: '🇺🇸' },
-              { name: 'NASA DONKI', sub: 'Space Weather Database', color: 'from-[#6366f1] to-[#4f46e5]', flag: '🇺🇸' },
-              { name: 'GFZ Potsdam', sub: 'Official Kp Index Authority', color: 'from-[#f59e0b] to-[#d97706]', flag: '🇩🇪' },
-              { name: 'ESA', sub: 'Space Weather Service', color: 'from-[#10b981] to-[#059669]', flag: '🇪🇺' },
-              { name: 'NIGGG', sub: 'Bulgaria Geophysics Institute', color: 'from-[#f97316] to-[#ea580c]', flag: '🇧🇬' },
+              { name: 'NOAA SWPC', sub: 'Space Weather Prediction Center', color: 'from-[#0ea5e9] to-[#0284c7]', flag: 'us' },
+              { name: 'NASA DONKI', sub: 'Space Weather Database', color: 'from-[#6366f1] to-[#4f46e5]', flag: 'us' },
+              { name: 'GFZ Potsdam', sub: 'Official Kp Index Authority', color: 'from-[#f59e0b] to-[#d97706]', flag: 'de' },
+              { name: 'ESA', sub: 'Space Weather Service', color: 'from-[#10b981] to-[#059669]', flag: 'eu' },
+              { name: 'NIGGG', sub: 'Bulgaria Geophysics Institute', color: 'from-[#f97316] to-[#ea580c]', flag: 'bg' },
             ].map(source => (
               <div key={source.name} className="glass-surface rounded-xl p-5 border border-white/5 relative">
-                <span className="absolute top-2 right-2 text-lg">{source.flag}</span>
+                <img src={`https://flagcdn.com/32x24/${source.flag}.png`} alt={source.flag} className="absolute top-2 right-2 rounded-sm shadow-sm" width={32} height={24} />
                 <div className={`text-2xl font-bold mb-1 bg-gradient-to-br ${source.color} bg-clip-text text-transparent`}>
                   {source.name}
                 </div>
