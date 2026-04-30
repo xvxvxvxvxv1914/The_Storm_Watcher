@@ -359,18 +359,34 @@ const Dashboard = () => {
               Source: NIGGG
             </span>
           </div>
-          {nigggData.length > 0 ? (
-            <>
-              <p className="text-xs text-[#64748b] mb-3">ΔH (nT) — отклонение от средната стойност за периода. Отрицателни стойности = магнитна буря.</p>
-              <TimeSeriesChart
-                data={nigggData as TsPoint[]}
-                color="#10b981"
-                type="line"
-                height={300}
-                refLines={[{ value: 0, color: '#ffffff30', label: '0 nT' }]}
-              />
-            </>
-          ) : (
+          {nigggData.length > 0 ? (() => {
+            const minDelta = Math.min(...nigggData.map(p => p.value));
+            const status = minDelta < -50
+              ? { label: 'STORM', color: '#ef4444', bg: 'bg-red-500/10 border-red-500/30', desc: 'Магнитна буря — смущения в електрониката и навигацията.' }
+              : minDelta < -20
+              ? { label: 'DISTURBED', color: '#f97316', bg: 'bg-orange-500/10 border-orange-500/30', desc: 'Магнитно смущение — слаба нестабилност.' }
+              : { label: 'CALM', color: '#10b981', bg: 'bg-emerald-500/10 border-emerald-500/30', desc: 'Магнитното поле е спокойно.' };
+            return (
+              <>
+                <div className={`flex items-center gap-4 px-5 py-4 rounded-xl border mb-5 ${status.bg}`}>
+                  <span className="text-2xl font-black tracking-widest" style={{ color: status.color }}>{status.label}</span>
+                  <span className="text-sm text-[#94a3b8]">{status.desc}</span>
+                  <span className="ml-auto text-xs text-[#64748b] font-mono">min ΔH: {minDelta.toFixed(1)} nT</span>
+                </div>
+                <TimeSeriesChart
+                  data={nigggData as TsPoint[]}
+                  color={status.color}
+                  type="line"
+                  height={280}
+                  refLines={[
+                    { value: 0, color: '#ffffff25', label: '0' },
+                    { value: -20, color: '#f9731660', label: '-20 nT' },
+                    { value: -50, color: '#ef444460', label: '-50 nT' },
+                  ]}
+                />
+              </>
+            );
+          })() : (
             <div className="h-[300px] flex items-center justify-center text-[#94a3b8]">
               {t('dashboard.noData')}
             </div>
