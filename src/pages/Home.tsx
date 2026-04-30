@@ -645,12 +645,10 @@ const Home = () => {
               { name: 'ESA', sub: 'Space Weather Service', color: 'from-[#10b981] to-[#059669]', flag: '🇪🇺' },
               { name: 'NIGGG', sub: 'Bulgaria Geophysics Institute', color: 'from-[#f97316] to-[#ea580c]', flag: '🇧🇬' },
             ].map(source => (
-              <div key={source.name} className="glass-surface rounded-xl p-5 border border-white/5">
-                <div className="flex items-center justify-between mb-1">
-                  <div className={`text-2xl font-bold bg-gradient-to-br ${source.color} bg-clip-text text-transparent`}>
-                    {source.name}
-                  </div>
-                  <span className="text-2xl">{source.flag}</span>
+              <div key={source.name} className="glass-surface rounded-xl p-5 border border-white/5 relative">
+                <span className="absolute top-2 right-2 text-lg">{source.flag}</span>
+                <div className={`text-2xl font-bold mb-1 bg-gradient-to-br ${source.color} bg-clip-text text-transparent`}>
+                  {source.name}
                 </div>
                 <div className="text-[#64748b] text-xs leading-snug">{source.sub}</div>
               </div>
