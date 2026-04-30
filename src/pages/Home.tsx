@@ -639,15 +639,18 @@ const Home = () => {
           </p>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {[
-              { name: 'NOAA SWPC', sub: 'Space Weather Prediction Center', color: 'from-[#0ea5e9] to-[#0284c7]' },
-              { name: 'NASA DONKI', sub: 'Space Weather Database', color: 'from-[#6366f1] to-[#4f46e5]' },
-              { name: 'GFZ Potsdam', sub: 'Official Kp Index Authority', color: 'from-[#f59e0b] to-[#d97706]' },
-              { name: 'ESA', sub: 'Space Weather Service', color: 'from-[#10b981] to-[#059669]' },
-              { name: 'NIGGG', sub: 'Bulgaria Geophysics Institute', color: 'from-[#f97316] to-[#ea580c]' },
+              { name: 'NOAA SWPC', sub: 'Space Weather Prediction Center', color: 'from-[#0ea5e9] to-[#0284c7]', flag: '🇺🇸' },
+              { name: 'NASA DONKI', sub: 'Space Weather Database', color: 'from-[#6366f1] to-[#4f46e5]', flag: '🇺🇸' },
+              { name: 'GFZ Potsdam', sub: 'Official Kp Index Authority', color: 'from-[#f59e0b] to-[#d97706]', flag: '🇩🇪' },
+              { name: 'ESA', sub: 'Space Weather Service', color: 'from-[#10b981] to-[#059669]', flag: '🇪🇺' },
+              { name: 'NIGGG', sub: 'Bulgaria Geophysics Institute', color: 'from-[#f97316] to-[#ea580c]', flag: '🇧🇬' },
             ].map(source => (
               <div key={source.name} className="glass-surface rounded-xl p-5 border border-white/5">
-                <div className={`text-2xl font-bold mb-1 bg-gradient-to-br ${source.color} bg-clip-text text-transparent`}>
-                  {source.name}
+                <div className="flex items-center justify-between mb-1">
+                  <div className={`text-2xl font-bold bg-gradient-to-br ${source.color} bg-clip-text text-transparent`}>
+                    {source.name}
+                  </div>
+                  <span className="text-2xl">{source.flag}</span>
                 </div>
                 <div className="text-[#64748b] text-xs leading-snug">{source.sub}</div>
               </div>
