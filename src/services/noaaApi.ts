@@ -69,13 +69,35 @@ export interface Alert {
 const TTL_1M = 60_000;      // 1-min feeds
 const TTL_5M = 300_000;     // slower-changing data (history, alerts)
 const TTL_FORECAST = 900_000; // 15 min — forecast updates every ~3 hours
+const TTL_GFZ = 900_000;    // GFZ Kp updates every ~15 min (3-hour index)
+
+const GFZ_BASE = '/api/gfz/app/json/';
+
+interface GfzResponse {
+  datetime: string[];
+  Kp: number[];
+  status: string[];
+}
+
+const fetchGfzKp = async (startIso: string, endIso: string): Promise<GfzResponse> => {
+  const url = `${GFZ_BASE}?start=${encodeURIComponent(startIso)}&end=${encodeURIComponent(endIso)}&index=Kp`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`GFZ HTTP ${res.status}`);
+  return res.json() as Promise<GfzResponse>;
+};
 
 export const getKpIndex = (): Promise<KpIndexData[]> =>
-  cached('kp', TTL_1M, async () => {
+  cached('kp', TTL_GFZ, async () => {
     try {
-      return await getJson<KpIndexData[]>(`${NOAA_BASE_URL}/json/planetary_k_index_1m.json`);
+      const end = new Date();
+      const start = new Date(end.getTime() - 48 * 60 * 60 * 1000);
+      const data = await fetchGfzKp(start.toISOString(), end.toISOString());
+      return (data.datetime ?? []).map((dt, i) => ({
+        time_tag: dt,
+        kp_index: data.Kp[i] ?? 0,
+      }));
     } catch (error) {
-      console.error('Error fetching data in getKpIndex:', error);
+      console.error('Error fetching GFZ Kp:', error);
       return [];
     }
   });
@@ -181,13 +203,17 @@ export const getAuroraModel = (): Promise<AuroraOvationPoint[]> =>
   });
 
 export const getKpHistory3Day = (): Promise<{ time_tag: string; Kp: number }[]> =>
-  cached('kp-history-3d', TTL_5M, async () => {
+  cached('kp-history-3d', TTL_GFZ, async () => {
     try {
-      return await getJson<{ time_tag: string; Kp: number }[]>(
-        `${NOAA_BASE_URL}/products/noaa-planetary-k-index.json`
-      );
+      const end = new Date();
+      const start = new Date(end.getTime() - 3 * 24 * 60 * 60 * 1000);
+      const data = await fetchGfzKp(start.toISOString(), end.toISOString());
+      return (data.datetime ?? []).map((dt, i) => ({
+        time_tag: dt,
+        Kp: data.Kp[i] ?? 0,
+      }));
     } catch (error) {
-      console.error('Error fetching data in getKpHistory3Day:', error);
+      console.error('Error fetching GFZ Kp history:', error);
       return [];
     }
   });

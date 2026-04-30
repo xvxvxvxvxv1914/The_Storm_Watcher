@@ -58,6 +58,11 @@ export default defineConfig(({ command }) => ({
         secure: false,
         rewrite: (path) => path.replace(/^\/api\/niggg/, ''),
       },
+      '/api/gfz': {
+        target: 'https://kp.gfz.de',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/gfz/, ''),
+      },
     },
   },
 }));

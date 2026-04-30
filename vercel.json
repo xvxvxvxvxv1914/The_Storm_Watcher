@@ -9,6 +9,10 @@
       "destination": "https://pagmag.ngic.bg/:path*"
     },
     {
+      "source": "/api/gfz/:path*",
+      "destination": "https://kp.gfz.de/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
