@@ -13,6 +13,7 @@ export interface NigggStormStatus {
   color: string;
   bg: string;
   desc: string;
+  detail: string;
 }
 
 export const toDeltaSeries = (pts: NigggDataPoint[]): NigggDataPoint[] => {
@@ -21,9 +22,21 @@ export const toDeltaSeries = (pts: NigggDataPoint[]): NigggDataPoint[] => {
 };
 
 export const getNigggStormStatus = (minDelta: number): NigggStormStatus => {
-  if (minDelta < -50) return { label: 'STORM',     color: '#ef4444', bg: 'bg-red-500/10 border-red-500/30',     desc: 'Магнитна буря — смущения в електрониката и навигацията.' };
-  if (minDelta < -20) return { label: 'DISTURBED', color: '#f97316', bg: 'bg-orange-500/10 border-orange-500/30', desc: 'Магнитно смущение — слаба нестабилност.' };
-  return                      { label: 'CALM',      color: '#10b981', bg: 'bg-emerald-500/10 border-emerald-500/30', desc: 'Магнитното поле е спокойно.' };
+  if (minDelta < -50) return {
+    label: 'STORM', color: '#ef4444', bg: 'bg-red-500/10 border-red-500/30',
+    desc: 'Магнитна буря',
+    detail: 'GPS навигацията може да е неточна. Радиовръзките са нарушени. Възможно северно сияние над България.',
+  };
+  if (minDelta < -20) return {
+    label: 'DISTURBED', color: '#f97316', bg: 'bg-orange-500/10 border-orange-500/30',
+    desc: 'Магнитно смущение',
+    detail: 'Леки нарушения в GPS точността и радиовръзките. Следете за развитие.',
+  };
+  return {
+    label: 'CALM', color: '#10b981', bg: 'bg-emerald-500/10 border-emerald-500/30',
+    desc: 'Спокойно',
+    detail: 'Магнитното поле е стабилно. Няма смущения в навигацията или комуникациите.',
+  };
 };
 
 export const fetchNigggData = async (): Promise<NigggDataSet> => {
