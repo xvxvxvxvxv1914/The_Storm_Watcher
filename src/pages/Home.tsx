@@ -637,10 +637,11 @@ const Home = () => {
           <p className="text-[#94a3b8] max-w-2xl mx-auto mb-10 leading-relaxed">
             {t('home.trustedSourcesDesc')}
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {[
               { name: 'NOAA SWPC', sub: 'Space Weather Prediction Center', color: 'from-[#0ea5e9] to-[#0284c7]' },
               { name: 'NASA DONKI', sub: 'Space Weather Database', color: 'from-[#6366f1] to-[#4f46e5]' },
+              { name: 'GFZ Potsdam', sub: 'Official Kp Index Authority', color: 'from-[#f59e0b] to-[#d97706]' },
               { name: 'ESA', sub: 'Space Weather Service', color: 'from-[#10b981] to-[#059669]' },
               { name: 'NIGGG', sub: 'Bulgaria Geophysics Institute', color: 'from-[#f97316] to-[#ea580c]' },
             ].map(source => (
