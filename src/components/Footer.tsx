@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Footer = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const navLinks = [
     { to: '/', label: t('nav.home') },
@@ -17,6 +17,7 @@ const Footer = () => {
     { to: '/sun', label: 'Sun Times' },
     { to: '/sky', label: 'Sky Visibility' },
     { to: '/faq', label: 'Aurora FAQ' },
+    { to: '/magnetic-effects', label: language === 'bg' ? 'Магнитни бури & Здраве' : 'Magnetic Storms & Health' },
   ];
 
   return (
