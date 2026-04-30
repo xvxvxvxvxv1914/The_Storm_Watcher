@@ -80,11 +80,11 @@ interface GfzResponse {
 const toGfzDate = (d: Date) => d.toISOString().split('.')[0] + 'Z';
 
 // Single shared fetch + cache for both getKpIndex and getKpHistory3Day.
-// Fetches 3 days so both consumers get what they need from one request.
+// Fetches 7 days to cover the "Last 7 Days" bar chart in Dashboard.
 const getGfzKp3Day = (): Promise<GfzResponse> =>
   cached('gfz-kp', TTL_FORECAST, async () => {
     const end = new Date();
-    const start = new Date(end.getTime() - 3 * 24 * 60 * 60 * 1000);
+    const start = new Date(end.getTime() - 7 * 24 * 60 * 60 * 1000);
     const url = `${GFZ_BASE}?start=${encodeURIComponent(toGfzDate(start))}&end=${encodeURIComponent(toGfzDate(end))}&index=Kp`;
     const res = await fetch(url);
     if (!res.ok) throw new Error(`GFZ HTTP ${res.status}`);
