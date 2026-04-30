@@ -56,7 +56,7 @@ export default defineConfig(({ command }) => ({
         target: 'https://pagmag.ngic.bg',
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/api\/niggg/, ''),
+        rewrite: () => '/pagcal2.php',
       },
       '/api/gfz': {
         target: 'https://kp.gfz.de',

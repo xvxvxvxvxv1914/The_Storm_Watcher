@@ -67,7 +67,7 @@ export const fetchNigggData = async (): Promise<NigggDataSet> => {
 
     // During dev, use Vite proxy. In production, we might need a real proxy if CORS blocks it.
     // For now, we point to the proxy endpoint.
-    const baseUrl = '/api/niggg/pagcal2.php';
+    const baseUrl = '/api/niggg';
 
     const res = await fetch(baseUrl, {
       method: 'POST',
