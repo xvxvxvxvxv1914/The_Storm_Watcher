@@ -79,8 +79,10 @@ interface GfzResponse {
   status: string[];
 }
 
-const fetchGfzKp = async (startIso: string, endIso: string): Promise<GfzResponse> => {
-  const url = `${GFZ_BASE}?start=${encodeURIComponent(startIso)}&end=${encodeURIComponent(endIso)}&index=Kp`;
+const toGfzDate = (d: Date) => d.toISOString().split('.')[0] + 'Z';
+
+const fetchGfzKp = async (start: Date, end: Date): Promise<GfzResponse> => {
+  const url = `${GFZ_BASE}?start=${encodeURIComponent(toGfzDate(start))}&end=${encodeURIComponent(toGfzDate(end))}&index=Kp`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`GFZ HTTP ${res.status}`);
   return res.json() as Promise<GfzResponse>;
@@ -91,7 +93,7 @@ export const getKpIndex = (): Promise<KpIndexData[]> =>
     try {
       const end = new Date();
       const start = new Date(end.getTime() - 48 * 60 * 60 * 1000);
-      const data = await fetchGfzKp(start.toISOString(), end.toISOString());
+      const data = await fetchGfzKp(start, end);
       return (data.datetime ?? []).map((dt, i) => ({
         time_tag: dt.replace('Z', ''),
         kp_index: data.Kp[i] ?? 0,
@@ -207,7 +209,7 @@ export const getKpHistory3Day = (): Promise<{ time_tag: string; Kp: number }[]> 
     try {
       const end = new Date();
       const start = new Date(end.getTime() - 3 * 24 * 60 * 60 * 1000);
-      const data = await fetchGfzKp(start.toISOString(), end.toISOString());
+      const data = await fetchGfzKp(start, end);
       return (data.datetime ?? []).map((dt, i) => ({
         time_tag: dt.replace('Z', ''),
         Kp: data.Kp[i] ?? 0,
