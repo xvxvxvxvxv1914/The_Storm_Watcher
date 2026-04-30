@@ -93,7 +93,7 @@ export const getKpIndex = (): Promise<KpIndexData[]> =>
       const start = new Date(end.getTime() - 48 * 60 * 60 * 1000);
       const data = await fetchGfzKp(start.toISOString(), end.toISOString());
       return (data.datetime ?? []).map((dt, i) => ({
-        time_tag: dt,
+        time_tag: dt.replace('T', ' ').replace('Z', ''),
         kp_index: data.Kp[i] ?? 0,
       }));
     } catch (error) {
@@ -209,7 +209,7 @@ export const getKpHistory3Day = (): Promise<{ time_tag: string; Kp: number }[]> 
       const start = new Date(end.getTime() - 3 * 24 * 60 * 60 * 1000);
       const data = await fetchGfzKp(start.toISOString(), end.toISOString());
       return (data.datetime ?? []).map((dt, i) => ({
-        time_tag: dt,
+        time_tag: dt.replace('T', ' ').replace('Z', ''),
         Kp: data.Kp[i] ?? 0,
       }));
     } catch (error) {
