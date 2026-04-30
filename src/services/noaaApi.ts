@@ -99,9 +99,14 @@ export const getKpIndex = (): Promise<KpIndexData[]> =>
         time_tag: dt.replace('Z', ''),
         kp_index: data.Kp[i] ?? 0,
       }));
-    } catch (error) {
-      console.error('Error fetching GFZ Kp:', error);
-      return [];
+    } catch {
+      console.warn('GFZ Kp unavailable, falling back to NOAA');
+      try {
+        return await getJson<KpIndexData[]>(`${NOAA_BASE_URL}/json/planetary_k_index_1m.json`);
+      } catch (error) {
+        console.error('NOAA Kp fallback failed:', error);
+        return [];
+      }
     }
   });
 
@@ -213,9 +218,16 @@ export const getKpHistory3Day = (): Promise<{ time_tag: string; Kp: number }[]> 
         time_tag: dt.replace('Z', ''),
         Kp: data.Kp[i] ?? 0,
       }));
-    } catch (error) {
-      console.error('Error fetching GFZ Kp history:', error);
-      return [];
+    } catch {
+      console.warn('GFZ Kp history unavailable, falling back to NOAA');
+      try {
+        return await getJson<{ time_tag: string; Kp: number }[]>(
+          `${NOAA_BASE_URL}/products/noaa-planetary-k-index.json`
+        );
+      } catch (error) {
+        console.error('NOAA Kp history fallback failed:', error);
+        return [];
+      }
     }
   });
 
