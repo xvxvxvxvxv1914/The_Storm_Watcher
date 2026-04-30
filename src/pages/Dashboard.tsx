@@ -371,7 +371,8 @@ const Dashboard = () => {
                   <span className="text-xs text-[#64748b] font-mono">min ΔH: {nigggStatus.minDelta.toFixed(1)} nT</span>
                 </div>
                 <p className="text-sm font-semibold mb-0.5" style={{ color: nigggStatus.color }}>{nigggStatus.desc}</p>
-                <p className="text-xs text-[#94a3b8] leading-relaxed">{nigggStatus.detail}</p>
+                <p className="text-xs text-[#94a3b8] leading-relaxed mb-1">{nigggStatus.detail}</p>
+                <p className="text-xs text-[#64748b] leading-relaxed">👤 {nigggStatus.humanEffect}</p>
               </div>
               <TimeSeriesChart
                 data={nigggData as TsPoint[]}
