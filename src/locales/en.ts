@@ -11,6 +11,9 @@ const en: Record<string, string> = {
   'nav.alerts': 'Alerts',
   'nav.mood': 'Mood',
   'nav.pricing': 'Pricing',
+  'nav.more': 'More',
+  'nav.magneticEffects': 'Magnetic Storms & Health',
+  'nav.faq': 'Aurora FAQ',
 
   // Mood Page
   'mood.title': 'How are you feeling today?',

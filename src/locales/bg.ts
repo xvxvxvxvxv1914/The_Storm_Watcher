@@ -11,6 +11,9 @@ const bg: Record<string, string> = {
   'nav.alerts': 'Известия',
   'nav.mood': 'Настроение',
   'nav.pricing': 'Цени',
+  'nav.more': 'Още',
+  'nav.magneticEffects': 'Магнитни бури & Здраве',
+  'nav.faq': 'Аврора FAQ',
 
   // Mood Page
   'mood.title': 'Как се чувствате днес?',
