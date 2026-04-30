@@ -96,7 +96,9 @@ const Dashboard = () => {
       }
 
       if (nigggResult && nigggResult.hComponent.length > 0) {
-        setNigggData(nigggResult.hComponent);
+        const vals = nigggResult.hComponent;
+        const baseline = vals.reduce((s, p) => s + p.value, 0) / vals.length;
+        setNigggData(vals.map(p => ({ time: p.time, value: Number((p.value - baseline).toFixed(2)) })));
       } else {
         setNigggData([]);
       }
@@ -358,12 +360,16 @@ const Dashboard = () => {
             </span>
           </div>
           {nigggData.length > 0 ? (
-            <TimeSeriesChart
-              data={nigggData as TsPoint[]}
-              color="#10b981"
-              type="line"
-              height={300}
-            />
+            <>
+              <p className="text-xs text-[#64748b] mb-3">ΔH (nT) — отклонение от средната стойност за периода. Отрицателни стойности = магнитна буря.</p>
+              <TimeSeriesChart
+                data={nigggData as TsPoint[]}
+                color="#10b981"
+                type="line"
+                height={300}
+                refLines={[{ value: 0, color: '#ffffff30', label: '0 nT' }]}
+              />
+            </>
           ) : (
             <div className="h-[300px] flex items-center justify-center text-[#94a3b8]">
               {t('dashboard.noData')}

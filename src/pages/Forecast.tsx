@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
-import { Calendar, TrendingUp, AlertCircle, Sun, MapPin, Info, Activity, Radio } from 'lucide-react';
+import { Calendar, TrendingUp, AlertCircle, Sun, MapPin, Info, Activity } from 'lucide-react';
 import { getKpForecast, getStormStatus, getKpGradientStyle } from '../services/noaaApi';
 import { fetchNigggData, type NigggDataPoint } from '../services/nigggApi';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -41,8 +41,10 @@ const Forecast = () => {
       setForecastData(formattedData);
       
       if (nigggResult && nigggResult.hComponent.length > 0) {
-        // Take the last 10 points for the table
-        setNigggData(nigggResult.hComponent.slice(-10).reverse());
+        const vals = nigggResult.hComponent;
+        const baseline = vals.reduce((s, p) => s + p.value, 0) / vals.length;
+        const delta = vals.map(p => ({ time: p.time, value: Number((p.value - baseline).toFixed(2)) }));
+        setNigggData(delta.slice(-10).reverse());
       }
 
       setLastUpdated(new Date());
@@ -243,7 +245,7 @@ const Forecast = () => {
               <div className="group relative">
                 <Info className="w-4 h-4 text-[#94a3b8] cursor-help hover:text-white transition-colors" />
                 <div className="absolute right-0 top-6 w-48 p-2 rounded-lg bg-[#0a0a1a] border border-white/10 text-[10px] text-[#94a3b8] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
-                  Real-time magnetic field intensity from Panagyurishte (PAG) station. Source: NIGGG.
+                  ΔH отклонение от средната за периода (nT). Отрицателни стойности сигнализират магнитна буря. Станция Панагюрище (PAG), NIGGG.
                 </div>
               </div>
             </div>
@@ -253,7 +255,7 @@ const Forecast = () => {
                 <div className="space-y-2">
                   <div className="grid grid-cols-2 text-[10px] uppercase font-bold text-[#64748b] pb-2 border-b border-white/5">
                     <span>Time</span>
-                    <span className="text-right">H-Component (nT)</span>
+                    <span className="text-right">ΔH (nT)</span>
                   </div>
                   <div className="space-y-1 max-h-[300px] overflow-y-auto custom-scrollbar pr-2">
                     {nigggData.map((pt, idx) => (
@@ -261,8 +263,8 @@ const Forecast = () => {
                         <span className="text-xs text-[#94a3b8] font-mono">
                           {new Date(pt.time * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>
-                        <span className="text-sm font-bold text-[#10b981] text-right font-mono">
-                          {pt.value.toLocaleString()}
+                        <span className={`text-sm font-bold text-right font-mono ${pt.value < 0 ? 'text-[#ef4444]' : 'text-[#10b981]'}`}>
+                          {pt.value >= 0 ? '+' : ''}{pt.value.toFixed(2)}
                         </span>
                       </div>
                     ))}
