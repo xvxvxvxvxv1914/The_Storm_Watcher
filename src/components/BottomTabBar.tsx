@@ -86,7 +86,7 @@ const BottomTabBar = () => {
       {/* Floating pill tab bar */}
       <nav
         className="lg:hidden fixed left-4 right-4 z-50"
-        style={{ bottom: 'calc(1rem + env(safe-area-inset-bottom))' }}
+        style={{ bottom: 'calc(0.375rem + env(safe-area-inset-bottom))' }}
         aria-label="Main navigation"
       >
         <div className="glass-surface flex items-center rounded-[28px] px-2 py-1.5">
