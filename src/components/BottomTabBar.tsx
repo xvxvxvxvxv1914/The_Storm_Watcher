@@ -89,10 +89,7 @@ const BottomTabBar = () => {
         style={{ bottom: 'calc(1rem + env(safe-area-inset-bottom))' }}
         aria-label="Main navigation"
       >
-        <div
-          className="flex items-center rounded-[28px] px-2 py-1.5"
-          style={{ background: 'rgba(28, 28, 38, 0.96)', backdropFilter: 'blur(24px)' }}
-        >
+        <div className="glass-surface flex items-center rounded-[28px] px-2 py-1.5">
           {tabs.map(({ to, icon: Icon, labelKey }) => {
             const active = location.pathname === to;
             return (
