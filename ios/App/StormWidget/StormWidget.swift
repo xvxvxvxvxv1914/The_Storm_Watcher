@@ -2,9 +2,19 @@ import WidgetKit
 import SwiftUI
 
 private let appGroupID = "group.com.stormwatcher.app"
-// Shared data is considered fresh for 5 minutes; beyond that the widget fetches
-// its own data so it stays accurate even when the main app is not running.
 private let sharedDataMaxAge: TimeInterval = 300
+
+// MARK: - Models
+
+struct ForecastPoint {
+    let date: Date
+    let kp: Double
+    var color: Color { kpColor(kp) }
+    var hourLabel: String {
+        let h = Calendar.current.component(.hour, from: date)
+        return "\(h)"
+    }
+}
 
 struct KpEntry: TimelineEntry {
     let date: Date
@@ -13,101 +23,174 @@ struct KpEntry: TimelineEntry {
     let stormLevel: String
     let stormColor: Color
     let lastUpdated: String
+    let forecast: [ForecastPoint]
 }
+
+// MARK: - Helpers
+
+private func kpColor(_ kp: Double) -> Color {
+    switch kp {
+    case 9...: return .purple
+    case 8...: return Color(red: 0.8, green: 0, blue: 0.8)
+    case 7...: return .red
+    case 6...: return .orange
+    case 5...: return Color(red: 1, green: 0.6, blue: 0)
+    default:   return .green
+    }
+}
+
+private func kpLevel(_ kp: Double) -> String {
+    switch kp {
+    case 9...: return "G5"
+    case 8...: return "G4"
+    case 7...: return "G3"
+    case 6...: return "G2"
+    case 5...: return "G1"
+    default:   return "QUIET"
+    }
+}
+
+// MARK: - Provider
 
 struct KpProvider: TimelineProvider {
     func placeholder(in context: Context) -> KpEntry {
-        KpEntry(date: Date(), kp: 4.3, windSpeed: 420, stormLevel: "QUIET", stormColor: .green, lastUpdated: "--:--")
+        KpEntry(date: Date(), kp: 2.3, windSpeed: 420,
+                stormLevel: "QUIET", stormColor: .green,
+                lastUpdated: "--:--", forecast: [])
     }
 
     func getSnapshot(in context: Context, completion: @escaping (KpEntry) -> Void) {
-        fetchAll { entry in completion(entry) }
+        fetchAll { completion($0) }
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<KpEntry>) -> Void) {
         fetchAll { entry in
-            let next = Calendar.current.date(byAdding: .minute, value: 15, to: Date())!
-            completion(Timeline(entries: [entry], policy: .after(next)))
+            // Two entries: now + 30 min. atEnd triggers a fresh reload after
+            // both are consumed, which is more reliable than a single .after entry.
+            let next = Calendar.current.date(byAdding: .minute, value: 30, to: Date())!
+            let nextEntry = KpEntry(date: next, kp: entry.kp, windSpeed: entry.windSpeed,
+                                    stormLevel: entry.stormLevel, stormColor: entry.stormColor,
+                                    lastUpdated: entry.lastUpdated, forecast: entry.forecast)
+            completion(Timeline(entries: [entry, nextEntry], policy: .atEnd))
         }
     }
 
     private func fetchAll(completion: @escaping (KpEntry) -> Void) {
-        // Use data written by the main app if it is fresh enough — avoids a
-        // network round-trip and makes the widget feel instant after the app
-        // is opened.
-        if let defaults = UserDefaults(suiteName: appGroupID) {
-            let updated = defaults.double(forKey: "widget_updated")
-            let cachedKp = defaults.double(forKey: "widget_kp")
-            let cachedWind = defaults.integer(forKey: "widget_wind")
-            if updated > 0,
-               Date().timeIntervalSince1970 - updated < sharedDataMaxAge,
-               cachedKp > 0 {
-                completion(makeEntry(kp: cachedKp, wind: cachedWind))
-                return
-            }
-        }
-
-        // Fallback: fetch directly from NOAA (background refresh, app not running).
         let group = DispatchGroup()
         var kp = 0.0
         var wind = 0
+        var forecastPoints: [ForecastPoint] = []
 
-        group.enter()
-        // planetary_k_index_1m.json is an array of objects sorted ascending —
-        // newest sample is `.last`.
-        let kpUrl = URL(string: "https://services.swpc.noaa.gov/json/planetary_k_index_1m.json")!
-        URLSession.shared.dataTask(with: kpUrl) { data, _, _ in
-            defer { group.leave() }
-            guard let data,
-                  let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]],
-                  let last = json.last else { return }
-            // Field can be reported as either kp_index or estimated_kp depending
-            // on whether the sample is final or provisional.
-            if let v = last["kp_index"] as? Double { kp = v }
-            else if let v = last["estimated_kp"] as? Double { kp = v }
-        }.resume()
-
-        group.enter()
-        // rtsw_wind_1m.json returns newest-first, so the latest sample is
-        // `.first`, not `.last` — same gotcha as the web client.
-        let windUrl = URL(string: "https://services.swpc.noaa.gov/json/rtsw/rtsw_wind_1m.json")!
-        URLSession.shared.dataTask(with: windUrl) { data, _, _ in
-            defer { group.leave() }
-            guard let data,
-                  let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else { return }
-            // Prefer the newest active sample; fall back to the newest entry.
-            let active = json.first(where: { ($0["active"] as? Bool) == true }) ?? json.first
-            if let speed = active?["proton_speed"] as? Double {
-                wind = Int(speed)
+        // Use app-group cache for live Kp/wind if fresh
+        var usedCache = false
+        if let defaults = UserDefaults(suiteName: appGroupID) {
+            let updated = defaults.double(forKey: "widget_updated")
+            let ck = defaults.double(forKey: "widget_kp")
+            let cw = defaults.integer(forKey: "widget_wind")
+            if updated > 0,
+               Date().timeIntervalSince1970 - updated < sharedDataMaxAge,
+               ck > 0 {
+                kp = ck
+                wind = cw
+                usedCache = true
             }
+        }
+
+        if !usedCache {
+            group.enter()
+            URLSession.shared.dataTask(
+                with: URL(string: "https://services.swpc.noaa.gov/json/planetary_k_index_1m.json")!
+            ) { data, _, _ in
+                defer { group.leave() }
+                guard let data,
+                      let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]],
+                      let last = json.last else { return }
+                if let v = last["kp_index"] as? Double      { kp = v }
+                else if let v = last["estimated_kp"] as? Double { kp = v }
+            }.resume()
+
+            group.enter()
+            URLSession.shared.dataTask(
+                with: URL(string: "https://services.swpc.noaa.gov/json/rtsw/rtsw_wind_1m.json")!
+            ) { data, _, _ in
+                defer { group.leave() }
+                guard let data,
+                      let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else { return }
+                let active = json.first(where: { ($0["active"] as? Bool) == true }) ?? json.first
+                if let s = active?["proton_speed"] as? Double { wind = Int(s) }
+            }.resume()
+        }
+
+        // Always fetch forecast — changes every 3h regardless of cache
+        group.enter()
+        URLSession.shared.dataTask(
+            with: URL(string: "https://services.swpc.noaa.gov/products/noaa-planetary-k-index-forecast.json")!
+        ) { data, _, _ in
+            defer { group.leave() }
+            guard let data,
+                  let json = try? JSONSerialization.jsonObject(with: data) as? [[Any]],
+                  json.count > 1 else { return }
+
+            let fmt = DateFormatter()
+            fmt.dateFormat = "yyyy-MM-dd HH:mm:ss"
+            fmt.timeZone = TimeZone(identifier: "UTC")
+            let now = Date()
+
+            forecastPoints = json.dropFirst().compactMap { row -> ForecastPoint? in
+                guard row.count >= 2,
+                      let timeStr = row[0] as? String,
+                      let date = fmt.date(from: timeStr),
+                      date > now else { return nil }
+                let kpVal: Double
+                if let v = row[1] as? Double      { kpVal = v }
+                else if let v = row[1] as? Int    { kpVal = Double(v) }
+                else                              { return nil }
+                return ForecastPoint(date: date, kp: kpVal)
+            }
+            .prefix(8)
+            .map { $0 }
         }.resume()
 
         group.notify(queue: .main) {
-            completion(makeEntry(kp: kp, wind: wind))
+            let fmt = DateFormatter()
+            fmt.timeStyle = .short
+            completion(KpEntry(
+                date: Date(), kp: kp, windSpeed: wind,
+                stormLevel: kpLevel(kp), stormColor: kpColor(kp),
+                lastUpdated: fmt.string(from: Date()),
+                forecast: forecastPoints
+            ))
         }
     }
+}
 
-    private func makeEntry(kp: Double, wind: Int) -> KpEntry {
-        let fmt = DateFormatter()
-        fmt.timeStyle = .short
-        let time = fmt.string(from: Date())
+// MARK: - Forecast bars
 
-        let (level, color): (String, Color) = {
-            switch kp {
-            case 9...: return ("G5", .purple)
-            case 8...: return ("G4", Color(red: 0.8, green: 0, blue: 0.8))
-            case 7...: return ("G3", .red)
-            case 6...: return ("G2", .orange)
-            case 5...: return ("G1", Color(red: 1, green: 0.6, blue: 0))
-            default:   return ("QUIET", .green)
+struct ForecastBarsView: View {
+    let points: [ForecastPoint]
+    let barHeight: CGFloat
+
+    var body: some View {
+        HStack(alignment: .bottom, spacing: 4) {
+            ForEach(Array(points.enumerated()), id: \.offset) { _, point in
+                VStack(spacing: 2) {
+                    Spacer(minLength: 0)
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(point.color.opacity(0.85))
+                        .frame(height: max(CGFloat(point.kp / 9.0) * barHeight, 3))
+                    Text(point.hourLabel)
+                        .font(.system(size: 7, weight: .medium, design: .rounded))
+                        .foregroundColor(Color.white.opacity(0.3))
+                }
+                .frame(maxWidth: .infinity)
             }
-        }()
-
-        return KpEntry(date: Date(), kp: kp, windSpeed: wind, stormLevel: level, stormColor: color, lastUpdated: time)
+        }
+        .frame(maxWidth: .infinity)
     }
 }
 
 // MARK: - Small Widget
+
 struct StormWidgetSmallView: View {
     let entry: KpEntry
 
@@ -117,57 +200,65 @@ struct StormWidgetSmallView: View {
         VStack(alignment: .leading, spacing: 0) {
             // Header
             HStack(spacing: 4) {
-                Image(systemName: "sun.max.fill")
-                    .font(.system(size: 9, weight: .bold))
-                    .foregroundColor(.orange)
-                Text("STORM WATCHER")
+                Image(systemName: "bolt.fill")
                     .font(.system(size: 8, weight: .bold))
-                    .foregroundColor(Color.white.opacity(0.4))
-                    .tracking(0.5)
+                    .foregroundColor(entry.stormColor)
+                Text("STORM WATCHER")
+                    .font(.system(size: 7.5, weight: .bold, design: .rounded))
+                    .foregroundColor(Color.white.opacity(0.35))
+                    .tracking(0.8)
             }
-            .padding(.bottom, 4)
+            .padding(.bottom, 2)
 
             // Kp number
             Text(String(format: "%.1f", entry.kp))
-                .font(.system(size: 48, weight: .heavy, design: .rounded))
+                .font(.system(size: 44, weight: .heavy, design: .rounded))
                 .foregroundColor(entry.stormColor)
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)
+                .padding(.bottom, 2)
 
             // Storm badge
             Text(entry.stormLevel)
-                .font(.system(size: 11, weight: .bold))
+                .font(.system(size: 10, weight: .bold, design: .rounded))
                 .foregroundColor(entry.stormColor)
                 .padding(.horizontal, 7)
-                .padding(.vertical, 3)
-                .background(entry.stormColor.opacity(0.2))
-                .cornerRadius(5)
+                .padding(.vertical, 2)
+                .background(entry.stormColor.opacity(0.18))
+                .clipShape(Capsule())
 
             Spacer()
 
-            // Kp bar
-            GeometryReader { geo in
-                ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 2)
-                        .fill(Color.white.opacity(0.1))
-                        .frame(height: 4)
-                    RoundedRectangle(cornerRadius: 2)
-                        .fill(entry.stormColor)
-                        .frame(width: geo.size.width * CGFloat(kpFraction), height: 4)
+            // Mini forecast bars (4 bars = 12h)
+            if !entry.forecast.isEmpty {
+                let mini = Array(entry.forecast.prefix(4))
+                ForecastBarsView(points: mini, barHeight: 18)
+                    .padding(.bottom, 3)
+            } else {
+                // Fallback: Kp progress bar
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        RoundedRectangle(cornerRadius: 2)
+                            .fill(Color.white.opacity(0.1))
+                            .frame(height: 3)
+                        RoundedRectangle(cornerRadius: 2)
+                            .fill(entry.stormColor)
+                            .frame(width: geo.size.width * CGFloat(kpFraction), height: 3)
+                    }
                 }
+                .frame(height: 3)
+                .padding(.bottom, 3)
             }
-            .frame(height: 4)
-            .padding(.bottom, 4)
 
             // Wind + time
             HStack {
                 Label("\(entry.windSpeed) km/s", systemImage: "wind")
-                    .font(.system(size: 9))
-                    .foregroundColor(Color.white.opacity(0.45))
+                    .font(.system(size: 8.5))
+                    .foregroundColor(Color.white.opacity(0.4))
                 Spacer()
                 Text(entry.lastUpdated)
-                    .font(.system(size: 9))
-                    .foregroundColor(Color.white.opacity(0.3))
+                    .font(.system(size: 8.5))
+                    .foregroundColor(Color.white.opacity(0.25))
             }
         }
         .padding(12)
@@ -176,6 +267,7 @@ struct StormWidgetSmallView: View {
 }
 
 // MARK: - Medium Widget
+
 struct StormWidgetMediumView: View {
     let entry: KpEntry
 
@@ -183,97 +275,82 @@ struct StormWidgetMediumView: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            // Left: Kp
-            VStack(alignment: .leading, spacing: 4) {
+
+            // Left: current Kp
+            VStack(alignment: .leading, spacing: 0) {
                 HStack(spacing: 4) {
-                    Image(systemName: "sun.max.fill")
-                        .font(.system(size: 9, weight: .bold))
-                        .foregroundColor(.orange)
+                    Image(systemName: "bolt.fill")
+                        .font(.system(size: 8, weight: .bold))
+                        .foregroundColor(entry.stormColor)
                     Text("KP INDEX")
-                        .font(.system(size: 9, weight: .bold))
-                        .foregroundColor(Color.white.opacity(0.4))
+                        .font(.system(size: 8, weight: .bold, design: .rounded))
+                        .foregroundColor(Color.white.opacity(0.35))
                         .tracking(1)
                 }
+                .padding(.bottom, 2)
 
                 Text(String(format: "%.1f", entry.kp))
-                    .font(.system(size: 52, weight: .heavy, design: .rounded))
+                    .font(.system(size: 48, weight: .heavy, design: .rounded))
                     .foregroundColor(entry.stormColor)
 
                 Text(entry.stormLevel)
-                    .font(.system(size: 11, weight: .bold))
+                    .font(.system(size: 11, weight: .bold, design: .rounded))
                     .foregroundColor(entry.stormColor)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 3)
-                    .background(entry.stormColor.opacity(0.2))
-                    .cornerRadius(5)
+                    .background(entry.stormColor.opacity(0.18))
+                    .clipShape(Capsule())
 
                 Spacer()
 
-                GeometryReader { geo in
-                    ZStack(alignment: .leading) {
-                        RoundedRectangle(cornerRadius: 2)
-                            .fill(Color.white.opacity(0.1))
-                            .frame(height: 4)
-                        RoundedRectangle(cornerRadius: 2)
-                            .fill(entry.stormColor)
-                            .frame(width: geo.size.width * CGFloat(kpFraction), height: 4)
-                    }
+                VStack(alignment: .leading, spacing: 5) {
+                    Label("\(entry.windSpeed) km/s", systemImage: "wind")
+                        .font(.system(size: 10, weight: .medium))
+                        .foregroundColor(.cyan.opacity(0.8))
+                    Label(entry.lastUpdated, systemImage: "clock")
+                        .font(.system(size: 10))
+                        .foregroundColor(Color.white.opacity(0.3))
                 }
-                .frame(height: 4)
             }
             .frame(maxHeight: .infinity)
 
             // Divider
             Rectangle()
-                .fill(Color.white.opacity(0.08))
+                .fill(Color.white.opacity(0.07))
                 .frame(width: 1)
-                .padding(.vertical, 4)
-                .padding(.horizontal, 14)
+                .padding(.vertical, 2)
+                .padding(.horizontal, 12)
 
-            // Right: stats
-            VStack(alignment: .leading, spacing: 10) {
-                StatRow(icon: "wind", label: "Solar Wind", value: "\(entry.windSpeed) km/s", color: .cyan)
-                StatRow(icon: "waveform.path", label: "Activity", value: entry.stormLevel, color: entry.stormColor)
-                StatRow(icon: "clock", label: "Updated", value: entry.lastUpdated, color: Color.white.opacity(0.4))
+            // Right: 24h forecast
+            VStack(alignment: .leading, spacing: 4) {
+                Text("FORECAST 24H")
+                    .font(.system(size: 7.5, weight: .bold, design: .rounded))
+                    .foregroundColor(Color.white.opacity(0.35))
+                    .tracking(0.8)
+
+                if entry.forecast.isEmpty {
+                    Spacer()
+                    Text("No data")
+                        .font(.system(size: 10))
+                        .foregroundColor(Color.white.opacity(0.2))
+                    Spacer()
+                } else {
+                    Spacer(minLength: 0)
+                    ForecastBarsView(points: entry.forecast, barHeight: 52)
+                }
             }
-            .frame(maxHeight: .infinity)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .padding(14)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
-struct StatRow: View {
-    let icon: String
-    let label: String
-    let value: String
-    let color: Color
-
-    var body: some View {
-        HStack(spacing: 6) {
-            Image(systemName: icon)
-                .font(.system(size: 10))
-                .foregroundColor(color)
-                .frame(width: 14)
-            VStack(alignment: .leading, spacing: 1) {
-                Text(label.uppercased())
-                    .font(.system(size: 7, weight: .semibold))
-                    .foregroundColor(Color.white.opacity(0.35))
-                    .tracking(0.5)
-                Text(value)
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundColor(.white)
-            }
-        }
-    }
-}
-
 // MARK: - Entry View
+
 struct StormWidgetEntryView: View {
     let entry: KpEntry
     @Environment(\.widgetFamily) var family
-
-    var bgColor: Color { Color(red: 0.05, green: 0.05, blue: 0.12) }
 
     var body: some View {
         Group {
@@ -283,7 +360,7 @@ struct StormWidgetEntryView: View {
                 StormWidgetMediumView(entry: entry)
             }
         }
-        .widgetBackground(bgColor)
+        .widgetBackground(Color(red: 0.05, green: 0.05, blue: 0.12))
     }
 }
 
@@ -299,6 +376,7 @@ extension View {
 }
 
 // MARK: - Widget
+
 struct StormWidget: Widget {
     let kind = "StormWidget"
 
@@ -307,7 +385,7 @@ struct StormWidget: Widget {
             StormWidgetEntryView(entry: entry)
         }
         .configurationDisplayName("Storm Watcher")
-        .description("Live Kp index and solar wind.")
+        .description("Live Kp index, solar wind and 24h forecast.")
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
