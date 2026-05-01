@@ -43,6 +43,15 @@ const BottomTabBar = () => {
       if (scrollY) window.scrollTo(0, -scrollY);
     };
   }, [moreOpen]);
+
+  useEffect(() => {
+    if (!moreOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMoreOpen(false);
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [moreOpen]);
   const location = useLocation();
   const navigate = useNavigate();
   const { t, language, setLanguage } = useLanguage();
@@ -101,6 +110,8 @@ const BottomTabBar = () => {
           <button
             onClick={() => setMoreOpen(true)}
             aria-label="Open more menu"
+            aria-expanded={moreOpen}
+            aria-haspopup="menu"
             className="flex flex-col items-center justify-center flex-1 py-2 gap-0.5"
           >
             <MoreHorizontal
@@ -139,11 +150,12 @@ const BottomTabBar = () => {
               </button>
             </div>
 
-            <div className="px-4 py-3 space-y-1 max-h-[70vh] overflow-y-auto">
+            <div className="px-4 py-3 space-y-1 max-h-[70vh] overflow-y-auto" role="menu">
               {/* More nav links */}
               {moreLinks.map(({ to, icon: Icon, label }) => (
                 <button
                   key={to}
+                  role="menuitem"
                   onClick={() => handleNav(to)}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
                     location.pathname === to

@@ -6,6 +6,7 @@ import { getKpForecast, getStormStatus, getKpGradientStyle } from '../services/n
 import { useLanguage } from '../contexts/LanguageContext';
 import StarField from '../components/StarField';
 import { Skeleton, SkeletonChart } from '../components/Skeleton';
+import ErrorCard from '../components/ErrorCard';
 
 interface ForecastItem {
   time: string;
@@ -18,9 +19,11 @@ const Forecast = () => {
   const { t } = useLanguage();
   const [forecastData, setForecastData] = useState<ForecastItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [, setLastUpdated] = useState<Date>(new Date());
 
   const fetchForecast = React.useCallback(async () => {
+    setError(false);
     try {
       const kpData = await getKpForecast();
 
@@ -33,12 +36,13 @@ const Forecast = () => {
           date: date,
         };
       });
-      setForecastData(formattedData);
 
+      if (formattedData.length === 0) throw new Error('empty');
+      setForecastData(formattedData);
       setLastUpdated(new Date());
       setLoading(false);
     } catch {
-      setForecastData([]);
+      setError(true);
       setLoading(false);
     }
   }, []);
@@ -88,6 +92,17 @@ const Forecast = () => {
       time: Math.floor(item.date.getTime() / 1000) as TsPoint['time'],
       value: parseFloat(item.kp.toFixed(2)),
     }));
+
+  if (!loading && error) {
+    return (
+      <div className="min-h-screen pt-24 md:pt-20 pb-16 relative">
+        <StarField />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ErrorCard onRetry={fetchForecast} />
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

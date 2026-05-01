@@ -6,6 +6,7 @@ import { getKpIndex } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import LocationPicker from '../components/LocationPicker';
+import ErrorCard from '../components/ErrorCard';
 
 const verdictConfig = {
   excellent: {
@@ -43,15 +44,19 @@ const SkyVisibility = () => {
   const { settings } = useSettings();
   const [sky, setSky] = useState<SkyData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [locationName, setLocationName] = useState('');
   const [currentLat, setCurrentLat] = useState(0);
   const [currentLon, setCurrentLon] = useState(0);
 
   const loadForCoords = useCallback(async (lat: number, lon: number, name?: string) => {
     setLoading(true);
+    setError(false);
+    try {
     const kpData = await getKpIndex().catch(() => []);
     const kp = kpData.length ? (kpData[kpData.length - 1].kp_index ?? 0) : 0;
     const data = await getSkyVisibility(lat, lon, kp);
+    if (!data) throw new Error('no data');
     setSky(data);
     setCurrentLat(lat);
     setCurrentLon(lon);
@@ -69,6 +74,10 @@ const SkyVisibility = () => {
       } catch {
         setLocationName(`${lat.toFixed(2)}, ${lon.toFixed(2)}`);
       }
+    }
+    } catch {
+      setError(true);
+      setLoading(false);
     }
   }, []);
 
@@ -96,7 +105,13 @@ const SkyVisibility = () => {
     );
   }
 
-  if (!sky) return null;
+  if (error || !sky) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <ErrorCard onRetry={requestGPS} />
+      </div>
+    );
+  }
 
   const cfg = verdictConfig[sky.verdict];
 

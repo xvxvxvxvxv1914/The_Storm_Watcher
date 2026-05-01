@@ -61,7 +61,7 @@ export default function SvgStackedBars({ data, series, xKey, height = 280 }: Pro
               })}
               <text
                 x={x + barW / 2} y={height - legendH - 4}
-                textAnchor="middle" fontSize="10" fill="#6b7280"
+                textAnchor="middle" fontSize="10" fill="var(--tsw-fg-muted)"
               >
                 {String(row[xKey])}
               </text>
@@ -73,7 +73,7 @@ export default function SvgStackedBars({ data, series, xKey, height = 280 }: Pro
         {series.map((sr, i) => (
           <g key={sr.key} transform={`translate(${i * 70 + padX}, ${height - legendH + 8})`}>
             <rect width="10" height="10" fill={sr.color} rx="2" />
-            <text x="13" y="9" fontSize="10" fill="#94a3b8">{sr.label}</text>
+            <text x="13" y="9" fontSize="10" fill="var(--tsw-fg-muted)">{sr.label}</text>
           </g>
         ))}
       </svg>

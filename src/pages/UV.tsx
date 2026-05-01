@@ -1,11 +1,12 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
-import { Sun, AlertTriangle } from 'lucide-react';
+import { Sun } from 'lucide-react';
 import { getUvIndex, getUvLevel, UvData } from '../services/uvApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import LocationPicker from '../components/LocationPicker';
+import ErrorCard from '../components/ErrorCard';
 
 const UV = () => {
   const { t } = useLanguage();
@@ -75,10 +76,7 @@ const UV = () => {
   if (locationError || !uvData) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <AlertTriangle className="w-12 h-12 text-[#f97316] mx-auto mb-4" />
-          <p className="text-white text-lg">{t('uv.errorLoad')}</p>
-        </div>
+        <ErrorCard message={t('uv.errorLoad')} onRetry={requestGPS} />
       </div>
     );
   }

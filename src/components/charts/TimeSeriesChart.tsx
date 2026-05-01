@@ -10,6 +10,7 @@ import {
   type TickMarkType,
   type UTCTimestamp,
 } from 'lightweight-charts';
+import { useTheme } from '../../contexts/ThemeContext';
 
 export interface TsPoint {
   time: UTCTimestamp;
@@ -43,32 +44,38 @@ export default function TimeSeriesChart({
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
+  const { theme } = useTheme();
+  const isDark = theme !== 'light';
 
   useEffect(() => {
     const el = containerRef.current;
     if (!el || data.length === 0) return;
+
+    const gridColor   = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)';
+    const textColor   = isDark ? '#94a3b8' : '#64748b';
+    const borderColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.10)';
 
     const chart = createChart(el, {
       width: el.clientWidth,
       height,
       layout: {
         background: { type: ColorType.Solid, color: 'transparent' },
-        textColor: '#6b7280',
+        textColor,
         fontSize: 11,
       },
       grid: {
-        vertLines: { color: 'rgba(255,255,255,0.05)' },
-        horzLines: { color: 'rgba(255,255,255,0.05)' },
+        vertLines: { color: gridColor },
+        horzLines: { color: gridColor },
       },
       rightPriceScale: {
-        borderColor: 'rgba(255,255,255,0.08)',
+        borderColor,
         ...(yMin !== undefined || yMax !== undefined ? {
           autoScale: false,
           scaleMargins: { top: 0.1, bottom: 0.1 },
         } : {}),
       },
       timeScale: {
-        borderColor: 'rgba(255,255,255,0.08)',
+        borderColor,
         timeVisible: true,
         secondsVisible: false,
         // lightweight-charts renders the axis in UTC by default. Format ticks
@@ -96,8 +103,8 @@ export default function TimeSeriesChart({
         },
       },
       crosshair: {
-        vertLine: { color: color + '80', width: 1 },
-        horzLine: { color: color + '80', width: 1 },
+        vertLine: { color: isDark ? color + '80' : color + 'b0', width: 1 },
+        horzLine: { color: isDark ? color + '80' : color + 'b0', width: 1 },
       },
       handleScroll: false,
       handleScale: false,
@@ -165,7 +172,7 @@ export default function TimeSeriesChart({
       chartRef.current = null;
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, color, type, height]);
+  }, [data, color, type, height, isDark]);
 
   return <div ref={containerRef} />;
 }

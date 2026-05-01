@@ -518,6 +518,10 @@ const en: Record<string, string> = {
   'aurora.visibility.go': 'GO! Perfect Conditions',
   'aurora.visibility.wait': 'Wait for Better Conditions',
   'aurora.visibility.noLocation': 'Please enable location for automatic check.',
+
+  // Generic error card
+  'error.loadFailed': 'Failed to load data.',
+  'error.retry': 'Retry',
 };
 
 export default en;

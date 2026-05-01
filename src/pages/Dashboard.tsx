@@ -8,6 +8,7 @@ import { fetchNigggData, toDeltaSeries, getNigggStormStatus, type NigggDataPoint
 import { useLanguage } from '../contexts/LanguageContext';
 import StarField from '../components/StarField';
 import { SkeletonCard, SkeletonChart, Skeleton } from '../components/Skeleton';
+import ErrorCard from '../components/ErrorCard';
 
 const InfoTooltip = React.memo(({ text }: { text: string }) => (
   <div className="absolute top-3 right-3 group z-20">
@@ -33,9 +34,11 @@ const Dashboard = () => {
   const [timeRange, setTimeRange] = useState<'24h' | '48h' | '72h'>('24h');
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [countdown, setCountdown] = useState('');
 
   const fetchData = async () => {
+    setError(false);
     try {
       const [kpData, windData, magData, xrayData, kp3dayData, nigggResult] = await Promise.all([
         getKpIndex(),
@@ -105,13 +108,7 @@ const Dashboard = () => {
       setLoading(false);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
-      setKpValue(0);
-      setSolarWindSpeed(0);
-      setBz(0);
-      setXrayFlux(0);
-      setKpChartData([]);
-      setWindChartData([]);
-      setNigggData([]);
+      setError(true);
       setLoading(false);
     }
   };
@@ -168,6 +165,17 @@ const Dashboard = () => {
         max: parseFloat(Math.max(...vals).toFixed(1)),
       }));
   }, [kpHistoryRaw]);
+
+  if (!loading && error && kpChartData.length === 0) {
+    return (
+      <div className="min-h-screen pt-24 md:pt-20 pb-16 relative">
+        <StarField />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ErrorCard onRetry={fetchData} />
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

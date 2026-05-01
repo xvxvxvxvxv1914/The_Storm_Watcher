@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { Activity, AlertTriangle, Zap, Radio, Calendar, Bot, Globe, Bell, Camera, Trophy, Video, Share2, Copy, Twitter, ImageDown, Users } from 'lucide-react';
+import ErrorCard from '../components/ErrorCard';
 import { track } from '@vercel/analytics';
 import { generateStormScoreImage } from '../utils/generateStormImage';
 import { getKpIndex, getSolarWind, getXrayFlux, getXrayClass, getStormStatus, getKpGradientStyle, getKpHistory3Day } from '../services/noaaApi';
@@ -24,6 +25,7 @@ const Home = () => {
   const [xrayClass, setXrayClass] = useState<string | null>(null);
   const [kpSparkData, setKpSparkData] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
+  const [retryCount, setRetryCount] = useState(0);
   const [shareOpen, setShareOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [pulseData, setPulseData] = useState<{ mood: string; symptom: string; count: number } | null>(null);
@@ -83,8 +85,6 @@ const Home = () => {
             if (kpData && kpData.length > 0) {
               const latest = kpData[kpData.length - 1];
               setKpValue(latest.kp_index || latest.estimated_kp || 0);
-            } else {
-              setKpValue(0);
             }
           })(),
           (async () => {
@@ -111,7 +111,6 @@ const Home = () => {
         setLastUpdated(new Date());
       } catch (error) {
         console.error('Error fetching data:', error);
-        setKpValue(0);
         setLoading(false);
       }
     };
@@ -119,7 +118,8 @@ const Home = () => {
     fetchAll();
     const interval = setInterval(fetchAll, 60000);
     return () => clearInterval(interval);
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [retryCount]);
 
   // Update "time ago" every 10 seconds
   useEffect(() => {
@@ -161,6 +161,15 @@ const Home = () => {
       </div>
     );
   };
+
+  if (!loading && kpValue === null) {
+    return (
+      <div className="min-h-screen flex items-center justify-center relative">
+        <StarField />
+        <ErrorCard onRetry={() => { setLoading(true); setKpValue(null); setRetryCount(c => c + 1); }} />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen relative">

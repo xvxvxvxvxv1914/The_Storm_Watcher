@@ -453,6 +453,10 @@ const bg: Record<string, string> = {
   'aurora.visibility.go': 'GO! Идеални условия',
   'aurora.visibility.wait': 'Изчакай по-добри условия',
   'aurora.visibility.noLocation': 'Моля, разреши локация за автоматична проверка.',
+
+  // Generic error card
+  'error.loadFailed': 'Неуспешно зареждане на данните.',
+  'error.retry': 'Опитай отново',
 };
 
 export default bg;

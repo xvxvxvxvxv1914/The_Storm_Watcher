@@ -62,8 +62,19 @@ const Navigation = () => {
         setIsUserMenuOpen(false);
       }
     };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsLangMenuOpen(false);
+        setIsMoreOpen(false);
+        setIsUserMenuOpen(false);
+      }
+    };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   const mainLinks = [
@@ -126,6 +137,8 @@ const Navigation = () => {
               <div className="relative" ref={moreMenuRef}>
                 <button
                   onClick={() => setIsMoreOpen(!isMoreOpen)}
+                  aria-expanded={isMoreOpen}
+                  aria-haspopup="menu"
                   className={`relative flex items-center gap-1 px-2 xl:px-3 py-1 text-xs xl:text-sm font-semibold transition-colors whitespace-nowrap ${
                     isMoreActive ? 'text-[#10b981]' : 'text-[#94a3b8] hover:text-white'
                   }`}
@@ -170,8 +183,10 @@ const Navigation = () => {
             <div className="relative shrink-0" ref={langMenuRef}>
               <button
                 onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
-                className="flex items-center gap-1.5 text-xs xl:text-sm font-bold text-[#94a3b8] hover:text-white transition-colors"
                 aria-label="Select language"
+                aria-expanded={isLangMenuOpen}
+                aria-haspopup="listbox"
+                className="flex items-center gap-1.5 text-xs xl:text-sm font-bold text-[#94a3b8] hover:text-white transition-colors"
               >
                 <Globe className="w-4 h-4" />
                 {languages.find(l => l.code === language)?.flag}
@@ -198,8 +213,10 @@ const Navigation = () => {
               <div data-tour="user-menu" className="relative shrink-0" ref={userMenuRef}>
                 <button
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="flex items-center gap-1.5 xl:gap-2 px-2.5 xl:px-4 py-2 rounded-lg bg-[#f97316]/10 text-[#f97316] hover:bg-[#f97316]/20 transition-colors"
                   aria-label="User menu"
+                  aria-expanded={isUserMenuOpen}
+                  aria-haspopup="menu"
+                  className="flex items-center gap-1.5 xl:gap-2 px-2.5 xl:px-4 py-2 rounded-lg bg-[#f97316]/10 text-[#f97316] hover:bg-[#f97316]/20 transition-colors"
                 >
                   <User className="w-4 h-4" />
                   <span className="hidden 2xl:inline text-sm font-medium max-w-[140px] truncate">

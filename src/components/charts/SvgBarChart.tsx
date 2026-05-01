@@ -29,7 +29,7 @@ export default function SvgBarChart({ bars, height = 220, maxValue, formatValue 
         const y = padTop + (chartH - padTop) * (1 - t);
         return (
           <line key={t} x1={0} y1={y} x2={totalW} y2={y}
-            stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
+            stroke="var(--tsw-surface-border)" strokeWidth="1" />
         );
       })}
 
@@ -55,7 +55,7 @@ export default function SvgBarChart({ bars, height = 220, maxValue, formatValue 
             {/* X label */}
             <text
               x={x + barW / 2} y={height - 4}
-              textAnchor="middle" fontSize="11" fill="#6b7280"
+              textAnchor="middle" fontSize="11" fill="var(--tsw-fg-muted)"
             >
               {bar.label}
             </text>
