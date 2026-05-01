@@ -85,11 +85,11 @@ const BottomTabBar = () => {
     <>
       {/* Floating pill tab bar */}
       <nav
-        className="lg:hidden fixed bottom-0 left-0 right-0 z-50"
+        className="lg:hidden fixed bottom-0 left-4 right-4 z-50"
         style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
         aria-label="Main navigation"
       >
-        <div className="glass-surface flex items-center px-2 py-1.5">
+        <div className="glass-surface flex items-center rounded-[28px] px-2 py-1.5">
           {tabs.map(({ to, icon: Icon, labelKey }) => {
             const active = location.pathname === to;
             return (
