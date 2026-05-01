@@ -43,6 +43,15 @@ export const getNigggStormStatus = (minDelta: number): NigggStormStatus => {
   };
 };
 
+// On native (Capacitor iOS/Android) CapacitorHttp bypasses CORS so we can call
+// the endpoint directly. On web we go through the Vercel serverless proxy.
+const isNative = typeof (window as Window & { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor?.isNativePlatform === 'function'
+  && (window as Window & { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor!.isNativePlatform!();
+
+const NIGGG_URL = isNative
+  ? 'https://pagmag.ngic.bg/pagcal2.php'
+  : '/api/niggg';
+
 export const fetchNigggData = async (): Promise<NigggDataSet> => {
   try {
     // We want the last 72 hours to ensure we catch working data.
@@ -65,9 +74,7 @@ export const fetchNigggData = async (): Promise<NigggDataSet> => {
     formData.append('chdate1', d1);
     formData.append('chdate2', d2);
 
-    // During dev, use Vite proxy. In production, we might need a real proxy if CORS blocks it.
-    // For now, we point to the proxy endpoint.
-    const baseUrl = '/api/niggg';
+    const baseUrl = NIGGG_URL;
 
     const res = await fetch(baseUrl, {
       method: 'POST',
