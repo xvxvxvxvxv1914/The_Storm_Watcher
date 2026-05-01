@@ -138,8 +138,8 @@ const BottomTabBar = () => {
             onClick={() => setMoreOpen(false)}
           />
           <div
-            className="lg:hidden fixed bottom-0 left-0 right-0 z-[70] rounded-t-[20px] overflow-hidden"
-            style={{ paddingBottom: 'env(safe-area-inset-bottom)', background: 'rgba(18, 18, 32, 0.98)', backdropFilter: 'blur(30px)' }}
+            className="lg:hidden fixed bottom-0 left-0 right-0 z-[70] rounded-t-[20px] overflow-hidden glass-surface"
+            style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
           >
             <div className="flex justify-center pt-3 pb-2">
               <div className="w-9 h-1 rounded-full bg-white/25" />
