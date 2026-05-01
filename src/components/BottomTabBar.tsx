@@ -73,9 +73,9 @@ const BottomTabBar = () => {
   };
 
   const moreLinks = [
-    { to: '/alerts', icon: AlertTriangle, label: t('nav.alerts'),          badge: 'bg-red-500' },
-    { to: '/mood',   icon: SmilePlus,     label: t('nav.mood'),            badge: 'bg-purple-500' },
-    { to: '/uv',     icon: Sun,           label: t('nav.uv') || 'UV Index', badge: 'bg-amber-500' },
+    { to: '/alerts', icon: AlertTriangle, label: t('nav.alerts'),             badge: 'bg-red-500' },
+    { to: '/mood',   icon: SmilePlus,     label: t('nav.mood'),               badge: 'bg-purple-500' },
+    { to: '/uv',     icon: Sun,           label: t('nav.uv') || 'UV Index',   badge: 'bg-amber-500' },
     { to: '/sun',    icon: Sun,           label: t('nav.sun') || 'Sun Times', badge: 'bg-orange-500' },
     { to: '/sky',    icon: Eye,           label: t('nav.sky') || 'Sky Tonight', badge: 'bg-sky-500' },
     { to: '/iss',    icon: Satellite,     label: t('nav.iss') || 'ISS Tracker', badge: 'bg-indigo-500' },
@@ -83,29 +83,31 @@ const BottomTabBar = () => {
 
   return (
     <>
-      {/* Bottom tab bar */}
+      {/* Floating pill tab bar */}
       <nav
-        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-white/10"
-        style={{ paddingBottom: 'env(safe-area-inset-bottom)', background: 'rgba(10, 10, 26, 0.95)', backdropFilter: 'blur(20px)' }}
+        className="lg:hidden fixed left-4 right-4 z-50"
+        style={{ bottom: 'calc(1rem + env(safe-area-inset-bottom))' }}
         aria-label="Main navigation"
       >
-        <div className="flex items-stretch">
+        <div
+          className="flex items-center rounded-[28px] px-2 py-1.5"
+          style={{ background: 'rgba(28, 28, 38, 0.96)', backdropFilter: 'blur(24px)' }}
+        >
           {tabs.map(({ to, icon: Icon, labelKey }) => {
             const active = location.pathname === to;
             return (
               <Link
                 key={to}
                 to={to}
-                className="flex flex-col items-center justify-center flex-1 pt-2 pb-1 gap-0.5"
+                className="flex flex-col items-center flex-1 py-1.5 gap-0.5 rounded-[22px]"
+                style={active ? { background: 'rgba(255,255,255,0.12)' } : {}}
               >
-                <div className={`flex items-center justify-center w-10 h-7 rounded-xl ${active ? 'bg-[#10b981]/15' : ''}`}>
-                  <Icon
-                    className={active ? 'text-[#10b981]' : 'text-[#64748b]'}
-                    size={22}
-                    strokeWidth={active ? 2.5 : 1.8}
-                  />
-                </div>
-                <span className={`text-[10px] ${active ? 'font-bold text-[#10b981]' : 'font-medium text-[#64748b]'}`}>
+                <Icon
+                  className={active ? 'text-[#10b981]' : 'text-white'}
+                  size={24}
+                  strokeWidth={active ? 2.5 : 1.8}
+                />
+                <span className={`text-[10px] ${active ? 'font-bold text-[#10b981]' : 'font-medium text-white/70'}`}>
                   {t(labelKey)}
                 </span>
               </Link>
@@ -116,16 +118,15 @@ const BottomTabBar = () => {
             aria-label="Open more menu"
             aria-expanded={moreOpen}
             aria-haspopup="menu"
-            className="flex flex-col items-center justify-center flex-1 pt-2 pb-1 gap-0.5"
+            className="flex flex-col items-center flex-1 py-1.5 gap-0.5 rounded-[22px]"
+            style={isMoreActive ? { background: 'rgba(255,255,255,0.12)' } : {}}
           >
-            <div className={`flex items-center justify-center w-10 h-7 rounded-xl ${isMoreActive ? 'bg-[#10b981]/15' : ''}`}>
-              <MoreHorizontal
-                className={isMoreActive ? 'text-[#10b981]' : 'text-[#64748b]'}
-                size={22}
-                strokeWidth={isMoreActive ? 2.5 : 1.8}
-              />
-            </div>
-            <span className={`text-[10px] ${isMoreActive ? 'font-bold text-[#10b981]' : 'font-medium text-[#64748b]'}`}>
+            <MoreHorizontal
+              className={isMoreActive ? 'text-[#10b981]' : 'text-white'}
+              size={24}
+              strokeWidth={isMoreActive ? 2.5 : 1.8}
+            />
+            <span className={`text-[10px] ${isMoreActive ? 'font-bold text-[#10b981]' : 'font-medium text-white/70'}`}>
               More
             </span>
           </button>
@@ -135,17 +136,14 @@ const BottomTabBar = () => {
       {/* More bottom sheet */}
       {moreOpen && (
         <>
-          {/* Backdrop */}
           <div
             className="lg:hidden fixed inset-0 z-[60] bg-black/60"
             onClick={() => setMoreOpen(false)}
           />
-          {/* Sheet */}
           <div
             className="lg:hidden fixed bottom-0 left-0 right-0 z-[70] rounded-t-[20px] overflow-hidden"
             style={{ paddingBottom: 'env(safe-area-inset-bottom)', background: 'rgba(18, 18, 32, 0.98)', backdropFilter: 'blur(30px)' }}
           >
-            {/* Handle */}
             <div className="flex justify-center pt-3 pb-2">
               <div className="w-9 h-1 rounded-full bg-white/25" />
             </div>
@@ -158,16 +156,13 @@ const BottomTabBar = () => {
             </div>
 
             <div className="max-h-[72vh] overflow-y-auto" role="menu">
-              {/* Navigation links with iOS Settings-style icon badges */}
               <div className="px-4 space-y-0.5 pb-2">
                 {moreLinks.map(({ to, icon: Icon, label, badge }) => (
                   <button
                     key={to}
                     role="menuitem"
                     onClick={() => handleNav(to)}
-                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium ${
-                      location.pathname === to ? 'bg-white/8' : ''
-                    }`}
+                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium ${location.pathname === to ? 'bg-white/8' : ''}`}
                   >
                     <span className={`w-8 h-8 rounded-xl ${badge} flex items-center justify-center shrink-0`}>
                       <Icon className="w-4 h-4 text-white" strokeWidth={2} />
@@ -178,10 +173,8 @@ const BottomTabBar = () => {
                 ))}
               </div>
 
-              {/* Divider */}
               <div className="border-t border-white/8 mx-4 my-1" />
 
-              {/* Settings section */}
               <div className="px-4 space-y-0.5 py-2">
                 <button
                   onClick={toggleTheme}
@@ -222,10 +215,8 @@ const BottomTabBar = () => {
                 )}
               </div>
 
-              {/* Divider */}
               <div className="border-t border-white/8 mx-4 my-1" />
 
-              {/* User section */}
               <div className="px-4 space-y-0.5 py-2">
                 {user ? (
                   <>
@@ -266,8 +257,7 @@ const BottomTabBar = () => {
                 ) : (
                   <button
                     onClick={() => handleNav('/auth')}
-                    className="w-full flex items-center justify-center gap-2 mx-3 px-4 py-3 rounded-xl bg-[#10b981] text-white font-semibold text-sm"
-                    style={{ width: 'calc(100% - 24px)' }}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#10b981] text-white font-semibold text-sm"
                   >
                     {t('auth.signIn')}
                   </button>

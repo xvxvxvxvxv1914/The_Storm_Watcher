@@ -53,7 +53,7 @@ function AppRoutes() {
         Skip to main content
       </a>
       <Navigation />
-      <main id="main" className="pt-[env(safe-area-inset-top)] pb-20 lg:pb-0">
+      <main id="main" className="pt-[env(safe-area-inset-top)] pb-28 lg:pb-0">
       <ErrorBoundary>
         <Suspense fallback={<LoadingFallback />}>
           <AnimatedRoutes />
