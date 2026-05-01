@@ -144,8 +144,11 @@ const Dashboard = () => {
     const last24h = nigggData.filter(p => p.time >= nowSec - 86400);
     const pts = last24h.length > 10 ? last24h : nigggData;
     const minDelta = Math.min(...pts.map(p => p.value));
-    return { ...getNigggStormStatus(minDelta), minDelta };
-  }, [nigggData]);
+    // When Kp < 3 global conditions are quiet — daily Sq variation of the
+    // local magnetometer (~±50 nT) should not be flagged as DISTURBED.
+    const effectiveDelta = kpValue < 3 ? Math.max(minDelta, -29) : minDelta;
+    return { ...getNigggStormStatus(effectiveDelta), minDelta };
+  }, [nigggData, kpValue]);
 
   const filteredKpChart = useMemo(() => {
     const hoursBack = timeRange === '24h' ? 24 : timeRange === '48h' ? 48 : 72;
