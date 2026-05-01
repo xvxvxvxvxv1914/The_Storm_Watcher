@@ -127,24 +127,23 @@ struct KpProvider: TimelineProvider {
             with: URL(string: "https://services.swpc.noaa.gov/products/noaa-planetary-k-index-forecast.json")!
         ) { data, _, _ in
             defer { group.leave() }
+            // API returns [{time_tag, kp, observed, noaa_scale}, ...]
             guard let data,
-                  let json = try? JSONSerialization.jsonObject(with: data) as? [[Any]],
-                  json.count > 1 else { return }
+                  let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else { return }
 
             let fmt = DateFormatter()
-            fmt.dateFormat = "yyyy-MM-dd HH:mm:ss"
+            fmt.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
             fmt.timeZone = TimeZone(identifier: "UTC")
             let now = Date()
 
-            forecastPoints = json.dropFirst().compactMap { row -> ForecastPoint? in
-                guard row.count >= 2,
-                      let timeStr = row[0] as? String,
+            forecastPoints = json.compactMap { row -> ForecastPoint? in
+                guard let timeStr = row["time_tag"] as? String,
                       let date = fmt.date(from: timeStr),
                       date > now else { return nil }
                 let kpVal: Double
-                if let v = row[1] as? Double      { kpVal = v }
-                else if let v = row[1] as? Int    { kpVal = Double(v) }
-                else                              { return nil }
+                if let v = row["kp"] as? Double      { kpVal = v }
+                else if let v = row["kp"] as? Int    { kpVal = Double(v) }
+                else                                 { return nil }
                 return ForecastPoint(date: date, kp: kpVal)
             }
             .prefix(8)
