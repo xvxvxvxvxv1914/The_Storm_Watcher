@@ -10,14 +10,15 @@ interface PlanGuardProps {
   children: React.ReactNode;
 }
 
+const PLAN_RANK: Record<Plan, number> = { free: 0, pro: 1, premium: 2 };
+
 const PlanGuard = ({ requiredPlan, children }: PlanGuardProps) => {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { t } = useLanguage();
 
-  // TODO: Remove when Stripe payments are live
-  const hasAccess = true; // Temporarily unlocked — all features free until payments are ready
-  // const userPlan: Plan = profile?.plan ?? 'free';
-  // const hasAccess = PLAN_RANK[userPlan] >= PLAN_RANK[requiredPlan];
+  const paymentsEnabled = import.meta.env.VITE_PAYMENTS_ENABLED === 'true';
+  const userPlan: Plan = profile?.plan ?? 'free';
+  const hasAccess = !paymentsEnabled || PLAN_RANK[userPlan] >= PLAN_RANK[requiredPlan];
 
   if (hasAccess) return <>{children}</>;
 

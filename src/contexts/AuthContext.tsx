@@ -9,6 +9,8 @@ interface Profile {
   full_name?: string;
   avatar_url?: string;
   plan: 'free' | 'pro' | 'premium';
+  stripe_customer_id?: string;
+  subscription_status?: string;
   created_at: string;
   updated_at: string;
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, Save, ArrowLeft, Trash2 } from 'lucide-react';
+import { User, Save, ArrowLeft, Trash2, Zap, Star, CreditCard } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { supabase } from '../lib/supabase';
@@ -17,6 +17,32 @@ export default function Profile() {
   const [error, setError] = useState('');
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [portalLoading, setPortalLoading] = useState(false);
+
+  const plan = profile?.plan ?? 'free';
+  const isPro = plan === 'pro';
+  const isPremium = plan === 'premium';
+  const isPaid = isPro || isPremium;
+
+  const planColor = isPremium ? '#a855f7' : isPro ? '#f97316' : '#10b981';
+  const PlanIcon = isPremium ? Star : isPro ? Zap : null;
+
+  const openPortal = async () => {
+    setPortalLoading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch('/api/stripe/create-portal-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.access_token}` },
+      });
+      const data = await res.json() as { url?: string };
+      if (data.url) window.location.href = data.url;
+    } catch {
+      setError('Failed to open billing portal');
+    } finally {
+      setPortalLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (!loading && !user) {
@@ -73,24 +99,60 @@ export default function Profile() {
       </Link>
 
       <div className="flex items-center gap-4 mb-8">
-        <div className="w-16 h-16 bg-[#f97316]/20 rounded-full flex items-center justify-center">
-          <User className="w-8 h-8 text-[#f97316]" />
+        <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ background: `${planColor}22` }}>
+          <User className="w-8 h-8" style={{ color: planColor }} />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-white">{t('profile.title') || 'My Profile'}</h1>
+          <div className="flex items-center gap-2 flex-wrap">
+            <h1 className="text-2xl font-bold text-white">{t('profile.title') || 'My Profile'}</h1>
+            <span
+              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide"
+              style={{ background: `${planColor}22`, color: planColor }}
+            >
+              {PlanIcon && <PlanIcon className="w-3 h-3" />}
+              {plan}
+            </span>
+          </div>
           <p className="text-[#94a3b8] text-sm">{user?.email}</p>
+        </div>
+      </div>
+
+      {/* Subscription card */}
+      <div className="glass-surface rounded-2xl p-6 border mb-4" style={{ borderColor: `${planColor}33` }}>
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <p className="text-[#94a3b8] text-xs uppercase tracking-widest mb-1">Current plan</p>
+            <p className="text-white font-bold text-lg capitalize flex items-center gap-2">
+              {PlanIcon && <PlanIcon className="w-4 h-4" style={{ color: planColor }} />}
+              Storm Watcher {plan.charAt(0).toUpperCase() + plan.slice(1)}
+            </p>
+          </div>
+          {isPaid ? (
+            <button
+              onClick={openPortal}
+              disabled={portalLoading}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 disabled:opacity-50"
+              style={{ background: `linear-gradient(to right, ${planColor}, ${isPremium ? '#6d28d9' : '#fbbf24'})` }}
+            >
+              <CreditCard className="w-4 h-4" />
+              {portalLoading ? 'Loading…' : 'Manage subscription'}
+            </button>
+          ) : (
+            <Link
+              to="/pricing"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all hover:scale-105"
+              style={{ background: 'linear-gradient(to right, #f97316, #fbbf24)' }}
+            >
+              <Zap className="w-4 h-4" />
+              Upgrade
+            </Link>
+          )}
         </div>
       </div>
 
       <div className="glass-surface rounded-2xl p-8 border border-white/10 space-y-6">
         <div>
           <h2 className="text-lg font-semibold text-white mb-1">{t('profile.accountInfo') || 'Account Information'}</h2>
-          <p className="text-[#94a3b8] text-sm">
-            {t('profile.plan') || 'Plan'}:{' '}
-            <span className="font-semibold capitalize" style={{ color: profile?.plan === 'pro' ? '#f97316' : profile?.plan === 'premium' ? '#a855f7' : '#10b981' }}>
-              {profile?.plan || 'free'}
-            </span>
-          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">

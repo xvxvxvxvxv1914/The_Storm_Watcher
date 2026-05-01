@@ -41,6 +41,7 @@
     "react-leaflet": "^4.2.1",
     "react-router-dom": "^7.14.0",
     "satellite.js": "^4.1.4",
+    "stripe": "^22.1.0",
     "three": "^0.184.0"
   },
   "overrides": {

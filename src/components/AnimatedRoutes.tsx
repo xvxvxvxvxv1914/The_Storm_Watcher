@@ -22,6 +22,7 @@ const Settings = lazy(() => import('../pages/Settings'));
 const NotFound = lazy(() => import('../pages/NotFound'));
 const FAQ = lazy(() => import('../pages/FAQ'));
 const MagneticEffects = lazy(() => import('../pages/MagneticEffects'));
+const Pricing = lazy(() => import('../pages/Pricing'));
 
 export const AnimatedRoutes = () => {
   const location = useLocation();
@@ -46,6 +47,7 @@ export const AnimatedRoutes = () => {
         <Route path="/settings" element={<AnimatedPage><Settings /></AnimatedPage>} />
         <Route path="/faq" element={<AnimatedPage><FAQ /></AnimatedPage>} />
         <Route path="/magnetic-effects" element={<AnimatedPage><MagneticEffects /></AnimatedPage>} />
+        <Route path="/pricing" element={<AnimatedPage><Pricing /></AnimatedPage>} />
         <Route path="*" element={<AnimatedPage><NotFound /></AnimatedPage>} />
       </Routes>
     </AnimatePresence>
