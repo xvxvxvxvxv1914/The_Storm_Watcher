@@ -8,11 +8,11 @@ import { supabase } from '../lib/supabase';
 
 const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY as string | undefined;
 
-function urlBase64ToUint8Array(base64: string): Uint8Array {
+function urlBase64ToUint8Array(base64: string): Uint8Array<ArrayBuffer> {
   const padding = '='.repeat((4 - (base64.length % 4)) % 4);
   const b64 = (base64 + padding).replace(/-/g, '+').replace(/_/g, '/');
   const raw = window.atob(b64);
-  return Uint8Array.from([...raw].map((c) => c.charCodeAt(0)));
+  return new Uint8Array(Array.from(raw, (c) => c.charCodeAt(0))) as Uint8Array<ArrayBuffer>;
 }
 
 function bufToBase64Url(buf: ArrayBuffer): string {

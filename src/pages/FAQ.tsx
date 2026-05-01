@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { ChevronDown, Zap, Sun, Eye, Sparkles, Wind, Moon } from 'lucide-react';
-import { useLanguage } from '../contexts/LanguageContext';
 
 interface FaqItem {
   question: string;
@@ -80,7 +79,6 @@ const faqData: FaqItem[] = [
 ];
 
 const FAQ = () => {
-  const { t } = useLanguage();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const categories = [...new Set(faqData.map(f => f.category))];

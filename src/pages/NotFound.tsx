@@ -1,11 +1,9 @@
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Sparkles, Home, ArrowLeft } from 'lucide-react';
-import { useLanguage } from '../contexts/LanguageContext';
 import StarField from '../components/StarField';
 
 const NotFound = () => {
-  const { t } = useLanguage();
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
