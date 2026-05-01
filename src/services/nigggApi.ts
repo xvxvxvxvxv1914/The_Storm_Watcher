@@ -12,9 +12,9 @@ export interface NigggStormStatus {
   label: 'CALM' | 'DISTURBED' | 'STORM';
   color: string;
   bg: string;
-  desc: string;
-  detail: string;
-  humanEffect: string;
+  descKey: string;
+  detailKey: string;
+  humanEffectKey: string;
 }
 
 export const toDeltaSeries = (pts: NigggDataPoint[]): NigggDataPoint[] => {
@@ -31,23 +31,24 @@ export const toDeltaSeries = (pts: NigggDataPoint[]): NigggDataPoint[] => {
 export const getNigggStormStatus = (minDelta: number): NigggStormStatus => {
   if (minDelta < -100) return {
     label: 'STORM', color: '#ef4444', bg: 'bg-red-500/10 border-red-500/30',
-    desc: 'Магнитна буря',
-    detail: 'GPS навигацията може да е неточна. Радиовръзките са нарушени. Възможно северно сияние над България.',
-    humanEffect: 'Може да причини главоболие, нарушение на съня и промени в кръвното налягане. Хора с пейсмейкъри да бъдат внимателни.',
+    descKey: 'niggg.storm.desc',
+    detailKey: 'niggg.storm.detail',
+    humanEffectKey: 'niggg.storm.humanEffect',
   };
   if (minDelta < -30) return {
     label: 'DISTURBED', color: '#f97316', bg: 'bg-orange-500/10 border-orange-500/30',
-    desc: 'Магнитно смущение',
-    detail: 'Леки нарушения в GPS точността и радиовръзките. Следете за развитие.',
-    humanEffect: 'Чувствителни хора може да усетят лека умора или раздразнителност.',
+    descKey: 'niggg.disturbed.desc',
+    detailKey: 'niggg.disturbed.detail',
+    humanEffectKey: 'niggg.disturbed.humanEffect',
   };
   return {
     label: 'CALM', color: '#10b981', bg: 'bg-emerald-500/10 border-emerald-500/30',
-    desc: 'Спокойно',
-    detail: 'Магнитното поле е стабилно. Няма смущения в навигацията или комуникациите.',
-    humanEffect: 'Няма отчетено влияние върху хората.',
+    descKey: 'niggg.calm.desc',
+    detailKey: 'niggg.calm.detail',
+    humanEffectKey: 'niggg.calm.humanEffect',
   };
 };
+
 
 // On native (Capacitor iOS/Android) CapacitorHttp bypasses CORS so we can call
 // the endpoint directly. On web we go through the Vercel serverless proxy.

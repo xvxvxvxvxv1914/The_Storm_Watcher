@@ -371,10 +371,10 @@ const Dashboard = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <h3 className="text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
               <MapPin className="w-6 h-6 text-[#10b981]" />
-              {t('dashboard.localMagnetometer') || 'Local Magnetometer (Bulgaria)'}
+              {t('dashboard.localMagnetometer')}
             </h3>
             <span className="text-xs font-bold uppercase tracking-wider text-[#94a3b8] px-3 py-1 bg-white/5 rounded-full border border-white/10">
-              Source: NIGGG
+              {t('niggg.source')}: NIGGG
             </span>
           </div>
           {nigggStatus ? (
@@ -382,11 +382,11 @@ const Dashboard = () => {
               <div className={`px-5 py-4 rounded-xl border mb-5 ${nigggStatus.bg}`}>
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-2xl font-black tracking-widest" style={{ color: nigggStatus.color }}>{nigggStatus.label}</span>
-                  <span className="text-xs text-[#64748b] font-mono">min ΔH: {nigggStatus.minDelta.toFixed(1)} nT</span>
+                  <span className="text-xs text-[#64748b] font-mono">{t('niggg.minDelta')}: {nigggStatus.minDelta.toFixed(1)} nT</span>
                 </div>
-                <p className="text-sm font-semibold mb-0.5" style={{ color: nigggStatus.color }}>{nigggStatus.desc}</p>
-                <p className="text-xs text-[#94a3b8] leading-relaxed mb-1">{nigggStatus.detail}</p>
-                <p className="text-xs text-[#64748b] leading-relaxed">👤 {nigggStatus.humanEffect}</p>
+                <p className="text-sm font-semibold mb-0.5" style={{ color: nigggStatus.color }}>{t(nigggStatus.descKey)}</p>
+                <p className="text-xs text-[#94a3b8] leading-relaxed mb-1">{t(nigggStatus.detailKey)}</p>
+                <p className="text-xs text-[#64748b] leading-relaxed">👤 {t(nigggStatus.humanEffectKey)}</p>
               </div>
               <TimeSeriesChart
                 data={nigggData as TsPoint[]}

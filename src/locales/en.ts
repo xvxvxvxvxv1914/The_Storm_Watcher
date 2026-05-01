@@ -522,6 +522,17 @@ const en: Record<string, string> = {
   // Generic error card
   'error.loadFailed': 'Failed to load data.',
   'error.retry': 'Retry',
+  'niggg.source': 'Source',
+  'niggg.minDelta': 'min ΔH',
+  'niggg.storm.desc': 'Magnetic Storm',
+  'niggg.storm.detail': 'GPS navigation may be inaccurate. Radio communications are disrupted. Possible aurora visibility over Bulgaria.',
+  'niggg.storm.humanEffect': 'May cause headaches, sleep disturbances, and changes in blood pressure. People with pacemakers should be careful.',
+  'niggg.disturbed.desc': 'Magnetic Disturbance',
+  'niggg.disturbed.detail': 'Slight disruptions in GPS accuracy and radio communications. Monitor for developments.',
+  'niggg.disturbed.humanEffect': 'Sensitive individuals may experience mild fatigue or irritability.',
+  'niggg.calm.desc': 'Calm',
+  'niggg.calm.detail': 'The magnetic field is stable. No disruptions in navigation or communications.',
+  'niggg.calm.humanEffect': 'No reported impact on humans.',
 };
 
 export default en;

@@ -108,7 +108,7 @@ const bg: Record<string, string> = {
   'dashboard.geomagneticActivity': 'Геомагнитна активност',
   'dashboard.solarFlares': 'Слънчеви изригвания',
   'dashboard.noData': 'Няма налични данни',
-  'dashboard.localMagnetometer': 'Локален магнитометър (Панагюрище)',
+  'dashboard.localMagnetometer': 'Локален магнитометър (България)',
   'dashboard.speed': 'Скорост',
   'dashboard.density': 'Плътност',
   'dashboard.temperature': 'Температура',
@@ -457,6 +457,17 @@ const bg: Record<string, string> = {
   // Generic error card
   'error.loadFailed': 'Неуспешно зареждане на данните.',
   'error.retry': 'Опитай отново',
+  'niggg.source': 'Източник',
+  'niggg.minDelta': 'мин ΔH',
+  'niggg.storm.desc': 'Магнитна буря',
+  'niggg.storm.detail': 'GPS навигацията може да е неточна. Радиовръзките са нарушени. Възможно северно сияние над България.',
+  'niggg.storm.humanEffect': 'Може да причини главоболие, нарушение на съня и промени в кръвното налягане. Хора с пейсмейкъри да бъдат внимателни.',
+  'niggg.disturbed.desc': 'Магнитно смущение',
+  'niggg.disturbed.detail': 'Леки нарушения в GPS точността и радиовръзките. Следете за развитие.',
+  'niggg.disturbed.humanEffect': 'Чувствителни хора може да усетят лека умора или раздразнителност.',
+  'niggg.calm.desc': 'Спокойно',
+  'niggg.calm.detail': 'Магнитното поле е стабилно. Няма смущения в навигацията или комуникациите.',
+  'niggg.calm.humanEffect': 'Няма отчетено влияние върху хората.',
 };
 
 export default bg;
