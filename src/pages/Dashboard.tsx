@@ -395,8 +395,8 @@ const Dashboard = () => {
                 height={280}
                 refLines={[
                   { value: 0, color: '#ffffff25', label: '0' },
-                  { value: -20, color: '#f9731660', label: '-20 nT' },
-                  { value: -50, color: '#ef444460', label: '-50 nT' },
+                  { value: -30, color: '#f9731660', label: '-30 nT' },
+                  { value: -100, color: '#ef444460', label: '-100 nT' },
                 ]}
               />
             </>
