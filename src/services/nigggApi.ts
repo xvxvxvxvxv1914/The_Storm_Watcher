@@ -18,18 +18,24 @@ export interface NigggStormStatus {
 }
 
 export const toDeltaSeries = (pts: NigggDataPoint[]): NigggDataPoint[] => {
-  const baseline = pts.reduce((s, p) => s + p.value, 0) / pts.length;
+  if (pts.length === 0) return [];
+  // H component is highest during quiet conditions and drops during storms.
+  // Use the 90th percentile as baseline so past storm data doesn't pull
+  // the mean down and cause false positives.
+  const sorted = [...pts].sort((a, b) => b.value - a.value);
+  const baseline = sorted[Math.floor(sorted.length * 0.10)]?.value
+    ?? (pts.reduce((s, p) => s + p.value, 0) / pts.length);
   return pts.map(p => ({ time: p.time, value: Number((p.value - baseline).toFixed(2)) }));
 };
 
 export const getNigggStormStatus = (minDelta: number): NigggStormStatus => {
-  if (minDelta < -50) return {
+  if (minDelta < -100) return {
     label: 'STORM', color: '#ef4444', bg: 'bg-red-500/10 border-red-500/30',
     desc: 'Магнитна буря',
     detail: 'GPS навигацията може да е неточна. Радиовръзките са нарушени. Възможно северно сияние над България.',
     humanEffect: 'Може да причини главоболие, нарушение на съня и промени в кръвното налягане. Хора с пейсмейкъри да бъдат внимателни.',
   };
-  if (minDelta < -20) return {
+  if (minDelta < -30) return {
     label: 'DISTURBED', color: '#f97316', bg: 'bg-orange-500/10 border-orange-500/30',
     desc: 'Магнитно смущение',
     detail: 'Леки нарушения в GPS точността и радиовръзките. Следете за развитие.',

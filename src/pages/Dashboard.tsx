@@ -140,7 +140,10 @@ const Dashboard = () => {
 
   const nigggStatus = useMemo(() => {
     if (nigggData.length === 0) return null;
-    const minDelta = Math.min(...nigggData.map(p => p.value));
+    const nowSec = Date.now() / 1000;
+    const last24h = nigggData.filter(p => p.time >= nowSec - 86400);
+    const pts = last24h.length > 10 ? last24h : nigggData;
+    const minDelta = Math.min(...pts.map(p => p.value));
     return { ...getNigggStormStatus(minDelta), minDelta };
   }, [nigggData]);
 
