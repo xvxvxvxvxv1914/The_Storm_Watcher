@@ -4,6 +4,7 @@ import {
   Home, LayoutDashboard, TrendingUp, Sparkles, MoreHorizontal,
   X, Sun, Eye, Satellite, AlertTriangle, SmilePlus,
   User, LogOut, SlidersHorizontal, Globe, ChevronRight,
+  Magnet, HelpCircle,
 } from 'lucide-react';
 import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -16,7 +17,7 @@ const tabs = [
   { to: '/aurora',    icon: Sparkles,        labelKey: 'nav.aurora' },
 ];
 
-const moreRoutes = ['/alerts', '/mood', '/uv', '/sun', '/sky', '/iss', '/profile', '/settings'];
+const moreRoutes = ['/alerts', '/mood', '/uv', '/sun', '/sky', '/iss', '/magnetic-effects', '/faq', '/profile', '/settings'];
 
 const BottomTabBar = () => {
   const [moreOpen, setMoreOpen] = useState(false);
@@ -78,7 +79,9 @@ const BottomTabBar = () => {
     { to: '/uv',     icon: Sun,           label: t('nav.uv') || 'UV Index',   badge: 'bg-amber-500' },
     { to: '/sun',    icon: Sun,           label: t('nav.sun') || 'Sun Times', badge: 'bg-orange-500' },
     { to: '/sky',    icon: Eye,           label: t('nav.sky') || 'Sky Tonight', badge: 'bg-sky-500' },
-    { to: '/iss',    icon: Satellite,     label: t('nav.iss') || 'ISS Tracker', badge: 'bg-indigo-500' },
+    { to: '/iss',              icon: Satellite,   label: t('nav.iss') || 'ISS Tracker',           badge: 'bg-indigo-500' },
+    { to: '/magnetic-effects', icon: Magnet,      label: t('nav.magneticEffects') || 'Magnetic Effects', badge: 'bg-teal-600' },
+    { to: '/faq',              icon: HelpCircle,  label: t('nav.faq') || 'FAQ',                   badge: 'bg-slate-500' },
   ];
 
   return (

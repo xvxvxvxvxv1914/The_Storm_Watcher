@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Sun, Globe, User, LogOut, ChevronDown, AlertTriangle, SlidersHorizontal, Menu, X } from 'lucide-react';
+import { Sun, Globe, User, LogOut, ChevronDown, AlertTriangle, SlidersHorizontal } from 'lucide-react';
 import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -29,7 +29,6 @@ const Navigation = () => {
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isMoreOpen, setIsMoreOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const langMenuRef = useRef<HTMLDivElement>(null);
   const moreMenuRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -38,11 +37,6 @@ const Navigation = () => {
   const { language, setLanguage, t } = useLanguage();
   const { user, profile, signOut } = useAuth();
   const { theme, toggleTheme } = useTheme();
-
-  // Close mobile menu on route change
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-  }, [location.pathname]);
 
   const handleLogout = async () => {
     await signOut();
@@ -252,43 +246,9 @@ const Navigation = () => {
             )}
           </div>
 
-          {/* Mobile right side */}
-          <div className="lg:hidden flex items-center gap-1">
-            <button
-              onClick={toggleTheme}
-              className="text-lg leading-none p-2 hover:opacity-80 transition-opacity"
-              aria-label={theme === 'dark' ? t('nav.switchLight') : t('nav.switchDark')}
-            >
-              {theme === 'dark' ? '🌙' : '☀️'}
-            </button>
-            {user ? (
-              <div className="relative" ref={userMenuRef}>
-                <button
-                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="p-2 rounded-lg bg-[#f97316]/10 text-[#f97316]"
-                  aria-label="User menu"
-                >
-                  <User className="w-5 h-5" />
-                </button>
-                {isUserMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-56 glass-surface rounded-xl shadow-2xl py-2 border border-[#f97316]/20 z-[60]">
-                    <div className="px-4 py-2 border-b border-white/10">
-                      <p className="text-sm font-medium text-white">{profile?.full_name || t('nav.user')}</p>
-                      <p className="text-xs text-[#94a3b8] mt-1">{user.email}</p>
-                    </div>
-                    <Link to="/profile" onClick={() => setIsUserMenuOpen(false)} className="w-full text-left px-4 py-2 text-sm font-medium text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors flex items-center gap-2">
-                      <User className="w-4 h-4" />{t('nav.profile')}
-                    </Link>
-                    <Link to="/settings" onClick={() => setIsUserMenuOpen(false)} className="w-full text-left px-4 py-2 text-sm font-medium text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors flex items-center gap-2">
-                      <SlidersHorizontal className="w-4 h-4" />{t('nav.settings')}
-                    </Link>
-                    <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors flex items-center gap-2">
-                      <LogOut className="w-4 h-4" />{t('auth.logout')}
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
+          {/* Mobile right side — only sign-in button */}
+          <div className="lg:hidden flex items-center">
+            {!user && (
               <Link
                 to="/auth"
                 className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#f97316] to-[#fbbf24] text-white font-medium text-xs"
@@ -296,51 +256,10 @@ const Navigation = () => {
                 {t('auth.signIn')}
               </Link>
             )}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 text-[#94a3b8] hover:text-white transition-colors"
-              aria-label="Toggle menu"
-            >
-              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
           </div>
 
         </div>
       </div>
-
-      {/* Mobile menu */}
-      {isMobileMenuOpen && (
-        <div className="lg:hidden border-t border-white/10 py-4 px-4 space-y-1">
-          {mainLinks.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              className={`block px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
-                isActive(link.to)
-                  ? 'text-[#10b981] bg-[#10b981]/10'
-                  : 'text-[#94a3b8] hover:text-white hover:bg-white/5'
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
-          <div className="border-t border-white/10 pt-2 mt-2">
-            {moreLinks.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className={`block px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                  isActive(link.to)
-                    ? 'text-[#10b981] bg-[#10b981]/10'
-                    : 'text-[#94a3b8] hover:text-white hover:bg-white/5'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
 
       {isStorm && (
         <div role="alert" aria-live="assertive" className="bg-gradient-to-r from-[#ef4444] via-[#f97316] to-[#7c3aed] px-4 py-2 pulse-alert">
