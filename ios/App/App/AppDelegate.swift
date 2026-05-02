@@ -5,7 +5,7 @@ import BackgroundTasks
 import UserNotifications
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
     private let appGroupID = "group.com.stormwatcher.app"
