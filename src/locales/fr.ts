@@ -123,6 +123,7 @@ const fr: Record<string, string> = {
   'forecast.aboutTitle': 'À propos des prévisions',
   'forecast.aboutText1': "Cette prévision est basée sur les données du Centre de prévision météorologique spatiale de la NOAA et montre l'indice Kp attendu pour les prochains jours.",
   'forecast.aboutText2': "Les prévisions sont mises à jour toutes les 5 minutes et peuvent changer en fonction de l'activité solaire.",
+  'forecast.bestViewing': "Meilleure fenêtre d'observation",
 
   // Aurora
   'aurora.title': 'Prévisions d\'aurores',
@@ -236,6 +237,12 @@ const fr: Record<string, string> = {
   'uv.level.veryHigh.advice': 'Protection supplémentaire nécessaire. Évitez le soleil de 10h à 16h.',
   'uv.level.extreme.label': 'Extrême',
   'uv.level.extreme.advice': "Restez à l'intérieur à midi. Protection totale obligatoire.",
+  'uv.spf.label': 'Protection',
+  'uv.spf.low': 'Pas de crème solaire nécessaire',
+  'uv.spf.moderate': 'SPF 30+ · Réappliquer toutes les 2 h',
+  'uv.spf.high': 'SPF 50+ · Réappliquer toutes les 90 min',
+  'uv.spf.veryHigh': 'SPF 50+ · Réappliquer toutes les heures',
+  'uv.spf.extreme': 'SPF 50+ · Éviter le soleil direct',
 
   // ISS Tracker
   'iss.subtitle': 'Station Spatiale Internationale — position en direct et passages',
@@ -274,6 +281,7 @@ const fr: Record<string, string> = {
   'sky.partlyCloudy': ' Partiellement nuageux',
   'sky.mostlyCloudy': ' Plutôt nuageux',
   'sky.overcast': ' Couvert',
+  'sky.clearest': 'Fenêtre la plus dégagée',
 
   // Other
   'storm.quiet': 'CALME',
@@ -313,6 +321,8 @@ const fr: Record<string, string> = {
   'iss.locIss': 'Position ISS',
   'iss.locYou': 'Votre position',
   'dashboard.swTooltip': 'Vitesse du vent solaire au cours des 24 dernières heures.',
+  'dashboard.compareYesterday': 'Comparer avec hier',
+  'dashboard.yesterday': 'Hier',
 
   // 404 Not Found
   'notFound.title': "Perdu dans l'Espace",

@@ -141,6 +141,7 @@ const bg: Record<string, string> = {
   'forecast.aboutTitle': 'За прогнозата',
   'forecast.aboutText1': 'Тази прогноза се базира на данни от NOAA Space Weather Prediction Center и показва очаквания Kp индекс за следващите дни.',
   'forecast.aboutText2': 'Прогнозата се актуализира на всеки 5 минути и може да се промени в зависимост от слънчевата активност.',
+  'forecast.bestViewing': 'Най-добро наблюдение',
 
   // Aurora
   'aurora.title': 'Прогноза за аврора',
@@ -296,6 +297,7 @@ const bg: Record<string, string> = {
   'sky.partlyCloudy': ' Предимно ясно',
   'sky.mostlyCloudy': ' Предимно облачно',
   'sky.overcast': ' Облачно',
+  'sky.clearest': 'Най-ясен прозорец',
 
   // Other
   'storm.quiet': 'СПОКОЙНО',
@@ -356,6 +358,12 @@ const bg: Record<string, string> = {
   'uv.low3': 'Ниско 3',
   'uv.mod6': 'Умерено 6',
   'uv.high8': 'Високо 8',
+  'uv.spf.label': 'Защита',
+  'uv.spf.low': 'Слънцезащита не е необходима',
+  'uv.spf.moderate': 'SPF 30+ · Нанасяйте на всеки 2 ч.',
+  'uv.spf.high': 'SPF 50+ · Нанасяйте на всеки 90 мин.',
+  'uv.spf.veryHigh': 'SPF 50+ · Нанасяйте на всеки час',
+  'uv.spf.extreme': 'SPF 50+ · Избягвайте директна слънчева светлина',
   'auth.checkEmailSent': 'Изпратихме линк за потвърждение на',
   'auth.checkEmailActivate': 'Кликни върху него за да активираш профила си.',
   'auth.checkEmailSpam': 'Не виждаш имейла? Провери папката Spam.',
@@ -379,6 +387,8 @@ const bg: Record<string, string> = {
   'iss.locIss': 'Позиция на МКС',
   'iss.locYou': 'Вашата позиция',
   'dashboard.swTooltip': 'Скорост на слънчевия вятър за последните 24 часа.',
+  'dashboard.compareYesterday': 'Сравни с вчера',
+  'dashboard.yesterday': 'Вчера',
 
   // Onboarding tour
   'onboarding.welcome.title': 'Добре дошъл в The Storm Watcher',

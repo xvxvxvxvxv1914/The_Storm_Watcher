@@ -123,6 +123,7 @@ const zh: Record<string, string> = {
   'forecast.aboutTitle': '关于预报',
   'forecast.aboutText1': '此预报基于NOAA空间天气预报中心的数据，显示未来几天的预期Kp指数。',
   'forecast.aboutText2': '预报每5分钟更新一次，可能根据太阳活动变化。',
+  'forecast.bestViewing': '最佳观测窗口',
 
   // Aurora
   'aurora.title': '极光预报',
@@ -236,6 +237,12 @@ const zh: Record<string, string> = {
   'uv.level.veryHigh.advice': '需要额外防护。上午10点至下午4点避免户外。',
   'uv.level.extreme.label': '极端',
   'uv.level.extreme.advice': '中午留在室内。户外务必进行全面防护。',
+  'uv.spf.label': '防护',
+  'uv.spf.low': '无需防晒',
+  'uv.spf.moderate': 'SPF 30+ · 每2小时补涂',
+  'uv.spf.high': 'SPF 50+ · 每90分钟补涂',
+  'uv.spf.veryHigh': 'SPF 50+ · 每小时补涂',
+  'uv.spf.extreme': 'SPF 50+ · 避免直接日晒',
 
   // ISS Tracker
   'iss.subtitle': '国际空间站 — 实时位置及过境预测',
@@ -274,6 +281,7 @@ const zh: Record<string, string> = {
   'sky.partlyCloudy': ' 局部多云',
   'sky.mostlyCloudy': ' 大部多云',
   'sky.overcast': ' 阴天',
+  'sky.clearest': '最晴朗时段',
 
   // Other
   'storm.quiet': '平静',
@@ -313,6 +321,8 @@ const zh: Record<string, string> = {
   'iss.locIss': '国际空间站位置',
   'iss.locYou': '您的位置',
   'dashboard.swTooltip': '过去24小时的太阳风速度。',
+  'dashboard.compareYesterday': '与昨日对比',
+  'dashboard.yesterday': '昨日',
 
   // 404 Not Found
   'notFound.title': '迷失在太空',

@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
-import { Sun } from 'lucide-react';
+import { Sun, Shield } from 'lucide-react';
 import { getUvIndex, getUvLevel, UvData } from '../services/uvApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
@@ -84,6 +84,14 @@ const UV = () => {
   const level = getUvLevel(uvData.current);
   const maxLevel = getUvLevel(uvData.max);
 
+  const getSpfKey = (uv: number) => {
+    if (uv < 3) return 'uv.spf.low';
+    if (uv < 6) return 'uv.spf.moderate';
+    if (uv < 8) return 'uv.spf.high';
+    if (uv < 11) return 'uv.spf.veryHigh';
+    return 'uv.spf.extreme';
+  };
+
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16">
       <Helmet>
@@ -123,6 +131,14 @@ const UV = () => {
           </div>
 
           <p className="text-[#94a3b8] max-w-md mx-auto leading-relaxed">{t(level.adviceKey)}</p>
+
+          <div className="mt-5 inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border" style={{ borderColor: level.color + '50', background: level.color + '15' }}>
+            <Shield className="w-4 h-4 flex-shrink-0" style={{ color: level.color }} />
+            <span className="text-sm font-semibold" style={{ color: level.color }}>
+              <span className="text-white/50 mr-1.5">{t('uv.spf.label')}:</span>
+              {t(getSpfKey(uvData.current))}
+            </span>
+          </div>
         </div>
 
         {/* Today's max */}

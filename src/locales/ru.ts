@@ -123,6 +123,7 @@ const ru: Record<string, string> = {
   'forecast.aboutTitle': 'О прогнозе',
   'forecast.aboutText1': 'Этот прогноз основан на данных Центра прогнозирования космической погоды NOAA и показывает ожидаемый Kp индекс на ближайшие дни.',
   'forecast.aboutText2': 'Прогнозы обновляются каждые 5 минут и могут меняться в зависимости от солнечной активности.',
+  'forecast.bestViewing': 'Лучшее окно для наблюдения',
 
   // Aurora
   'aurora.title': 'Прогноз полярных сияний',
@@ -236,6 +237,12 @@ const ru: Record<string, string> = {
   'uv.level.veryHigh.advice': 'Нужна дополнительная защита. Избегайте солнца с 10 до 16ч.',
   'uv.level.extreme.label': 'Экстремальный',
   'uv.level.extreme.advice': 'Оставайтесь дома в полдень. Полная защита обязательна.',
+  'uv.spf.label': 'Защита',
+  'uv.spf.low': 'Солнцезащитный крем не нужен',
+  'uv.spf.moderate': 'SPF 30+ · Обновляйте каждые 2 ч',
+  'uv.spf.high': 'SPF 50+ · Обновляйте каждые 90 мин',
+  'uv.spf.veryHigh': 'SPF 50+ · Обновляйте каждый час',
+  'uv.spf.extreme': 'SPF 50+ · Избегайте прямых лучей',
 
   // ISS Tracker
   'iss.subtitle': 'МКС — позиция в реальном времени и пролеты',
@@ -274,6 +281,7 @@ const ru: Record<string, string> = {
   'sky.partlyCloudy': ' Переменная облачность',
   'sky.mostlyCloudy': ' В основном облачно',
   'sky.overcast': ' Пасмурно',
+  'sky.clearest': 'Наиболее ясный период',
 
   // Other
   'storm.quiet': 'СПОКОЙНО',
@@ -313,6 +321,8 @@ const ru: Record<string, string> = {
   'iss.locIss': 'Позиция МКС',
   'iss.locYou': 'Ваше местоположение',
   'dashboard.swTooltip': 'Скорость солнечного ветра за последние 24 часа.',
+  'dashboard.compareYesterday': 'Сравнить со вчерашним',
+  'dashboard.yesterday': 'Вчера',
 
   // 404 Not Found
   'notFound.title': 'Потерян в Космосе',

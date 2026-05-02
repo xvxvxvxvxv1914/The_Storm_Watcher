@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
 import SvgBarChart from '../components/charts/SvgBarChart';
@@ -9,6 +9,27 @@ import { useLanguage } from '../contexts/LanguageContext';
 import StarField from '../components/StarField';
 import { SkeletonCard, SkeletonChart, Skeleton } from '../components/Skeleton';
 import ErrorCard from '../components/ErrorCard';
+
+function useCountUp(target: number, duration = 700): number {
+  const prevRef = useRef(target);
+  const [display, setDisplay] = useState(target);
+  useEffect(() => {
+    const from = prevRef.current;
+    prevRef.current = target;
+    if (from === target) return;
+    const start = performance.now();
+    let raf: number;
+    const step = (now: number) => {
+      const p = Math.min((now - start) / duration, 1);
+      const eased = 1 - (1 - p) * (1 - p);
+      setDisplay(from + (target - from) * eased);
+      if (p < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [target, duration]);
+  return display;
+}
 
 const InfoTooltip = React.memo(({ text }: { text: string }) => (
   <div className="absolute top-3 right-3 group z-20">
@@ -32,6 +53,7 @@ const Dashboard = () => {
   const [nigggData, setNigggData] = useState<NigggDataPoint[]>([]);
   const [kpHistoryRaw, setKpHistoryRaw] = useState<{ time_tag: string; Kp: number }[]>([]);
   const [timeRange, setTimeRange] = useState<'24h' | '48h' | '72h'>('24h');
+  const [showYesterday, setShowYesterday] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -144,6 +166,10 @@ const Dashboard = () => {
   const stormStatus = getStormStatus(kpValue);
   const xrayClass = getXrayClass(xrayFlux);
 
+  const kpDisplay = useCountUp(kpValue);
+  const windDisplay = useCountUp(solarWindSpeed);
+  const bzDisplay = useCountUp(bz);
+
   const nigggStatus = useMemo(() => {
     if (nigggData.length === 0) return null;
     const nowSec = Date.now() / 1000;
@@ -161,6 +187,18 @@ const Dashboard = () => {
     const cutoff = (Date.now() / 1000 - hoursBack * 3600) as TsPoint['time'];
     return kpChartData.filter(p => p.time >= cutoff);
   }, [kpChartData, timeRange]);
+
+  const yesterdayKpChart = useMemo(() => {
+    if (!showYesterday || kpChartData.length === 0) return [];
+    const hoursBack = timeRange === '24h' ? 24 : timeRange === '48h' ? 48 : 72;
+    const nowSec = Date.now() / 1000;
+    const windowStart = nowSec - (hoursBack + 24) * 3600;
+    const windowEnd = nowSec - 86400;
+    return kpChartData
+      .filter(p => p.time >= windowStart && p.time <= windowEnd)
+      .map(p => ({ time: (p.time + 86400) as TsPoint['time'], value: p.value }))
+      .sort((a, b) => a.time - b.time);
+  }, [kpChartData, showYesterday, timeRange]);
 
   const dailyKp = useMemo(() => {
     const byDay: Record<string, number[]> = {};
@@ -225,8 +263,12 @@ const Dashboard = () => {
           <h1 className="text-5xl font-bold gradient-solar mb-3 uppercase tracking-tight">
             {t('dashboard.title')}
           </h1>
-          <p className="text-[#94a3b8] text-lg">
+          <p className="text-[#94a3b8] text-lg flex items-center gap-3">
             {t('dashboard.lastUpdated')}: {lastUpdated.toLocaleTimeString()}
+            <span className="inline-flex items-center gap-1.5 text-xs text-[#10b981] font-bold uppercase tracking-wider">
+              <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse" />
+              LIVE
+            </span>
           </p>
           {countdown && (
             <p className="text-[#64748b] text-sm mt-1">
@@ -254,7 +296,7 @@ const Dashboard = () => {
                 {t('dashboard.kpIndex')}
               </h3>
             </div>
-            <div className="text-6xl font-bold mb-3" style={getKpGradientStyle(kpValue)}>{kpValue.toFixed(1)}</div>
+            <div className="text-6xl font-bold mb-3" style={getKpGradientStyle(kpValue)}>{kpDisplay.toFixed(1)}</div>
             <div className={`inline-block px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider ${
               kpValue >= 7 ? 'bg-gradient-to-r from-[#ef4444] to-[#dc2626] text-white' :
               kpValue >= 5 ? 'bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white' :
@@ -275,7 +317,7 @@ const Dashboard = () => {
                 {t('dashboard.solarWind')}
               </h3>
             </div>
-            <div className="text-6xl font-bold text-white mb-3">{solarWindSpeed.toFixed(0)}</div>
+            <div className="text-6xl font-bold text-white mb-3">{windDisplay.toFixed(0)}</div>
             <div className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('dashboard.kms')}</div>
           </div>
 
@@ -290,7 +332,7 @@ const Dashboard = () => {
               </h3>
             </div>
             <div className={`text-6xl font-bold mb-3 ${bz < 0 ? 'text-[#ef4444]' : 'text-[#10b981]'}`}>
-              {bz.toFixed(1)}
+              {bzDisplay.toFixed(1)}
             </div>
             <div className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('dashboard.nt')}</div>
           </div>
@@ -316,7 +358,7 @@ const Dashboard = () => {
               <Radio className="w-6 h-6 text-[#f97316]" />
               {t('dashboard.history')}
             </h3>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               {(['24h', '48h', '72h'] as const).map((range) => (
                 <button
                   key={range}
@@ -332,6 +374,16 @@ const Dashboard = () => {
                   {range === '72h' && t('dashboard.hr72')}
                 </button>
               ))}
+              <button
+                onClick={() => setShowYesterday(v => !v)}
+                className={`px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all ${
+                  showYesterday
+                    ? 'bg-white/20 text-white border border-white/30'
+                    : 'glass-surface text-[#64748b] hover:text-[#94a3b8]'
+                }`}
+              >
+                {t('dashboard.compareYesterday')}
+              </button>
             </div>
           </div>
           {filteredKpChart.length > 0 ? (
@@ -342,6 +394,8 @@ const Dashboard = () => {
               height={300}
               yMin={0}
               yMax={9}
+              compareData={yesterdayKpChart.length > 0 ? yesterdayKpChart : undefined}
+              compareLabel={t('dashboard.yesterday')}
             />
           ) : (
             <div className="h-[300px] flex items-center justify-center text-[#94a3b8]">

@@ -123,6 +123,7 @@ const de: Record<string, string> = {
   'forecast.aboutTitle': 'Über die Vorhersage',
   'forecast.aboutText1': 'Diese Vorhersage basiert auf Daten des NOAA-Weltraumwettervorhersagezentrums und zeigt den erwarteten Kp-Index für die kommenden Tage.',
   'forecast.aboutText2': 'Vorhersagen werden alle 5 Minuten aktualisiert und können sich je nach Sonnenaktivität ändern.',
+  'forecast.bestViewing': 'Bestes Beobachtungsfenster',
 
   // Aurora
   'aurora.title': 'Polarlicht-Vorhersage',
@@ -236,6 +237,12 @@ const de: Record<string, string> = {
   'uv.level.veryHigh.advice': 'Zusätzlicher Schutz nötig. Spaziergänge 10–16 Uhr meiden.',
   'uv.level.extreme.label': 'Extrem',
   'uv.level.extreme.advice': 'Bleiben Sie mittags drinnen. Voller Schutz zwingend.',
+  'uv.spf.label': 'Schutz',
+  'uv.spf.low': 'Kein Sonnenschutz nötig',
+  'uv.spf.moderate': 'LSF 30+ · Alle 2 Std. erneuern',
+  'uv.spf.high': 'LSF 50+ · Alle 90 Min. erneuern',
+  'uv.spf.veryHigh': 'LSF 50+ · Stündlich erneuern',
+  'uv.spf.extreme': 'LSF 50+ · Direkte Sonne meiden',
 
   // ISS Tracker
   'iss.subtitle': 'Internationale Raumstation — Live-Position und Überflüge',
@@ -274,6 +281,7 @@ const de: Record<string, string> = {
   'sky.partlyCloudy': ' Leicht bewölkt',
   'sky.mostlyCloudy': ' Überwiegend bewölkt',
   'sky.overcast': ' Bedeckt',
+  'sky.clearest': 'Klarster Zeitraum',
 
   // Other
   'storm.quiet': 'RUHIG',
@@ -313,6 +321,8 @@ const de: Record<string, string> = {
   'iss.locIss': 'ISS-Position',
   'iss.locYou': 'Ihr Standort',
   'dashboard.swTooltip': 'Sonnenwindgeschwindigkeit in den letzten 24 Stunden.',
+  'dashboard.compareYesterday': 'Mit gestern vergleichen',
+  'dashboard.yesterday': 'Gestern',
 
   // 404 Not Found
   'notFound.title': 'Im Weltraum verloren',

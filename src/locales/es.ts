@@ -137,6 +137,7 @@ const es: Record<string, string> = {
   'forecast.aboutTitle': 'Sobre el pronóstico',
   'forecast.aboutText1': 'Este pronóstico se basa en datos del Centro de Predicción del Clima Espacial de NOAA y muestra el índice Kp esperado para los próximos días.',
   'forecast.aboutText2': 'Los pronósticos se actualizan cada 5 minutos y pueden cambiar según la actividad solar.',
+  'forecast.bestViewing': 'Mejor ventana de observación',
 
   // Aurora
   'aurora.title': 'Pronóstico de aurora',
@@ -250,6 +251,12 @@ const es: Record<string, string> = {
   'uv.level.veryHigh.advice': 'Se necesita protección adicional. Evite el sol de 10am a 4pm.',
   'uv.level.extreme.label': 'Extremo',
   'uv.level.extreme.advice': 'Permanezca adentro al mediodía. Protección total obligatoria.',
+  'uv.spf.label': 'Protección',
+  'uv.spf.low': 'No se necesita protección solar',
+  'uv.spf.moderate': 'SPF 30+ · Reaplicar cada 2 h',
+  'uv.spf.high': 'SPF 50+ · Reaplicar cada 90 min',
+  'uv.spf.veryHigh': 'SPF 50+ · Reaplicar cada hora',
+  'uv.spf.extreme': 'SPF 50+ · Evitar el sol directo',
 
   // ISS Tracker
   'iss.subtitle': 'Estación Espacial Internacional — posición en vivo y pases',
@@ -288,6 +295,7 @@ const es: Record<string, string> = {
   'sky.partlyCloudy': ' Parcialmente nublado',
   'sky.mostlyCloudy': ' Mayormente nublado',
   'sky.overcast': ' Nublado',
+  'sky.clearest': 'Ventana más clara',
 
   // Other
   'storm.quiet': 'TRANQUILO',
@@ -327,6 +335,8 @@ const es: Record<string, string> = {
   'iss.locIss': 'Posición ISS',
   'iss.locYou': 'Tu ubicación',
   'dashboard.swTooltip': 'Velocidad del viento solar en las últimas 24 horas.',
+  'dashboard.compareYesterday': 'Comparar con ayer',
+  'dashboard.yesterday': 'Ayer',
 
   // 404 Not Found
   'notFound.title': 'Perdido en el Espacio',

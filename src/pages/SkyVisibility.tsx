@@ -114,6 +114,9 @@ const SkyVisibility = () => {
   }
 
   const cfg = verdictConfig[sky.verdict];
+  const clearestHour = sky.nightHours.length > 0
+    ? sky.nightHours.reduce((best, h) => h.cloudCover < best.cloudCover ? h : best, sky.nightHours[0])
+    : null;
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16">
@@ -191,6 +194,11 @@ const SkyVisibility = () => {
               {sky.nightHours.map((h) => (
                 <div key={h.time} className="flex items-center gap-4">
                   <div className="w-14 text-[#94a3b8] text-sm font-mono">{h.time}</div>
+                  {clearestHour && h.time === clearestHour.time && (
+                    <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-[#10b981]/15 text-[#10b981] border border-[#10b981]/30 whitespace-nowrap">
+                      ✦ {t('sky.clearest')}
+                    </span>
+                  )}
                   <div className="flex-1 h-3 rounded-full bg-white/5 overflow-hidden">
                     <div
                       className="h-full rounded-full transition-all"

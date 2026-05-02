@@ -31,6 +31,8 @@ interface Props {
   refLines?: RefLine[];
   yMin?: number;
   yMax?: number;
+  compareData?: TsPoint[];
+  compareLabel?: string;
 }
 
 export default function TimeSeriesChart({
@@ -41,6 +43,8 @@ export default function TimeSeriesChart({
   refLines,
   yMin,
   yMax,
+  compareData,
+  compareLabel = 'Yesterday',
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
@@ -146,6 +150,18 @@ export default function TimeSeriesChart({
 
     series.setData(data);
 
+    if (compareData && compareData.length > 0) {
+      const compareSeries = chart.addSeries(LineSeries, {
+        color: '#ffffff35',
+        lineWidth: 1,
+        lineStyle: 1,
+        priceLineVisible: false,
+        lastValueVisible: false,
+        title: compareLabel,
+      });
+      compareSeries.setData(compareData);
+    }
+
     refLines?.forEach(rl => {
       series.createPriceLine({
         price: rl.value,
@@ -172,7 +188,7 @@ export default function TimeSeriesChart({
       chartRef.current = null;
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, color, type, height, isDark]);
+  }, [data, color, type, height, isDark, compareData]);
 
   return <div ref={containerRef} />;
 }

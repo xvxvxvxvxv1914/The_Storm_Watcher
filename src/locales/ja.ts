@@ -123,6 +123,7 @@ const ja: Record<string, string> = {
   'forecast.aboutTitle': '予報について',
   'forecast.aboutText1': 'この予報はNOAA宇宙天気予報センターのデータに基づいており、今後数日間の予想Kp指数を示しています。',
   'forecast.aboutText2': '予報は5分ごとに更新され、太陽活動に応じて変化することがあります。',
+  'forecast.bestViewing': '最良の観測時間帯',
 
   // Aurora
   'aurora.title': 'オーロラ予報',
@@ -236,6 +237,12 @@ const ja: Record<string, string> = {
   'uv.level.veryHigh.advice': '追加の対策が必要。10時〜16時は外出を避ける。',
   'uv.level.extreme.label': '極端',
   'uv.level.extreme.advice': '日中は室内に。外出時は完全な対策が必須。',
+  'uv.spf.label': '日焼け止め',
+  'uv.spf.low': '日焼け止め不要',
+  'uv.spf.moderate': 'SPF 30+ · 2時間ごとに塗り直す',
+  'uv.spf.high': 'SPF 50+ · 90分ごとに塗り直す',
+  'uv.spf.veryHigh': 'SPF 50+ · 1時間ごとに塗り直す',
+  'uv.spf.extreme': 'SPF 50+ · 直射日光を避ける',
 
   // ISS Tracker
   'iss.subtitle': '国際宇宙ステーション — 現在位置と通過予測',
@@ -274,6 +281,7 @@ const ja: Record<string, string> = {
   'sky.partlyCloudy': ' 一部曇り',
   'sky.mostlyCloudy': ' 概ね曇り',
   'sky.overcast': ' 本曇り',
+  'sky.clearest': '最も晴れた時間帯',
 
   // Other
   'storm.quiet': '静穏',
@@ -313,6 +321,8 @@ const ja: Record<string, string> = {
   'iss.locIss': 'ISS位置',
   'iss.locYou': 'あなたの位置',
   'dashboard.swTooltip': '過去24時間の太陽風速度。',
+  'dashboard.compareYesterday': '昨日と比較',
+  'dashboard.yesterday': '昨日',
 
   // 404 Not Found
   'notFound.title': '宇宙で迷子になった',

@@ -142,6 +142,7 @@ const en: Record<string, string> = {
   'forecast.aboutTitle': 'About the Forecast',
   'forecast.aboutText1': 'This forecast is based on data from the NOAA Space Weather Prediction Center and shows the expected Kp index for the coming days.',
   'forecast.aboutText2': 'Forecasts are updated every 5 minutes and may change based on solar activity and space weather conditions.',
+  'forecast.bestViewing': 'Best viewing window',
 
   // Aurora
   'aurora.title': 'Aurora Forecast',
@@ -297,6 +298,7 @@ const en: Record<string, string> = {
   'sky.partlyCloudy': ' Partly cloudy',
   'sky.mostlyCloudy': ' Mostly cloudy',
   'sky.overcast': ' Overcast',
+  'sky.clearest': 'Clearest window',
 
   // Other
   'storm.quiet': 'QUIET',
@@ -362,6 +364,12 @@ const en: Record<string, string> = {
   'uv.low3': 'Low 3',
   'uv.mod6': 'Moderate 6',
   'uv.high8': 'High 8',
+  'uv.spf.label': 'Protection',
+  'uv.spf.low': 'No sunscreen needed',
+  'uv.spf.moderate': 'SPF 30+ · Reapply every 2 h',
+  'uv.spf.high': 'SPF 50+ · Reapply every 90 min',
+  'uv.spf.veryHigh': 'SPF 50+ · Reapply every hour',
+  'uv.spf.extreme': 'SPF 50+ · Avoid direct sun',
   'auth.checkEmailSent': 'We sent a confirmation link to',
   'auth.checkEmailActivate': 'Click it to activate your account.',
   'auth.checkEmailSpam': "Don't see the email? Check your Spam folder.",
@@ -381,6 +389,8 @@ const en: Record<string, string> = {
   'iss.locIss': 'ISS location',
   'iss.locYou': 'Your location',
   'dashboard.swTooltip': 'Solar wind speed over the last 24 hours.',
+  'dashboard.compareYesterday': 'Compare with Yesterday',
+  'dashboard.yesterday': 'Yesterday',
   'dashboard.kp7day': 'Kp Index — Last 7 Days',
   'dashboard.kp7dayNote': "Daily maximum Kp. Solar activity repeats every ~27 days — the Sun's rotation period.",
 

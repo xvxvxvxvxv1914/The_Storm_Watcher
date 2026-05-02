@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
 import { Calendar, TrendingUp, AlertCircle, Sun } from 'lucide-react';
-import { getKpForecast, getStormStatus, getKpGradientStyle } from '../services/noaaApi';
+import { getKpForecast, getKpHistory3Day, getStormStatus, getKpGradientStyle } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import StarField from '../components/StarField';
 import { Skeleton, SkeletonChart } from '../components/Skeleton';
@@ -21,6 +21,8 @@ const Forecast = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [, setLastUpdated] = useState<Date>(new Date());
+  const [showYesterday, setShowYesterday] = useState(false);
+  const [historyRaw, setHistoryRaw] = useState<{ time_tag: string; Kp: number }[]>([]);
 
   const fetchForecast = React.useCallback(async () => {
     setError(false);
@@ -84,6 +86,26 @@ const Forecast = () => {
     return grouped;
   };
 
+  useEffect(() => {
+    if (!showYesterday || historyRaw.length > 0) return;
+    getKpHistory3Day().then(data => { if (data) setHistoryRaw(data); }).catch(() => {});
+  }, [showYesterday, historyRaw.length]);
+
+  const yesterdayForecastChart = useMemo((): TsPoint[] => {
+    if (!showYesterday || historyRaw.length === 0) return [];
+    const nowSec = Date.now() / 1000;
+    const windowStart = nowSec - 48 * 3600;
+    const windowEnd = nowSec - 24 * 3600;
+    return historyRaw
+      .map(item => ({
+        time: Math.floor(new Date(item.time_tag.replace(' ', 'T') + 'Z').getTime() / 1000) as TsPoint['time'],
+        value: item.Kp ?? 0,
+      }))
+      .filter(p => p.time >= windowStart && p.time <= windowEnd)
+      .map(p => ({ time: (p.time + 86400) as TsPoint['time'], value: p.value }))
+      .sort((a, b) => a.time - b.time);
+  }, [showYesterday, historyRaw]);
+
   // Continuous 3-hour forecast curve. Sorting defends against any
   // upstream re-ordering — lightweight-charts requires ascending time.
   const forecastChartData: TsPoint[] = [...forecastData]
@@ -144,6 +166,9 @@ const Forecast = () => {
   const avgKp = getAverageKp();
   const stormDays = getDaysWithStorms();
   const groupedData = groupByDay();
+  const peakItem = forecastData.length > 0
+    ? forecastData.reduce((best, d) => d.kp > best.kp ? d : best, forecastData[0])
+    : null;
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16 relative">
@@ -213,10 +238,22 @@ const Forecast = () => {
         </div>
         
         <div className="glass-surface rounded-2xl p-8 mb-8">
-          <h3 className="text-2xl font-bold text-white mb-6 uppercase tracking-wide flex items-center gap-3">
-            <Sun className="w-6 h-6 text-[#f97316]" />
-            {t('forecast.kpForecast')}
-          </h3>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <h3 className="text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
+              <Sun className="w-6 h-6 text-[#f97316]" />
+              {t('forecast.kpForecast')}
+            </h3>
+            <button
+              onClick={() => setShowYesterday(v => !v)}
+              className={`px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all ${
+                showYesterday
+                  ? 'bg-white/20 text-white border border-white/30'
+                  : 'glass-surface text-[#64748b] hover:text-[#94a3b8]'
+              }`}
+            >
+              {t('dashboard.compareYesterday')}
+            </button>
+          </div>
           {forecastChartData.length > 0 ? (
             <TimeSeriesChart
               data={forecastChartData}
@@ -229,6 +266,8 @@ const Forecast = () => {
                 { value: 5, color: '#f59e0b', label: 'G1' },
                 { value: 7, color: '#ef4444', label: 'G3' },
               ]}
+              compareData={yesterdayForecastChart.length > 0 ? yesterdayForecastChart : undefined}
+              compareLabel={t('dashboard.yesterday')}
             />
           ) : (
             <div className="h-64 flex items-center justify-center text-[#94a3b8]">
@@ -277,12 +316,17 @@ const Forecast = () => {
 
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                     {items.map((item, idx) => {
-                      // const itemStatus = getStormStatus(item.kp);
+                      const isPeak = peakItem && item.fullTime === peakItem.fullTime;
                       return (
                         <div
                           key={idx}
-                          className="glass-surface rounded-lg p-3 hover:scale-105 transition-transform"
+                          className={`glass-surface rounded-lg p-3 hover:scale-105 transition-transform relative ${isPeak ? 'ring-2 ring-[#f97316]/60' : ''}`}
                         >
+                          {isPeak && (
+                            <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#f97316] text-white whitespace-nowrap">
+                              ★ {t('forecast.bestViewing')}
+                            </span>
+                          )}
                           <div className="text-xs text-[#94a3b8] mb-1 uppercase tracking-wider">
                             {item.date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                           </div>
