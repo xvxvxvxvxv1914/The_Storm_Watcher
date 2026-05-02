@@ -82,6 +82,15 @@ const fr: Record<string, string> = {
   'home.trustedSources': 'Sources de données fiables',
   'home.trustedSourcesDesc': 'Nos prévisions sont alimentées par le Centre de prévision météorologique spatiale de la NOAA, NASA DONKI, ESA Space Weather Service et l\'Institut national de géophysique et de géodésie (Bulgarie).',
   'home.tagline': 'Surveillons le soleil. Protégeons la Terre.',
+  'home.faq.title': 'Foire aux questions',
+  'home.faq.q1': "Qu'est-ce que l'indice Kp ?",
+  'home.faq.a1': "L'indice Kp est une échelle de 0 à 9 mesurant l'activité géomagnétique. Un indice plus élevé indique une tempête magnétique plus forte et une plus grande probabilité d'observer l'aurore à des latitudes plus basses.",
+  'home.faq.q2': 'Quand puis-je voir les aurores boréales ?',
+  'home.faq.a2': "Un indice Kp d'au moins 5 est généralement nécessaire pour voir une aurore. En Europe centrale, Kp 7–8 est habituellement requis, avec un ciel dégagé et une faible pollution lumineuse.",
+  'home.faq.q3': 'Les tempêtes géomagnétiques sont-elles dangereuses pour les humains ?',
+  'home.faq.a3': "Les tempêtes géomagnétiques affectent principalement les systèmes technologiques comme les satellites et les réseaux électriques. Certaines personnes signalent des maux de tête ou de la fatigue, mais il n'existe aucune preuve médicale définitive de risques directs pour la santé.",
+  'home.faq.q4': 'Quelle est la précision des prévisions de tempêtes solaires ?',
+  'home.faq.a4': "Les prévisions météo spatiales sont très précises pour les prédictions à court terme (1–2 heures) grâce aux données satellites. Les prévisions à long terme sont probabilistes et peuvent évoluer selon les conditions solaires.",
 
   // Dashboard
   'dashboard.title': 'Tableau de bord de la météo spatiale',

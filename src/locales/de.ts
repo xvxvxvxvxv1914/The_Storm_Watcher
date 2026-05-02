@@ -82,6 +82,15 @@ const de: Record<string, string> = {
   'home.trustedSources': 'Vertrauenswürdige Datenquellen',
   'home.trustedSourcesDesc': 'Unsere Vorhersagen basieren auf dem NOAA-Weltraumwettervorhersagezentrum, NASA DONKI, ESA Space Weather Service und dem Nationalen Institut für Geophysik und Geodäsie (Bulgarien).',
   'home.tagline': 'Die Sonne beobachten. Die Erde schützen.',
+  'home.faq.title': 'Häufig gestellte Fragen',
+  'home.faq.q1': 'Was ist der Kp-Index?',
+  'home.faq.a1': 'Der Kp-Index ist eine Skala von 0 bis 9, die geomagnetische Aktivität misst. Ein höherer Wert bedeutet einen stärkeren Magnetsturm und eine höhere Wahrscheinlichkeit, Polarlichter in niedrigeren Breiten zu sehen.',
+  'home.faq.q2': 'Wann kann ich Nordlichter sehen?',
+  'home.faq.a2': 'Für sichtbare Polarlichter ist in der Regel ein Kp-Index von mindestens 5 erforderlich. In Mitteleuropa wird meist Kp 7–8 benötigt, dazu ein klarer Himmel und wenig Lichtverschmutzung.',
+  'home.faq.q3': 'Sind geomagnetische Stürme gefährlich für Menschen?',
+  'home.faq.a3': 'Geomagnetische Stürme beeinflussen hauptsächlich technische Systeme wie Satelliten und Stromnetze. Einige Menschen berichten von Kopfschmerzen oder Müdigkeit, aber es gibt keine eindeutigen medizinischen Belege für direkte Gesundheitsrisiken.',
+  'home.faq.q4': 'Wie genau sind Sonnensturmvorhersagen?',
+  'home.faq.a4': 'Weltraumwettervorhersagen sind für kurzfristige Prognosen (1–2 Stunden) mit Satellitendaten sehr genau. Langfristige Vorhersagen sind probabilistisch und können sich ändern, wenn sich die Sonnenbedingungen weiterentwickeln.',
 
   // Dashboard
   'dashboard.title': 'Weltraumwetter-Dashboard',

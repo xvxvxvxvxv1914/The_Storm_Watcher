@@ -96,6 +96,15 @@ const es: Record<string, string> = {
   'home.trustedSources': 'Fuentes de datos de confianza',
   'home.trustedSourcesDesc': 'Nuestras predicciones utilizan datos del Centro de Predicción del Clima Espacial de NOAA, NASA DONKI, ESA Space Weather Service y el Instituto Nacional de Geofísica y Geodesia (Bulgaria).',
   'home.tagline': 'Monitoreando el sol. Protegiendo la Tierra.',
+  'home.faq.title': 'Preguntas frecuentes',
+  'home.faq.q1': '¿Qué es el índice Kp?',
+  'home.faq.a1': 'El índice Kp es una escala del 0 al 9 que mide la actividad geomagnética. Un índice más alto indica una tormenta magnética más fuerte y una mayor probabilidad de ver la aurora en latitudes más bajas.',
+  'home.faq.q2': '¿Cuándo puedo ver la aurora boreal?',
+  'home.faq.a2': 'Generalmente se necesita un índice Kp de al menos 5 para ver la aurora. En Europa Central se suele requerir Kp 7–8, junto con cielos despejados y mínima contaminación lumínica.',
+  'home.faq.q3': '¿Son peligrosas las tormentas geomagnéticas para los humanos?',
+  'home.faq.a3': 'Las tormentas geomagnéticas afectan principalmente a sistemas tecnológicos como satélites y redes eléctricas. Algunas personas reportan dolores de cabeza o fatiga, pero no hay evidencia médica definitiva de riesgos directos para la salud.',
+  'home.faq.q4': '¿Qué tan precisas son las previsiones de tormentas solares?',
+  'home.faq.a4': 'Las previsiones de clima espacial son muy precisas para predicciones a corto plazo (1–2 horas) usando datos de satélites. Las previsiones a largo plazo son probabilísticas y pueden cambiar a medida que evolucionan las condiciones solares.',
 
   // Dashboard
   'dashboard.title': 'Panel de clima espacial',

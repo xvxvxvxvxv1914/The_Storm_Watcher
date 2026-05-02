@@ -82,6 +82,15 @@ const zh: Record<string, string> = {
   'home.trustedSources': '可信数据来源',
   'home.trustedSourcesDesc': '我们的预报由NOAA空间天气预报中心、NASA DONKI、ESA空间天气服务和国家地球物理与大地测量研究所（保加利亚）提供支持。',
   'home.tagline': '监测太阳。保护地球。',
+  'home.faq.title': '常见问题',
+  'home.faq.q1': '什么是Kp指数？',
+  'home.faq.a1': 'Kp指数是一个0到9的标度，用于衡量地磁活动。指数越高，磁暴越强，在低纬度地区看到极光的可能性越大。',
+  'home.faq.q2': '我什么时候可以看到北极光？',
+  'home.faq.a2': '通常需要至少5的Kp指数才能看到极光。在中欧，通常需要Kp 7-8，同时还需要晴朗的天空和最小的光污染。',
+  'home.faq.q3': '地磁暴对人类有危险吗？',
+  'home.faq.a3': '地磁暴主要影响卫星和电网等技术系统。虽然一些人报告头痛或疲劳，但没有确切的医学证据表明对地面人类有直接健康风险。',
+  'home.faq.q4': '太阳风暴预报有多准确？',
+  'home.faq.a4': '利用卫星数据进行短期预测（1-2小时）的太空天气预报非常准确。长期预报是概率性的，随着太阳条件的变化而变化。',
 
   // Dashboard
   'dashboard.title': '太空天气仪表板',
