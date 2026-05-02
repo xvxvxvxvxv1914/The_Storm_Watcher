@@ -27,10 +27,16 @@ const cached = async <T,>(key: string, ttlMs: number, fetcher: () => Promise<T>)
   return promise;
 };
 
-const getJson = async <T,>(url: string): Promise<T> => {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return res.json() as Promise<T>;
+const getJson = async <T,>(url: string, timeoutMs = 10000): Promise<T> => {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    const res = await fetch(url, { signal: ctrl.signal });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json() as Promise<T>;
+  } finally {
+    clearTimeout(timer);
+  }
 };
 
 export interface KpIndexData {
@@ -265,11 +271,19 @@ export interface WeatherData {
   weatherCode: number;
 }
 
+interface OpenMeteoCurrentResponse {
+  current: {
+    cloud_cover: number;
+    temperature_2m: number;
+    weather_code: number;
+  };
+}
+
 export const getWeatherData = (lat: number, lon: number): Promise<WeatherData | null> =>
   cached(`weather-${lat}-${lon}`, TTL_5M, async () => {
     try {
       const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,cloud_cover,weather_code&timezone=auto`;
-      const data = await getJson<any>(url);
+      const data = await getJson<OpenMeteoCurrentResponse>(url);
       if (data && data.current) {
         return {
           cloudCover: data.current.cloud_cover,

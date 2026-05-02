@@ -3,6 +3,18 @@
 // Supabase Edge Function URL (donki-proxy) in the Capacitor build config.
 const DONKI_BASE = import.meta.env.VITE_DONKI_BASE_URL ?? '/donki';
 
+const fetchJson = async <T,>(url: string, timeoutMs = 10000): Promise<T> => {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    const res = await fetch(url, { signal: ctrl.signal });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json() as Promise<T>;
+  } finally {
+    clearTimeout(timer);
+  }
+};
+
 export interface CmeAnalysis {
   isMostAccurate: boolean;
   speed: number;
@@ -46,9 +58,7 @@ const endDate = () => new Date().toISOString().split('T')[0];
 export const getDonkiCme = async (): Promise<CmeEvent[]> => {
   try {
     const params = new URLSearchParams({ startDate: startDate(), endDate: endDate() });
-    const res = await fetch(`${DONKI_BASE}/CME?${params}`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return (await res.json()) || [];
+    return await fetchJson<CmeEvent[]>(`${DONKI_BASE}/CME?${params}`) || [];
   } catch (error) {
     console.error('Error fetching donki cme:', error);
     return [];
@@ -58,9 +68,7 @@ export const getDonkiCme = async (): Promise<CmeEvent[]> => {
 export const getDonkiFlares = async (): Promise<FlareEvent[]> => {
   try {
     const params = new URLSearchParams({ startDate: startDate(), endDate: endDate() });
-    const res = await fetch(`${DONKI_BASE}/FLR?${params}`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return (await res.json()) || [];
+    return await fetchJson<FlareEvent[]>(`${DONKI_BASE}/FLR?${params}`) || [];
   } catch (error) {
     console.error('Error fetching donki flares:', error);
     return [];

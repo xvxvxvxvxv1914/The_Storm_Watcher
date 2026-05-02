@@ -1,5 +1,17 @@
 import * as satellite from 'satellite.js';
 
+const fetchJson = async <T,>(url: string, timeoutMs = 10000): Promise<T> => {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    const res = await fetch(url, { signal: ctrl.signal });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json() as Promise<T>;
+  } finally {
+    clearTimeout(timer);
+  }
+};
+
 export interface IssPosition {
   latitude: number;
   longitude: number;
@@ -18,9 +30,7 @@ export interface IssPass {
 
 export const getIssPosition = async (): Promise<IssPosition> => {
   try {
-    const res = await fetch('https://api.wheretheiss.at/v1/satellites/25544');
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
+    const data = await fetchJson<{ latitude: number; longitude: number; altitude: number; velocity: number; visibility: string }>('https://api.wheretheiss.at/v1/satellites/25544');
     return {
       latitude: data.latitude,
       longitude: data.longitude,
@@ -36,9 +46,7 @@ export const getIssPosition = async (): Promise<IssPosition> => {
 
 const getTle = async (): Promise<{ line1: string; line2: string }> => {
   try {
-    const res = await fetch('https://tle.ivanstanojevic.me/api/tle/25544');
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
+    const data = await fetchJson<{ line1: string; line2: string; [k: string]: string }>('https://tle.ivanstanojevic.me/api/tle/25544');
     return { line1: data.line1, line2: data.line2 };
   } catch (error) {
     console.error('Error fetching ISS TLE:', error);

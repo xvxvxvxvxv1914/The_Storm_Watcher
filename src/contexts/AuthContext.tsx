@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { User, Session, AuthError } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 
@@ -37,6 +37,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const profileReqRef = useRef(0);
 
   useEffect(() => {
     let initialDone = false;
@@ -75,6 +76,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const fetchProfile = async (userId: string) => {
+    const req = ++profileReqRef.current;
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -82,12 +84,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .eq('id', userId)
         .maybeSingle();
 
+      if (req !== profileReqRef.current) return;
       if (error) throw error;
       setProfile(data);
     } catch (error) {
+      if (req !== profileReqRef.current) return;
       console.error('Error fetching profile:', error);
     } finally {
-      setLoading(false);
+      if (req === profileReqRef.current) setLoading(false);
     }
   };
 

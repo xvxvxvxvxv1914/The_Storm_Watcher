@@ -1,3 +1,15 @@
+const fetchJson = async <T,>(url: string, timeoutMs = 10000): Promise<T> => {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    const res = await fetch(url, { signal: ctrl.signal });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json() as Promise<T>;
+  } finally {
+    clearTimeout(timer);
+  }
+};
+
 export interface SkyHour {
   time: string;
   hour: number;
@@ -29,16 +41,17 @@ export const getSkyVisibility = async (lat: number, lon: number, kp: number): Pr
       timezone: 'auto',
       forecast_days: '2',
     });
-    const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const { hourly, daily } = await res.json();
+    const { hourly, daily } = await fetchJson<{
+      hourly: { time: string[]; cloud_cover: number[]; visibility: number[]; precipitation_probability: number[] };
+      daily: { sunrise: string[]; sunset: string[] };
+    }>(`https://api.open-meteo.com/v1/forecast?${params}`);
 
     const sunset = new Date(daily.sunset[0]);
     const sunrise = new Date(daily.sunrise[1]);
 
     // Get night hours (sunset today → sunrise tomorrow)
     const nightHours: SkyHour[] = hourly.time
-      .map((t: string, i: number) => {
+      .map((t, i) => {
         const date = new Date(t);
         const isNight = date >= sunset && date <= sunrise;
         return {
@@ -50,7 +63,7 @@ export const getSkyVisibility = async (lat: number, lon: number, kp: number): Pr
           isNight,
         };
       })
-      .filter((h: SkyHour) => h.isNight);
+      .filter((h) => h.isNight);
 
     const cloudCoverAvg = nightHours.length
       ? Math.round(nightHours.reduce((s, h) => s + h.cloudCover, 0) / nightHours.length)

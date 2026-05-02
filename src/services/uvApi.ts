@@ -1,3 +1,15 @@
+const fetchJson = async <T,>(url: string, timeoutMs = 10000): Promise<T> => {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    const res = await fetch(url, { signal: ctrl.signal });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json() as Promise<T>;
+  } finally {
+    clearTimeout(timer);
+  }
+};
+
 export interface UvHourlyData {
   time: string;     // locale-formatted for display
   isoTime: string;  // ISO 8601 for charting
@@ -21,14 +33,16 @@ export const getUvIndex = async (lat: number, lon: number): Promise<UvData> => {
       timezone: 'auto',
       forecast_days: '1',
     });
-    const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
+    const data = await fetchJson<{
+      timezone: string;
+      hourly: { time: string[]; uv_index: number[] };
+      daily: { uv_index_max: number[] };
+    }>(`https://api.open-meteo.com/v1/forecast?${params}`);
 
     const now = new Date();
     const currentHour = now.getHours();
 
-    const hourly: UvHourlyData[] = data.hourly.time.map((t: string, i: number) => ({
+    const hourly: UvHourlyData[] = data.hourly.time.map((t, i) => ({
       time: new Date(t).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }),
       isoTime: t,
       uv_index: Math.round(data.hourly.uv_index[i] * 10) / 10,
@@ -64,11 +78,11 @@ export const getSunData = async (lat: number, lon: number): Promise<SunDay[]> =>
       timezone: 'auto',
       forecast_days: '3',
     });
-    const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const { daily } = await res.json();
+    const { daily } = await fetchJson<{
+      daily: { time: string[]; sunrise: string[]; sunset: string[]; daylight_duration: number[] };
+    }>(`https://api.open-meteo.com/v1/forecast?${params}`);
 
-    return daily.time.map((_: string, i: number) => {
+    return daily.time.map((_, i) => {
       const sunrise = new Date(daily.sunrise[i]);
       const sunset = new Date(daily.sunset[i]);
 
