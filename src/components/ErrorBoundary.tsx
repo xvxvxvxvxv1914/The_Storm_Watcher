@@ -4,6 +4,7 @@ import * as Sentry from '@sentry/react';
 
 interface Props {
   children: ReactNode;
+  fallback?: ReactNode;
 }
 
 interface State {
@@ -27,6 +28,7 @@ class ErrorBoundary extends Component<Props, State> {
 
   render() {
     if (!this.state.error) return this.props.children;
+    if (this.props.fallback) return this.props.fallback;
 
     return (
       <div className="min-h-[calc(100vh-16rem)] flex items-center justify-center px-4">

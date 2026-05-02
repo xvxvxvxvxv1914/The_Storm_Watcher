@@ -8,6 +8,7 @@ import * as THREE from 'three';
 import { getKpIndex, getKpGradientStyle, getAuroraModel, getMagField, getSolarWind, getWeatherData, type AuroraOvationPoint, type WeatherData } from '../services/noaaApi';
 import { calcAuroraVisibility } from '../utils/auroraVisibility';
 import { useLanguage } from '../contexts/LanguageContext';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const Aurora = () => {
   const { t } = useLanguage();
@@ -553,15 +554,22 @@ const Aurora = () => {
                 <div className="text-[#10b981] font-bold tracking-widest text-sm uppercase animate-pulse">{t('aurora.loadingModel')}</div>
               </div>
             ) : (
-              <Globe
-                ref={globeRef}
-                width={globeWidth}
-                height={Math.max(320, Math.round(globeWidth * 0.75))}
-                backgroundColor="rgba(0,0,0,0)"
-                globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
-                atmosphereColor="rgba(0,180,60,0.15)"
-                atmosphereAltitude={0.15}
-              />
+              <ErrorBoundary fallback={
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center">
+                  <Sparkles className="w-10 h-10 text-[#10b981]/50" />
+                  <p className="text-[#94a3b8] text-sm">3D globe unavailable on this device.<br />Aurora data is still loading above.</p>
+                </div>
+              }>
+                <Globe
+                  ref={globeRef}
+                  width={globeWidth}
+                  height={Math.max(320, Math.round(globeWidth * 0.75))}
+                  backgroundColor="rgba(0,0,0,0)"
+                  globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
+                  atmosphereColor="rgba(0,180,60,0.15)"
+                  atmosphereAltitude={0.15}
+                />
+              </ErrorBoundary>
             )}
           </div>
           

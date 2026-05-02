@@ -33,6 +33,25 @@ registerRoute(
   })
 );
 
+// Open-Meteo (UV, Sky, Sun, Weather) — 10 min cache, serve stale while revalidating
+registerRoute(
+  ({ url }) => /api\.open-meteo\.com/.test(url.href),
+  new StaleWhileRevalidate({
+    cacheName: 'open-meteo-api',
+    plugins: [new ExpirationPlugin({ maxAgeSeconds: 600, maxEntries: 20 })],
+  })
+);
+
+// NIGGG geomagnetic data (Bulgarian institute proxy)
+registerRoute(
+  ({ url }) => url.pathname.startsWith('/api/niggg'),
+  new NetworkFirst({
+    cacheName: 'niggg-api',
+    networkTimeoutSeconds: 10,
+    plugins: [new ExpirationPlugin({ maxAgeSeconds: 300, maxEntries: 5 })],
+  })
+);
+
 // Push notification — payload: { title, body, url, kp }
 self.addEventListener('push', (event) => {
   if (!event.data) return;
