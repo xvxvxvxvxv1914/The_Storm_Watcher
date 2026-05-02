@@ -146,8 +146,8 @@ const Alerts = () => {
                 <Wind className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-white">Coronal Mass Ejections</h2>
-                <p className="text-[#94a3b8] text-sm">NASA DONKI · last 7 days</p>
+                <h2 className="text-2xl font-bold text-white">{t('alerts.cme')}</h2>
+                <p className="text-[#94a3b8] text-sm">{t('alerts.donkiLast7')}</p>
               </div>
             </div>
             <div className="space-y-4">
@@ -174,7 +174,7 @@ const Alerts = () => {
                         <div className="flex flex-wrap items-center gap-2 mb-2">
                           {isEarthDirected && (
                             <span className="px-3 py-1 rounded-full text-xs font-bold bg-orange-500/20 text-orange-400">
-                              Earth-Directed
+                              {t('alerts.earthDirected')}
                             </span>
                           )}
                           {analysis?.speed && (
@@ -193,8 +193,8 @@ const Alerts = () => {
                         </div>
                         {enlil?.estimatedShockArrivalTime && (
                           <p className="text-orange-300 text-sm mb-2 font-semibold">
-                            Estimated arrival: {new Date(enlil.estimatedShockArrivalTime).toLocaleString()}
-                            {enlil.kp_90 && ` · Expected Kp: ${enlil.kp_90}`}
+                            {t('alerts.estimatedArrival')}: {new Date(enlil.estimatedShockArrivalTime).toLocaleString()}
+                            {enlil.kp_90 && ` · ${t('alerts.expectedKp')}: ${enlil.kp_90}`}
                           </p>
                         )}
                         {cme.note && (
@@ -217,8 +217,8 @@ const Alerts = () => {
                 <Flame className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-white">Solar Flares</h2>
-                <p className="text-[#94a3b8] text-sm">NASA DONKI · last 7 days</p>
+                <h2 className="text-2xl font-bold text-white">{t('alerts.solarFlares')}</h2>
+                <p className="text-[#94a3b8] text-sm">{t('alerts.donkiLast7')}</p>
               </div>
             </div>
             <div className="space-y-4">

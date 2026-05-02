@@ -531,9 +531,9 @@ const Aurora = () => {
               className="inline-flex items-center gap-2 px-6 py-3 glass-surface rounded-xl text-sm font-bold uppercase tracking-wider text-[#94a3b8] hover:text-white border border-white/10 hover:border-[#10b981]/30 hover:bg-[#10b981]/10 transition-all hover:scale-105"
             >
               {shareCopied ? (
-                <><Check className="w-4 h-4 text-[#10b981]" /> <span className="text-[#10b981]">Copied!</span></>
+                <><Check className="w-4 h-4 text-[#10b981]" /> <span className="text-[#10b981]">{t('aurora.copied')}</span></>
               ) : (
-                <><Share2 className="w-4 h-4" /> Share conditions</>
+                <><Share2 className="w-4 h-4" /> {t('aurora.shareConditions')}</>
               )}
             </button>
           </div>
@@ -557,7 +557,7 @@ const Aurora = () => {
               <ErrorBoundary fallback={
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center">
                   <Sparkles className="w-10 h-10 text-[#10b981]/50" />
-                  <p className="text-[#94a3b8] text-sm">3D globe unavailable on this device.<br />Aurora data is still loading above.</p>
+                  <p className="text-[#94a3b8] text-sm">{t('aurora.globeUnavailable')}<br />{t('aurora.globeAuroraLoading')}</p>
                 </div>
               }>
                 <Globe

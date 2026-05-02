@@ -99,7 +99,7 @@ export default function AuthReset() {
                     required
                     minLength={8}
                     className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-[#475569] focus:outline-none focus:border-[#f97316]/50 focus:ring-1 focus:ring-[#f97316]/30 transition-colors"
-                    placeholder="Min. 8 characters"
+                    placeholder={t('auth.passwordMin8') || 'Min. 8 characters'}
                     autoComplete="new-password"
                   />
                 </div>
@@ -131,7 +131,7 @@ export default function AuthReset() {
                     onChange={(e) => setConfirm(e.target.value)}
                     required
                     className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-[#475569] focus:outline-none focus:border-[#f97316]/50 focus:ring-1 focus:ring-[#f97316]/30 transition-colors"
-                    placeholder="Repeat password"
+                    placeholder={t('auth.repeatPassword') || 'Repeat password'}
                     autoComplete="new-password"
                   />
                 </div>

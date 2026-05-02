@@ -93,7 +93,7 @@ const content = {
 };
 
 export default function MagneticEffects() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const lang = (language === 'bg' ? 'bg' : 'en') as keyof typeof content;
   const c = content[lang];
 
@@ -110,7 +110,7 @@ export default function MagneticEffects() {
           {/* Hero */}
           <div className="mb-12 text-center">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-bold uppercase tracking-widest mb-6">
-              <Heart className="w-3.5 h-3.5" /> Health & Science
+              <Heart className="w-3.5 h-3.5" /> {t('effects.healthScience') || 'Health & Science'}
             </div>
             <h1 className="text-4xl md:text-5xl font-black text-white mb-4 leading-tight">{c.title}</h1>
             <p className="text-lg text-[#94a3b8] leading-relaxed">{c.subtitle}</p>

@@ -114,7 +114,7 @@ export default function Settings() {
                 <button
                   onClick={handleClearLocation}
                   className="text-[#94a3b8] hover:text-white transition-colors p-1"
-                  aria-label="Clear location"
+                  aria-label={t('settings.clearLocation') || 'Clear location'}
                 >
                   <X className="w-4 h-4" />
                 </button>
