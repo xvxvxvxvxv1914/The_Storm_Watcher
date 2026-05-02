@@ -167,7 +167,7 @@ const ISS = () => {
                 width={globeWidth}
                 height={Math.max(280, Math.round(globeWidth * 0.74))}
                 backgroundColor="rgba(0,0,0,0)"
-                globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
+                globeImageUrl="/textures/earth-night.jpg"
                 atmosphereColor="#f97316"
                 atmosphereAltitude={0.15}
                 pointsData={points}

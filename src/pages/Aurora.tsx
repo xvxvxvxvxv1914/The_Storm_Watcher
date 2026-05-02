@@ -171,7 +171,7 @@ const Aurora = () => {
         // City lights layer (added once)
         const existingCityLights = scene.children.find((c: THREE.Object3D) => c.userData?.isCityLights);
         if (!existingCityLights) {
-          new THREE.TextureLoader().load('//unpkg.com/three-globe/example/img/earth-night.jpg', (texture) => {
+          new THREE.TextureLoader().load('/textures/earth-night.jpg', (texture) => {
             const geo = new THREE.SphereGeometry(100.3, 64, 32);
             const mat = new THREE.MeshBasicMaterial({
               map: texture,
@@ -565,7 +565,7 @@ const Aurora = () => {
                   width={globeWidth}
                   height={Math.max(320, Math.round(globeWidth * 0.75))}
                   backgroundColor="rgba(0,0,0,0)"
-                  globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
+                  globeImageUrl="/textures/earth-blue-marble.jpg"
                   atmosphereColor="rgba(0,180,60,0.15)"
                   atmosphereAltitude={0.15}
                 />
