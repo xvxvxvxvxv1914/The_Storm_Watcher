@@ -10,6 +10,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     private let appGroupID = "group.com.stormwatcher.app"
     private let bgTaskID = "com.stormwatcher.widget-refresh"
+    private var widgetRefreshTimer: Timer?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         BGTaskScheduler.shared.register(forTaskWithIdentifier: bgTaskID, using: nil) { [weak self] task in
@@ -24,6 +25,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
+        widgetRefreshTimer?.invalidate()
+        widgetRefreshTimer = nil
         scheduleWidgetRefresh()
     }
 
@@ -32,6 +35,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         refreshWidgetData(completion: nil)
+        widgetRefreshTimer?.invalidate()
+        widgetRefreshTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { [weak self] _ in
+            self?.refreshWidgetData(completion: nil)
+        }
     }
 
     func applicationWillTerminate(_ application: UIApplication) {

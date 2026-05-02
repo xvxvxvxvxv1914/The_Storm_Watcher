@@ -2,7 +2,7 @@ import WidgetKit
 import SwiftUI
 
 private let appGroupID = "group.com.stormwatcher.app"
-private let sharedDataMaxAge: TimeInterval = 300
+private let sharedDataMaxAge: TimeInterval = 90
 
 // MARK: - Models
 
@@ -65,17 +65,11 @@ struct KpProvider: TimelineProvider {
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<KpEntry>) -> Void) {
         fetchAll { entry in
-            // Three entries spaced 15 min apart. atEnd triggers a reload after all
-            // are consumed — gives the system flexibility to batch refreshes.
-            let cal = Calendar.current
-            let now = Date()
-            func shifted(_ min: Int) -> KpEntry {
-                KpEntry(date: cal.date(byAdding: .minute, value: min, to: now)!,
-                        kp: entry.kp, windSpeed: entry.windSpeed,
-                        stormLevel: entry.stormLevel, stormColor: entry.stormColor,
-                        lastUpdated: entry.lastUpdated, forecast: entry.forecast)
-            }
-            completion(Timeline(entries: [entry, shifted(15), shifted(30)], policy: .atEnd))
+            // Single entry; ask WidgetKit to call getTimeline again in 15 min.
+            // The app refreshes the App Group cache every 60s while active, so
+            // reloadTimelines() from AppDelegate will deliver fresher data sooner.
+            let nextRefresh = Date(timeIntervalSinceNow: 15 * 60)
+            completion(Timeline(entries: [entry], policy: .after(nextRefresh)))
         }
     }
 
