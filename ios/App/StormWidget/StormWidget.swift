@@ -65,13 +65,17 @@ struct KpProvider: TimelineProvider {
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<KpEntry>) -> Void) {
         fetchAll { entry in
-            // Two entries: now + 30 min. atEnd triggers a fresh reload after
-            // both are consumed, which is more reliable than a single .after entry.
-            let next = Calendar.current.date(byAdding: .minute, value: 30, to: Date())!
-            let nextEntry = KpEntry(date: next, kp: entry.kp, windSpeed: entry.windSpeed,
-                                    stormLevel: entry.stormLevel, stormColor: entry.stormColor,
-                                    lastUpdated: entry.lastUpdated, forecast: entry.forecast)
-            completion(Timeline(entries: [entry, nextEntry], policy: .atEnd))
+            // Three entries spaced 15 min apart. atEnd triggers a reload after all
+            // are consumed — gives the system flexibility to batch refreshes.
+            let cal = Calendar.current
+            let now = Date()
+            func shifted(_ min: Int) -> KpEntry {
+                KpEntry(date: cal.date(byAdding: .minute, value: min, to: now)!,
+                        kp: entry.kp, windSpeed: entry.windSpeed,
+                        stormLevel: entry.stormLevel, stormColor: entry.stormColor,
+                        lastUpdated: entry.lastUpdated, forecast: entry.forecast)
+            }
+            completion(Timeline(entries: [entry, shifted(15), shifted(30)], policy: .atEnd))
         }
     }
 

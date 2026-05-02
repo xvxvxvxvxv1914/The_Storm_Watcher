@@ -1,14 +1,19 @@
 import UIKit
 import Capacitor
 import WidgetKit
+import BackgroundTasks
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     private let appGroupID = "group.com.stormwatcher.app"
+    private let bgTaskID = "com.stormwatcher.widget-refresh"
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: bgTaskID, using: nil) { [weak self] task in
+            self?.handleWidgetRefresh(task as! BGAppRefreshTask)
+        }
         return true
     }
 
@@ -16,13 +21,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
+        scheduleWidgetRefresh()
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
-        refreshWidgetData()
+        refreshWidgetData(completion: nil)
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -36,10 +42,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return ApplicationDelegateProxy.shared.application(application, continue: userActivity, restorationHandler: restorationHandler)
     }
 
-    // Fetch fresh Kp + wind from NOAA, write to App Group UserDefaults, then
-    // reload the widget timeline so it shows updated data without waiting for
-    // its own background refresh budget.
-    private func refreshWidgetData() {
+    // MARK: - Background refresh
+
+    private func scheduleWidgetRefresh() {
+        let request = BGAppRefreshTaskRequest(identifier: bgTaskID)
+        // Ask iOS to run again in ~15 min; actual timing is up to the system
+        request.earliestBeginDate = Date(timeIntervalSinceNow: 15 * 60)
+        try? BGTaskScheduler.shared.submit(request)
+    }
+
+    private func handleWidgetRefresh(_ task: BGAppRefreshTask) {
+        // Schedule the next refresh before doing any work
+        scheduleWidgetRefresh()
+
+        task.expirationHandler = {
+            task.setTaskCompleted(success: false)
+        }
+
+        refreshWidgetData {
+            task.setTaskCompleted(success: true)
+        }
+    }
+
+    // MARK: - Data fetch + widget reload
+
+    private func refreshWidgetData(completion: (() -> Void)?) {
         let group = DispatchGroup()
         var kp = -1.0
         var wind = -1
@@ -66,7 +93,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }.resume()
 
         group.notify(queue: .main) { [weak self] in
-            guard let self else { return }
+            guard let self else { completion?(); return }
             if kp >= 0, wind >= 0,
                let defaults = UserDefaults(suiteName: self.appGroupID) {
                 defaults.set(kp, forKey: "widget_kp")
@@ -74,6 +101,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 defaults.set(Date().timeIntervalSince1970, forKey: "widget_updated")
             }
             WidgetCenter.shared.reloadTimelines(ofKind: "StormWidget")
+            completion?()
         }
     }
 }
