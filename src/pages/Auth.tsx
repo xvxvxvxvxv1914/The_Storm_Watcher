@@ -110,9 +110,11 @@ if (confirmationSent) {
             <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[#10b981] to-[#059669] rounded-full mb-6 glow-green">
               <Mail className="w-10 h-10 text-white" />
             </div>
-            <h2 className="text-2xl font-bold text-white mb-3">Check your email</h2>
+            <h2 className="text-2xl font-bold text-white mb-3">{t('auth.resetCheckEmail')}</h2>
             <p className="text-[#94a3b8] mb-6 leading-relaxed">
-              If an account exists for <span className="text-white font-medium">{email}</span>, a password reset link has been sent.
+              {t('auth.resetEmailSent').split('{email}')[0]}
+              <span className="text-white font-medium">{email}</span>
+              {t('auth.resetEmailSent').split('{email}')[1]}
             </p>
             <p className="text-[#475569] text-sm">{t('auth.checkEmailSpam')}</p>
             <button
@@ -128,9 +130,9 @@ if (confirmationSent) {
     );
   }
 
-  const title = mode === 'forgot' ? 'Reset your password' : mode === 'signup' ? t('auth.signUp') : t('auth.signIn');
+  const title = mode === 'forgot' ? t('auth.resetTitle') : mode === 'signup' ? t('auth.signUp') : t('auth.signIn');
   const description = mode === 'forgot'
-    ? 'Enter your email and we will send you a reset link.'
+    ? t('auth.resetDescription')
     : mode === 'signup' ? t('auth.signUpDescription') : t('auth.signInDescription');
 
   return (
@@ -236,7 +238,7 @@ if (confirmationSent) {
                       onClick={() => { setMode('forgot'); setError(''); setPassword(''); }}
                       className="text-xs text-[#f97316] hover:text-[#fbbf24] transition"
                     >
-                      Forgot password?
+                      {t('auth.forgotPassword')}
                     </button>
                   )}
                 </div>
@@ -273,7 +275,7 @@ if (confirmationSent) {
             >
               {loading
                 ? t('auth.loading')
-                : mode === 'forgot' ? 'Send reset link'
+                : mode === 'forgot' ? t('auth.sendResetLink')
                 : mode === 'signup' ? t('auth.signUp')
                 : t('auth.signIn')}
             </button>

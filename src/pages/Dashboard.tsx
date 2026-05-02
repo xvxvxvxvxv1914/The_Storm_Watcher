@@ -40,7 +40,7 @@ const Dashboard = () => {
   const fetchData = useCallback(async () => {
     setError(false);
     try {
-      const [kpData, windData, magData, xrayData, kp3dayData, nigggResult] = await Promise.all([
+      const [kpRes, windRes, magRes, xrayRes, kp3dayRes, nigggRes] = await Promise.allSettled([
         getKpIndex(),
         getSolarWind(),
         getMagField(),
@@ -49,10 +49,16 @@ const Dashboard = () => {
         fetchNigggData(),
       ]);
 
+      const kpData    = kpRes.status    === 'fulfilled' ? kpRes.value    : null;
+      const windData  = windRes.status  === 'fulfilled' ? windRes.value  : null;
+      const magData   = magRes.status   === 'fulfilled' ? magRes.value   : null;
+      const xrayData  = xrayRes.status  === 'fulfilled' ? xrayRes.value  : null;
+      const kp3dayData = kp3dayRes.status === 'fulfilled' ? kp3dayRes.value : null;
+      const nigggResult = nigggRes.status === 'fulfilled' ? nigggRes.value : null;
+
       if (kpData && kpData.length > 0) {
         const latest = kpData[kpData.length - 1];
         setKpValue(latest.kp_index || latest.estimated_kp || 0);
-
       } else {
         setKpValue(0);
       }

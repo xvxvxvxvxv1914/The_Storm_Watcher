@@ -438,6 +438,12 @@ const en: Record<string, string> = {
   'auth.updating': 'Updating…',
   'auth.passwordUpdated': 'Password updated!',
   'auth.redirecting': 'Redirecting to dashboard…',
+  'auth.forgotPassword': 'Forgot password?',
+  'auth.sendResetLink': 'Send reset link',
+  'auth.resetTitle': 'Reset your password',
+  'auth.resetDescription': 'Enter your email and we will send you a reset link.',
+  'auth.resetCheckEmail': 'Check your email',
+  'auth.resetEmailSent': 'If an account exists for {email}, a password reset link has been sent.',
 
   // Onboarding tour
   'onboarding.welcome.title': 'Welcome to The Storm Watcher',

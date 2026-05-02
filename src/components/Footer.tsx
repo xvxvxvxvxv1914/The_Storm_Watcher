@@ -33,6 +33,8 @@ const Footer = () => {
         { to: '/mood', label: t('nav.mood') },
         { to: '/magnetic-effects', label: isBg ? 'Магнитни бури & Здраве' : 'Magnetic Storms & Health' },
         { to: '/faq', label: 'Aurora FAQ' },
+        { to: '/pricing', label: isBg ? 'Планове' : 'Pricing' },
+        { to: '/about', label: isBg ? 'За нас' : 'About' },
       ],
     },
   ];
