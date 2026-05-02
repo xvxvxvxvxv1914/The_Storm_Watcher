@@ -308,6 +308,11 @@ const fr: Record<string, string> = {
   'iss.locYou': 'Votre position',
   'dashboard.swTooltip': 'Vitesse du vent solaire au cours des 24 dernières heures.',
 
+  // 404 Not Found
+  'notFound.title': "Perdu dans l'Espace",
+  'notFound.description': 'Cette page a dérivé au-delà de la magnétosphère. Ne vous inquiétez pas — les données de tempête arrivent toujours.',
+  'notFound.backHome': 'Retour au Centre de Contrôle',
+  'notFound.goBack': 'Retour',
 };
 
 export default fr;

@@ -308,6 +308,11 @@ const zh: Record<string, string> = {
   'iss.locYou': '您的位置',
   'dashboard.swTooltip': '过去24小时的太阳风速度。',
 
+  // 404 Not Found
+  'notFound.title': '迷失在太空',
+  'notFound.description': '此页面已漂移到磁层之外。别担心——风暴数据仍在传输中。',
+  'notFound.backHome': '返回任务控制中心',
+  'notFound.goBack': '返回',
 };
 
 export default zh;

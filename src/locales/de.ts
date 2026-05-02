@@ -308,6 +308,11 @@ const de: Record<string, string> = {
   'iss.locYou': 'Ihr Standort',
   'dashboard.swTooltip': 'Sonnenwindgeschwindigkeit in den letzten 24 Stunden.',
 
+  // 404 Not Found
+  'notFound.title': 'Im Weltraum verloren',
+  'notFound.description': 'Diese Seite ist jenseits der Magnetosphäre abgedriftet. Keine Sorge — die Sturmdaten werden noch übertragen.',
+  'notFound.backHome': 'Zurück zur Mission Control',
+  'notFound.goBack': 'Zurück',
 };
 
 export default de;

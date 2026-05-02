@@ -13,25 +13,25 @@ const Alerts = () => {
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
 
-  const fetchAlerts = async () => {
-    try {
-      const [noaaData, cmeData, flareData] = await Promise.allSettled([
-        getAlerts(),
-        getDonkiCme(),
-        getDonkiFlares(),
-      ]);
-      if (noaaData.status === 'fulfilled') setAlerts(noaaData.value || []);
-      if (cmeData.status === 'fulfilled') setCmeEvents(cmeData.value || []);
-      if (flareData.status === 'fulfilled') setFlareEvents(flareData.value || []);
-      setLastUpdated(new Date());
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching alerts:', error);
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchAlerts = async () => {
+      try {
+        const [noaaData, cmeData, flareData] = await Promise.allSettled([
+          getAlerts(),
+          getDonkiCme(),
+          getDonkiFlares(),
+        ]);
+        if (noaaData.status === 'fulfilled') setAlerts(noaaData.value || []);
+        if (cmeData.status === 'fulfilled') setCmeEvents(cmeData.value || []);
+        if (flareData.status === 'fulfilled') setFlareEvents(flareData.value || []);
+        setLastUpdated(new Date());
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching alerts:', error);
+        setLoading(false);
+      }
+    };
+
     fetchAlerts();
     const interval = setInterval(fetchAlerts, 120000);
     return () => clearInterval(interval);

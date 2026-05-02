@@ -322,6 +322,11 @@ const es: Record<string, string> = {
   'iss.locYou': 'Tu ubicación',
   'dashboard.swTooltip': 'Velocidad del viento solar en las últimas 24 horas.',
 
+  // 404 Not Found
+  'notFound.title': 'Perdido en el Espacio',
+  'notFound.description': 'Esta página se ha alejado más allá de la magnetosfera. No te preocupes — los datos de tormenta siguen llegando.',
+  'notFound.backHome': 'Volver a Control de Misión',
+  'notFound.goBack': 'Volver',
 };
 
 export default es;

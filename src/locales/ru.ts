@@ -308,6 +308,11 @@ const ru: Record<string, string> = {
   'iss.locYou': 'Ваше местоположение',
   'dashboard.swTooltip': 'Скорость солнечного ветра за последние 24 часа.',
 
+  // 404 Not Found
+  'notFound.title': 'Потерян в Космосе',
+  'notFound.description': 'Эта страница улетела за пределы магнитосферы. Не беспокойтесь — данные о буре продолжают поступать.',
+  'notFound.backHome': 'Вернуться в Центр Управления',
+  'notFound.goBack': 'Назад',
 };
 
 export default ru;

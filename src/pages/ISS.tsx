@@ -61,15 +61,18 @@ const ISS = () => {
   // Pass predictions + reverse geocode — run once on mount only.
   // Nominatim limits 1 req/s and will block abusers; never re-run on ISS position changes.
   useEffect(() => {
+    let mounted = true;
+
     const load = async (lat: number, lon: number) => {
+      if (!mounted) return;
       setUserCoords({ lat, lon });
       try {
         const p = await getIssPasses(lat, lon);
-        setPasses(p);
+        if (mounted) setPasses(p);
       } catch {
         // silent
       } finally {
-        setLoadingPasses(false);
+        if (mounted) setLoadingPasses(false);
       }
       try {
         const geo = await fetch(
@@ -77,7 +80,7 @@ const ISS = () => {
         ).then(r => r.json());
         const city = geo.address?.city || geo.address?.town || geo.address?.village || '';
         const country = geo.address?.country || '';
-        setLocationName([city, country].filter(Boolean).join(', '));
+        if (mounted) setLocationName([city, country].filter(Boolean).join(', '));
       } catch {
         // silent — location name is optional
       }
@@ -85,8 +88,10 @@ const ISS = () => {
 
     navigator.geolocation?.getCurrentPosition(
       (pos) => load(pos.coords.latitude, pos.coords.longitude),
-      () => { load(42.7, 23.3); setLocationName('Sofia, Bulgaria (default)'); },
+      () => { load(42.7, 23.3); if (mounted) setLocationName('Sofia, Bulgaria (default)'); },
     );
+
+    return () => { mounted = false; };
   }, []);
 
   const getElevationColor = (el: number) => {

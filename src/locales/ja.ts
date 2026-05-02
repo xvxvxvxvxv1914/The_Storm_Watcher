@@ -308,6 +308,11 @@ const ja: Record<string, string> = {
   'iss.locYou': 'あなたの位置',
   'dashboard.swTooltip': '過去24時間の太陽風速度。',
 
+  // 404 Not Found
+  'notFound.title': '宇宙で迷子になった',
+  'notFound.description': 'このページは磁気圏の彼方に漂ってしまいました。ご安心ください — 嵐のデータは引き続き届いています。',
+  'notFound.backHome': 'ミッションコントロールへ戻る',
+  'notFound.goBack': '戻る',
 };
 
 export default ja;

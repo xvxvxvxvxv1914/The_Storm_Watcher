@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
 import SvgBarChart from '../components/charts/SvgBarChart';
@@ -37,7 +37,7 @@ const Dashboard = () => {
   const [error, setError] = useState(false);
   const [countdown, setCountdown] = useState('');
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setError(false);
     try {
       const [kpData, windData, magData, xrayData, kp3dayData, nigggResult] = await Promise.all([
@@ -111,13 +111,13 @@ const Dashboard = () => {
       setError(true);
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(() => fetchData(), 60000);
+    const interval = setInterval(fetchData, 60000);
     return () => clearInterval(interval);
-  }, []);
+  }, [fetchData]);
 
   useEffect(() => {
     const tick = () => {

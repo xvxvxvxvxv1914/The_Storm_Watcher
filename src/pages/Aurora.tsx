@@ -46,22 +46,23 @@ const Aurora = () => {
   };
 
   useEffect(() => {
-    const fetchLocalWeather = async () => {
-      if (!navigator.geolocation) return;
-      setIsWeatherLoading(true);
-      navigator.geolocation.getCurrentPosition(
-        async (pos) => {
-          const data = await getWeatherData(pos.coords.latitude, pos.coords.longitude);
-          setLocalWeather(data);
-          setIsWeatherLoading(false);
-        },
-        () => {
-          setLocationError(true);
-          setIsWeatherLoading(false);
-        }
-      );
-    };
-    fetchLocalWeather();
+    let mounted = true;
+    if (!navigator.geolocation) return;
+    setIsWeatherLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const data = await getWeatherData(pos.coords.latitude, pos.coords.longitude);
+        if (!mounted) return;
+        setLocalWeather(data);
+        setIsWeatherLoading(false);
+      },
+      () => {
+        if (!mounted) return;
+        setLocationError(true);
+        setIsWeatherLoading(false);
+      }
+    );
+    return () => { mounted = false; };
   }, []);
 
   const handleGlobeResize = useCallback((entries: ResizeObserverEntry[]) => {

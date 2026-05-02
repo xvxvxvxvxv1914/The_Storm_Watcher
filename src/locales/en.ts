@@ -533,6 +533,12 @@ const en: Record<string, string> = {
   'niggg.calm.desc': 'Calm',
   'niggg.calm.detail': 'The magnetic field is stable. No disruptions in navigation or communications.',
   'niggg.calm.humanEffect': 'No reported impact on humans.',
+
+  // 404 Not Found
+  'notFound.title': 'Lost in Space',
+  'notFound.description': "This page drifted beyond the magnetosphere. Don't worry — the storm data is still streaming back home.",
+  'notFound.backHome': 'Back to Mission Control',
+  'notFound.goBack': 'Go Back',
 };
 
 export default en;

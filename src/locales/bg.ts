@@ -468,6 +468,12 @@ const bg: Record<string, string> = {
   'niggg.calm.desc': 'Спокойно',
   'niggg.calm.detail': 'Магнитното поле е стабилно. Няма смущения в навигацията или комуникациите.',
   'niggg.calm.humanEffect': 'Няма отчетено влияние върху хората.',
+
+  // 404 Not Found
+  'notFound.title': 'Изгубен в Космоса',
+  'notFound.description': 'Тази страница се е отдалечила отвъд магнетосферата. Не се притеснявай — данните за бурите продължават да пристигат.',
+  'notFound.backHome': 'Обратно към Управлението',
+  'notFound.goBack': 'Назад',
 };
 
 export default bg;

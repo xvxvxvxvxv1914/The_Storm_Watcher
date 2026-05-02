@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Sparkles, Home, ArrowLeft } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 import StarField from '../components/StarField';
 
 const NotFound = () => {
+  const { t } = useLanguage();
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
@@ -30,12 +32,11 @@ const NotFound = () => {
         </div>
 
         <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4 uppercase tracking-wide">
-          Lost in Space
+          {t('notFound.title')}
         </h1>
 
         <p className="text-[#94a3b8] text-lg mb-10 leading-relaxed">
-          This page drifted beyond the magnetosphere. 
-          Don't worry — the storm data is still streaming back home.
+          {t('notFound.description')}
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -44,14 +45,14 @@ const NotFound = () => {
             className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#10b981] to-[#059669] text-white rounded-xl font-bold uppercase tracking-wider hover:scale-105 transition-transform glow-green"
           >
             <Home className="w-5 h-5" />
-            Back to Mission Control
+            {t('notFound.backHome')}
           </Link>
           <button
             onClick={() => window.history.back()}
             className="inline-flex items-center gap-2 px-8 py-4 glass-surface text-white rounded-xl font-bold uppercase tracking-wider hover:scale-105 transition-transform border border-white/10"
           >
             <ArrowLeft className="w-5 h-5" />
-            Go Back
+            {t('notFound.goBack')}
           </button>
         </div>
       </div>
