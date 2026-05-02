@@ -8,6 +8,17 @@ const config: CapacitorConfig = {
     CapacitorHttp: {
       enabled: true,
     },
+    StatusBar: {
+      style: 'dark',
+      backgroundColor: '#0a0a1a',
+    },
+    SplashScreen: {
+      launchShowDuration: 1500,
+      launchAutoHide: true,
+      backgroundColor: '#0a0a1a',
+      androidSplashResourceName: 'splash',
+      showSpinner: false,
+    },
   },
 };
 
