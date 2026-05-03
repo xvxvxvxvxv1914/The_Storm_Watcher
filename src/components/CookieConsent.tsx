@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const CookieConsent = () => {
+  const { t } = useLanguage();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -23,20 +25,20 @@ const CookieConsent = () => {
     <div className="fixed bottom-20 lg:bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm z-50 animate-fade-in">
       <div className="glass-surface rounded-2xl border border-white/10 p-5 shadow-2xl shadow-black/40">
         <p className="text-[#94a3b8] text-sm leading-relaxed mb-4">
-          We use cookies and analytics to improve your experience and monitor site performance.
+          {t('cookie.message')}
         </p>
         <div className="flex gap-3">
           <button
             onClick={accept}
             className="flex-1 px-4 py-2.5 bg-gradient-to-r from-[#10b981] to-[#059669] text-white rounded-xl text-sm font-bold uppercase tracking-wider hover:scale-105 transition-transform"
           >
-            Accept
+            {t('cookie.accept')}
           </button>
           <button
             onClick={accept}
             className="px-4 py-2.5 glass-surface text-[#94a3b8] rounded-xl text-sm font-bold uppercase tracking-wider border border-white/10 hover:text-white transition-colors"
           >
-            Dismiss
+            {t('cookie.dismiss')}
           </button>
         </div>
       </div>

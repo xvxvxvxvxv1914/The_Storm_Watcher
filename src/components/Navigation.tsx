@@ -177,7 +177,7 @@ const Navigation = () => {
             <div className="relative shrink-0" ref={langMenuRef}>
               <button
                 onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
-                aria-label="Select language"
+                aria-label={t('nav.language')}
                 aria-expanded={isLangMenuOpen}
                 aria-haspopup="listbox"
                 className="flex items-center gap-1.5 text-xs xl:text-sm font-bold text-[#94a3b8] hover:text-white transition-colors"

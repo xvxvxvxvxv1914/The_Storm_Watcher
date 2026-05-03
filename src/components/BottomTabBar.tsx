@@ -183,7 +183,7 @@ const BottomTabBar = () => {
                   <span className="w-8 h-8 rounded-xl bg-slate-600 flex items-center justify-center shrink-0 text-base leading-none">
                     {theme === 'dark' ? '🌙' : '☀️'}
                   </span>
-                  <span className="text-white">{theme === 'dark' ? 'Switch to Light' : 'Switch to Dark'}</span>
+                  <span className="text-white">{theme === 'dark' ? t('nav.switchLight') : t('nav.switchDark')}</span>
                 </button>
 
                 <button
@@ -193,7 +193,7 @@ const BottomTabBar = () => {
                   <span className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center shrink-0">
                     <Globe className="w-4 h-4 text-white" strokeWidth={2} />
                   </span>
-                  <span className="text-white">Language</span>
+                  <span className="text-white">{t('nav.language')}</span>
                   <span className="ml-auto text-white/50 text-sm">{languages.find(l => l.code === language)?.flag}</span>
                   <ChevronRight className={`w-4 h-4 text-white/25 ${langOpen ? 'rotate-90' : ''}`} />
                 </button>

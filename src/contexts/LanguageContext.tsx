@@ -9,7 +9,7 @@ interface LanguageContextType {
   t: (key: string) => string;
 }
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+export const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 // Vite statically analyses the template so each locale becomes its own chunk
 // and is fetched only when the user selects it.

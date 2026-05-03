@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { MapPin, Star, Locate, X, ChevronDown } from 'lucide-react';
 import { useFavoriteLocations } from '../hooks/useFavoriteLocations';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface Props {
   lat: number;
@@ -14,6 +15,7 @@ export default function LocationPicker({ lat, lon, locationName, onSelect, onReq
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const { favorites, maxFavorites, add, remove, isSaved } = useFavoriteLocations();
+  const { t } = useLanguage();
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -37,7 +39,7 @@ export default function LocationPicker({ lat, lon, locationName, onSelect, onReq
         className="flex items-center gap-2 px-3 py-1.5 glass-surface rounded-full border border-white/10 text-sm text-[#94a3b8] hover:text-white hover:border-white/25 transition-colors"
       >
         <MapPin className="w-3.5 h-3.5 text-[#f97316] shrink-0" />
-        <span className="max-w-[180px] truncate">{locationName || 'Select location'}</span>
+        <span className="max-w-[180px] truncate">{locationName || t('location.select')}</span>
         <ChevronDown className={`w-3 h-3 transition-transform shrink-0 ${open ? 'rotate-180' : ''}`} />
       </button>
 
@@ -50,14 +52,14 @@ export default function LocationPicker({ lat, lon, locationName, onSelect, onReq
             className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors"
           >
             <Locate className="w-4 h-4 text-[#10b981] shrink-0" />
-            <span>Use my GPS</span>
+            <span>{t('location.useGPS')}</span>
           </button>
 
           {/* Saved favorites */}
           {favorites.length > 0 && (
             <>
               <div className="border-t border-white/5 mt-1 pt-1">
-                <div className="px-4 py-1.5 text-[10px] text-[#64748b] uppercase tracking-widest">Saved</div>
+                <div className="px-4 py-1.5 text-[10px] text-[#64748b] uppercase tracking-widest">{t('location.saved')}</div>
                 {favorites.map(fav => (
                   <div key={fav.id} className="flex items-center group px-4 py-2 hover:bg-white/5">
                     <button
@@ -90,10 +92,10 @@ export default function LocationPicker({ lat, lon, locationName, onSelect, onReq
                 <span className="truncate">Save "{locationName}"</span>
               </button>
             ) : alreadySaved ? (
-              <div className="px-4 py-2 text-xs text-[#64748b]">Location already saved</div>
+              <div className="px-4 py-2 text-xs text-[#64748b]">{t('location.alreadySaved')}</div>
             ) : favorites.length >= maxFavorites ? (
               <div className="px-4 py-2 text-xs text-[#64748b]">
-                Limit reached ({maxFavorites} locations)
+                {t('location.limitReached').replace('{max}', String(maxFavorites))}
               </div>
             ) : null}
           </div>

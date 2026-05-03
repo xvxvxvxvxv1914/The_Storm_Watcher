@@ -41,7 +41,7 @@ const Alerts = () => {
     const upper = message.toUpperCase();
     if (upper.includes('WARNING') || upper.includes('SEVERE') || upper.includes('EXTREME')) {
       return {
-        severity: 'Warning',
+        severity: t('alerts.severityWarning'),
         color: 'text-red-400',
         bgColor: 'bg-red-500/10',
         borderColor: 'border-red-500/30',
@@ -50,7 +50,7 @@ const Alerts = () => {
     }
     if (upper.includes('WATCH') || upper.includes('ALERT')) {
       return {
-        severity: 'Watch',
+        severity: t('alerts.severityWatch'),
         color: 'text-orange-400',
         bgColor: 'bg-orange-500/10',
         borderColor: 'border-orange-500/30',
@@ -59,7 +59,7 @@ const Alerts = () => {
     }
     if (upper.includes('SUMMARY') || upper.includes('EXTENDED')) {
       return {
-        severity: 'Information',
+        severity: t('alerts.severityInfo'),
         color: 'text-blue-400',
         bgColor: 'bg-blue-500/10',
         borderColor: 'border-blue-500/30',
@@ -67,7 +67,7 @@ const Alerts = () => {
       };
     }
     return {
-      severity: 'Advisory',
+      severity: t('alerts.severityAdvisory'),
       color: 'text-green-400',
       bgColor: 'bg-green-500/10',
       borderColor: 'border-green-500/30',

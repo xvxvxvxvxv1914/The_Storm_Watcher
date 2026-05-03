@@ -267,7 +267,7 @@ const Dashboard = () => {
             {t('dashboard.lastUpdated')}: {lastUpdated.toLocaleTimeString()}
             <span className="inline-flex items-center gap-1.5 text-xs text-[#10b981] font-bold uppercase tracking-wider">
               <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse" />
-              LIVE
+              {t('dashboard.live')}
             </span>
           </p>
           {countdown && (

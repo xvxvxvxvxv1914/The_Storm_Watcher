@@ -157,7 +157,7 @@ const Home = () => {
           </defs>
           <polyline points={pts} fill="none" stroke="url(#sparkGrad)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-        <span className="text-[10px] text-[#64748b] uppercase tracking-widest">3-day Kp trend</span>
+        <span className="text-[10px] text-[#64748b] uppercase tracking-widest">{t('home.kpTrend3day')}</span>
       </div>
     );
   };
@@ -259,7 +259,7 @@ const Home = () => {
             {/* Live badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-surface border border-[#f97316]/30 mb-8">
               <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse" />
-              <span className="text-[#94a3b8] text-sm font-semibold uppercase tracking-widest">Live Space Weather</span>
+              <span className="text-[#94a3b8] text-sm font-semibold uppercase tracking-widest">{t('home.liveSpaceWeather')}</span>
             </div>
 
             <h1 className="text-5xl sm:text-7xl font-bold mb-6 gradient-solar">
@@ -345,7 +345,7 @@ const Home = () => {
                   {windSpeed !== null && windSpeed > 0 && (
                     <div className="glass-surface rounded-xl px-5 py-3 flex items-center gap-3">
                       <Zap className="w-4 h-4 text-[#7c3aed]" />
-                      <span className="text-[#94a3b8] text-sm uppercase tracking-wider">Solar Wind</span>
+                      <span className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('home.solarWind')}</span>
                       <span className="text-white font-bold">{windSpeed.toFixed(0)} km/s</span>
                     </div>
                   )}
