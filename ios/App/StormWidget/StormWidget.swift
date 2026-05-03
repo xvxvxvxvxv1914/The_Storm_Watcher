@@ -26,6 +26,75 @@ struct KpEntry: TimelineEntry {
     let forecast: [ForecastPoint]
 }
 
+// MARK: - Localization
+
+private struct WL {
+    static var lang: String {
+        let code = Locale.preferredLanguages.first.map { String($0.prefix(2)) } ?? "en"
+        return ["bg", "de", "es", "fr", "ja", "ru", "zh"].contains(code) ? code : "en"
+    }
+    static var kpIndex: String {
+        switch lang {
+        case "bg": return "КP ИНДЕКС"
+        case "de": return "KP-INDEX"
+        case "es": return "ÍNDICE KP"
+        case "fr": return "INDICE KP"
+        case "ja": return "KP 指数"
+        case "ru": return "КП ИНДЕКС"
+        case "zh": return "KP指数"
+        default:   return "KP INDEX"
+        }
+    }
+    static var forecast24h: String {
+        switch lang {
+        case "bg": return "ПРОГНОЗА 24Ч"
+        case "de": return "PROGNOSE 24H"
+        case "es": return "PRONÓSTICO 24H"
+        case "fr": return "PRÉVISION 24H"
+        case "ja": return "24時間予報"
+        case "ru": return "ПРОГНОЗ 24Ч"
+        case "zh": return "24小时预报"
+        default:   return "FORECAST 24H"
+        }
+    }
+    static var noData: String {
+        switch lang {
+        case "bg": return "Няма данни"
+        case "de": return "Keine Daten"
+        case "es": return "Sin datos"
+        case "fr": return "Pas de données"
+        case "ja": return "データなし"
+        case "ru": return "Нет данных"
+        case "zh": return "暂无数据"
+        default:   return "No data"
+        }
+    }
+    static var quiet: String {
+        switch lang {
+        case "bg": return "СПОКОЙНО"
+        case "de": return "RUHIG"
+        case "es": return "TRANQUILO"
+        case "fr": return "CALME"
+        case "ja": return "静穏"
+        case "ru": return "СПОКОЙНО"
+        case "zh": return "平静"
+        default:   return "QUIET"
+        }
+    }
+    static var widgetDescription: String {
+        switch lang {
+        case "bg": return "Kp индекс, слънчев вятър и 24-часова прогноза в реално време."
+        case "de": return "Live Kp-Index, Sonnenwind und 24h-Prognose."
+        case "es": return "Índice Kp en vivo, viento solar y pronóstico de 24 horas."
+        case "fr": return "Indice Kp en direct, vent solaire et prévision 24h."
+        case "ja": return "ライブKp指数、太陽風、24時間予報。"
+        case "ru": return "Kp-индекс, солнечный ветер и прогноз на 24 часа."
+        case "zh": return "实时Kp指数、太阳风和24小时预报。"
+        default:   return "Live Kp index, solar wind and 24h forecast."
+        }
+    }
+}
+
 // MARK: - Helpers
 
 private func kpColor(_ kp: Double) -> Color {
@@ -46,7 +115,7 @@ private func kpLevel(_ kp: Double) -> String {
     case 7...: return "G3"
     case 6...: return "G2"
     case 5...: return "G1"
-    default:   return "QUIET"
+    default:   return WL.quiet
     }
 }
 
@@ -55,7 +124,7 @@ private func kpLevel(_ kp: Double) -> String {
 struct KpProvider: TimelineProvider {
     func placeholder(in context: Context) -> KpEntry {
         KpEntry(date: Date(), kp: 2.3, windSpeed: 420,
-                stormLevel: "QUIET", stormColor: .green,
+                stormLevel: WL.quiet, stormColor: .green,
                 lastUpdated: "--:--", forecast: [])
     }
 
@@ -279,7 +348,7 @@ struct StormWidgetMediumView: View {
                     Image(systemName: "bolt.fill")
                         .font(.system(size: 8, weight: .bold))
                         .foregroundColor(entry.stormColor)
-                    Text("KP INDEX")
+                    Text(WL.kpIndex)
                         .font(.system(size: 8, weight: .bold, design: .rounded))
                         .foregroundColor(Color.white.opacity(0.35))
                         .tracking(1)
@@ -320,14 +389,14 @@ struct StormWidgetMediumView: View {
 
             // Right: 24h forecast
             VStack(alignment: .leading, spacing: 4) {
-                Text("FORECAST 24H")
+                Text(WL.forecast24h)
                     .font(.system(size: 7.5, weight: .bold, design: .rounded))
                     .foregroundColor(Color.white.opacity(0.35))
                     .tracking(0.8)
 
                 if entry.forecast.isEmpty {
                     Spacer()
-                    Text("No data")
+                    Text(WL.noData)
                         .font(.system(size: 10))
                         .foregroundColor(Color.white.opacity(0.2))
                     Spacer()
@@ -382,7 +451,7 @@ struct StormWidget: Widget {
             StormWidgetEntryView(entry: entry)
         }
         .configurationDisplayName("Storm Watcher")
-        .description("Live Kp index, solar wind and 24h forecast.")
+        .description(WL.widgetDescription)
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
