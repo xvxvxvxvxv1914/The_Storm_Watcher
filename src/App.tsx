@@ -17,6 +17,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import OnboardingTour from './components/OnboardingTour';
 import ScrollToTop from './components/ScrollToTop';
 import CookieConsent from './components/CookieConsent';
+import SplashAnimation from './components/SplashAnimation';
 
 const LoadingFallback = () => {
   const { t } = useLanguage();
@@ -65,6 +66,7 @@ function AppRoutes() {
       <BottomTabBar />
       <CookieConsent />
       <OnboardingTour />
+      <SplashAnimation />
     </div>
   );
 }
