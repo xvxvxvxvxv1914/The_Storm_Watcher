@@ -108,7 +108,7 @@ export default function MagneticEffects() {
         <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* Hero */}
-          <div className="mb-12 text-center">
+          <div className="mb-6 md:mb-12 text-center">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-bold uppercase tracking-widest mb-6">
               <Heart className="w-3.5 h-3.5" /> {t('effects.healthScience') || 'Health & Science'}
             </div>
@@ -119,7 +119,7 @@ export default function MagneticEffects() {
           {/* Sections */}
           <div className="space-y-10">
             {c.sections.map((section, i) => (
-              <div key={i} className="glass-surface rounded-2xl p-8 border border-white/5">
+              <div key={i} className="glass-surface rounded-2xl p-4 sm:p-8 border border-white/5">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 rounded-xl" style={{ background: section.color + '20', color: section.color }}>
                     {section.icon}

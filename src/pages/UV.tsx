@@ -142,10 +142,10 @@ const UV = () => {
         </div>
 
         {/* Today's max */}
-        <div className="glass-surface rounded-2xl p-6 mb-8 flex items-center justify-between border border-white/10">
+        <div className="glass-surface rounded-2xl p-4 sm:p-6 mb-8 flex items-center justify-between border border-white/10">
           <div>
             <div className="text-sm text-[#64748b] uppercase tracking-widest mb-1">{t('uv.todaysMax')}</div>
-            <div className="text-4xl font-bold text-white">{uvData.max.toFixed(1)}</div>
+            <div className="text-2xl sm:text-4xl font-bold text-white">{uvData.max.toFixed(1)}</div>
           </div>
           <div className={`px-5 py-2 rounded-full bg-gradient-to-r ${maxLevel.bg}`}>
             <span className="text-white font-bold uppercase tracking-wider">{t(maxLevel.labelKey)}</span>
@@ -153,7 +153,7 @@ const UV = () => {
         </div>
 
         {/* Chart */}
-        <div className="glass-surface rounded-2xl p-8 mb-8 border border-white/10">
+        <div className="glass-surface rounded-2xl p-4 sm:p-8 mb-8 border border-white/10">
           <h3 className="text-xl font-bold text-white mb-6 uppercase tracking-wide flex items-center gap-3">
             <Sun className="w-5 h-5 text-[#fbbf24]" />
             {t('uv.indexToday')}
@@ -177,7 +177,7 @@ const UV = () => {
         </div>
 
         {/* {t('uv.scale')} */}
-        <div className="glass-surface rounded-2xl p-8 border border-white/10">
+        <div className="glass-surface rounded-2xl p-4 sm:p-8 border border-white/10">
           <h3 className="text-lg font-bold text-white mb-5 uppercase tracking-wide">{t('uv.scale')}</h3>
           <div className="space-y-3">
             {[

@@ -360,7 +360,7 @@ const Home = () => {
                 {kpSparkData.length > 1 && <KpSparkline data={kpSparkData} />}
 
                 {/* Community Pulse Widget */}
-                <div className="mt-12 flex justify-center">
+                <div className="mt-6 sm:mt-12 flex justify-center">
                   <Link 
                     to="/mood"
                     className="glass-surface rounded-2xl px-6 py-4 border border-white/5 hover:border-[#f97316]/30 transition-all group max-w-sm"
@@ -402,7 +402,7 @@ const Home = () => {
       {/* Storm Score */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="glass-surface rounded-3xl p-10 border border-[#f97316]/10 text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3 uppercase tracking-wide">
+          <h2 className="text-3xl sm:text-2xl sm:text-4xl font-bold text-white mb-3 uppercase tracking-wide">
             {t('home.stormScore.title')}
           </h2>
           <p className="text-[#94a3b8] max-w-xl mx-auto mb-10 leading-relaxed">
@@ -554,7 +554,7 @@ const Home = () => {
         const m = meanings.find(x => score <= x.max) ?? meanings[3];
         return (
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-            <div className={`rounded-2xl p-8 bg-gradient-to-r ${m.color} border ${m.border} text-center`}>
+            <div className={`rounded-2xl p-4 sm:p-8 bg-gradient-to-r ${m.color} border ${m.border} text-center`}>
               <p className="text-xs uppercase tracking-widest font-bold mb-4" style={{ color: m.accent }}>
                 {t('home.meaning')}
               </p>
@@ -569,7 +569,7 @@ const Home = () => {
       {/* Features */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="text-center mb-14">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 uppercase tracking-wide">
+          <h2 className="text-3xl sm:text-2xl sm:text-4xl font-bold text-white mb-4 uppercase tracking-wide">
             {t('home.features2.title')}
           </h2>
         </div>
@@ -669,13 +669,13 @@ const Home = () => {
       {/* FAQ Section */}
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="text-center mb-14">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 uppercase tracking-wide">
+          <h2 className="text-3xl sm:text-2xl sm:text-4xl font-bold text-white mb-4 uppercase tracking-wide">
             {t('home.faq.title')}
           </h2>
         </div>
         <div className="space-y-6">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="glass-surface rounded-2xl p-8 border border-white/5">
+            <div key={i} className="glass-surface rounded-2xl p-4 sm:p-8 border border-white/5">
               <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-3">
                 <span className="w-8 h-8 rounded-lg bg-[#f97316]/20 flex items-center justify-center text-[#f97316] text-sm font-bold">?</span>
                 {t(`home.faq.q${i}`)}

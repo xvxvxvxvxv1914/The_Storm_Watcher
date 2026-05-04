@@ -94,7 +94,7 @@ export default function Settings() {
         <div className="space-y-8">
 
           {/* Location */}
-          <section className="glass-surface rounded-2xl p-6 border border-white/10">
+          <section className="glass-surface rounded-2xl p-4 sm:p-6 border border-white/10">
             <div className="flex items-center gap-3 mb-1">
               <MapPin className="w-5 h-5 text-[#f97316]" />
               <h2 className="text-lg font-semibold text-white">{t('settings.location') || 'Preferred Location'}</h2>
@@ -138,7 +138,7 @@ export default function Settings() {
           </section>
 
           {/* Notifications */}
-          <section className="glass-surface rounded-2xl p-6 border border-white/10">
+          <section className="glass-surface rounded-2xl p-4 sm:p-6 border border-white/10">
             <div className="flex items-center gap-3 mb-1">
               <Bell className="w-5 h-5 text-[#f97316]" />
               <h2 className="text-lg font-semibold text-white">{t('settings.notifications') || 'Storm Notifications'}</h2>
@@ -172,7 +172,7 @@ export default function Settings() {
           </section>
 
           {/* Units */}
-          <section className="glass-surface rounded-2xl p-6 border border-white/10">
+          <section className="glass-surface rounded-2xl p-4 sm:p-6 border border-white/10">
             <div className="flex items-center gap-3 mb-1">
               <Ruler className="w-5 h-5 text-[#f97316]" />
               <h2 className="text-lg font-semibold text-white">{t('settings.units') || 'Units'}</h2>
@@ -201,7 +201,7 @@ export default function Settings() {
           </section>
 
           {/* Language */}
-          <section className="glass-surface rounded-2xl p-6 border border-white/10">
+          <section className="glass-surface rounded-2xl p-4 sm:p-6 border border-white/10">
             <div className="flex items-center gap-3 mb-1">
               <Globe className="w-5 h-5 text-[#f97316]" />
               <h2 className="text-lg font-semibold text-white">{t('settings.language') || 'Language'}</h2>
@@ -229,7 +229,7 @@ export default function Settings() {
           </section>
 
           {/* Help & Onboarding */}
-          <section className="glass-surface rounded-2xl p-6 border border-white/10">
+          <section className="glass-surface rounded-2xl p-4 sm:p-6 border border-white/10">
             <div className="flex items-center gap-3 mb-1">
               <HelpCircle className="w-5 h-5 text-[#f97316]" />
               <h2 className="text-lg font-semibold text-white">{t('settings.help') || 'Help & Tour'}</h2>

@@ -213,7 +213,7 @@ const ISS = () => {
         </div>
 
         {/* Pass predictions */}
-        <div className="glass-surface rounded-2xl p-8 border border-white/10">
+        <div className="glass-surface rounded-2xl p-4 sm:p-8 border border-white/10">
           <h2 className="text-xl font-bold text-white mb-2 uppercase tracking-wide flex items-center gap-3">
             <Satellite className="w-5 h-5 text-[#f97316]" />
             {t('iss.upcomingPasses')}

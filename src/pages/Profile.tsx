@@ -118,7 +118,7 @@ export default function Profile() {
       </div>
 
       {/* Subscription card */}
-      <div className="glass-surface rounded-2xl p-6 border mb-4" style={{ borderColor: `${planColor}33` }}>
+      <div className="glass-surface rounded-2xl p-4 sm:p-6 border mb-4" style={{ borderColor: `${planColor}33` }}>
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
             <p className="text-[#94a3b8] text-xs uppercase tracking-widest mb-1">Current plan</p>
@@ -150,7 +150,7 @@ export default function Profile() {
         </div>
       </div>
 
-      <div className="glass-surface rounded-2xl p-8 border border-white/10 space-y-6">
+      <div className="glass-surface rounded-2xl p-4 sm:p-8 border border-white/10 space-y-6">
         <div>
           <h2 className="text-lg font-semibold text-white mb-1">{t('profile.accountInfo') || 'Account Information'}</h2>
         </div>
@@ -205,7 +205,7 @@ export default function Profile() {
         </form>
       </div>
 
-      <div className="glass-surface rounded-2xl p-8 border border-[#ef4444]/20 space-y-4 mt-6">
+      <div className="glass-surface rounded-2xl p-4 sm:p-8 border border-[#ef4444]/20 space-y-4 mt-6">
         <h2 className="text-lg font-semibold text-[#ef4444]">{t('profile.dangerZone') || 'Danger Zone'}</h2>
         <p className="text-[#94a3b8] text-sm">{t('profile.deleteWarning') || 'Permanently delete your account and all data. This cannot be undone.'}</p>
 

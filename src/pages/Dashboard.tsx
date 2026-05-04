@@ -9,6 +9,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import StarField from '../components/StarField';
 import { SkeletonCard, SkeletonChart, Skeleton } from '../components/Skeleton';
 import ErrorCard from '../components/ErrorCard';
+import { useChartHeight } from '../hooks/useChartHeight';
 
 function useCountUp(target: number, duration = 700): number {
   const prevRef = useRef(target);
@@ -58,6 +59,10 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [countdown, setCountdown] = useState('');
+
+  const chartH    = useChartHeight(190, 300);
+  const chartHSm  = useChartHeight(170, 280);
+  const barH      = useChartHeight(150, 220);
 
   const fetchData = useCallback(async () => {
     setError(false);
@@ -232,11 +237,11 @@ const Dashboard = () => {
       <div className="min-h-screen pt-24 md:pt-20 pb-16 relative">
         <StarField />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-12">
+          <div className="mb-6 md:mb-12">
             <Skeleton className="h-12 w-72 mb-3" />
             <Skeleton className="h-4 w-48" />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 md:mb-12">
             {[...Array(4)].map((_, i) => <SkeletonCard key={i} />)}
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -259,8 +264,8 @@ const Dashboard = () => {
       <div className="solar-orb" style={{ top: '100px', right: '-300px' }} />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-12">
-          <h1 className="text-5xl font-bold gradient-solar mb-3 uppercase tracking-tight">
+        <div className="mb-6 md:mb-12">
+          <h1 className="text-3xl sm:text-5xl font-bold gradient-solar mb-2 sm:mb-3 uppercase tracking-tight">
             {t('dashboard.title')}
           </h1>
           <p className="text-[#94a3b8] text-lg flex items-center gap-3">
@@ -278,8 +283,8 @@ const Dashboard = () => {
           )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <div data-tour="kp-card" className={`relative glass-surface rounded-2xl p-6 ${
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 md:mb-12">
+          <div data-tour="kp-card" className={`relative glass-surface rounded-2xl p-4 sm:p-6 ${
             kpValue >= 5 ? 'glow-red' : kpValue >= 4 ? 'glow-orange' : 'glow-green'
           } hover:scale-105 transition-transform`}>
             <InfoTooltip text={t('dashboard.tooltip.kp')} />
@@ -296,7 +301,7 @@ const Dashboard = () => {
                 {t('dashboard.kpIndex')}
               </h3>
             </div>
-            <div className="text-6xl font-bold mb-3" style={getKpGradientStyle(kpValue)}>{kpDisplay.toFixed(1)}</div>
+            <div className="text-4xl sm:text-4xl sm:text-4xl sm:text-6xl font-bold mb-2 sm:mb-3" style={getKpGradientStyle(kpValue)}>{kpDisplay.toFixed(1)}</div>
             <div className={`inline-block px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider ${
               kpValue >= 7 ? 'bg-gradient-to-r from-[#ef4444] to-[#dc2626] text-white' :
               kpValue >= 5 ? 'bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white' :
@@ -307,7 +312,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div data-tour="wind-card" className="relative glass-surface rounded-2xl p-6 hover:glow-purple transition-all hover:scale-105">
+          <div data-tour="wind-card" className="relative glass-surface rounded-2xl p-4 sm:p-6 hover:glow-purple transition-all hover:scale-105">
             <InfoTooltip text={t('dashboard.tooltip.wind')} />
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-[#7c3aed] to-[#6d28d9] rounded-xl flex items-center justify-center">
@@ -317,11 +322,11 @@ const Dashboard = () => {
                 {t('dashboard.solarWind')}
               </h3>
             </div>
-            <div className="text-6xl font-bold text-white mb-3">{windDisplay.toFixed(0)}</div>
+            <div className="text-4xl sm:text-4xl sm:text-4xl sm:text-6xl font-bold text-white mb-2 sm:mb-3">{windDisplay.toFixed(0)}</div>
             <div className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('dashboard.kms')}</div>
           </div>
 
-          <div className="relative glass-surface rounded-2xl p-6 hover:glow-orange transition-all hover:scale-105">
+          <div className="relative glass-surface rounded-2xl p-4 sm:p-6 hover:glow-orange transition-all hover:scale-105">
             <InfoTooltip text={t('dashboard.tooltip.bz')} />
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-[#06b6d4] to-[#0891b2] rounded-xl flex items-center justify-center">
@@ -331,13 +336,13 @@ const Dashboard = () => {
                 {t('dashboard.bz')}
               </h3>
             </div>
-            <div className={`text-6xl font-bold mb-3 ${bz < 0 ? 'text-[#ef4444]' : 'text-[#10b981]'}`}>
+            <div className={`text-4xl sm:text-4xl sm:text-4xl sm:text-6xl font-bold mb-2 sm:mb-3 ${bz < 0 ? 'text-[#ef4444]' : 'text-[#10b981]'}`}>
               {bzDisplay.toFixed(1)}
             </div>
             <div className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('dashboard.nt')}</div>
           </div>
 
-          <div className="relative glass-surface rounded-2xl p-6 hover:glow-orange transition-all hover:scale-105">
+          <div className="relative glass-surface rounded-2xl p-4 sm:p-6 hover:glow-orange transition-all hover:scale-105">
             <InfoTooltip text={t('dashboard.tooltip.xray')} />
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-[#fbbf24] to-[#f59e0b] rounded-xl flex items-center justify-center">
@@ -347,14 +352,14 @@ const Dashboard = () => {
                 {t('dashboard.xray')}
               </h3>
             </div>
-            <div className="text-6xl font-bold gradient-solar mb-3">{xrayClass}</div>
+            <div className="text-4xl sm:text-4xl sm:text-6xl font-bold gradient-solar mb-2 sm:mb-3">{xrayClass}</div>
             <div className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('dashboard.classTxt')}</div>
           </div>
         </div>
 
-        <div className="glass-surface rounded-2xl p-8 mb-8">
+        <div className="glass-surface rounded-2xl p-4 sm:p-8 mb-4 sm:mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-            <h3 className="text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
+            <h3 className="text-lg sm:text-lg sm:text-lg sm:text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
               <Radio className="w-6 h-6 text-[#f97316]" />
               {t('dashboard.history')}
             </h3>
@@ -391,7 +396,7 @@ const Dashboard = () => {
               data={filteredKpChart}
               color="#f97316"
               type="line"
-              height={300}
+              height={chartH}
               yMin={0}
               yMax={9}
               compareData={yesterdayKpChart.length > 0 ? yesterdayKpChart : undefined}
@@ -404,8 +409,8 @@ const Dashboard = () => {
           )}
         </div>
 
-        <div className="glass-surface rounded-2xl p-8 mb-8">
-          <h3 className="text-2xl font-bold text-white mb-6 uppercase tracking-wide flex items-center gap-3">
+        <div className="glass-surface rounded-2xl p-4 sm:p-8 mb-4 sm:mb-8">
+          <h3 className="text-lg sm:text-lg sm:text-2xl font-bold text-white mb-3 sm:mb-6 uppercase tracking-wide flex items-center gap-3">
             <Wind className="w-6 h-6 text-[#7c3aed]" />
             {t('dashboard.windHistory')}
           </h3>
@@ -414,7 +419,7 @@ const Dashboard = () => {
               data={windChartData}
               color="#7c3aed"
               type="area"
-              height={300}
+              height={chartH}
               refLines={[
                 { value: 400, color: '#f97316', label: '400 km/s' },
                 { value: 600, color: '#ef4444', label: '600 km/s' },
@@ -427,9 +432,9 @@ const Dashboard = () => {
           )}
         </div>
 
-        <div className="glass-surface rounded-2xl p-8 mb-8">
+        <div className="glass-surface rounded-2xl p-4 sm:p-8 mb-4 sm:mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-            <h3 className="text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
+            <h3 className="text-lg sm:text-lg sm:text-lg sm:text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
               <MapPin className="w-6 h-6 text-[#10b981]" />
               {t('dashboard.localMagnetometer')}
             </h3>
@@ -452,7 +457,7 @@ const Dashboard = () => {
                 data={nigggData as TsPoint[]}
                 color={nigggStatus.color}
                 type="baseline"
-                height={280}
+                height={chartHSm}
                 refLines={[
                   { value: 0, color: '#ffffff25', label: '0' },
                   { value: -30, color: '#f9731660', label: '-30 nT' },
@@ -468,9 +473,9 @@ const Dashboard = () => {
         </div>
 
         {dailyKp.length > 0 && (
-          <div className="glass-surface rounded-2xl p-8 mb-8">
+          <div className="glass-surface rounded-2xl p-4 sm:p-8 mb-4 sm:mb-8">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-6">
-              <h3 className="text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
+              <h3 className="text-lg sm:text-lg sm:text-lg sm:text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
                 <Activity className="w-6 h-6 text-[#f97316]" />
                 {t('dashboard.kp7day') || 'Kp — Last 7 Days'}
               </h3>
@@ -479,7 +484,7 @@ const Dashboard = () => {
               </p>
             </div>
             <SvgBarChart
-              height={220}
+              height={barH}
               maxValue={9}
               formatValue={v => `Kp ${v}`}
               bars={dailyKp.map(d => ({

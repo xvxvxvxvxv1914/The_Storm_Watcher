@@ -106,7 +106,7 @@ const FAQ = () => {
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
 
-      <div className="text-center mb-12">
+      <div className="text-center mb-6 md:mb-12">
         <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4 uppercase tracking-wide">
           Aurora FAQ
         </h1>

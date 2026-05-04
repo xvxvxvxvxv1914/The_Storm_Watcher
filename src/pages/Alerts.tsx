@@ -90,8 +90,8 @@ const Alerts = () => {
         <meta name="description" content="Real-time NOAA space weather alerts, coronal mass ejections and solar flare events." />
       </Helmet>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">{t('alerts.title')}</h1>
+        <div className="mb-4 sm:mb-8">
+          <h1 className="text-2xl sm:text-4xl font-bold text-white mb-1 sm:mb-2">{t('alerts.title')}</h1>
           <p className="text-gray-400">
             {t('dashboard.lastUpdated')}: {lastUpdated.toLocaleTimeString()}
           </p>
@@ -99,11 +99,11 @@ const Alerts = () => {
 
         <div className="space-y-4">
           {alerts.length === 0 ? (
-            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-12 text-center">
+            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 sm:p-12 text-center">
               <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Info className="w-8 h-8 text-green-400" />
               </div>
-              <h3 className="text-2xl font-semibold text-white mb-2">{t('alerts.allClear')}</h3>
+              <h3 className="text-lg sm:text-2xl font-semibold text-white mb-1 sm:mb-2">{t('alerts.allClear')}</h3>
               <p className="text-gray-400">{t('alerts.noActiveAlerts')}</p>
             </div>
           ) : (
@@ -140,13 +140,13 @@ const Alerts = () => {
 
         {/* NASA DONKI — CME Events */}
         {cmeEvents.length > 0 && (
-          <div className="mt-12">
+          <div className="mt-6 sm:mt-12">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-gradient-to-br from-[#f97316] to-[#ef4444] rounded-lg flex items-center justify-center">
                 <Wind className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-white">{t('alerts.cme')}</h2>
+                <h2 className="text-lg sm:text-2xl font-bold text-white">{t('alerts.cme')}</h2>
                 <p className="text-[#94a3b8] text-sm">{t('alerts.donkiLast7')}</p>
               </div>
             </div>
@@ -211,13 +211,13 @@ const Alerts = () => {
 
         {/* NASA DONKI — Solar Flares */}
         {flareEvents.length > 0 && (
-          <div className="mt-12">
+          <div className="mt-6 sm:mt-12">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-gradient-to-br from-[#fbbf24] to-[#f97316] rounded-lg flex items-center justify-center">
                 <Flame className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-white">{t('alerts.solarFlares')}</h2>
+                <h2 className="text-lg sm:text-2xl font-bold text-white">{t('alerts.solarFlares')}</h2>
                 <p className="text-[#94a3b8] text-sm">{t('alerts.donkiLast7')}</p>
               </div>
             </div>
@@ -253,7 +253,7 @@ const Alerts = () => {
           </div>
         )}
 
-        <div className="mt-12 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
+        <div className="mt-6 sm:mt-12 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
           <h3 className="text-xl font-semibold text-white mb-4">{t('alerts.aboutTitle')}</h3>
           <div className="space-y-4 text-gray-400">
             <p>
