@@ -53,7 +53,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="relative glass-surface border-t border-white/10 mt-16" role="contentinfo" aria-label="Site footer">
+    <footer className="relative glass-surface border-t border-white/10 mt-16 pb-20 lg:pb-0" role="contentinfo" aria-label="Site footer">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
         {/* Mobile: compact */}
