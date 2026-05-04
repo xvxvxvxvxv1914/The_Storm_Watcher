@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Home, LayoutDashboard, TrendingUp, Sparkles, MoreHorizontal,
   X, Sun, Eye, Satellite, AlertTriangle, SmilePlus,
-  User, LogOut, SlidersHorizontal, Globe, ChevronRight,
+  User, LogOut, SlidersHorizontal, Globe, ChevronDown,
   Magnet, HelpCircle,
 } from 'lucide-react';
 import { useLanguage, languages } from '../contexts/LanguageContext';
@@ -74,66 +74,78 @@ const BottomTabBar = () => {
   };
 
   const moreLinks = [
-    { to: '/alerts', icon: AlertTriangle, label: t('nav.alerts'),             badge: 'bg-red-500' },
-    { to: '/mood',   icon: SmilePlus,     label: t('nav.mood'),               badge: 'bg-purple-500' },
-    { to: '/uv',     icon: Sun,           label: t('nav.uv') || 'UV Index',   badge: 'bg-amber-500' },
-    { to: '/sun',    icon: Sun,           label: t('nav.sun') || 'Sun Times', badge: 'bg-orange-500' },
-    { to: '/sky',    icon: Eye,           label: t('nav.sky') || 'Sky Tonight', badge: 'bg-sky-500' },
-    { to: '/iss',              icon: Satellite,   label: t('nav.iss') || 'ISS Tracker',           badge: 'bg-indigo-500' },
-    { to: '/magnetic-effects', icon: Magnet,      label: t('nav.magneticEffects') || 'Magnetic Effects', badge: 'bg-teal-600' },
-    { to: '/faq',              icon: HelpCircle,  label: t('nav.faq') || 'FAQ',                   badge: 'bg-slate-500' },
+    { to: '/alerts',           icon: AlertTriangle, label: t('nav.alerts') },
+    { to: '/mood',             icon: SmilePlus,     label: t('nav.mood') },
+    { to: '/uv',               icon: Sun,           label: t('nav.uv') || 'UV Index' },
+    { to: '/sun',              icon: Sun,           label: t('nav.sun') || 'Sun Times' },
+    { to: '/sky',              icon: Eye,           label: t('nav.sky') || 'Sky Tonight' },
+    { to: '/iss',              icon: Satellite,     label: t('nav.iss') || 'ISS Tracker' },
+    { to: '/magnetic-effects', icon: Magnet,        label: t('nav.magneticEffects') || 'Magnetic Effects' },
+    { to: '/faq',              icon: HelpCircle,    label: t('nav.faq') || 'FAQ' },
   ];
 
   return (
     <>
-      {/* Floating pill tab bar */}
+      {/* Material You bottom nav bar — full width, blurred surface */}
       <nav
-        className="lg:hidden fixed bottom-0 left-4 right-4 z-50"
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-white/8 glass-surface"
         style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
         aria-label="Main navigation"
       >
-        <div className="glass-surface flex items-center rounded-[28px] px-2 py-1.5">
+        <div className="flex items-center h-16">
           {tabs.map(({ to, icon: Icon, labelKey }) => {
             const active = location.pathname === to;
             return (
               <Link
                 key={to}
                 to={to}
-                className="flex flex-col items-center flex-1 py-1.5 gap-0.5 rounded-[22px]"
-                style={active ? { background: 'rgba(255,255,255,0.12)' } : {}}
+                className="flex flex-col items-center justify-center flex-1 h-full gap-1 relative"
               >
-                <Icon
-                  className={active ? 'text-[#10b981]' : 'text-white'}
-                  size={24}
-                  strokeWidth={active ? 2.5 : 1.8}
-                />
-                <span className={`text-[10px] ${active ? 'font-bold text-[#10b981]' : 'font-medium text-white/70'}`}>
+                {/* Active pill indicator around icon only */}
+                <div className={`flex items-center justify-center w-16 h-8 rounded-full transition-all duration-200 ${
+                  active ? 'bg-[#10b981]/20' : ''
+                }`}>
+                  <Icon
+                    className={active ? 'text-[#10b981]' : 'text-white/60'}
+                    size={22}
+                    strokeWidth={active ? 2.5 : 1.8}
+                  />
+                </div>
+                <span className={`text-[10px] leading-none ${
+                  active ? 'font-medium text-[#10b981]' : 'text-white/50'
+                }`}>
                   {t(labelKey)}
                 </span>
               </Link>
             );
           })}
+
           <button
             onClick={() => setMoreOpen(true)}
             aria-label="Open more menu"
             aria-expanded={moreOpen}
             aria-haspopup="menu"
-            className="flex flex-col items-center flex-1 py-1.5 gap-0.5 rounded-[22px]"
-            style={isMoreActive ? { background: 'rgba(255,255,255,0.12)' } : {}}
+            className="flex flex-col items-center justify-center flex-1 h-full gap-1"
           >
-            <MoreHorizontal
-              className={isMoreActive ? 'text-[#10b981]' : 'text-white'}
-              size={24}
-              strokeWidth={isMoreActive ? 2.5 : 1.8}
-            />
-            <span className={`text-[10px] ${isMoreActive ? 'font-bold text-[#10b981]' : 'font-medium text-white/70'}`}>
-              More
+            <div className={`flex items-center justify-center w-16 h-8 rounded-full transition-all duration-200 ${
+              isMoreActive ? 'bg-[#10b981]/20' : ''
+            }`}>
+              <MoreHorizontal
+                className={isMoreActive ? 'text-[#10b981]' : 'text-white/60'}
+                size={22}
+                strokeWidth={isMoreActive ? 2.5 : 1.8}
+              />
+            </div>
+            <span className={`text-[10px] leading-none ${
+              isMoreActive ? 'font-medium text-[#10b981]' : 'text-white/50'
+            }`}>
+              {t('nav.more') || 'More'}
             </span>
           </button>
         </div>
       </nav>
 
-      {/* More bottom sheet */}
+      {/* More bottom sheet — Material 3 style */}
       {moreOpen && (
         <>
           <div
@@ -141,130 +153,157 @@ const BottomTabBar = () => {
             onClick={() => setMoreOpen(false)}
           />
           <div
-            className="lg:hidden fixed bottom-0 left-0 right-0 z-[70] rounded-t-[20px] overflow-hidden glass-surface"
+            className="lg:hidden fixed bottom-0 left-0 right-0 z-[70] rounded-t-3xl overflow-hidden glass-surface"
             style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
           >
-            <div className="flex justify-center pt-3 pb-2">
-              <div className="w-9 h-1 rounded-full bg-white/25" />
+            {/* Drag handle */}
+            <div className="flex justify-center pt-3 pb-1">
+              <div className="w-8 h-1 rounded-full bg-white/20" />
             </div>
 
-            <div className="flex items-center justify-between px-5 pb-3">
-              <span className="text-white font-bold text-lg">More</span>
-              <button onClick={() => setMoreOpen(false)} aria-label="Close menu" className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center">
-                <X className="w-4 h-4 text-white/70" />
+            {/* Header */}
+            <div className="flex items-center justify-between px-4 py-2">
+              <span className="text-white font-medium text-base">{t('nav.more') || 'More'}</span>
+              <button
+                onClick={() => setMoreOpen(false)}
+                aria-label="Close menu"
+                className="w-8 h-8 rounded-full flex items-center justify-center active:bg-white/10"
+              >
+                <X className="w-5 h-5 text-white/60" />
               </button>
             </div>
 
             <div className="max-h-[72vh] overflow-y-auto" role="menu">
-              <div className="px-4 space-y-0.5 pb-2">
-                {moreLinks.map(({ to, icon: Icon, label, badge }) => (
-                  <button
-                    key={to}
-                    role="menuitem"
-                    onClick={() => handleNav(to)}
-                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium ${location.pathname === to ? 'bg-white/8' : ''}`}
-                  >
-                    <span className={`w-8 h-8 rounded-xl ${badge} flex items-center justify-center shrink-0`}>
-                      <Icon className="w-4 h-4 text-white" strokeWidth={2} />
-                    </span>
-                    <span className={location.pathname === to ? 'text-[#10b981]' : 'text-white'}>{label}</span>
-                    <ChevronRight className="w-4 h-4 ml-auto text-white/25" />
-                  </button>
-                ))}
+              {/* Navigation links */}
+              <div className="py-1">
+                {moreLinks.map(({ to, icon: Icon, label }) => {
+                  const active = location.pathname === to;
+                  return (
+                    <button
+                      key={to}
+                      role="menuitem"
+                      onClick={() => handleNav(to)}
+                      className={`w-full flex items-center gap-4 px-4 py-3 active:bg-white/5 ${
+                        active ? 'bg-[#10b981]/10' : ''
+                      }`}
+                    >
+                      <Icon
+                        className={active ? 'text-[#10b981]' : 'text-white/70'}
+                        size={22}
+                        strokeWidth={1.8}
+                      />
+                      <span className={`text-sm ${active ? 'text-[#10b981] font-medium' : 'text-white/90'}`}>
+                        {label}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
 
-              <div className="border-t border-white/8 mx-4 my-1" />
+              <div className="h-px bg-white/8 mx-0" />
 
-              <div className="px-4 space-y-0.5 py-2">
+              {/* Settings */}
+              <div className="py-1">
                 <button
                   onClick={toggleTheme}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium"
+                  className="w-full flex items-center gap-4 px-4 py-3 active:bg-white/5"
                 >
-                  <span className="w-8 h-8 rounded-xl bg-slate-600 flex items-center justify-center shrink-0 text-base leading-none">
+                  <span className="text-lg leading-none w-[22px] text-center">
                     {theme === 'dark' ? '🌙' : '☀️'}
                   </span>
-                  <span className="text-white">{theme === 'dark' ? t('nav.switchLight') : t('nav.switchDark')}</span>
+                  <span className="text-sm text-white/90">
+                    {theme === 'dark' ? t('nav.switchLight') : t('nav.switchDark')}
+                  </span>
                 </button>
 
                 <button
                   onClick={() => setLangOpen(!langOpen)}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium"
+                  className="w-full flex items-center gap-4 px-4 py-3 active:bg-white/5"
                 >
-                  <span className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center shrink-0">
-                    <Globe className="w-4 h-4 text-white" strokeWidth={2} />
+                  <Globe className="text-white/70" size={22} strokeWidth={1.8} />
+                  <span className="text-sm text-white/90">{t('nav.language')}</span>
+                  <span className="ml-auto text-white/40 text-sm mr-1">
+                    {languages.find(l => l.code === language)?.flag}
                   </span>
-                  <span className="text-white">{t('nav.language')}</span>
-                  <span className="ml-auto text-white/50 text-sm">{languages.find(l => l.code === language)?.flag}</span>
-                  <ChevronRight className={`w-4 h-4 text-white/25 ${langOpen ? 'rotate-90' : ''}`} />
+                  <ChevronDown className={`w-4 h-4 text-white/30 transition-transform ${langOpen ? 'rotate-180' : ''}`} />
                 </button>
 
                 {langOpen && (
-                  <div className="ml-11 space-y-0.5">
+                  <div className="bg-white/4 border-t border-white/6">
                     {languages.map(lang => (
                       <button
                         key={lang.code}
                         onClick={() => { setLanguage(lang.code); setLangOpen(false); }}
-                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm ${
-                          language === lang.code ? 'text-[#10b981] font-semibold' : 'text-white/60'
+                        className={`w-full flex items-center gap-3 pl-14 pr-4 py-2.5 active:bg-white/5 text-sm ${
+                          language === lang.code ? 'text-[#10b981] font-medium' : 'text-white/60'
                         }`}
                       >
-                        <span>{lang.flag}</span><span>{lang.name}</span>
+                        <span>{lang.flag}</span>
+                        <span>{lang.name}</span>
+                        {language === lang.code && (
+                          <span className="ml-auto w-2 h-2 rounded-full bg-[#10b981]" />
+                        )}
                       </button>
                     ))}
                   </div>
                 )}
               </div>
 
-              <div className="border-t border-white/8 mx-4 my-1" />
+              <div className="h-px bg-white/8" />
 
-              <div className="px-4 space-y-0.5 py-2">
+              {/* Account */}
+              <div className="py-1">
                 {user ? (
                   <>
-                    <div className="px-3 py-2 mb-1">
-                      <p className="text-sm font-semibold text-white">{profile?.full_name || user.email?.split('@')[0]}</p>
-                      <p className="text-xs text-white/40">{user.email}</p>
+                    <div className="px-4 py-3 flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-full bg-[#10b981]/20 flex items-center justify-center shrink-0">
+                        <User className="w-4 h-4 text-[#10b981]" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-white truncate">
+                          {profile?.full_name || user.email?.split('@')[0]}
+                        </p>
+                        <p className="text-xs text-white/40 truncate">{user.email}</p>
+                      </div>
                     </div>
+
                     <button
                       onClick={() => handleNav('/profile')}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium"
+                      className="w-full flex items-center gap-4 px-4 py-3 active:bg-white/5"
                     >
-                      <span className="w-8 h-8 rounded-xl bg-gray-500 flex items-center justify-center shrink-0">
-                        <User className="w-4 h-4 text-white" strokeWidth={2} />
-                      </span>
-                      <span className="text-white">{t('nav.profile') || 'Profile'}</span>
-                      <ChevronRight className="w-4 h-4 ml-auto text-white/25" />
+                      <User className="text-white/70" size={22} strokeWidth={1.8} />
+                      <span className="text-sm text-white/90">{t('nav.profile') || 'Profile'}</span>
                     </button>
+
                     <button
                       onClick={() => handleNav('/settings')}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium"
+                      className="w-full flex items-center gap-4 px-4 py-3 active:bg-white/5"
                     >
-                      <span className="w-8 h-8 rounded-xl bg-gray-600 flex items-center justify-center shrink-0">
-                        <SlidersHorizontal className="w-4 h-4 text-white" strokeWidth={2} />
-                      </span>
-                      <span className="text-white">{t('nav.settings') || 'Settings'}</span>
-                      <ChevronRight className="w-4 h-4 ml-auto text-white/25" />
+                      <SlidersHorizontal className="text-white/70" size={22} strokeWidth={1.8} />
+                      <span className="text-sm text-white/90">{t('nav.settings') || 'Settings'}</span>
                     </button>
+
                     <button
                       onClick={handleLogout}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium"
+                      className="w-full flex items-center gap-4 px-4 py-3 active:bg-white/5"
                     >
-                      <span className="w-8 h-8 rounded-xl bg-red-500/20 flex items-center justify-center shrink-0">
-                        <LogOut className="w-4 h-4 text-red-400" strokeWidth={2} />
-                      </span>
-                      <span className="text-red-400">{t('auth.logout')}</span>
+                      <LogOut className="text-red-400" size={22} strokeWidth={1.8} />
+                      <span className="text-sm text-red-400">{t('auth.logout')}</span>
                     </button>
                   </>
                 ) : (
-                  <button
-                    onClick={() => handleNav('/auth')}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#10b981] text-white font-semibold text-sm"
-                  >
-                    {t('auth.signIn')}
-                  </button>
+                  <div className="px-4 py-3">
+                    <button
+                      onClick={() => handleNav('/auth')}
+                      className="w-full flex items-center justify-center gap-2 py-3 rounded-full bg-[#10b981] text-white font-medium text-sm"
+                    >
+                      {t('auth.signIn')}
+                    </button>
+                  </div>
                 )}
               </div>
 
-              <div className="h-3" />
+              <div className="h-2" />
             </div>
           </div>
         </>
