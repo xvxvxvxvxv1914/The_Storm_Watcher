@@ -121,10 +121,10 @@ const Footer = () => {
               {' · '}
               <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" className="hover:text-[#64748b] underline">Open-Meteo</a>
             </p>
-            <p className="text-[#374151] text-xs flex gap-2">
-              <Link to="/privacy" className="hover:text-[#64748b] underline">{isBg ? 'Поверителност' : 'Privacy'}</Link>
+            <p className="text-[#64748b] text-xs flex gap-2">
+              <Link to="/privacy" className="hover:text-white underline">{isBg ? 'Поверителност' : 'Privacy'}</Link>
               <span>·</span>
-              <Link to="/terms" className="hover:text-[#64748b] underline">{isBg ? 'Условия' : 'Terms'}</Link>
+              <Link to="/terms" className="hover:text-white underline">{isBg ? 'Условия' : 'Terms'}</Link>
             </p>
           </div>
         </div>
@@ -178,10 +178,10 @@ const Footer = () => {
               {' · '}
               <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" className="hover:text-[#94a3b8] transition-colors underline">Open-Meteo</a>
             </p>
-            <p className="text-center text-[#475569] text-xs flex gap-3">
-              <Link to="/privacy" className="hover:text-[#94a3b8] transition-colors underline">{isBg ? 'Поверителност' : 'Privacy Policy'}</Link>
+            <p className="text-center text-[#64748b] text-xs flex gap-3">
+              <Link to="/privacy" className="hover:text-white transition-colors underline">{isBg ? 'Поверителност' : 'Privacy Policy'}</Link>
               <span>·</span>
-              <Link to="/terms" className="hover:text-[#94a3b8] transition-colors underline">{isBg ? 'Условия за ползване' : 'Terms of Service'}</Link>
+              <Link to="/terms" className="hover:text-white transition-colors underline">{isBg ? 'Условия за ползване' : 'Terms of Service'}</Link>
             </p>
           </div>
         </div>
