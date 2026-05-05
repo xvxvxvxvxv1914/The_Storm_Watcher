@@ -21,10 +21,23 @@
 | H8 | `NSAllowsArbitraryLoads=false` added to iOS Info.plist | `ios/App/App/Info.plist` |
 | H9 | Aurora.tsx: one-time lighting setup + dispose geometry/material/texture on update | `src/pages/Aurora.tsx` |
 | H10 | Page Visibility API for all 13 setIntervals | All polling components + `src/hooks/useVisibilityInterval.ts` |
+| H14 | Android backup_rules.xml — exclude sharedpref/db/files from backups | `android/app/src/main/res/xml/backup_rules.xml`, `AndroidManifest.xml` |
+| H15 | Helmet tags on Pricing, Profile, Auth, AuthReset, Terms | 5 page files |
+| H16 | Fix hreflang in index.html (language-specific ?lang= URLs) | `index.html` |
+| H17 | JSON-LD schema added to Aurora (WebApplication) + Terms (WebPage) | `Aurora.tsx`, `Terms.tsx` |
+| H18 | sitemap.xml updated (current dates, all pages, correct changefreq/priority) | `public/sitemap.xml` |
+| H19 | Fix broken light mode: scoped .text-white override + color-scheme: light | `src/index.css` |
+| H21 | Global focus-visible rings (#10b981, 2px) for keyboard accessibility | `src/index.css` |
+| H22 | aria-label on BottomTabBar theme toggle button | `src/components/BottomTabBar.tsx` |
 | M8 | TimeSeriesChart already has `chart.remove()` cleanup | Already done |
 | M11 | Capacitor ProGuard keep rules | Done as part of C4 |
+| M12 | Static canonical URLs — Home, Aurora, Dashboard | `Home.tsx`, `Aurora.tsx`, `Dashboard.tsx` |
 | M14 | Cache-Control headers | Done as part of H7 |
+| M18 | Fix duplicate Tailwind classes in Dashboard (sm:text-lg, sm:text-4xl) | `src/pages/Dashboard.tsx` |
+| M19 | prefers-reduced-motion media query | `src/index.css` |
 | M21 | Profile delete confirmation dialog | Already existed (`confirmDelete` state in `Profile.tsx`) |
+| L9 | Close button touch target w-7 → w-10 (WCAG minimum 44px) | `src/components/BottomTabBar.tsx` |
+| L10 | Bottom sheet slideUp animation (.bottom-sheet-enter) | `src/index.css`, `BottomTabBar.tsx` |
 
 ---
 
@@ -479,7 +492,15 @@ Then add `className="... bottom-sheet-enter"` to the sheet div.
 
 ## 📊 Progress Summary
 - **Critical:** 5/5 ✅ DONE
-- **High:** 9/24 done (H3 skipped intentionally, H6 done with C1, M11/M14 done with C4/H7)
-- **Medium:** 2/27 done (M8 already existed, M21 already existed)
-- **Low:** 0/12
-- **Recommended next order:** H11 → H14 → H15 → H18 → H19 → H21 → M18 → M19 → M12 → M6 → M4
+- **High:** 20/24 done (H11 pending — needs manual cwebp conversion; H3 skipped intentionally; H6 done with C1; H13 pending; M11/M14 done with C4/H7)
+- **Medium:** 7/27 done (M8 existed, M12, M18, M19, M21 existed, + M23 skeleton already fixed earlier)
+- **Low:** 2/12 done (L9, L10)
+- **Recommended next order:** H11 (manual: sips + cwebp) → M6 → M4 → M2 → M1 → M23 → M24 → M25 → L1 → L4 → L7
+
+### ⚠️ H11 — Manual step required
+```bash
+# Run in terminal (needs cwebp installed — already done via brew):
+sips -z 630 1200 public/og-image.png --out public/og-image-1200x630.png
+cwebp -q 85 public/og-image-1200x630.png -o public/og-image.webp
+# Then update index.html og:image to /og-image.webp
+```
