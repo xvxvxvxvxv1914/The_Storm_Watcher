@@ -21,7 +21,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://srzfoxlmhxyulrgkchjr.supabase.co https://kauai.ccmc.gsfc.nasa.gov https://kp.gfz.de https://pagmag.ngic.bg https://api.stripe.com https://vitals.vercel-insights.com wss://srzfoxlmhxyulrgkchjr.supabase.co; frame-src https://js.stripe.com https://hooks.stripe.com; object-src 'none'; base-uri 'self'"
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://srzfoxlmhxyulrgkchjr.supabase.co https://kauai.ccmc.gsfc.nasa.gov https://kp.gfz.de https://pagmag.ngic.bg https://services.swpc.noaa.gov https://api.open-meteo.com https://ipapi.co https://api.stripe.com https://vitals.vercel-insights.com wss://srzfoxlmhxyulrgkchjr.supabase.co; frame-src https://js.stripe.com https://hooks.stripe.com; object-src 'none'; base-uri 'self'"
         },
         {
           "key": "Cache-Control",
