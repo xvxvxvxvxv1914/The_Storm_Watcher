@@ -121,9 +121,9 @@ html.light {
 html.light .skeleton {
   background: linear-gradient(
     90deg,
-    rgba(0,0,0,0.06) 25%,
-    rgba(0,0,0,0.12) 50%,
-    rgba(0,0,0,0.06) 75%
+    #e2e8f0 25%,
+    #f1f5f9 50%,
+    #e2e8f0 75%
   );
   background-size: 200% 100%;
 }
