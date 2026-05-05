@@ -160,7 +160,7 @@ html.light .skeleton {
   height: 600px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(249, 115, 22, 0.15) 0%, transparent 70%);
-  filter: blur(60px);
+  filter: blur(40px);
   pointer-events: none;
   z-index: 0;
 }
@@ -171,7 +171,7 @@ html.light .skeleton {
   height: 500px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(124, 58, 237, 0.1) 0%, transparent 70%);
-  filter: blur(50px);
+  filter: blur(40px);
   pointer-events: none;
   z-index: 0;
 }

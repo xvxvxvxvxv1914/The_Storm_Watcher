@@ -388,32 +388,14 @@ export const logError = (msg: string, err?: unknown) => {
 
 ---
 
-### M25 — Centralize date formatting
-**Problem:** `toLocaleDateString()` / `toLocaleTimeString()` called 21+ times across the codebase
-**Fix:** Create `src/utils/dateFormat.ts`:
-```tsx
-export const formatDate = (date: Date | string, locale = 'en-US') =>
-  new Date(date).toLocaleDateString(locale, { month: 'short', day: 'numeric' });
-
-export const formatTime = (date: Date | string, locale = 'en-US') =>
-  new Date(date).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
-
-export const formatDateTime = (date: Date | string, locale = 'en-US') =>
-  new Date(date).toLocaleString(locale);
-
-export const timeAgo = (date: Date) => {
-  const seconds = Math.round((Date.now() - date.getTime()) / 1000);
-  if (seconds < 60) return `${seconds}s ago`;
-  return `${Math.floor(seconds / 60)}m ago`;
-};
-```
-Then grep for `toLocaleDateString\|toLocaleTimeString\|toLocaleString` and replace with imports from this file.
+### M25 — Centralize date formatting (SKIPPED)
+**Resolution:** Formatting dates in 21+ places varies by locale (`useLanguage()`), options (`weekday`, `second`, etc.). Replacing them all centrally is high-risk for bugs and low-ROI for performance.
 
 ---
 
 ## 🟢 LOW PRIORITY
 
-### L1 — Reduce blur on decorative orbs
+### L1 — Reduce blur on decorative orbs (DONE)
 **File:** `src/index.css`
 **Find:**
 ```css
@@ -422,15 +404,13 @@ Then grep for `toLocaleDateString\|toLocaleTimeString\|toLocaleString` and repla
 ```
 **Fix:** Change `blur(60px)` → `blur(40px)` on both orb classes.
 
-### L4 — Pin AGP version
+### L4 — Pin AGP version (VERIFIED)
 **File:** `android/build.gradle` (root level, not app level)
-**Find:** `classpath 'com.android.tools.build:gradle:...'`
-**Fix:** Pin to exact version, e.g. `'com.android.tools.build:gradle:8.3.2'`
+**Status:** Already pinned to `9.2.0`.
 
-### L7 — Fix manifest short_name
+### L7 — Fix manifest short_name (VERIFIED)
 **File:** `public/manifest.json`
-**Find:** `"short_name"` field
-**Fix:** Should match the app name display — verify it says `"Storm Watcher"` not something else.
+**Status:** Already correctly set to `"Storm Watcher"`.
 
 ### L8 — og-image dimensions
 Already fixed in H11 — resize to 1200×630.
