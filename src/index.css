@@ -23,6 +23,7 @@ html.light {
   --tsw-fg-subtle:     #94a3b8;
   --tsw-surface-bg:    rgba(255, 255, 255, 0.88);
   --tsw-surface-border:rgba(0, 0, 0, 0.09);
+  color-scheme: light;
 }
 
 @layer base {
@@ -217,7 +218,13 @@ html.light .magnetic-orb {
   opacity: 0.06;
 }
 
-html.light .text-white {
+html.light p.text-white,
+html.light h1.text-white,
+html.light h2.text-white,
+html.light h3.text-white,
+html.light span.text-white:not(.gradient-solar):not(.gradient-aurora):not(.gradient-fire),
+html.light label.text-white,
+html.light div.text-white {
   color: #1e293b;
 }
 
@@ -235,4 +242,29 @@ html.light .star {
 
 html.light .solar-particle {
   display: none;
+}
+
+/* H21 — Accessibility: focus rings */
+*:focus-visible {
+  outline: 2px solid #10b981;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* M19 — Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* L10 — Bottom sheet animation */
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.bottom-sheet-enter {
+  animation: slideUp 0.3s cubic-bezier(0.32, 0.72, 0, 1);
 }

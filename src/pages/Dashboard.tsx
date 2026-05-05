@@ -256,6 +256,7 @@ const Dashboard = () => {
       <Helmet>
         <title>Dashboard — The Storm Watcher</title>
         <meta name="description" content="Live space weather dashboard: Kp index, solar wind, magnetic field and X-ray flux charts updated every minute." />
+        <link rel="canonical" href="https://thestormwatcher.com/dashboard" />
       </Helmet>
       <StarField />
 
@@ -299,7 +300,7 @@ const Dashboard = () => {
                 {t('dashboard.kpIndex')}
               </h3>
             </div>
-            <div className="text-4xl sm:text-4xl sm:text-4xl sm:text-6xl font-bold mb-2 sm:mb-3" style={getKpGradientStyle(kpValue)}>{kpDisplay.toFixed(1)}</div>
+            <div className="text-4xl sm:text-6xl font-bold mb-2 sm:mb-3" style={getKpGradientStyle(kpValue)}>{kpDisplay.toFixed(1)}</div>
             <div className={`inline-block px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider ${
               kpValue >= 7 ? 'bg-gradient-to-r from-[#ef4444] to-[#dc2626] text-white' :
               kpValue >= 5 ? 'bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white' :
@@ -320,7 +321,7 @@ const Dashboard = () => {
                 {t('dashboard.solarWind')}
               </h3>
             </div>
-            <div className="text-4xl sm:text-4xl sm:text-4xl sm:text-6xl font-bold text-white mb-2 sm:mb-3">{windDisplay.toFixed(0)}</div>
+            <div className="text-4xl sm:text-6xl font-bold text-white mb-2 sm:mb-3">{windDisplay.toFixed(0)}</div>
             <div className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('dashboard.kms')}</div>
           </div>
 
@@ -334,7 +335,7 @@ const Dashboard = () => {
                 {t('dashboard.bz')}
               </h3>
             </div>
-            <div className={`text-4xl sm:text-4xl sm:text-4xl sm:text-6xl font-bold mb-2 sm:mb-3 ${bz < 0 ? 'text-[#ef4444]' : 'text-[#10b981]'}`}>
+            <div className={`text-4xl sm:text-6xl font-bold mb-2 sm:mb-3 ${bz < 0 ? 'text-[#ef4444]' : 'text-[#10b981]'}`}>
               {bzDisplay.toFixed(1)}
             </div>
             <div className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('dashboard.nt')}</div>
@@ -357,7 +358,7 @@ const Dashboard = () => {
 
         <div className="glass-surface rounded-2xl p-4 sm:p-8 mb-4 sm:mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-            <h3 className="text-lg sm:text-lg sm:text-lg sm:text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
+            <h3 className="text-lg sm:text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
               <Radio className="w-6 h-6 text-[#f97316]" />
               {t('dashboard.history')}
             </h3>
@@ -408,7 +409,7 @@ const Dashboard = () => {
         </div>
 
         <div className="glass-surface rounded-2xl p-4 sm:p-8 mb-4 sm:mb-8">
-          <h3 className="text-lg sm:text-lg sm:text-2xl font-bold text-white mb-3 sm:mb-6 uppercase tracking-wide flex items-center gap-3">
+          <h3 className="text-lg sm:text-2xl font-bold text-white mb-3 sm:mb-6 uppercase tracking-wide flex items-center gap-3">
             <Wind className="w-6 h-6 text-[#7c3aed]" />
             {t('dashboard.windHistory')}
           </h3>
@@ -432,7 +433,7 @@ const Dashboard = () => {
 
         <div className="glass-surface rounded-2xl p-4 sm:p-8 mb-4 sm:mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-            <h3 className="text-lg sm:text-lg sm:text-lg sm:text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
+            <h3 className="text-lg sm:text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
               <MapPin className="w-6 h-6 text-[#10b981]" />
               {t('dashboard.localMagnetometer')}
             </h3>
@@ -473,7 +474,7 @@ const Dashboard = () => {
         {dailyKp.length > 0 && (
           <div className="glass-surface rounded-2xl p-4 sm:p-8 mb-4 sm:mb-8">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-6">
-              <h3 className="text-lg sm:text-lg sm:text-lg sm:text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
+              <h3 className="text-lg sm:text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
                 <Activity className="w-6 h-6 text-[#f97316]" />
                 {t('dashboard.kp7day') || 'Kp — Last 7 Days'}
               </h3>

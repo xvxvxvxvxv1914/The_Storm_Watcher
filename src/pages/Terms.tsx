@@ -1,4 +1,5 @@
 import { Shield } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 import { useLanguage } from '../contexts/LanguageContext';
 
 type Section = { title: string; items?: string[]; text?: string };
@@ -577,6 +578,17 @@ const Terms = () => {
 
   return (
     <div className="min-h-screen py-8 sm:py-16">
+      <Helmet>
+        <title>Terms of Service — The Storm Watcher</title>
+        <meta name="description" content="Read the Terms of Service for The Storm Watcher space weather monitoring application." />
+        <link rel="canonical" href="https://thestormwatcher.com/terms" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "Terms of Service — The Storm Watcher",
+          "url": "https://thestormwatcher.com/terms"
+        })}</script>
+      </Helmet>
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
         <div className="flex items-center gap-3 mb-6 sm:mb-8">
           <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#10b981]/20 flex items-center justify-center shrink-0">

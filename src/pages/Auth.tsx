@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { track } from '@vercel/analytics';
 import { useAuth } from '../contexts/AuthContext';
@@ -137,6 +138,12 @@ if (confirmationSent) {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12 relative overflow-hidden">
+      <Helmet>
+        <title>Sign In — The Storm Watcher</title>
+        <meta name="description" content="Sign in or create an account to access advanced space weather alerts and aurora forecasting." />
+        <link rel="canonical" href="https://thestormwatcher.com/auth" />
+        <meta name="robots" content="noindex" />
+      </Helmet>
       <div className="magnetic-orb" style={{ top: '-80px', right: '-120px' }} />
       <div className="solar-orb" style={{ bottom: '-100px', left: '-100px' }} />
 

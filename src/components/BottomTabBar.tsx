@@ -128,7 +128,7 @@ const BottomTabBar = () => {
             onClick={() => setMoreOpen(false)}
           />
           <div
-            className="lg:hidden fixed bottom-0 left-0 right-0 z-[70] rounded-t-[20px] overflow-hidden glass-surface"
+            className="lg:hidden fixed bottom-0 left-0 right-0 z-[70] rounded-t-[20px] overflow-hidden glass-surface bottom-sheet-enter"
             style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
           >
             <div className="flex justify-center pt-3 pb-2">
@@ -137,7 +137,7 @@ const BottomTabBar = () => {
 
             <div className="flex items-center justify-between px-5 pb-3">
               <span className="text-white font-bold text-lg">{t('nav.more') || 'More'}</span>
-              <button onClick={() => setMoreOpen(false)} aria-label="Close menu" className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center">
+              <button onClick={() => setMoreOpen(false)} aria-label="Close menu" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
                 <X className="w-4 h-4 text-white/70" />
               </button>
             </div>
@@ -165,6 +165,7 @@ const BottomTabBar = () => {
               <div className="px-4 space-y-0.5 py-2">
                 <button
                   onClick={toggleTheme}
+                  aria-label={theme === 'dark' ? t('nav.switchLight') : t('nav.switchDark')}
                   className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium"
                 >
                   <span className="w-8 h-8 rounded-xl bg-slate-600 flex items-center justify-center shrink-0 text-base leading-none">

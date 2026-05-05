@@ -317,7 +317,14 @@ const Aurora = () => {
       <Helmet>
         <title>Can I see the Aurora tonight? Live Forecast & Checklist | The Storm Watcher</title>
         <meta name="description" content="Check your local aurora visibility in seconds. Interactive 3D OVATION model, real-time cloud cover, moon phase, and Kp index checklist for perfect aurora hunting." />
-        <link rel="canonical" href={window.location.origin + window.location.pathname} />
+        <link rel="canonical" href="https://thestormwatcher.com/aurora" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          "name": "Aurora Forecast — The Storm Watcher",
+          "url": "https://thestormwatcher.com/aurora",
+          "description": "Live aurora borealis forecast with 3D OVATION model and real-time Kp index"
+        })}</script>
       </Helmet>
       <div className="star-field">
         {stars.map((s) => (
