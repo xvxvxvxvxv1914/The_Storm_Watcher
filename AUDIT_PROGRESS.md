@@ -1,133 +1,485 @@
-# Storm Watcher — Audit Progress
-Last updated: 2026-05-05
-
-## ✅ DONE — Critical (5/5)
-
-- [x] **C1.** Премахнат `android:usesCleartextTraffic="true"` от `android/app/src/main/AndroidManifest.xml`
-- [x] **C2.** `SUPABASE_SERVICE_ROLE_KEY` преместена в Vercel Production env (изтрита от `.env`)
-- [x] **C3.** `STRIPE_SECRET_KEY` + `STRIPE_WEBHOOK_SECRET` преместени в Vercel Production env (изтрити от `.env`)
-- [x] **C4.** ProGuard/R8 активиран в `android/app/build.gradle` (`minifyEnabled true`) + Capacitor keep rules в `proguard-rules.pro`
-- [x] **C5.** iOS icon set — генерирани всички 15 размера (20/29/40/60/76/83.5/1024px) в `AppIcon.appiconset/` + обновен `Contents.json`
+# Storm Watcher — Audit Progress & Implementation Guide
+**Project:** `/Users/nikolaydobrev/Projects/The_Storm_Watcher`
+**Last updated:** 2026-05-05
+**Stack:** React 18 + TypeScript + Vite + Capacitor 8 (iOS + Android) + Supabase + Stripe + Vercel
 
 ---
 
-## ✅ DONE — High (7/24)
+## ✅ COMPLETED
 
-- [x] **H1.** CSRF protection — добавена Origin/Referer проверка в `api/stripe/create-checkout-session.ts`
-- [x] **H2.** Input validation в `api/niggg.ts` — whitelist само `chdate1` и `chdate2` с regex `DD-MM-YYYY`
-- [ ] **H3.** Supabase JWT в localStorage — SKIP (стандарт за SPA; реалната защита е CSP от H7)
-- [x] **H4.** `session_id` мигриран от `localStorage` → `sessionStorage` в `src/lib/supabase.ts` и `src/contexts/AuthContext.tsx`
-- [ ] **H5.** PlanGuard server-side RLS — изисква конфигурация в Supabase Dashboard (не е в кода)
-- [ ] **H6.** ~~`EnableSafeBrowsing=false`~~ — **вече направено заедно с C1** ✅
-- [x] **H7.** CSP headers в `vercel.json` — добавени CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, Cache-Control
-- [x] **H8.** iOS `Info.plist` — добавен `NSAppTransportSecurity` с `NSAllowsArbitraryLoads=false`
-- [x] **H9.** `Aurora.tsx` — Three.js lighting setup еднократен (не се пресъздава при aurora update); geometry/material/texture dispose при overlay update; разделени на 2 отделни `useEffect`-а
-- [x] **H10.** Page Visibility API — добавен за всичките 13 `setInterval`-а:
-  - `Aurora.tsx` — 3 интервала (aurora model, Kp, space weather) → `useVisibilityInterval` hook
-  - `Dashboard.tsx` — 2 интервала (fetchData, countdown) → `useVisibilityInterval` + inline check
-  - `Forecast.tsx` — 1 интервал → `useVisibilityInterval`
-  - `Home.tsx` — 2 интервала (fetchAll, timeAgo) → inline check
-  - `ISS.tsx` — 1 интервал → inline check
-  - `Alerts.tsx` — 1 интервал → inline check
-  - `Navigation.tsx` — 1 интервал → inline check
-  - Нов hook: `src/hooks/useVisibilityInterval.ts`
-- [ ] **H11.** `public/og-image.png` 633 KB → конвертирай в WebP (~150 KB)
-- [ ] **H12.** iOS `AppDelegate.swift:85,96,169,181,194` — NOAA API без TLS verification. Добави certificate pinning
-- [ ] **H13.** `ios/App/StormWidget/StormWidget.swift:168-189` — widget без error handling/timeout
-- [ ] **H14.** `android/app/src/main/AndroidManifest.xml:5` — `allowBackup="true"` без backup rules. Добави `backup_rules.xml` или изключи
-- [ ] **H15.** Helmet tags липсват на: `Terms.tsx`, `Pricing.tsx`, `Profile.tsx`, `Auth.tsx`, `AuthReset.tsx`
-- [ ] **H16.** hreflang в `index.html` — всички сочат към root. Имплементирай path-based или query-based с правилни alternates
-- [ ] **H17.** JSON-LD schema — добави на Aurora, Dashboard, Forecast, About, Pricing, Privacy, Terms
-- [ ] **H18.** `public/sitemap.xml` — lastmod дати остарели. Обнови към 2026-05-05
-- [ ] **H19.** Light mode счупен — `index.css:220-229` overrid-ва text-white глобално. Преработи с CSS variables
-- [ ] **H20.** Tailwind config почти празен — добави design tokens
-- [ ] **H21.** Няма focus rings (a11y) — добави `*:focus-visible` глобален стил
-- [ ] **H22.** Icon-only бутони без aria-label (theme toggle и др.)
-- [ ] **H23.** Desktop ↔ mobile feature parity — theme toggle и language picker само в "More" sheet на mobile
+| # | What | Where |
+|---|------|--------|
+| C1 | Removed `usesCleartextTraffic="true"` + `EnableSafeBrowsing=false` | `android/app/src/main/AndroidManifest.xml` |
+| C2 | `SUPABASE_SERVICE_ROLE_KEY` → Vercel Production env only, removed from `.env` | Vercel Dashboard + `.env` |
+| C3 | `STRIPE_SECRET_KEY` + `STRIPE_WEBHOOK_SECRET` → Vercel Production env only | Vercel Dashboard + `.env` |
+| C4 | ProGuard/R8 enabled (`minifyEnabled true`) + Capacitor keep rules | `android/app/build.gradle`, `proguard-rules.pro` |
+| C5 | Full iOS icon set — 15 sizes generated | `ios/App/App/Assets.xcassets/AppIcon.appiconset/` |
+| H1 | CSRF Origin check on Stripe checkout | `api/stripe/create-checkout-session.ts` |
+| H2 | Input whitelist on niggg proxy (only `chdate1`/`chdate2` with DD-MM-YYYY regex) | `api/niggg.ts` |
+| H4 | `session_id` moved from `localStorage` → `sessionStorage` | `src/lib/supabase.ts`, `src/contexts/AuthContext.tsx` |
+| H7 | CSP + X-Frame-Options + Cache-Control headers | `vercel.json` |
+| H8 | `NSAllowsArbitraryLoads=false` added to iOS Info.plist | `ios/App/App/Info.plist` |
+| H9 | Aurora.tsx: one-time lighting setup + dispose geometry/material/texture on update | `src/pages/Aurora.tsx` |
+| H10 | Page Visibility API for all 13 setIntervals | All polling components + `src/hooks/useVisibilityInterval.ts` |
+| M8 | TimeSeriesChart already has `chart.remove()` cleanup | Already done |
+| M11 | Capacitor ProGuard keep rules | Done as part of C4 |
+| M14 | Cache-Control headers | Done as part of H7 |
+| M21 | Profile delete confirmation dialog | Already existed (`confirmDelete` state in `Profile.tsx`) |
 
 ---
 
-## ⬜ TODO — Medium (0/27)
+## 🔴 NEXT UP — High Priority (continue here)
 
-### Performance
-- [ ] **M1.** `StarField.tsx` — debounce resize (200ms), early return при light theme, CSS animations вместо canvas
-- [ ] **M2.** `Aurora.tsx` — three.js не е lazy-imported (1.2 MB chunk). Wrap Globe с `lazy()`
-- [ ] **M3.** `Aurora.tsx:82-111` — auroraTexture useMemo не dispose-ва стария texture *(частично оправено в H9 — dispose се прави в useEffect, но useMemo още връща нов обект)*
-- [ ] **M4.** Shared poller hook — централизирай `getKpIndex()` polling (Dashboard 60s, Forecast 5m, Home 60s, Navigation 5m)
-- [ ] **M5.** `SvgBarChart.tsx`, `SvgStackedBars.tsx` — wrap в `React.memo`
-- [ ] **M6.** `Dashboard.tsx` countdown setInterval 1s re-render цял Dashboard → изнеси в memo'd подкомпонент
-- [ ] **M7.** `AuthContext.tsx:59,75` — добави AbortController на Supabase queries
-- [ ] **M8.** `TimeSeriesChart.tsx` — chart cleanup без `chart.remove()` (1-5 MB leak per navigation)
-
-### Native
-- [ ] **M9.** iOS `Info.plist` — `LocationWhenInUse` деклариран без Geolocation plugin. Премахни или имплементирай
-- [ ] **M10.** Android adaptive icon липсва в `mipmap-anydpi-v26/` — регенерирай с monochrome layer за Android 13+
-- [ ] **M11.** `proguard-rules.pro` — добави keep rules за Capacitor *(вече направено в C4)* ✅
-
-### SEO
-- [ ] **M12.** Канонични URL-и динамични — замени с статични `https://thestormwatcher.com/...`
-- [ ] **M13.** Twitter Card tags непълни — добави `twitter:title`, `twitter:description`, `twitter:creator`
-- [ ] **M14.** `vercel.json` без Cache-Control *(вече направено в H7)* ✅
-- [ ] **M15.** `sitemap.xml` пропуска: about, alerts, forecast, pricing, privacy, terms, magnetic-effects
-
-### Design
-- [ ] **M16.** Border radius inconsistent — дефинирай scale
-- [ ] **M17.** Heading sizes хаотични — дефинирай h1/h2/h3 scale в Tailwind
-- [ ] **M18.** `Dashboard.tsx:304` — duplicate `sm:text-lg sm:text-lg sm:text-2xl` (typo)
-- [ ] **M19.** Добави `@media (prefers-reduced-motion: reduce)` в `index.css`
-- [ ] **M20.** `Home.tsx` — 6 от 8 feature cards са "Coming Soon" с `opacity-60`
-- [ ] **M21.** `Profile.tsx` — няма confirmation dialog преди account deletion
-- [ ] **M22.** Добави глобален ErrorBoundary около routes в `App.tsx` *(вече има ErrorBoundary, но може да се разшири)*
-- [ ] **M23.** Skeleton shimmer не се вижда в light mode
-
-### Code Quality
-- [ ] **M24.** 27 `console.error` → замени със `Sentry.captureException()`
-- [ ] **M25.** Date formatting дублирано 21+ пъти → изнеси в `utils/dateFormat.ts`
-- [ ] **M26.** `Pricing.tsx:99` — `void session;` workaround
-- [ ] **M27.** Hardcoded meta description в `Home.tsx:180` → премести в locale keys
-- [ ] **M28.** Test coverage минимална — добави unit tests + Playwright e2e за auth flow
+### H11 — Convert og-image to WebP
+**File:** `public/og-image.png` (648 KB, currently 1024×1024 — should be 1200×630)
+**Problem:** Too large + wrong dimensions for social sharing
+**Fix:** Run this in terminal:
+```bash
+cd /Users/nikolaydobrev/Projects/The_Storm_Watcher
+# Resize to correct 1200x630 OG dimensions and convert to WebP
+sips -z 630 1200 public/og-image.png --out public/og-image-1200x630.png
+# Then convert to WebP (needs cwebp — install with: brew install webp)
+cwebp -q 85 public/og-image-1200x630.png -o public/og-image.webp
+# Keep the PNG as fallback, update references in index.html
+```
+**Then in `index.html`** update the og:image meta tag:
+```html
+<meta property="og:image" content="https://thestormwatcher.com/og-image.webp" />
+```
 
 ---
 
-## ⬜ TODO — Low (0/12)
-
-### Performance
-- [ ] **L1.** Reduce blur в `.solar-orb`/`.magnetic-orb` (60px → 40px)
-- [ ] **L2.** Добави Sentry performance monitoring в Service Worker
-
-### Native
-- [ ] **L3.** Widget `Info.plist` — bundle version да наследи от main app
-- [ ] **L4.** AGP версия не pin-ната — добави в `build.gradle`
-- [ ] **L5.** `AppDelegate` `requestAuthorization()` на launch → премести към explicit user gesture
-
-### SEO
-- [ ] **L6.** Heading hierarchy одит за всяка страница
-- [ ] **L7.** Manifest `short_name` mismatch с `index.html` title
-- [ ] **L8.** Verify `public/og-image.png` е 1200x630
-
-### Design
-- [ ] **L9.** Touch target — close button `BottomTabBar.tsx:140` е 28px (под 44px WCAG) → `w-10 h-10`
-- [ ] **L10.** Bottom sheet appears instantly — добави `slide-in-from-bottom` animation
-- [ ] **L11.** `Pricing.tsx` subscription card border inline style → Tailwind utility
-
-### Code Quality
-- [ ] **L12.** Премини на React Query/SWR за централизирано data fetching
+### H14 — Android allowBackup rules
+**File:** `android/app/src/main/AndroidManifest.xml:5`
+**Current:** `android:allowBackup="true"` with no rules
+**Fix:** Create `android/app/src/main/res/xml/backup_rules.xml`:
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <exclude domain="sharedpref" path="." />
+    <exclude domain="database" path="." />
+    <exclude domain="file" path="." />
+</full-backup-content>
+```
+Then in `AndroidManifest.xml`, change the `<application>` tag:
+```xml
+android:allowBackup="true"
+android:fullBackupContent="@xml/backup_rules"
+```
 
 ---
 
-## ⬜ TODO — Deployment Gaps
-
-- [ ] Privacy policy URL в App Store Connect
-- [ ] Apple App Tracking Transparency (ако има tracking)
-- [ ] Play Store data safety form
-- [ ] Universal Links: `apple-app-site-association` файл
-- [ ] Android App Links: `assetlinks.json` файл
+### H15 — Add Helmet tags to missing pages
+**Files missing Helmet:** `src/pages/Pricing.tsx`, `src/pages/Profile.tsx`, `src/pages/Auth.tsx`, `src/pages/AuthReset.tsx`, `src/pages/Terms.tsx`
+**Fix:** Add at the top of each page's return statement. Example for `Pricing.tsx`:
+```tsx
+import { Helmet } from 'react-helmet-async';
+// Inside return():
+<Helmet>
+  <title>Pricing — The Storm Watcher</title>
+  <meta name="description" content="Choose your plan. Free space weather monitoring or Pro/Premium with advanced alerts and aurora forecasting." />
+  <link rel="canonical" href="https://thestormwatcher.com/pricing" />
+</Helmet>
+```
+Pattern for each page:
+- `Auth.tsx` → title: `"Sign In — The Storm Watcher"`, canonical: `/auth`
+- `AuthReset.tsx` → title: `"Reset Password — The Storm Watcher"`, canonical: `/auth/reset`
+- `Profile.tsx` → title: `"Profile — The Storm Watcher"`, canonical: `/profile`, add `<meta name="robots" content="noindex" />`
+- `Terms.tsx` → title: `"Terms of Service — The Storm Watcher"`, canonical: `/terms`
+- `Pricing.tsx` → title: `"Pricing — The Storm Watcher"`, canonical: `/pricing`
 
 ---
 
-## Статистика
-- **Critical:** 5/5 ✅
-- **High:** 7/24 (H6 и H3 са special cases — H6 направено с C1, H3 skip)
-- **Medium:** 0/27 (M11 и M14 вече направени като части от C4/H7)
+### H16 — Fix hreflang in index.html
+**File:** `index.html` lines 16-24
+**Current problem:** All hreflang tags point to root URL instead of language-specific URLs
+**Fix:** Either remove them entirely (simplest) or implement properly:
+```html
+<!-- Remove the broken hreflang block and replace with: -->
+<link rel="alternate" hreflang="en" href="https://thestormwatcher.com/" />
+<link rel="alternate" hreflang="bg" href="https://thestormwatcher.com/?lang=bg" />
+<link rel="alternate" hreflang="de" href="https://thestormwatcher.com/?lang=de" />
+<link rel="alternate" hreflang="es" href="https://thestormwatcher.com/?lang=es" />
+<link rel="alternate" hreflang="fr" href="https://thestormwatcher.com/?lang=fr" />
+<link rel="alternate" hreflang="ja" href="https://thestormwatcher.com/?lang=ja" />
+<link rel="alternate" hreflang="ru" href="https://thestormwatcher.com/?lang=ru" />
+<link rel="alternate" hreflang="zh" href="https://thestormwatcher.com/?lang=zh" />
+<link rel="alternate" hreflang="x-default" href="https://thestormwatcher.com/" />
+```
+
+---
+
+### H17 — JSON-LD Schema on more pages
+**Current:** Only Home + FAQ have JSON-LD
+**Fix:** Add `<script type="application/ld+json">` inside `<Helmet>` on these pages:
+
+**Aurora.tsx** — add inside existing `<Helmet>`:
+```tsx
+<script type="application/ld+json">{JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Aurora Forecast — The Storm Watcher",
+  "url": "https://thestormwatcher.com/aurora",
+  "description": "Live aurora borealis forecast with 3D OVATION model and real-time Kp index"
+})}</script>
+```
+
+**Pricing.tsx** — add:
+```tsx
+<script type="application/ld+json">{JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "The Storm Watcher Pro",
+  "url": "https://thestormwatcher.com/pricing",
+  "offers": { "@type": "Offer", "priceCurrency": "USD", "availability": "https://schema.org/InStock" }
+})}</script>
+```
+
+**Dashboard.tsx, Forecast.tsx** — `"@type": "WebApplication"`
+**About page** (if exists) — `"@type": "Organization"`
+**Privacy.tsx, Terms.tsx** — `"@type": "WebPage"`
+
+---
+
+### H18 — Update sitemap.xml
+**File:** `public/sitemap.xml`
+**Problem:** All dates are `2024-04-28` (stale), missing pages
+**Fix — replace entire file content:**
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://thestormwatcher.com/</loc><lastmod>2026-05-05</lastmod><changefreq>hourly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://thestormwatcher.com/aurora</loc><lastmod>2026-05-05</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://thestormwatcher.com/dashboard</loc><lastmod>2026-05-05</lastmod><changefreq>hourly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://thestormwatcher.com/forecast</loc><lastmod>2026-05-05</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://thestormwatcher.com/alerts</loc><lastmod>2026-05-05</lastmod><changefreq>hourly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://thestormwatcher.com/iss</loc><lastmod>2026-05-05</lastmod><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://thestormwatcher.com/uv</loc><lastmod>2026-05-05</lastmod><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://thestormwatcher.com/mood</loc><lastmod>2026-05-05</lastmod><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://thestormwatcher.com/magnetic-effects</loc><lastmod>2026-05-05</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://thestormwatcher.com/pricing</loc><lastmod>2026-05-05</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://thestormwatcher.com/faq</loc><lastmod>2026-05-05</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://thestormwatcher.com/about</loc><lastmod>2026-05-05</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://thestormwatcher.com/privacy</loc><lastmod>2026-05-05</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://thestormwatcher.com/terms</loc><lastmod>2026-05-05</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+</urlset>
+```
+
+---
+
+### H19 — Fix broken light mode
+**File:** `src/index.css` around line 220
+**Problem:** `html.light .text-white { color: #1e293b; }` overrides ALL text-white globally — SVG strokes, gradient text, and icon colors become invisible in light mode.
+**Fix:** Remove the global override and replace with scoped rules. Find this block:
+```css
+html.light .text-white {
+  color: #1e293b;
+}
+```
+Replace with targeted rules that don't break SVGs/icons:
+```css
+html.light p.text-white,
+html.light h1.text-white,
+html.light h2.text-white,
+html.light h3.text-white,
+html.light span.text-white:not(.gradient-solar):not(.gradient-aurora),
+html.light label.text-white {
+  color: #1e293b;
+}
+```
+Also add globally in the light section:
+```css
+html.light {
+  color-scheme: light;
+}
+```
+
+---
+
+### H21 — Global focus rings (accessibility)
+**File:** `src/index.css`
+**Fix:** Add at the end of the file:
+```css
+*:focus-visible {
+  outline: 2px solid #10b981;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+```
+
+---
+
+### H22 — aria-label on icon-only buttons
+**File:** `src/components/Navigation.tsx`
+**Problem:** Theme toggle button uses emoji with no screen-reader label
+**Check line ~168-175:** Find the theme toggle button. If it's missing `aria-label`, add:
+```tsx
+<button
+  onClick={toggleTheme}
+  aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+>
+```
+Do the same for any icon-only buttons in `src/components/BottomTabBar.tsx`.
+
+---
+
+## 🟡 MEDIUM PRIORITY
+
+### M1 — StarField performance
+**File:** `src/components/StarField.tsx`
+**Fix 1:** Debounce the resize handler — find the resize event listener and wrap callback in debounce:
+```tsx
+import { useEffect, useRef } from 'react';
+// Add debounce ref:
+const resizeTimer = useRef<ReturnType<typeof setTimeout>>();
+// In resize handler:
+clearTimeout(resizeTimer.current);
+resizeTimer.current = setTimeout(() => { /* original resize logic */ }, 200);
+```
+**Fix 2:** Return early if light theme (no stars needed):
+```tsx
+const { theme } = useTheme();
+if (theme === 'light') return null;
+```
+
+---
+
+### M2 — Lazy-load Three.js in Aurora
+**File:** `src/pages/Aurora.tsx` line 4-6
+**Current:**
+```tsx
+import GlobeOrig from 'react-globe.gl';
+const Globe = GlobeOrig as any;
+import * as THREE from 'three';
+```
+**Problem:** three.js (~1.2 MB) is in the main bundle
+**Fix:** The Globe is already lazy in ISS.tsx. In Aurora.tsx, split the component: move all Three.js + Globe code into a separate `AuroraGlobe.tsx` component and lazy-import it:
+```tsx
+// In Aurora.tsx — replace the Globe import with:
+const AuroraGlobe = lazy(() => import('../components/AuroraGlobe'));
+// Move all globeRef, Three.js useEffects into AuroraGlobe.tsx
+```
+
+---
+
+### M4 — Centralize Kp polling
+**Problem:** `getKpIndex()` is called separately in Dashboard (60s), Home (60s), Navigation (5m), Aurora (60s), Forecast — 4-5 duplicate HTTP requests per minute
+**Fix:** Create `src/contexts/KpContext.tsx`:
+```tsx
+import { createContext, useContext, useEffect, useState } from 'react';
+import { getKpIndex } from '../services/noaaApi';
+import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
+
+const KpContext = createContext<number>(0);
+
+export const KpProvider = ({ children }: { children: React.ReactNode }) => {
+  const [kp, setKp] = useState(0);
+  const fetch = async () => {
+    const data = await getKpIndex().catch(() => null);
+    if (data?.length) setKp(data[data.length - 1].kp_index || data[data.length - 1].estimated_kp || 0);
+  };
+  useEffect(() => { fetch(); }, []);
+  useVisibilityInterval(fetch, 60000);
+  return <KpContext.Provider value={kp}>{children}</KpContext.Provider>;
+};
+
+export const useKp = () => useContext(KpContext);
+```
+Wrap `<KpProvider>` around `<AppRoutes>` in `src/App.tsx`, then replace `getKpIndex()` calls + local state in Dashboard, Home, Navigation, Aurora with `const kpValue = useKp()`.
+
+---
+
+### M6 — Isolate countdown re-renders in Dashboard
+**File:** `src/pages/Dashboard.tsx`
+**Problem:** `setInterval(tick, 1000)` triggers full Dashboard re-render every second
+**Fix:** Extract into a memoized component:
+```tsx
+// Add above Dashboard component:
+const UpdateCountdown = React.memo(function UpdateCountdown() {
+  const [countdown, setCountdown] = useState('');
+  useEffect(() => {
+    const tick = () => {
+      const now = new Date();
+      const next = new Date(now);
+      next.setHours(now.getHours() + 1, 0, 0, 0);
+      const diff = next.getTime() - now.getTime();
+      const h = Math.floor(diff / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      setCountdown(`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`);
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+  return <span>{countdown}</span>;
+});
+// Then in Dashboard JSX replace {countdown} with <UpdateCountdown />
+// And remove the countdown state + useEffect from Dashboard
+```
+
+---
+
+### M12 — Static canonical URLs
+**Problem:** All pages use `window.location.origin + window.location.pathname` for canonical — breaks SSR/prerender and changes during navigation
+**Fix:** In every page that has `<link rel="canonical" href={window.location.origin + window.location.pathname} />`, replace with a hardcoded URL:
+```tsx
+// Aurora.tsx:
+<link rel="canonical" href="https://thestormwatcher.com/aurora" />
+// Dashboard.tsx:
+<link rel="canonical" href="https://thestormwatcher.com/dashboard" />
+// Home.tsx:
+<link rel="canonical" href="https://thestormwatcher.com/" />
+// etc.
+```
+
+---
+
+### M15 — Add missing pages to sitemap
+Already covered in H18 fix above — the new sitemap.xml includes all missing pages.
+
+---
+
+### M18 — Fix duplicate Tailwind classes in Dashboard
+**File:** `src/pages/Dashboard.tsx` — multiple occurrences of `sm:text-lg sm:text-lg sm:text-2xl`
+**Actual content** (verified): `text-lg sm:text-lg sm:text-lg sm:text-2xl`
+**Fix:** Find and replace (3 occurrences at lines ~360, 435, 476):
+```
+FIND:    className="text-lg sm:text-lg sm:text-lg sm:text-2xl font-bold
+REPLACE: className="text-lg sm:text-2xl font-bold
+```
+
+---
+
+### M19 — Reduced motion media query
+**File:** `src/index.css`
+**Fix:** Add at the end:
+```css
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+---
+
+### M23 — Skeleton shimmer invisible in light mode
+**File:** `src/index.css` — find the `.skeleton-shimmer` or `@keyframes shimmer` definition (around line 120-128)
+**Fix:** After the existing shimmer keyframes, add a light mode override:
+```css
+html.light .skeleton-shimmer {
+  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+  background-size: 200% 100%;
+}
+```
+
+---
+
+### M24 — Replace console.error with proper logging
+**Files with most occurrences:**
+- `src/services/noaaApi.ts` lines 109, 113
+- `src/services/issApi.ts` lines 42, 52, 125
+- `src/pages/Aurora.tsx` (several)
+
+**Fix:** If Sentry is NOT yet set up, just suppress the noisy ones or use a wrapper:
+```tsx
+// Create src/utils/logger.ts:
+export const logError = (msg: string, err?: unknown) => {
+  if (import.meta.env.DEV) console.error(msg, err);
+  // When Sentry is added: Sentry.captureException(err, { extra: { msg } })
+};
+// Then replace: console.error('...', err) → logError('...', err)
+```
+
+---
+
+### M25 — Centralize date formatting
+**Problem:** `toLocaleDateString()` / `toLocaleTimeString()` called 21+ times across the codebase
+**Fix:** Create `src/utils/dateFormat.ts`:
+```tsx
+export const formatDate = (date: Date | string, locale = 'en-US') =>
+  new Date(date).toLocaleDateString(locale, { month: 'short', day: 'numeric' });
+
+export const formatTime = (date: Date | string, locale = 'en-US') =>
+  new Date(date).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
+
+export const formatDateTime = (date: Date | string, locale = 'en-US') =>
+  new Date(date).toLocaleString(locale);
+
+export const timeAgo = (date: Date) => {
+  const seconds = Math.round((Date.now() - date.getTime()) / 1000);
+  if (seconds < 60) return `${seconds}s ago`;
+  return `${Math.floor(seconds / 60)}m ago`;
+};
+```
+Then grep for `toLocaleDateString\|toLocaleTimeString\|toLocaleString` and replace with imports from this file.
+
+---
+
+## 🟢 LOW PRIORITY
+
+### L1 — Reduce blur on decorative orbs
+**File:** `src/index.css`
+**Find:**
+```css
+.solar-orb { ... blur(...) ... }
+.magnetic-orb { ... blur(...) ... }
+```
+**Fix:** Change `blur(60px)` → `blur(40px)` on both orb classes.
+
+### L4 — Pin AGP version
+**File:** `android/build.gradle` (root level, not app level)
+**Find:** `classpath 'com.android.tools.build:gradle:...'`
+**Fix:** Pin to exact version, e.g. `'com.android.tools.build:gradle:8.3.2'`
+
+### L7 — Fix manifest short_name
+**File:** `public/manifest.json`
+**Find:** `"short_name"` field
+**Fix:** Should match the app name display — verify it says `"Storm Watcher"` not something else.
+
+### L8 — og-image dimensions
+Already fixed in H11 — resize to 1200×630.
+
+### L9 — Close button touch target
+**File:** `src/components/BottomTabBar.tsx` line ~140
+**Find:** The close button for the "More" sheet: `className="w-7 h-7 rounded-full bg-white/10..."`
+**Fix:** Change to `w-10 h-10` (44px — WCAG minimum touch target).
+
+### L10 — Bottom sheet animation
+**File:** `src/components/BottomTabBar.tsx` — the More sheet div
+**Current:** `className="lg:hidden fixed bottom-0 left-0 right-0 z-[70] rounded-t-[20px]..."`
+**Fix:** Add CSS transition. In `index.css` add:
+```css
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.bottom-sheet-enter {
+  animation: slideUp 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+```
+Then add `className="... bottom-sheet-enter"` to the sheet div.
+
+---
+
+## 📱 DEPLOYMENT GAPS (before App Store / Play Store)
+
+- [ ] **App Store Connect:** Add privacy policy URL: `https://thestormwatcher.com/privacy`
+- [ ] **Play Store:** Fill in "Data safety" form (location data collected for UV/aurora)
+- [ ] **Universal Links (iOS):** Create `public/.well-known/apple-app-site-association` file:
+  ```json
+  { "applinks": { "apps": [], "details": [{ "appID": "TEAMID.com.stormwatcher.app", "paths": ["*"] }] } }
+  ```
+- [ ] **App Links (Android):** Create `public/.well-known/assetlinks.json` — get values from Play Console
+
+---
+
+## 📊 Progress Summary
+- **Critical:** 5/5 ✅ DONE
+- **High:** 9/24 done (H3 skipped intentionally, H6 done with C1, M11/M14 done with C4/H7)
+- **Medium:** 2/27 done (M8 already existed, M21 already existed)
 - **Low:** 0/12
-- **Следващо:** H11 (og-image WebP), H14 (Android backup rules), H15-H18 (SEO/Helmet), H19 (light mode fix)
+- **Recommended next order:** H11 → H14 → H15 → H18 → H19 → H21 → M18 → M19 → M12 → M6 → M4
