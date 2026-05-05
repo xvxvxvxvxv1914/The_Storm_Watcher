@@ -1,4 +1,5 @@
 import * as satellite from 'satellite.js';
+import { logError } from '../utils/logger';
 
 const fetchJson = async <T,>(url: string, timeoutMs = 10000): Promise<T> => {
   const ctrl = new AbortController();
@@ -39,7 +40,7 @@ export const getIssPosition = async (): Promise<IssPosition> => {
       visibility: data.visibility,
     };
   } catch (error) {
-    console.error('Error fetching ISS position:', error);
+    logError('Error fetching ISS position:', error);
     return { latitude: 0, longitude: 0, altitude: 0, velocity: 0, visibility: 'unknown' };
   }
 };
@@ -49,7 +50,7 @@ const getTle = async (): Promise<{ line1: string; line2: string }> => {
     const data = await fetchJson<{ line1: string; line2: string; [k: string]: string }>('https://tle.ivanstanojevic.me/api/tle/25544');
     return { line1: data.line1, line2: data.line2 };
   } catch (error) {
-    console.error('Error fetching ISS TLE:', error);
+    logError('Error fetching ISS TLE:', error);
     return { line1: '', line2: '' };
   }
 };
@@ -122,7 +123,7 @@ export const getIssPasses = async (lat: number, lon: number, altMeters = 0): Pro
 
     return passes;
   } catch (error) {
-    console.error('Error fetching ISS passes:', error);
+    logError('Error fetching ISS passes:', error);
     return [];
   }
 };

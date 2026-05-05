@@ -275,30 +275,9 @@ const AuroraGlobe = lazy(() => import('../components/AuroraGlobe'));
 
 ---
 
-### M4 — Centralize Kp polling
-**Problem:** `getKpIndex()` is called separately in Dashboard (60s), Home (60s), Navigation (5m), Aurora (60s), Forecast — 4-5 duplicate HTTP requests per minute
-**Fix:** Create `src/contexts/KpContext.tsx`:
-```tsx
-import { createContext, useContext, useEffect, useState } from 'react';
-import { getKpIndex } from '../services/noaaApi';
-import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
-
-const KpContext = createContext<number>(0);
-
-export const KpProvider = ({ children }: { children: React.ReactNode }) => {
-  const [kp, setKp] = useState(0);
-  const fetch = async () => {
-    const data = await getKpIndex().catch(() => null);
-    if (data?.length) setKp(data[data.length - 1].kp_index || data[data.length - 1].estimated_kp || 0);
-  };
-  useEffect(() => { fetch(); }, []);
-  useVisibilityInterval(fetch, 60000);
-  return <KpContext.Provider value={kp}>{children}</KpContext.Provider>;
-};
-
-export const useKp = () => useContext(KpContext);
-```
-Wrap `<KpProvider>` around `<AppRoutes>` in `src/App.tsx`, then replace `getKpIndex()` calls + local state in Dashboard, Home, Navigation, Aurora with `const kpValue = useKp()`.
+### M4 — Centralize Kp polling (SKIPPED)
+**Problem:** `getKpIndex()` is called separately in Dashboard (60s), Home (60s), Navigation (5m), Aurora (60s), Forecast.
+**Resolution:** Skipped because `noaaApi.ts` already wraps `getKpIndex()` with `cached(..., TTL_FORECAST)` and `inflight` single-flight deduplication. These calls do NOT result in duplicate HTTP requests—they hit the in-memory cache and share the same Promise. Also, `Dashboard.tsx` needs the full array for charts, not just the single `kpValue`, making `KpContext<number>` insufficient.
 
 ---
 

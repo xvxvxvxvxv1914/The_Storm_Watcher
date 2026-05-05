@@ -7,6 +7,7 @@ import { type AuroraOvationPoint } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import ErrorBoundary from './ErrorBoundary';
 import { Sparkles } from 'lucide-react';
+import { logError } from '../utils/logger';
 
 interface Props {
   globeWidth: number;
@@ -154,7 +155,7 @@ export default function AuroraGlobe({ globeWidth, isGlobeLoading, auroraData }: 
           scene.add(mesh);
         });
       } catch (err) {
-        console.error('Aurora overlay update failed', err);
+        logError('Aurora overlay update failed', err);
       }
     }, 1000);
 

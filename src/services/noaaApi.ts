@@ -1,5 +1,7 @@
 import type React from 'react';
 
+import { logError } from '../utils/logger';
+
 const NOAA_BASE_URL = 'https://services.swpc.noaa.gov';
 
 // In-memory TTL cache + single-flight dedup for NOAA endpoints.
@@ -110,7 +112,7 @@ export const getKpIndex = (): Promise<KpIndexData[]> =>
       try {
         return await getJson<KpIndexData[]>(`${NOAA_BASE_URL}/json/planetary_k_index_1m.json`);
       } catch (error) {
-        console.error('NOAA Kp fallback failed:', error);
+        logError('NOAA Kp fallback failed:', error);
         return [];
       }
     }
@@ -121,7 +123,7 @@ export const getXrayFlux = (): Promise<XrayData[]> =>
     try {
       return await getJson<XrayData[]>(`${NOAA_BASE_URL}/json/goes/primary/xrays-1-day.json`);
     } catch (error) {
-      console.error('Error fetching data in getXrayFlux:', error);
+      logError('Error fetching data in getXrayFlux:', error);
       return [];
     }
   });
@@ -139,7 +141,7 @@ export const getSolarWind = (): Promise<SolarWindData[]> =>
       const data = await getJson<SolarWindData[]>(`${NOAA_BASE_URL}/json/rtsw/rtsw_wind_1m.json`);
       return ascByTime(data ?? []);
     } catch (error) {
-      console.error('Error fetching data in getSolarWind:', error);
+      logError('Error fetching data in getSolarWind:', error);
       return [];
     }
   });
@@ -150,7 +152,7 @@ export const getMagField = (): Promise<MagFieldData[]> =>
       const data = await getJson<MagFieldData[]>(`${NOAA_BASE_URL}/json/rtsw/rtsw_mag_1m.json`);
       return ascByTime(data ?? []);
     } catch (error) {
-      console.error('Error fetching data in getMagField:', error);
+      logError('Error fetching data in getMagField:', error);
       return [];
     }
   });
@@ -160,7 +162,7 @@ export const getAlerts = (): Promise<Alert[]> =>
     try {
       return await getJson<Alert[]>(`${NOAA_BASE_URL}/products/alerts.json`);
     } catch (error) {
-      console.error('Error fetching data in getAlerts:', error);
+      logError('Error fetching data in getAlerts:', error);
       return [];
     }
   });
@@ -181,7 +183,7 @@ export const getKpForecast = (): Promise<KpIndexData[]> =>
           kp_index: row.kp,
         }));
     } catch (error) {
-      console.error('Error fetching data in getKpForecast:', error);
+      logError('Error fetching data in getKpForecast:', error);
       return [];
     }
   });
@@ -211,7 +213,7 @@ export const getAuroraModel = (): Promise<AuroraOvationPoint[]> =>
       }
       return [];
     } catch (error) {
-      console.error('Error fetching aurora ovation model:', error);
+      logError('Error fetching aurora ovation model:', error);
       return [];
     }
   });
@@ -231,7 +233,7 @@ export const getKpHistory3Day = (): Promise<{ time_tag: string; Kp: number }[]> 
           `${NOAA_BASE_URL}/products/noaa-planetary-k-index.json`
         );
       } catch (error) {
-        console.error('NOAA Kp history fallback failed:', error);
+        logError('NOAA Kp history fallback failed:', error);
         return [];
       }
     }
@@ -293,7 +295,7 @@ export const getWeatherData = (lat: number, lon: number): Promise<WeatherData | 
       }
       return null;
     } catch (error) {
-      console.error('Error fetching weather data:', error);
+      logError('Error fetching weather data:', error);
       return null;
     }
   });

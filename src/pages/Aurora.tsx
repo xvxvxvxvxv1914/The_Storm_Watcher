@@ -5,6 +5,7 @@ import { MapPin, Eye, Sparkles, AlertTriangle, Check, Zap, Share2 } from 'lucide
 import { getKpIndex, getAuroraModel, getMagField, getSolarWind, getWeatherData, type AuroraOvationPoint, type WeatherData } from '../services/noaaApi';
 import { calcAuroraVisibility } from '../utils/auroraVisibility';
 import { useLanguage } from '../contexts/LanguageContext';
+import { logError } from '../utils/logger';
 
 const AuroraGlobe = lazy(() => import('../components/AuroraGlobe'));
 
@@ -94,7 +95,7 @@ const Aurora = () => {
         setKpValue(0);
       }
     } catch (error) {
-      console.error('Error fetching Kp index:', error);
+      logError('Error fetching Kp index:', error);
       setKpValue(0);
     }
   }, []);
