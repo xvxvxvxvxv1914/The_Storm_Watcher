@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
+import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
 import { Helmet } from 'react-helmet-async';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
 import { Calendar, TrendingUp, AlertCircle, Sun } from 'lucide-react';
@@ -26,7 +27,7 @@ const Forecast = () => {
   const [showYesterday, setShowYesterday] = useState(false);
   const [historyRaw, setHistoryRaw] = useState<{ time_tag: string; Kp: number }[]>([]);
 
-  const fetchForecast = React.useCallback(async () => {
+  const fetchForecast = useCallback(async () => {
     setError(false);
     try {
       const kpData = await getKpForecast();
@@ -51,11 +52,8 @@ const Forecast = () => {
     }
   }, []);
 
-  useEffect(() => {
-    fetchForecast();
-    const interval = setInterval(fetchForecast, 300000);
-    return () => clearInterval(interval);
-  }, [fetchForecast]);
+  useEffect(() => { fetchForecast(); }, [fetchForecast]);
+  useVisibilityInterval(fetchForecast, 300000);
 
   const getMaxKp = () => {
     if (forecastData.length === 0) return 0;

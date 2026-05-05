@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
 import { Helmet } from 'react-helmet-async';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
 import SvgBarChart from '../components/charts/SvgBarChart';
@@ -146,11 +147,8 @@ const Dashboard = () => {
     }
   }, []);
 
-  useEffect(() => {
-    fetchData();
-    const interval = setInterval(fetchData, 60000);
-    return () => clearInterval(interval);
-  }, [fetchData]);
+  useEffect(() => { fetchData(); }, [fetchData]);
+  useVisibilityInterval(fetchData, 60000);
 
   useEffect(() => {
     const tick = () => {
@@ -164,7 +162,7 @@ const Dashboard = () => {
       setCountdown(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`);
     };
     tick();
-    const timer = setInterval(tick, 1000);
+    const timer = setInterval(() => { if (document.visibilityState !== 'hidden') tick(); }, 1000);
     return () => clearInterval(timer);
   }, []);
 

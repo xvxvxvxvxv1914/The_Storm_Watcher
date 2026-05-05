@@ -33,7 +33,7 @@ const Alerts = () => {
     };
 
     fetchAlerts();
-    const interval = setInterval(fetchAlerts, 120000);
+    const interval = setInterval(() => { if (document.visibilityState !== 'hidden') fetchAlerts(); }, 120000);
     return () => clearInterval(interval);
   }, []);
 

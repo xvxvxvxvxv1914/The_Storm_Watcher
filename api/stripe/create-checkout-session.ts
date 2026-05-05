@@ -12,8 +12,15 @@ const supabase = createClient(
 
 const APP_URL = 'https://thestormwatcher.com';
 
+const ALLOWED_ORIGINS = ['https://thestormwatcher.com', 'https://www.thestormwatcher.com'];
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).end();
+
+  const origin = req.headers.origin ?? req.headers.referer ?? '';
+  if (!ALLOWED_ORIGINS.some(o => origin.startsWith(o))) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
 
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) return res.status(401).json({ error: 'Unauthorized' });

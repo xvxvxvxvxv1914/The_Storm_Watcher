@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
+import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
 import { Helmet } from 'react-helmet-async';
 import { MapPin, Eye, Sparkles, AlertTriangle, Check, Zap, Share2 } from 'lucide-react';
 import GlobeOrig from 'react-globe.gl';
@@ -27,6 +28,8 @@ const Aurora = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const globeRef = useRef<any>(null);
   const globeContainerRef = useRef<HTMLDivElement>(null);
+  const lightsInitializedRef = useRef(false);
+  const prevAuroraTextureRef = useRef<THREE.CanvasTexture | null>(null);
 
   const getMoonPhase = () => {
     const date = new Date();
@@ -110,76 +113,86 @@ const Aurora = () => {
     return new THREE.CanvasTexture(canvas);
   }, [auroraData]);
 
-  useEffect(() => {
-    const fetchAuroraModel = async () => {
-      setIsGlobeLoading(true);
-      const points = await getAuroraModel();
-      setAuroraData(points);
-      setIsGlobeLoading(false);
-    };
-    fetchAuroraModel();
-    const interval = setInterval(fetchAuroraModel, 300000); // 5 mins
-    return () => clearInterval(interval);
+  const fetchAuroraModel = useCallback(async () => {
+    setIsGlobeLoading(true);
+    const points = await getAuroraModel();
+    setAuroraData(points);
+    setIsGlobeLoading(false);
   }, []);
+  useEffect(() => { fetchAuroraModel(); }, [fetchAuroraModel]);
+  useVisibilityInterval(fetchAuroraModel, 300000);
 
   
 
+  // One-time lighting setup — runs once after globe is mounted
   useEffect(() => {
-    if (!globeRef.current) return;
+    const setupLights = () => {
+      if (lightsInitializedRef.current || !globeRef.current) return false;
+      const scene = typeof globeRef.current.scene === 'function' ? globeRef.current.scene() : null;
+      if (!scene) return false;
 
-    const now = new Date();
-    const D = now.getTime() / 86400000 + 2440587.5 - 2451545.0;
+      const now = new Date();
+      const D = now.getTime() / 86400000 + 2440587.5 - 2451545.0;
+      const g = (357.529 + 0.98560028 * D) % 360;
+      const q = (280.459 + 0.98564736 * D) % 360;
+      const L = (q + 1.915 * Math.sin(g * Math.PI / 180) + 0.020 * Math.sin(2 * g * Math.PI / 180)) % 360;
+      const e = 23.439 - 0.00000036 * D;
+      const ra = Math.atan2(Math.cos(e * Math.PI / 180) * Math.sin(L * Math.PI / 180), Math.cos(L * Math.PI / 180)) * 180 / Math.PI;
+      const decl = Math.asin(Math.sin(e * Math.PI / 180) * Math.sin(L * Math.PI / 180)) * 180 / Math.PI;
+      const gmst = (18.697374558 + 24.06570982441908 * D) % 24;
+      let lng = ra - (gmst * 15);
+      lng = (lng + 540) % 360 - 180;
+      const latRad = decl * Math.PI / 180;
+      const lngRad = lng * Math.PI / 180;
 
-    const g = (357.529 + 0.98560028 * D) % 360;
-    const q = (280.459 + 0.98564736 * D) % 360;
-    const L = (q + 1.915 * Math.sin(g * Math.PI / 180) + 0.020 * Math.sin(2 * g * Math.PI / 180)) % 360;
-    const e = 23.439 - 0.00000036 * D;
+      scene.children
+        .filter((c: THREE.Object3D) => c.type.includes('Light'))
+        .forEach((l: THREE.Object3D) => scene.remove(l));
+      scene.add(new THREE.AmbientLight(0xffffff, 1.8));
+      const sunLight = new THREE.DirectionalLight(0xffffff, 2.0);
+      sunLight.position.set(
+        Math.cos(latRad) * Math.sin(lngRad) * 1000,
+        Math.sin(latRad) * 1000,
+        Math.cos(latRad) * Math.cos(lngRad) * 1000
+      );
+      scene.add(sunLight);
+      const fillLight = new THREE.DirectionalLight(0x8888ff, 0.8);
+      fillLight.position.set(-1000, 500, -500);
+      scene.add(fillLight);
 
-    const ra = Math.atan2(Math.cos(e * Math.PI/180) * Math.sin(L * Math.PI/180), Math.cos(L * Math.PI/180)) * 180 / Math.PI;
-    const decl = Math.asin(Math.sin(e * Math.PI/180) * Math.sin(L * Math.PI/180)) * 180 / Math.PI;
-    const gmst = (18.697374558 + 24.06570982441908 * D) % 24;
+      lightsInitializedRef.current = true;
+      return true;
+    };
 
-    let lng = ra - (gmst * 15);
-    lng = (lng + 540) % 360 - 180;
+    if (!setupLights()) {
+      const timer = setInterval(() => { if (setupLights()) clearInterval(timer); }, 200);
+      return () => clearInterval(timer);
+    }
+  }, []);
 
-    const latRad = decl * Math.PI / 180;
-    const lngRad = lng * Math.PI / 180;
+  // Aurora overlay — updates only when texture changes, disposes previous resources
+  useEffect(() => {
+    if (!auroraTexture) return;
 
-    setTimeout(() => {
+    // Dispose old texture
+    if (prevAuroraTextureRef.current && prevAuroraTextureRef.current !== auroraTexture) {
+      prevAuroraTextureRef.current.dispose();
+    }
+    prevAuroraTextureRef.current = auroraTexture;
+
+    const timer = setTimeout(() => {
       try {
         if (!globeRef.current) return;
         const scene = typeof globeRef.current.scene === 'function' ? globeRef.current.scene() : null;
         if (!scene) return;
 
-        const lightsToRemove = scene.children.filter((c: THREE.Light | THREE.Object3D) => typeof c.type === 'string' && c.type.includes('Light'));
-        lightsToRemove.forEach((l: THREE.Light | THREE.Object3D) => scene.remove(l));
-
-        scene.add(new THREE.AmbientLight(0xffffff, 1.8));
-
-        const sunLight = new THREE.DirectionalLight(0xffffff, 2.0);
-        sunLight.position.set(
-          Math.cos(latRad) * Math.sin(lngRad) * 1000,
-          Math.sin(latRad) * 1000,
-          Math.cos(latRad) * Math.cos(lngRad) * 1000
-        );
-        scene.add(sunLight);
-
-        const fillLight = new THREE.DirectionalLight(0x8888ff, 0.8);
-        fillLight.position.set(-1000, 500, -500);
-        scene.add(fillLight);
-
-        // City lights layer (added once)
-        const existingCityLights = scene.children.find((c: THREE.Object3D) => c.userData?.isCityLights);
-        if (!existingCityLights) {
+        // City lights (added once)
+        if (!scene.children.find((c: THREE.Object3D) => c.userData?.isCityLights)) {
           new THREE.TextureLoader().load('/textures/earth-night.jpg', (texture) => {
             const geo = new THREE.SphereGeometry(100.3, 64, 32);
             const mat = new THREE.MeshBasicMaterial({
-              map: texture,
-              transparent: true,
-              opacity: 0.45,
-              blending: THREE.AdditiveBlending,
-              depthWrite: false,
-              depthTest: false,
+              map: texture, transparent: true, opacity: 0.45,
+              blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false,
             });
             const mesh = new THREE.Mesh(geo, mat);
             mesh.rotation.y = -Math.PI / 2;
@@ -189,37 +202,39 @@ const Aurora = () => {
           });
         }
 
-        // Aurora overlay — multiple layers at different altitudes (curtain effect)
+        // Remove old aurora meshes and dispose geometry + material
         scene.children
           .filter((c: THREE.Object3D) => c.userData?.isAurora)
-          .forEach((c: THREE.Object3D) => scene.remove(c));
-
-        if (auroraTexture) {
-          const layers = [
-            { radius: 102.0, opacity: 0.6 },
-            { radius: 104.0, opacity: 0.35 },
-            { radius: 106.5, opacity: 0.15 },
-          ];
-          layers.forEach(({ radius, opacity }) => {
-            const geo = new THREE.SphereGeometry(radius, 128, 64);
-            const mat = new THREE.MeshBasicMaterial({
-              map: auroraTexture,
-              transparent: true,
-              opacity,
-              blending: THREE.AdditiveBlending,
-              side: THREE.FrontSide,
-            });
-            const mesh = new THREE.Mesh(geo, mat);
-            mesh.rotation.y = -Math.PI / 2;
-            mesh.userData = { isAurora: true };
-            scene.add(mesh);
+          .forEach((c: THREE.Object3D) => {
+            const m = c as THREE.Mesh;
+            m.geometry.dispose();
+            (m.material as THREE.Material).dispose();
+            scene.remove(c);
           });
-        }
+
+        const layers = [
+          { radius: 102.0, opacity: 0.6 },
+          { radius: 104.0, opacity: 0.35 },
+          { radius: 106.5, opacity: 0.15 },
+        ];
+        layers.forEach(({ radius, opacity }) => {
+          const geo = new THREE.SphereGeometry(radius, 128, 64);
+          const mat = new THREE.MeshBasicMaterial({
+            map: auroraTexture, transparent: true, opacity,
+            blending: THREE.AdditiveBlending, side: THREE.FrontSide,
+          });
+          const mesh = new THREE.Mesh(geo, mat);
+          mesh.rotation.y = -Math.PI / 2;
+          mesh.userData = { isAurora: true };
+          scene.add(mesh);
+        });
       } catch (err) {
-        console.error("Failed to inject realistic lighting", err);
+        console.error('Aurora overlay update failed', err);
       }
     }, 1000);
-  }, [auroraData, auroraTexture]);
+
+    return () => clearTimeout(timer);
+  }, [auroraTexture]);
 
   useEffect(() => {
     if (globeRef.current) {
@@ -227,47 +242,40 @@ const Aurora = () => {
     }
   }, [auroraData]);
 
-  useEffect(() => {
-    const fetchKp = async () => {
-      try {
-        const data = await getKpIndex();
-        if (data && data.length > 0) {
-          const latest = data[data.length - 1];
-          setKpValue(latest.kp_index || latest.estimated_kp || 0);
-        } else {
-          setKpValue(0);
-        }
-      } catch (error) {
-        console.error('Error fetching Kp index:', error);
+  const fetchKp = useCallback(async () => {
+    try {
+      const data = await getKpIndex();
+      if (data && data.length > 0) {
+        const latest = data[data.length - 1];
+        setKpValue(latest.kp_index || latest.estimated_kp || 0);
+      } else {
         setKpValue(0);
       }
-    };
-
-    fetchKp();
-    const interval = setInterval(fetchKp, 60000);
-    return () => clearInterval(interval);
+    } catch (error) {
+      console.error('Error fetching Kp index:', error);
+      setKpValue(0);
+    }
   }, []);
+  useEffect(() => { fetchKp(); }, [fetchKp]);
+  useVisibilityInterval(fetchKp, 60000);
 
-  useEffect(() => {
-    const fetchSpace = async () => {
-      try {
-        const [magData, windData] = await Promise.all([getMagField(), getSolarWind()]);
-        if (magData.length) {
-          const latest = magData[magData.length - 1];
-          setBz(latest.bz_gsm ?? 0);
-          setBt(latest.bt ?? 0);
-        }
-        if (windData.length) {
-          const active = windData.findLast(d => d.active) ?? windData[windData.length - 1];
-          setWindSpeed(active.proton_speed ?? 0);
-          setWindDensity(active.proton_density ?? 0);
-        }
-      } catch { /* silent */ }
-    };
-    fetchSpace();
-    const interval = setInterval(fetchSpace, 60000);
-    return () => clearInterval(interval);
+  const fetchSpace = useCallback(async () => {
+    try {
+      const [magData, windData] = await Promise.all([getMagField(), getSolarWind()]);
+      if (magData.length) {
+        const latest = magData[magData.length - 1];
+        setBz(latest.bz_gsm ?? 0);
+        setBt(latest.bt ?? 0);
+      }
+      if (windData.length) {
+        const active = windData.findLast(d => d.active) ?? windData[windData.length - 1];
+        setWindSpeed(active.proton_speed ?? 0);
+        setWindDensity(active.proton_density ?? 0);
+      }
+    } catch { /* silent */ }
   }, []);
+  useEffect(() => { fetchSpace(); }, [fetchSpace]);
+  useVisibilityInterval(fetchSpace, 60000);
 
   const getVisibilityInfo = (kp: number) => {
     if (kp >= 7) return { latitude: 50, color: 'text-[#ef4444]', intensityKey: 'aurora.intensityVeryHigh', bgGlow: 'glow-red' };

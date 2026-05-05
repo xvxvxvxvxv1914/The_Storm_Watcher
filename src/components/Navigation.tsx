@@ -22,7 +22,7 @@ const Navigation = () => {
       } catch { /* silent */ }
     };
     check();
-    const interval = setInterval(check, 5 * 60 * 1000);
+    const interval = setInterval(() => { if (document.visibilityState !== 'hidden') check(); }, 5 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
 

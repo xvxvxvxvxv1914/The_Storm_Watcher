@@ -46,7 +46,7 @@ const ISS = () => {
       }
     };
     fetchPos();
-    const interval = setInterval(fetchPos, 5000);
+    const interval = setInterval(() => { if (document.visibilityState !== 'hidden') fetchPos(); }, 5000);
     return () => clearInterval(interval);
   }, []);
 

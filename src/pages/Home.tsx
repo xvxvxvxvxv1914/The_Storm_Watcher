@@ -116,7 +116,7 @@ const Home = () => {
     };
 
     fetchAll();
-    const interval = setInterval(fetchAll, 60000);
+    const interval = setInterval(() => { if (document.visibilityState !== 'hidden') fetchAll(); }, 60000);
     return () => clearInterval(interval);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [retryCount]);
@@ -130,7 +130,7 @@ const Home = () => {
       else setTimeAgo(`${Math.floor(seconds / 60)}m ago`);
     };
     tick();
-    const timer = setInterval(tick, 10000);
+    const timer = setInterval(() => { if (document.visibilityState !== 'hidden') tick(); }, 10000);
     return () => clearInterval(timer);
   }, [lastUpdated]);
 
