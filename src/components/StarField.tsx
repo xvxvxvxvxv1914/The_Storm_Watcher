@@ -58,7 +58,13 @@ export default function StarField() {
 
     init();
 
-    const onResize = () => init();
+    let resizeTimer: ReturnType<typeof setTimeout>;
+    const onResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        init();
+      }, 200);
+    };
     window.addEventListener('resize', onResize);
 
     const startTime = performance.now();
