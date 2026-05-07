@@ -38,6 +38,7 @@ const ISS = () => {
   const [loadingPasses, setLoadingPasses] = useState(true);
   const [locationName, setLocationName] = useState('');
   const [userCoords, setUserCoords] = useState<{ lat: number; lon: number } | null>(null);
+  const [countdown, setCountdown] = useState('');
 
   // Live ISS position — refresh every 5s
   useEffect(() => {
@@ -103,6 +104,27 @@ const ISS = () => {
 
     return () => { mounted = false; };
   }, []);
+
+  // Live countdown to next pass
+  useEffect(() => {
+    if (!passes.length) return;
+    const next = passes[0];
+    const tick = () => {
+      const diff = next.timestamp - Date.now();
+      if (diff <= 0) {
+        const passEnd = next.timestamp + next.duration * 1000;
+        setCountdown(Date.now() < passEnd ? 'Pass in progress' : '');
+        return;
+      }
+      const h = Math.floor(diff / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      setCountdown(h > 0 ? `${h}h ${m}m ${s}s` : `${m}m ${s}s`);
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [passes]);
 
   const getElevationColor = (el: number) => {
     if (el >= 60) return '#10b981';
@@ -235,6 +257,29 @@ const ISS = () => {
             {t('iss.upcomingPasses')}
           </h2>
           <p className="text-[#64748b] text-sm mb-6">{t('iss.passesSubtitle')}</p>
+
+          {/* Countdown banner */}
+          {!loadingPasses && countdown && (
+            <div className={`flex items-center gap-3 rounded-xl px-5 py-4 mb-6 border ${
+              countdown === 'Pass in progress'
+                ? 'bg-[#10b981]/10 border-[#10b981]/40'
+                : 'bg-[#f97316]/5 border-[#f97316]/30'
+            }`}>
+              <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
+                countdown === 'Pass in progress' ? 'bg-[#10b981] animate-pulse' : 'bg-[#f97316]'
+              }`} />
+              <div>
+                <div className="text-xs text-[#64748b] uppercase tracking-wider font-semibold mb-0.5">
+                  {countdown === 'Pass in progress' ? 'ISS overhead now' : 'Next pass over your location'}
+                </div>
+                <div className={`text-2xl font-bold tabular-nums ${
+                  countdown === 'Pass in progress' ? 'text-[#10b981]' : 'text-white'
+                }`}>
+                  {countdown}
+                </div>
+              </div>
+            </div>
+          )}
 
           {loadingPasses ? (
             <div className="flex justify-center py-8">
