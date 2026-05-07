@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import GlobeOrig from 'react-globe.gl';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Globe = GlobeOrig as any;
 import * as THREE from 'three';
+import * as solar from 'solar-calculator';
 import { type AuroraOvationPoint } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import ErrorBoundary from './ErrorBoundary';
@@ -16,12 +17,98 @@ interface Props {
   theme?: string;
 }
 
+const DAY_NIGHT_SHADER = {
+  vertexShader: `
+    varying vec3 vNormal;
+    varying vec2 vUv;
+    void main() {
+      vNormal = normalize(normalMatrix * normal);
+      vUv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: `
+    #define PI 3.141592653589793
+    uniform sampler2D dayTexture;
+    uniform sampler2D nightTexture;
+    uniform vec2 sunPosition;
+    uniform vec2 globeRotation;
+    varying vec3 vNormal;
+    varying vec2 vUv;
+
+    float toRad(in float a) { return a * PI / 180.0; }
+
+    vec3 Polar2Cartesian(in vec2 c) {
+      float theta = toRad(90.0 - c.x);
+      float phi = toRad(90.0 - c.y);
+      return vec3(sin(phi) * cos(theta), cos(phi), sin(phi) * sin(theta));
+    }
+
+    void main() {
+      float invLon = toRad(globeRotation.x);
+      float invLat = -toRad(globeRotation.y);
+      mat3 rotX = mat3(1,0,0, 0,cos(invLat),-sin(invLat), 0,sin(invLat),cos(invLat));
+      mat3 rotY = mat3(cos(invLon),0,sin(invLon), 0,1,0, -sin(invLon),0,cos(invLon));
+      vec3 rotatedSunDir = rotX * rotY * Polar2Cartesian(sunPosition);
+      float intensity = dot(normalize(vNormal), normalize(rotatedSunDir));
+      vec4 dayColor = texture2D(dayTexture, vUv);
+      vec4 nightColor = texture2D(nightTexture, vUv);
+      float blendFactor = smoothstep(-0.1, 0.1, intensity);
+      gl_FragColor = mix(nightColor, dayColor, blendFactor);
+    }
+  `
+};
+
+function sunPosAt(dt: number): [number, number] {
+  const day = new Date(+dt).setUTCHours(0, 0, 0, 0);
+  const t = solar.century(new Date(dt));
+  const longitude = (day - dt) / 864e5 * 360 - 180;
+  return [longitude - solar.equationOfTime(t) / 4, solar.declination(t)];
+}
+
 export default function AuroraGlobe({ globeWidth, isGlobeLoading, auroraData, theme }: Props) {
   const { t } = useLanguage();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const globeRef = useRef<any>(null);
-  const lightsInitializedRef = useRef(false);
   const prevAuroraTextureRef = useRef<THREE.CanvasTexture | null>(null);
+
+  const [globeMaterial, setGlobeMaterial] = useState<THREE.ShaderMaterial | null>(null);
+
+  // Load day/night textures and build shader material
+  useEffect(() => {
+    const loader = new THREE.TextureLoader();
+    Promise.all([
+      loader.loadAsync('//cdn.jsdelivr.net/npm/three-globe/example/img/earth-day.jpg'),
+      loader.loadAsync('/textures/earth-night.jpg'),
+    ]).then(([dayTexture, nightTexture]) => {
+      setGlobeMaterial(new THREE.ShaderMaterial({
+        uniforms: {
+          dayTexture: { value: dayTexture },
+          nightTexture: { value: nightTexture },
+          sunPosition: { value: new THREE.Vector2() },
+          globeRotation: { value: new THREE.Vector2() },
+        },
+        vertexShader: DAY_NIGHT_SHADER.vertexShader,
+        fragmentShader: DAY_NIGHT_SHADER.fragmentShader,
+      }));
+    }).catch(err => logError('Globe texture load failed', err));
+  }, []);
+
+  // Update sun position every minute
+  useEffect(() => {
+    if (!globeMaterial) return;
+    const update = () => {
+      const [lng, lat] = sunPosAt(Date.now());
+      globeMaterial.uniforms.sunPosition.value.set(lng, lat);
+    };
+    update();
+    const id = setInterval(update, 60_000);
+    return () => clearInterval(id);
+  }, [globeMaterial]);
+
+  const handleZoom = useCallback(({ lng, lat }: { lng: number; lat: number }) => {
+    globeMaterial?.uniforms.globeRotation.value.set(lng, lat);
+  }, [globeMaterial]);
 
   const auroraTexture = useMemo(() => {
     if (auroraData.length === 0) return null;
@@ -54,53 +141,7 @@ export default function AuroraGlobe({ globeWidth, isGlobeLoading, auroraData, th
     return new THREE.CanvasTexture(canvas);
   }, [auroraData]);
 
-  // One-time lighting setup — runs once after globe is mounted
-  useEffect(() => {
-    const setupLights = () => {
-      if (lightsInitializedRef.current || !globeRef.current) return false;
-      const scene = typeof globeRef.current.scene === 'function' ? globeRef.current.scene() : null;
-      if (!scene) return false;
-
-      const now = new Date();
-      const D = now.getTime() / 86400000 + 2440587.5 - 2451545.0;
-      const g = (357.529 + 0.98560028 * D) % 360;
-      const q = (280.459 + 0.98564736 * D) % 360;
-      const L = (q + 1.915 * Math.sin(g * Math.PI / 180) + 0.020 * Math.sin(2 * g * Math.PI / 180)) % 360;
-      const e = 23.439 - 0.00000036 * D;
-      const ra = Math.atan2(Math.cos(e * Math.PI / 180) * Math.sin(L * Math.PI / 180), Math.cos(L * Math.PI / 180)) * 180 / Math.PI;
-      const decl = Math.asin(Math.sin(e * Math.PI / 180) * Math.sin(L * Math.PI / 180)) * 180 / Math.PI;
-      const gmst = (18.697374558 + 24.06570982441908 * D) % 24;
-      let lng = ra - (gmst * 15);
-      lng = (lng + 540) % 360 - 180;
-      const latRad = decl * Math.PI / 180;
-      const lngRad = lng * Math.PI / 180;
-
-      scene.children
-        .filter((c: THREE.Object3D) => c.type.includes('Light'))
-        .forEach((l: THREE.Object3D) => scene.remove(l));
-      scene.add(new THREE.AmbientLight(0xffffff, 1.8));
-      const sunLight = new THREE.DirectionalLight(0xffffff, 2.0);
-      sunLight.position.set(
-        Math.cos(latRad) * Math.sin(lngRad) * 1000,
-        Math.sin(latRad) * 1000,
-        Math.cos(latRad) * Math.cos(lngRad) * 1000
-      );
-      scene.add(sunLight);
-      const fillLight = new THREE.DirectionalLight(0x8888ff, 0.8);
-      fillLight.position.set(-1000, 500, -500);
-      scene.add(fillLight);
-
-      lightsInitializedRef.current = true;
-      return true;
-    };
-
-    if (!setupLights()) {
-      const timer = setInterval(() => { if (setupLights()) clearInterval(timer); }, 200);
-      return () => clearInterval(timer);
-    }
-  }, []);
-
-  // Aurora overlay — updates only when texture changes, disposes previous resources
+  // Aurora overlay
   useEffect(() => {
     if (!auroraTexture) return;
 
@@ -114,21 +155,6 @@ export default function AuroraGlobe({ globeWidth, isGlobeLoading, auroraData, th
         if (!globeRef.current) return;
         const scene = typeof globeRef.current.scene === 'function' ? globeRef.current.scene() : null;
         if (!scene) return;
-
-        if (!scene.children.find((c: THREE.Object3D) => c.userData?.isCityLights)) {
-          new THREE.TextureLoader().load('/textures/earth-night.jpg', (texture) => {
-            const geo = new THREE.SphereGeometry(100.3, 64, 32);
-            const mat = new THREE.MeshBasicMaterial({
-              map: texture, transparent: true, opacity: 0.45,
-              blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false,
-            });
-            const mesh = new THREE.Mesh(geo, mat);
-            mesh.rotation.y = -Math.PI / 2;
-            mesh.renderOrder = 2;
-            mesh.userData = { isCityLights: true };
-            scene.add(mesh);
-          });
-        }
 
         scene.children
           .filter((c: THREE.Object3D) => c.userData?.isAurora)
@@ -169,6 +195,8 @@ export default function AuroraGlobe({ globeWidth, isGlobeLoading, auroraData, th
     }
   }, [auroraData]);
 
+  const bgColor = theme === 'light' ? 'rgba(200,204,216,1)' : 'rgba(0,0,0,0)';
+
   return (
     <>
       {isGlobeLoading && auroraData.length === 0 ? (
@@ -187,10 +215,12 @@ export default function AuroraGlobe({ globeWidth, isGlobeLoading, auroraData, th
             ref={globeRef}
             width={globeWidth}
             height={Math.max(320, Math.round(globeWidth * 0.75))}
-            backgroundColor="rgba(0,0,0,0)"
-            globeImageUrl="/textures/earth-blue-marble.jpg"
+            backgroundColor={bgColor}
+            globeMaterial={globeMaterial || undefined}
+            globeImageUrl={globeMaterial ? undefined : '/textures/earth-blue-marble.jpg'}
             atmosphereColor={theme === 'light' ? 'rgba(100,160,255,0.4)' : 'rgba(0,180,60,0.15)'}
             atmosphereAltitude={0.15}
+            onZoom={handleZoom}
           />
         </ErrorBoundary>
       )}
