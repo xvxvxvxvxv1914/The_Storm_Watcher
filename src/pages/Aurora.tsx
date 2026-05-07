@@ -416,9 +416,9 @@ const Aurora = () => {
           </div>
         )}
         
-        <div className="glass-surface rounded-3xl overflow-hidden border border-white/10 mb-8 flex flex-col items-center w-full">
-          <div className="flex items-center justify-between w-full p-4 border-b border-white/5">
-            <h3 className="text-xl font-bold text-white uppercase tracking-wide">
+        <div className="rounded-3xl overflow-hidden border border-[#10b981]/20 mb-8 flex flex-col items-center w-full" style={{ background: 'linear-gradient(180deg, #0d0d1f 0%, #050510 100%)' }}>
+          <div className="flex items-center justify-between w-full p-4 border-b border-white/10">
+            <h3 className="text-xl font-bold uppercase tracking-wide" style={{ color: 'white' }}>
               {t('aurora.oval')}
             </h3>
             {isGlobeLoading && <div className="w-5 h-5 border-2 border-[#10b981]/20 border-t-[#10b981] rounded-full animate-spin" />}
@@ -439,8 +439,8 @@ const Aurora = () => {
             </Suspense>
           </div>
           
-          <div className="w-full px-8 py-6 border-t border-white/5 bg-black/20">
-            <p className="text-[#94a3b8] text-sm leading-relaxed">
+          <div className="w-full px-8 py-6 border-t border-white/10" style={{ background: 'rgba(0,0,0,0.2)' }}>
+            <p className="text-sm leading-relaxed" style={{ color: '#94a3b8' }}>
               {t('aurora.ovalDesc')} · Use your mouse to rotate and zoom the globe. Bright green indicates the base of the aurora, shifting into cyan, purple, and vibrant pink at the highest active intensities.
             </p>
           </div>
