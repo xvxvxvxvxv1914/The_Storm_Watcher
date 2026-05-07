@@ -30,7 +30,10 @@ const cache = new Map<Language, Record<string, string>>();
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguageState] = useState<Language>(() => {
     const saved = localStorage.getItem('language');
-    return (saved as Language) || 'en';
+    if (saved) return saved as Language;
+    const supported: Language[] = ['en', 'bg', 'es', 'fr', 'de', 'ru', 'zh', 'ja'];
+    const nav = (navigator.language || navigator.languages?.[0] || 'en').slice(0, 2).toLowerCase();
+    return supported.includes(nav as Language) ? (nav as Language) : 'en';
   });
   const [translations, setTranslations] = useState<Record<string, string>>(() => cache.get(language) ?? {});
 
