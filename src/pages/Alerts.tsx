@@ -298,8 +298,8 @@ const Alerts = () => {
                 {gstEvents.length} storm{gstEvents.length !== 1 ? 's' : ''} recorded
               </div>
               {(() => {
-                const peak = Math.max(...gstEvents.flatMap(g => g.allKpIndex.map(k => k.kpIndex)));
-                const g = kpToGScale(peak);
+                const peak = Math.max(...gstEvents.flatMap(g => (g.allKpIndex ?? []).map(k => k.kpIndex)));
+                const g = kpToGScale(isFinite(peak) ? peak : 5);
                 return (
                   <div className="glass-surface rounded-full px-4 py-2 border text-sm font-bold flex items-center gap-1.5"
                     style={{ borderColor: g.color + '50', color: g.color }}>
@@ -321,12 +321,13 @@ const Alerts = () => {
           ) : (
             <div className="space-y-4">
               {gstEvents.map((gst) => {
-                const peakKp = Math.max(...gst.allKpIndex.map(k => k.kpIndex));
+                const kpEntries = gst.allKpIndex ?? [];
+                const peakKp = kpEntries.length > 0 ? Math.max(...kpEntries.map(k => k.kpIndex)) : 5;
                 const g = kpToGScale(peakKp);
-                const causes = [...new Set(gst.linkedEvents.map(e => eventTypeLabel(e.activityID)))];
+                const causes = [...new Set((gst.linkedEvents ?? []).map(e => eventTypeLabel(e.activityID)))];
                 const startMs = new Date(gst.startTime).getTime();
-                const lastMs = gst.allKpIndex.length > 0
-                  ? new Date(gst.allKpIndex[gst.allKpIndex.length - 1].observedTime).getTime()
+                const lastMs = kpEntries.length > 0
+                  ? new Date(kpEntries[kpEntries.length - 1].observedTime).getTime()
                   : startMs;
                 const durationH = Math.round((lastMs - startMs) / 3600000);
                 return (
@@ -364,9 +365,9 @@ const Alerts = () => {
                       </div>
 
                       {/* Mini Kp sparkline */}
-                      {gst.allKpIndex.length > 1 && (
+                      {kpEntries.length > 1 && (
                         <div className="flex items-end gap-0.5 h-8 flex-shrink-0">
-                          {gst.allKpIndex.map((k, i) => {
+                          {kpEntries.map((k, i) => {
                             const h = Math.max(2, Math.round((k.kpIndex / 9) * 32));
                             return (
                               <div key={i} className="w-2 rounded-sm" style={{ height: h, background: kpToGScale(k.kpIndex).color }} />
