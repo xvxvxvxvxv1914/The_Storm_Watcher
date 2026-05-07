@@ -224,8 +224,34 @@ html.light h2.text-white,
 html.light h3.text-white,
 html.light span.text-white:not(.gradient-solar):not(.gradient-aurora):not(.gradient-fire),
 html.light label.text-white,
-html.light div.text-white {
+html.light div.text-white,
+html.light a.text-white,
+html.light button.text-white {
   color: #1e293b;
+}
+
+html.light .border-white\/10 {
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+html.light .text-white\/70 {
+  color: #475569;
+}
+
+html.light .text-white\/60 {
+  color: #64748b;
+}
+
+html.light .text-white\/50 {
+  color: #94a3b8;
+}
+
+html.light .text-white\/40 {
+  color: #94a3b8;
+}
+
+html.light .text-white\/25 {
+  color: #cbd5e1;
 }
 
 html.light .text-\[\#94a3b8\] {
