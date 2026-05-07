@@ -423,17 +423,17 @@ const Aurora = () => {
         )}
         
         <div className="rounded-3xl overflow-hidden mb-8 flex flex-col items-center w-full" style={{
-          background: theme === 'light' ? 'linear-gradient(180deg, #e8eaf0 0%, #d0d4de 100%)' : 'linear-gradient(180deg, #0d0d1f 0%, #050510 100%)',
-          border: theme === 'light' ? '1px solid #c0c4d0' : '1px solid rgba(16,185,129,0.2)',
+          background: 'linear-gradient(180deg, #0d0d1f 0%, #050510 100%)',
+          border: '1px solid rgba(16,185,129,0.2)',
         }}>
-          <div className="flex items-center justify-between w-full p-4" style={{ borderBottom: theme === 'light' ? '1px solid #c0c4d0' : '1px solid rgba(255,255,255,0.1)' }}>
-            <h3 className="text-xl font-bold uppercase tracking-wide" style={{ color: theme === 'light' ? '#1e293b' : 'white' }}>
+          <div className="flex items-center justify-between w-full p-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+            <h3 className="text-xl font-bold uppercase tracking-wide" style={{ color: 'white' }}>
               {t('aurora.oval')}
             </h3>
             {isGlobeLoading && <div className="w-5 h-5 border-2 border-[#10b981]/20 border-t-[#10b981] rounded-full animate-spin" />}
           </div>
           
-          <div ref={globeContainerRef} className="relative w-full flex justify-center cursor-grab active:cursor-grabbing" style={{ minHeight: Math.max(320, Math.round(globeWidth * 0.75)), background: theme === 'light' ? 'linear-gradient(180deg, #d8dce8 0%, #c8ccd8 100%)' : '#050510' }}>
+          <div ref={globeContainerRef} className="relative w-full flex justify-center cursor-grab active:cursor-grabbing" style={{ minHeight: Math.max(320, Math.round(globeWidth * 0.75)), background: '#050510' }}>
             <Suspense fallback={
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <div className="w-12 h-12 border-4 border-[#10b981]/20 border-t-[#10b981] rounded-full animate-spin mb-4" />
@@ -451,8 +451,8 @@ const Aurora = () => {
             </Suspense>
           </div>
           
-          <div className="w-full px-8 py-6" style={{ borderTop: theme === 'light' ? '1px solid #c0c4d0' : '1px solid rgba(255,255,255,0.1)', background: theme === 'light' ? 'rgba(0,0,0,0.05)' : 'rgba(0,0,0,0.2)' }}>
-            <p className="text-sm leading-relaxed" style={{ color: theme === 'light' ? '#475569' : '#94a3b8' }}>
+          <div className="w-full px-8 py-6" style={{ borderTop: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)' }}>
+            <p className="text-sm leading-relaxed" style={{ color: '#94a3b8' }}>
               {t('aurora.ovalDesc')} · Use your mouse to rotate and zoom the globe. Bright green indicates the base of the aurora, shifting into cyan, purple, and vibrant pink at the highest active intensities.
             </p>
           </div>

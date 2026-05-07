@@ -200,7 +200,7 @@ export default function AuroraGlobe({ globeWidth, isGlobeLoading, auroraData, th
     }
   }, [auroraData, userLat, userLng]);
 
-  const bgColor = theme === 'light' ? 'rgba(200,204,216,1)' : 'rgba(0,0,0,0)';
+  const bgColor = 'rgba(0,0,0,0)';
 
   return (
     <>
