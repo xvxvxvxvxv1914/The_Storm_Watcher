@@ -36,6 +36,11 @@ function AppRoutes() {
   const navigate = useNavigate();
   const shouldShowLocationPrompt = useLocationPromptVisible();
   const [locationPromptDone, setLocationPromptDone] = useState(false);
+  const [splashDone, setSplashDone] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setSplashDone(true), 2600);
+    return () => clearTimeout(t);
+  }, []);
   // Активиране на слайдването
   useSwipeNavigation();
 
@@ -70,7 +75,7 @@ function AppRoutes() {
       <CookieConsent />
       <OnboardingTour />
       <SplashAnimation />
-      {shouldShowLocationPrompt && !locationPromptDone && (
+      {shouldShowLocationPrompt && !locationPromptDone && splashDone && (
         <LocationPrompt onDone={() => setLocationPromptDone(true)} />
       )}
     </div>
