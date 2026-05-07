@@ -190,34 +190,39 @@ const SkyVisibility = () => {
         {sky.nightHours.length > 0 && (
           <div className="glass-surface rounded-2xl p-8 border border-white/10">
             <h3 className="text-lg font-bold text-white mb-6 uppercase tracking-wide">{t('sky.hourlyBreakdown')}</h3>
-            <div className="space-y-3">
-              {sky.nightHours.map((h) => (
-                <div key={h.time} className="flex items-center gap-4">
-                  <div className="w-14 text-[#94a3b8] text-sm font-mono">{h.time}</div>
-                  {clearestHour && h.time === clearestHour.time && (
-                    <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-[#10b981]/15 text-[#10b981] border border-[#10b981]/30 whitespace-nowrap">
-                      ✦ {t('sky.clearest')}
-                    </span>
-                  )}
-                  <div className="flex-1 h-3 rounded-full bg-white/5 overflow-hidden">
-                    <div
-                      className="h-full rounded-full transition-all"
-                      style={{
-                        width: `${100 - h.cloudCover}%`,
-                        background: h.cloudCover < 30
-                          ? 'linear-gradient(to right, #10b981, #059669)'
-                          : h.cloudCover < 60
-                          ? 'linear-gradient(to right, #fbbf24, #f59e0b)'
-                          : h.cloudCover < 80
-                          ? 'linear-gradient(to right, #f97316, #ea580c)'
-                          : 'linear-gradient(to right, #ef4444, #dc2626)',
-                      }}
-                    />
+            <div className="space-y-2">
+              {sky.nightHours.map((h) => {
+                const isClearest = clearestHour && h.time === clearestHour.time;
+                return (
+                  <div key={h.time} className={isClearest ? 'relative pt-5' : ''}>
+                    {isClearest && (
+                      <span className="absolute top-0 left-[4.5rem] text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[#10b981]/15 text-[#10b981] border border-[#10b981]/30 whitespace-nowrap">
+                        ✦ {t('sky.clearest')}
+                      </span>
+                    )}
+                    <div className="flex items-center gap-4">
+                      <div className="w-14 shrink-0 text-[#94a3b8] text-sm font-mono">{h.time}</div>
+                      <div className="flex-1 h-3 rounded-full bg-white/5 overflow-hidden">
+                        <div
+                          className="h-full rounded-full transition-all"
+                          style={{
+                            width: `${100 - h.cloudCover}%`,
+                            background: h.cloudCover < 30
+                              ? 'linear-gradient(to right, #10b981, #059669)'
+                              : h.cloudCover < 60
+                              ? 'linear-gradient(to right, #fbbf24, #f59e0b)'
+                              : h.cloudCover < 80
+                              ? 'linear-gradient(to right, #f97316, #ea580c)'
+                              : 'linear-gradient(to right, #ef4444, #dc2626)',
+                          }}
+                        />
+                      </div>
+                      <div className="w-14 shrink-0 text-right text-sm text-[#94a3b8]">{h.cloudCover}% ☁</div>
+                      <div className="w-16 shrink-0 text-right text-sm text-[#64748b]">{h.visibility}km</div>
+                    </div>
                   </div>
-                  <div className="w-14 text-right text-sm text-[#94a3b8]">{h.cloudCover}% ☁</div>
-                  <div className="w-16 text-right text-sm text-[#64748b]">{h.visibility}km</div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             <div className="flex gap-4 mt-5 text-xs text-[#64748b]">
               <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#10b981] inline-block" />{t('sky.clear')}</span>
