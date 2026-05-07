@@ -226,13 +226,21 @@ export default function AuroraGlobe({ globeWidth, isGlobeLoading, auroraData, th
             atmosphereColor={theme === 'light' ? 'rgba(100,160,255,0.4)' : 'rgba(0,180,60,0.15)'}
             atmosphereAltitude={0.15}
             onZoom={handleZoom}
-            pointsData={userLat != null && userLng != null ? [{ lat: userLat, lng: userLng }] : []}
-            pointLat="lat"
-            pointLng="lng"
-            pointColor={() => '#f97316'}
-            pointRadius={0.6}
-            pointAltitude={0.02}
-            pointResolution={16}
+            htmlElementsData={userLat != null && userLng != null ? [{ lat: userLat, lng: userLng }] : []}
+            htmlLat="lat"
+            htmlLng="lng"
+            htmlAltitude={0.05}
+            htmlElement={() => {
+              const wrapper = document.createElement('div');
+              wrapper.style.cssText = 'display:flex;flex-direction:column;align-items:center;transform:translateY(-100%);pointer-events:none;';
+              const pin = document.createElement('div');
+              pin.style.cssText = 'width:18px;height:18px;background:#10b981;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2.5px solid white;box-shadow:0 0 14px rgba(16,185,129,0.9),0 0 4px rgba(0,0,0,0.4);';
+              const stem = document.createElement('div');
+              stem.style.cssText = 'width:2.5px;height:10px;background:white;border-radius:2px;box-shadow:0 0 4px rgba(0,0,0,0.4);margin-top:1px;';
+              wrapper.appendChild(pin);
+              wrapper.appendChild(stem);
+              return wrapper;
+            }}
           />
         </ErrorBoundary>
       )}
