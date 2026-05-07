@@ -24,6 +24,7 @@ struct KpEntry: TimelineEntry {
     let stormColor: Color
     let lastUpdated: String
     let forecast: [ForecastPoint]
+    let isStale: Bool
 }
 
 // MARK: - Localization
@@ -125,7 +126,7 @@ struct KpProvider: TimelineProvider {
     func placeholder(in context: Context) -> KpEntry {
         KpEntry(date: Date(), kp: 2.3, windSpeed: 420,
                 stormLevel: WL.quiet, stormColor: .green,
-                lastUpdated: "--:--", forecast: [])
+                lastUpdated: "--:--", forecast: [], isStale: false)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (KpEntry) -> Void) {
@@ -220,11 +221,12 @@ struct KpProvider: TimelineProvider {
         group.notify(queue: .main) {
             let fmt = DateFormatter()
             fmt.timeStyle = .short
+            let isStale = kp <= 0 && wind <= 0
             completion(KpEntry(
-                date: Date(), kp: kp, windSpeed: wind,
-                stormLevel: kpLevel(kp), stormColor: kpColor(kp),
-                lastUpdated: fmt.string(from: Date()),
-                forecast: forecastPoints
+                date: Date(), kp: max(kp, 0), windSpeed: max(wind, 0),
+                stormLevel: isStale ? "---" : kpLevel(kp), stormColor: isStale ? .gray : kpColor(kp),
+                lastUpdated: isStale ? "---" : fmt.string(from: Date()),
+                forecast: forecastPoints, isStale: isStale
             ))
         }
     }
@@ -337,9 +339,15 @@ struct StormWidgetSmallView: View {
 
             // Wind + time
             HStack {
-                Label("\(entry.windSpeed) km/s", systemImage: "wind")
-                    .font(.system(size: 8.5))
-                    .foregroundColor(Color.white.opacity(0.4))
+                if entry.isStale {
+                    Label("No signal", systemImage: "wifi.slash")
+                        .font(.system(size: 8.5))
+                        .foregroundColor(.orange.opacity(0.7))
+                } else {
+                    Label("\(entry.windSpeed) km/s", systemImage: "wind")
+                        .font(.system(size: 8.5))
+                        .foregroundColor(Color.white.opacity(0.4))
+                }
                 Spacer()
                 Text(entry.lastUpdated)
                     .font(.system(size: 8.5))

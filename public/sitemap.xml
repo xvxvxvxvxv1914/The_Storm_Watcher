@@ -6,8 +6,10 @@
   <url><loc>https://thestormwatcher.com/forecast</loc><lastmod>2026-05-05</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
   <url><loc>https://thestormwatcher.com/alerts</loc><lastmod>2026-05-05</lastmod><changefreq>hourly</changefreq><priority>0.8</priority></url>
   <url><loc>https://thestormwatcher.com/iss</loc><lastmod>2026-05-05</lastmod><changefreq>daily</changefreq><priority>0.6</priority></url>
-  <url><loc>https://thestormwatcher.com/uv</loc><lastmod>2026-05-05</lastmod><changefreq>daily</changefreq><priority>0.6</priority></url>
-  <url><loc>https://thestormwatcher.com/mood</loc><lastmod>2026-05-05</lastmod><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://thestormwatcher.com/uv</loc><lastmod>2026-05-07</lastmod><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://thestormwatcher.com/sun</loc><lastmod>2026-05-07</lastmod><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://thestormwatcher.com/sky</loc><lastmod>2026-05-07</lastmod><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://thestormwatcher.com/mood</loc><lastmod>2026-05-07</lastmod><changefreq>daily</changefreq><priority>0.6</priority></url>
   <url><loc>https://thestormwatcher.com/magnetic-effects</loc><lastmod>2026-05-05</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://thestormwatcher.com/pricing</loc><lastmod>2026-05-05</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://thestormwatcher.com/faq</loc><lastmod>2026-05-05</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
