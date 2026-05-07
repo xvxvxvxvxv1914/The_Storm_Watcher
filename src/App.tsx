@@ -1,4 +1,4 @@
-import { Suspense, useEffect } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
@@ -18,6 +18,7 @@ import OnboardingTour from './components/OnboardingTour';
 import ScrollToTop from './components/ScrollToTop';
 import CookieConsent from './components/CookieConsent';
 import SplashAnimation from './components/SplashAnimation';
+import LocationPrompt, { useLocationPromptVisible } from './components/LocationPrompt';
 
 const LoadingFallback = () => {
   const { t } = useLanguage();
@@ -33,6 +34,8 @@ function AppRoutes() {
   const { user } = useAuth();
   const { theme } = useTheme();
   const navigate = useNavigate();
+  const shouldShowLocationPrompt = useLocationPromptVisible();
+  const [locationPromptDone, setLocationPromptDone] = useState(false);
   // Активиране на слайдването
   useSwipeNavigation();
 
@@ -67,6 +70,9 @@ function AppRoutes() {
       <CookieConsent />
       <OnboardingTour />
       <SplashAnimation />
+      {shouldShowLocationPrompt && !locationPromptDone && (
+        <LocationPrompt onDone={() => setLocationPromptDone(true)} />
+      )}
     </div>
   );
 }

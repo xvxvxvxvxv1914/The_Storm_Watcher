@@ -5,12 +5,14 @@ import { MapPin, Eye, Sparkles, AlertTriangle, Check, Zap, Share2 } from 'lucide
 import { getKpIndex, getAuroraModel, getMagField, getSolarWind, getWeatherData, getKpGradientStyle, type AuroraOvationPoint, type WeatherData } from '../services/noaaApi';
 import { calcAuroraVisibility } from '../utils/auroraVisibility';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSettings } from '../contexts/SettingsContext';
 import { logError } from '../utils/logger';
 
 const AuroraGlobe = lazy(() => import('../components/AuroraGlobe'));
 
 const Aurora = () => {
   const { t } = useLanguage();
+  const { settings } = useSettings();
   const [kpValue, setKpValue] = useState<number>(0);
   const [auroraData, setAuroraData] = useState<AuroraOvationPoint[]>([]);
   const [bz, setBz] = useState<number>(0);
@@ -45,22 +47,34 @@ const Aurora = () => {
 
   useEffect(() => {
     let mounted = true;
-    if (!navigator.geolocation) return;
     setIsWeatherLoading(true);
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        const data = await getWeatherData(pos.coords.latitude, pos.coords.longitude);
+
+    const load = async (lat: number, lon: number) => {
+      try {
+        const data = await getWeatherData(lat, lon);
         if (!mounted) return;
         setLocalWeather(data);
-        setIsWeatherLoading(false);
-      },
-      () => {
+      } catch {
         if (!mounted) return;
         setLocationError(true);
-        setIsWeatherLoading(false);
+      } finally {
+        if (mounted) setIsWeatherLoading(false);
       }
-    );
+    };
+
+    if (settings.preferredLat !== null && settings.preferredLon !== null) {
+      load(settings.preferredLat, settings.preferredLon);
+    } else if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => load(pos.coords.latitude, pos.coords.longitude),
+        () => { if (mounted) { setLocationError(true); setIsWeatherLoading(false); } }
+      );
+    } else {
+      setIsWeatherLoading(false);
+    }
+
     return () => { mounted = false; };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleGlobeResize = useCallback((entries: ResizeObserverEntry[]) => {

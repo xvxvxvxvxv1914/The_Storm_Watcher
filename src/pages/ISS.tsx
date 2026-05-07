@@ -5,9 +5,11 @@ import { MapPin, Clock, Eye, Satellite } from 'lucide-react';
 const Globe = lazy(() => import('react-globe.gl')) as any;
 import { getIssPosition, getIssPasses, IssPosition, IssPass } from '../services/issApi';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSettings } from '../contexts/SettingsContext';
 
 const ISS = () => {
   const { t } = useLanguage();
+  const { settings } = useSettings();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const globeRef = useRef<any>(null);
   const globeContainerRef = useRef<HTMLDivElement>(null);
@@ -86,10 +88,15 @@ const ISS = () => {
       }
     };
 
-    navigator.geolocation?.getCurrentPosition(
-      (pos) => load(pos.coords.latitude, pos.coords.longitude),
-      () => { load(42.7, 23.3); if (mounted) setLocationName('Sofia, Bulgaria (default)'); },
-    );
+    if (settings.preferredLat !== null && settings.preferredLon !== null) {
+      load(settings.preferredLat, settings.preferredLon);
+      if (settings.preferredLocationName) setLocationName(settings.preferredLocationName);
+    } else {
+      navigator.geolocation?.getCurrentPosition(
+        (pos) => load(pos.coords.latitude, pos.coords.longitude),
+        () => { load(42.7, 23.3); if (mounted) setLocationName('Sofia, Bulgaria (default)'); },
+      );
+    }
 
     return () => { mounted = false; };
   }, []);
