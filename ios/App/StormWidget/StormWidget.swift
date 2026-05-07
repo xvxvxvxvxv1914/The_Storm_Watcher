@@ -172,8 +172,8 @@ struct KpProvider: TimelineProvider {
                 guard let data,
                       let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]],
                       let last = json.last else { return }
-                if let v = last["kp_index"] as? Double      { kp = v }
-                else if let v = last["estimated_kp"] as? Double { kp = v }
+                if let v = last["estimated_kp"] as? Double, v > 0 { kp = v }
+                else if let v = last["kp_index"] as? Double     { kp = v }
             }.resume()
 
             group.enter()
