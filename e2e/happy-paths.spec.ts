@@ -4,6 +4,17 @@ import { test, expect, Page } from '@playwright/test';
 // Open-Meteo (UV/sun) is not used on the Dashboard so we don't need to stub
 // it for these paths.
 const stubNoaa = async (page: Page) => {
+  await page.route(/\/api\/gfz\/.*/, async (route) => {
+    return route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        datetime: ['2026-04-26T08:00:00Z'],
+        Kp: [4.2],
+      }),
+    });
+  });
+
   await page.route(/services\.swpc\.noaa\.gov\/.*/, async (route) => {
     const url = route.request().url();
     if (url.includes('planetary_k_index_1m')) {
