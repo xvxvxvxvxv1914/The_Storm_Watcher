@@ -13,9 +13,10 @@ interface Props {
   globeWidth: number;
   isGlobeLoading: boolean;
   auroraData: AuroraOvationPoint[];
+  theme?: string;
 }
 
-export default function AuroraGlobe({ globeWidth, isGlobeLoading, auroraData }: Props) {
+export default function AuroraGlobe({ globeWidth, isGlobeLoading, auroraData, theme }: Props) {
   const { t } = useLanguage();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const globeRef = useRef<any>(null);
@@ -188,7 +189,7 @@ export default function AuroraGlobe({ globeWidth, isGlobeLoading, auroraData }: 
             height={Math.max(320, Math.round(globeWidth * 0.75))}
             backgroundColor="rgba(0,0,0,0)"
             globeImageUrl="/textures/earth-blue-marble.jpg"
-            atmosphereColor="rgba(0,180,60,0.15)"
+            atmosphereColor={theme === 'light' ? 'rgba(100,160,255,0.4)' : 'rgba(0,180,60,0.15)'}
             atmosphereAltitude={0.15}
           />
         </ErrorBoundary>

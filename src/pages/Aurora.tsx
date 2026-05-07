@@ -6,6 +6,7 @@ import { getKpIndex, getAuroraModel, getMagField, getSolarWind, getWeatherData, 
 import { calcAuroraVisibility } from '../utils/auroraVisibility';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { logError } from '../utils/logger';
 
 const AuroraGlobe = lazy(() => import('../components/AuroraGlobe'));
@@ -13,6 +14,7 @@ const AuroraGlobe = lazy(() => import('../components/AuroraGlobe'));
 const Aurora = () => {
   const { t } = useLanguage();
   const { settings } = useSettings();
+  const { theme } = useTheme();
   const [kpValue, setKpValue] = useState<number>(0);
   const [auroraData, setAuroraData] = useState<AuroraOvationPoint[]>([]);
   const [bz, setBz] = useState<number>(0);
@@ -416,15 +418,18 @@ const Aurora = () => {
           </div>
         )}
         
-        <div className="rounded-3xl overflow-hidden border border-[#10b981]/20 mb-8 flex flex-col items-center w-full" style={{ background: 'linear-gradient(180deg, #0d0d1f 0%, #050510 100%)' }}>
-          <div className="flex items-center justify-between w-full p-4 border-b border-white/10">
-            <h3 className="text-xl font-bold uppercase tracking-wide" style={{ color: 'white' }}>
+        <div className="rounded-3xl overflow-hidden mb-8 flex flex-col items-center w-full" style={{
+          background: theme === 'light' ? 'linear-gradient(180deg, #e8eaf0 0%, #d0d4de 100%)' : 'linear-gradient(180deg, #0d0d1f 0%, #050510 100%)',
+          border: theme === 'light' ? '1px solid #c0c4d0' : '1px solid rgba(16,185,129,0.2)',
+        }}>
+          <div className="flex items-center justify-between w-full p-4" style={{ borderBottom: theme === 'light' ? '1px solid #c0c4d0' : '1px solid rgba(255,255,255,0.1)' }}>
+            <h3 className="text-xl font-bold uppercase tracking-wide" style={{ color: theme === 'light' ? '#1e293b' : 'white' }}>
               {t('aurora.oval')}
             </h3>
             {isGlobeLoading && <div className="w-5 h-5 border-2 border-[#10b981]/20 border-t-[#10b981] rounded-full animate-spin" />}
           </div>
           
-          <div ref={globeContainerRef} className="relative w-full flex justify-center bg-[#050510] cursor-grab active:cursor-grabbing" style={{ minHeight: Math.max(320, Math.round(globeWidth * 0.75)) }}>
+          <div ref={globeContainerRef} className="relative w-full flex justify-center cursor-grab active:cursor-grabbing" style={{ minHeight: Math.max(320, Math.round(globeWidth * 0.75)), background: theme === 'light' ? 'linear-gradient(180deg, #d8dce8 0%, #c8ccd8 100%)' : '#050510' }}>
             <Suspense fallback={
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <div className="w-12 h-12 border-4 border-[#10b981]/20 border-t-[#10b981] rounded-full animate-spin mb-4" />
@@ -435,12 +440,13 @@ const Aurora = () => {
                 globeWidth={globeWidth}
                 isGlobeLoading={isGlobeLoading}
                 auroraData={auroraData}
+                theme={theme}
               />
             </Suspense>
           </div>
           
-          <div className="w-full px-8 py-6 border-t border-white/10" style={{ background: 'rgba(0,0,0,0.2)' }}>
-            <p className="text-sm leading-relaxed" style={{ color: '#94a3b8' }}>
+          <div className="w-full px-8 py-6" style={{ borderTop: theme === 'light' ? '1px solid #c0c4d0' : '1px solid rgba(255,255,255,0.1)', background: theme === 'light' ? 'rgba(0,0,0,0.05)' : 'rgba(0,0,0,0.2)' }}>
+            <p className="text-sm leading-relaxed" style={{ color: theme === 'light' ? '#475569' : '#94a3b8' }}>
               {t('aurora.ovalDesc')} · Use your mouse to rotate and zoom the globe. Bright green indicates the base of the aurora, shifting into cyan, purple, and vibrant pink at the highest active intensities.
             </p>
           </div>
