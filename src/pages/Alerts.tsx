@@ -1,33 +1,53 @@
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { AlertTriangle, Info, AlertOctagon, ShieldAlert, Flame, Wind } from 'lucide-react';
+import { AlertTriangle, Info, AlertOctagon, ShieldAlert, Flame, Wind, Activity } from 'lucide-react';
 import { getAlerts, Alert as AlertType } from '../services/noaaApi';
-import { getDonkiCme, getDonkiFlares, CmeEvent, FlareEvent } from '../services/donkiApi';
+import { getDonkiCme, getDonkiFlares, getDonkiGst, CmeEvent, FlareEvent, GstEvent } from '../services/donkiApi';
 import { useLanguage } from '../contexts/LanguageContext';
+import { logError } from '../utils/logger';
+
+const kpToGScale = (kp: number): { scale: string; label: string; color: string; bg: string; border: string } => {
+  if (kp >= 9) return { scale: 'G5', label: 'Extreme',  color: '#ef4444', bg: 'bg-red-500/10',    border: 'border-red-500/30' };
+  if (kp >= 8) return { scale: 'G4', label: 'Severe',   color: '#f97316', bg: 'bg-orange-500/10', border: 'border-orange-500/30' };
+  if (kp >= 7) return { scale: 'G3', label: 'Strong',   color: '#fbbf24', bg: 'bg-yellow-500/10', border: 'border-yellow-500/30' };
+  if (kp >= 6) return { scale: 'G2', label: 'Moderate', color: '#84cc16', bg: 'bg-lime-500/10',   border: 'border-lime-500/30' };
+  return             { scale: 'G1', label: 'Minor',    color: '#10b981', bg: 'bg-emerald-500/10', border: 'border-emerald-500/30' };
+};
+
+const eventTypeLabel = (activityID: string): string => {
+  if (activityID.includes('-CME-')) return 'CME';
+  if (activityID.includes('-HSS-')) return 'High Speed Stream';
+  if (activityID.includes('-IPS-')) return 'Interplanetary Shock';
+  if (activityID.includes('-FLR-')) return 'Solar Flare';
+  return 'Solar Event';
+};
 
 const Alerts = () => {
   const { t } = useLanguage();
   const [alerts, setAlerts] = useState<AlertType[]>([]);
   const [cmeEvents, setCmeEvents] = useState<CmeEvent[]>([]);
   const [flareEvents, setFlareEvents] = useState<FlareEvent[]>([]);
+  const [gstEvents, setGstEvents] = useState<GstEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
 
   useEffect(() => {
     const fetchAlerts = async () => {
       try {
-        const [noaaData, cmeData, flareData] = await Promise.allSettled([
+        const [noaaData, cmeData, flareData, gstData] = await Promise.allSettled([
           getAlerts(),
           getDonkiCme(),
           getDonkiFlares(),
+          getDonkiGst(),
         ]);
         if (noaaData.status === 'fulfilled') setAlerts(noaaData.value || []);
         if (cmeData.status === 'fulfilled') setCmeEvents(cmeData.value || []);
         if (flareData.status === 'fulfilled') setFlareEvents(flareData.value || []);
+        if (gstData.status === 'fulfilled') setGstEvents((gstData.value || []).slice().reverse());
         setLastUpdated(new Date());
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching alerts:', error);
+        logError('Error fetching alerts', error);
         setLoading(false);
       }
     };
@@ -258,6 +278,109 @@ const Alerts = () => {
             </div>
           </div>
         )}
+
+        {/* Geomagnetic Storm History — last 30 days */}
+        <div className="mt-6 sm:mt-12">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 bg-gradient-to-br from-[#7c3aed] to-[#06b6d4] rounded-lg flex items-center justify-center">
+              <Activity className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h2 className="text-lg sm:text-2xl font-bold text-white">Geomagnetic Storm History</h2>
+              <p className="text-[#94a3b8] text-sm">Last 30 days · DONKI / NOAA</p>
+            </div>
+          </div>
+
+          {/* Summary pill */}
+          {gstEvents.length > 0 && (
+            <div className="flex flex-wrap gap-3 mb-6">
+              <div className="glass-surface rounded-full px-4 py-2 border border-white/10 text-sm text-white font-semibold">
+                {gstEvents.length} storm{gstEvents.length !== 1 ? 's' : ''} recorded
+              </div>
+              {(() => {
+                const peak = Math.max(...gstEvents.flatMap(g => g.allKpIndex.map(k => k.kpIndex)));
+                const g = kpToGScale(peak);
+                return (
+                  <div className="glass-surface rounded-full px-4 py-2 border text-sm font-bold flex items-center gap-1.5"
+                    style={{ borderColor: g.color + '50', color: g.color }}>
+                    Peak {g.scale} · Kp {peak.toFixed(1)}
+                  </div>
+                );
+              })()}
+            </div>
+          )}
+
+          {gstEvents.length === 0 ? (
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-10 text-center">
+              <div className="w-14 h-14 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Activity className="w-7 h-7 text-emerald-400" />
+              </div>
+              <p className="text-white font-semibold mb-1">No geomagnetic storms in the last 30 days</p>
+              <p className="text-[#94a3b8] text-sm">Space weather has been quiet.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {gstEvents.map((gst) => {
+                const peakKp = Math.max(...gst.allKpIndex.map(k => k.kpIndex));
+                const g = kpToGScale(peakKp);
+                const causes = [...new Set(gst.linkedEvents.map(e => eventTypeLabel(e.activityID)))];
+                const startMs = new Date(gst.startTime).getTime();
+                const lastMs = gst.allKpIndex.length > 0
+                  ? new Date(gst.allKpIndex[gst.allKpIndex.length - 1].observedTime).getTime()
+                  : startMs;
+                const durationH = Math.round((lastMs - startMs) / 3600000);
+                return (
+                  <div key={gst.gstID} className={`backdrop-blur-sm border rounded-2xl p-5 sm:p-6 ${g.bg} ${g.border}`}>
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                      {/* G-scale badge */}
+                      <div className="flex-shrink-0 text-center w-16">
+                        <div className="text-3xl font-bold" style={{ color: g.color }}>{g.scale}</div>
+                        <div className="text-xs font-semibold" style={{ color: g.color }}>{g.label}</div>
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-2 mb-2">
+                          <span className="text-white font-semibold">
+                            {new Date(gst.startTime).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}
+                          </span>
+                          <span className="text-[#64748b] text-xs">
+                            {new Date(gst.startTime).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })} UTC
+                          </span>
+                          {durationH > 0 && (
+                            <span className="text-[#64748b] text-xs">· {durationH}h duration</span>
+                          )}
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          <span className="px-2 py-0.5 rounded-full text-xs font-bold border"
+                            style={{ borderColor: g.color + '60', color: g.color, background: g.color + '15' }}>
+                            Peak Kp {peakKp.toFixed(2)}
+                          </span>
+                          {causes.map(c => (
+                            <span key={c} className="px-2 py-0.5 rounded-full text-xs bg-white/5 text-[#94a3b8] border border-white/10">
+                              {c}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Mini Kp sparkline */}
+                      {gst.allKpIndex.length > 1 && (
+                        <div className="flex items-end gap-0.5 h-8 flex-shrink-0">
+                          {gst.allKpIndex.map((k, i) => {
+                            const h = Math.max(2, Math.round((k.kpIndex / 9) * 32));
+                            return (
+                              <div key={i} className="w-2 rounded-sm" style={{ height: h, background: kpToGScale(k.kpIndex).color }} />
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
 
         <div className="mt-6 sm:mt-12 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
           <h3 className="text-xl font-semibold text-white mb-4">{t('alerts.aboutTitle')}</h3>

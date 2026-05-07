@@ -49,9 +49,23 @@ export interface FlareEvent {
   link: string;
 }
 
-const startDate = () => {
+export interface GstKpEntry {
+  observedTime: string;
+  kpIndex: number;
+  source: string;
+}
+
+export interface GstEvent {
+  gstID: string;
+  startTime: string;
+  allKpIndex: GstKpEntry[];
+  linkedEvents: { activityID: string }[];
+  link: string;
+}
+
+const startDate = (daysBack = 7) => {
   const d = new Date();
-  d.setDate(d.getDate() - 7);
+  d.setDate(d.getDate() - daysBack);
   return d.toISOString().split('T')[0];
 };
 
@@ -73,6 +87,16 @@ export const getDonkiFlares = async (): Promise<FlareEvent[]> => {
     return await fetchJson<FlareEvent[]>(`${DONKI_BASE}/FLR?${params}`) || [];
   } catch (error) {
     logError('Error fetching donki flares', error);
+    return [];
+  }
+};
+
+export const getDonkiGst = async (): Promise<GstEvent[]> => {
+  try {
+    const params = new URLSearchParams({ startDate: startDate(30), endDate: endDate() });
+    return await fetchJson<GstEvent[]>(`${DONKI_BASE}/GST?${params}`) || [];
+  } catch (error) {
+    logError('Error fetching donki gst', error);
     return [];
   }
 };
