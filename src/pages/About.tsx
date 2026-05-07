@@ -33,6 +33,14 @@ const About = () => {
         <meta property="og:url" content="https://thestormwatcher.com/about" />
         <meta name="twitter:title" content="About — The Storm Watcher" />
         <meta name="twitter:description" content="Real-time space weather monitoring and aurora forecast app." />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "The Storm Watcher",
+          "url": "https://thestormwatcher.com",
+          "description": "Real-time space weather monitoring and aurora forecast app.",
+          "contactPoint": { "@type": "ContactPoint", "email": "hello@thestormwatcher.com", "contactType": "customer support" }
+        })}</script>
       </Helmet>
       <div className="star-field">
         {stars.map((s) => (

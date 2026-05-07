@@ -34,7 +34,7 @@ const PlanGuard = ({ requiredPlan, children }: PlanGuardProps) => {
       </div>
 
       {/* Overlay */}
-      <div className="absolute inset-0 flex items-center justify-center z-10"
+      <div className="plan-guard-overlay absolute inset-0 flex items-center justify-center z-10"
         style={{ background: 'linear-gradient(to bottom, rgba(10,10,26,0.3) 0%, rgba(10,10,26,0.7) 60%, rgba(10,10,26,0.95) 100%)' }}
       >
         <div className="glass-surface rounded-2xl p-10 max-w-sm w-full mx-4 text-center border"

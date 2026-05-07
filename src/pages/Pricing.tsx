@@ -50,8 +50,7 @@ export default function Pricing() {
     setError('');
     setLoading(plan);
     try {
-      const { data: { session: currentSession } } = await supabase.auth.getSession();
-      const token = currentSession?.access_token;
+      const token = session?.access_token;
       const priceId = PRICES[plan][billing].id;
 
       const res = await fetch('/api/stripe/create-checkout-session', {
@@ -76,8 +75,7 @@ export default function Pricing() {
     setError('');
     setLoading('portal');
     try {
-      const { data: { session: currentSession } } = await supabase.auth.getSession();
-      const token = currentSession?.access_token;
+      const token = session?.access_token;
 
       const res = await fetch('/api/stripe/create-portal-session', {
         method: 'POST',
@@ -96,13 +94,8 @@ export default function Pricing() {
     }
   }
 
-  // suppress unused warning — session used implicitly via supabase.auth.getSession()
-  void session;
-
   return (
-    <div className="min-h-screen flex flex-col items-center px-4 py-16"
-      style={{ background: 'radial-gradient(ellipse at top, #0d1b2a 0%, #0a0a1a 60%)' }}
-    >
+    <div className="min-h-screen flex flex-col items-center px-4 py-16 pricing-bg">
       <Helmet>
         <title>Pricing — The Storm Watcher</title>
         <meta name="description" content="Choose your plan. Free space weather monitoring or Pro/Premium with advanced alerts and aurora forecasting." />
@@ -152,8 +145,7 @@ export default function Pricing() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           {/* Pro */}
           <div
-            className="glass-surface rounded-2xl p-8 border relative"
-            style={{ borderColor: currentPlan === 'pro' ? '#f97316' : '#f9731622' }}
+            className={`glass-surface rounded-2xl p-8 border relative ${currentPlan === 'pro' ? 'border-tsw-orange' : 'border-tsw-orange/[0.13]'}`}
           >
             {currentPlan === 'pro' && (
               <span className="absolute top-4 right-4 text-xs font-bold px-2 py-1 rounded-full"
@@ -213,8 +205,7 @@ export default function Pricing() {
 
           {/* Premium */}
           <div
-            className="glass-surface rounded-2xl p-8 border relative"
-            style={{ borderColor: currentPlan === 'premium' ? '#7c3aed' : '#7c3aed22' }}
+            className={`glass-surface rounded-2xl p-8 border relative ${currentPlan === 'premium' ? 'border-tsw-purple' : 'border-tsw-purple/[0.13]'}`}
           >
             <div className="absolute -top-3 left-1/2 -translate-x-1/2">
               <span className="text-xs font-bold px-3 py-1 rounded-full text-white"

@@ -222,16 +222,27 @@ html.light p.text-white,
 html.light h1.text-white,
 html.light h2.text-white,
 html.light h3.text-white,
+html.light h4.text-white,
 html.light span.text-white:not(.gradient-solar):not(.gradient-aurora):not(.gradient-fire),
 html.light label.text-white,
 html.light div.text-white,
-html.light a.text-white,
-html.light button.text-white {
+html.light svg.text-white,
+html.light li.text-white {
   color: #1e293b;
+}
+
+html.light .gradient-solar,
+html.light .gradient-aurora,
+html.light .gradient-fire {
+  filter: brightness(0.7) saturate(1.4);
 }
 
 html.light .border-white\/10 {
   border-color: rgba(0, 0, 0, 0.12);
+}
+
+html.light .border-white\/8 {
+  border-color: rgba(0, 0, 0, 0.08);
 }
 
 html.light .text-white\/70 {
@@ -254,6 +265,15 @@ html.light .text-white\/25 {
   color: #cbd5e1;
 }
 
+html.light .text-white\/30 {
+  color: #94a3b8;
+}
+
+html.light .bg-\[#0a0015\] {
+  background-color: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
 html.light .text-\[\#94a3b8\] {
   color: #64748b;
 }
@@ -268,6 +288,44 @@ html.light .star {
 
 html.light .solar-particle {
   display: none;
+}
+
+.pricing-bg {
+  background: radial-gradient(ellipse at top, #0d1b2a 0%, #0a0a1a 60%);
+}
+
+html.light .pricing-bg {
+  background: radial-gradient(ellipse at top, #dbeafe 0%, #f1f5f9 60%);
+}
+
+/* Nav and dropdown hover states */
+html.light .hover\:text-white:hover {
+  color: #1e293b !important;
+}
+
+html.light .hover\:bg-white\/5:hover {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+html.light .hover\:bg-white\/10:hover {
+  background-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Dropdown menus on light background */
+html.light .bg-white\/5 {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+/* Info tooltip dark bg */
+html.light .dark-tooltip {
+  background: rgba(255, 255, 255, 0.97) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  color: #1e293b !important;
+}
+
+/* PlanGuard overlay in light mode */
+html.light .plan-guard-overlay {
+  background: linear-gradient(to bottom, rgba(241,245,249,0.3) 0%, rgba(241,245,249,0.75) 60%, rgba(241,245,249,0.97) 100%) !important;
 }
 
 /* H21 — Accessibility: focus rings */

@@ -1,3 +1,5 @@
+import { logError } from '../utils/logger';
+
 // Web builds: Vite dev proxy → /donki, Vercel → vercel.json rewrite.
 // Capacitor iOS: no proxy available, so set VITE_DONKI_BASE_URL to the
 // Supabase Edge Function URL (donki-proxy) in the Capacitor build config.
@@ -60,7 +62,7 @@ export const getDonkiCme = async (): Promise<CmeEvent[]> => {
     const params = new URLSearchParams({ startDate: startDate(), endDate: endDate() });
     return await fetchJson<CmeEvent[]>(`${DONKI_BASE}/CME?${params}`) || [];
   } catch (error) {
-    console.error('Error fetching donki cme:', error);
+    logError('Error fetching donki cme', error);
     return [];
   }
 };
@@ -70,7 +72,7 @@ export const getDonkiFlares = async (): Promise<FlareEvent[]> => {
     const params = new URLSearchParams({ startDate: startDate(), endDate: endDate() });
     return await fetchJson<FlareEvent[]>(`${DONKI_BASE}/FLR?${params}`) || [];
   } catch (error) {
-    console.error('Error fetching donki flares:', error);
+    logError('Error fetching donki flares', error);
     return [];
   }
 };

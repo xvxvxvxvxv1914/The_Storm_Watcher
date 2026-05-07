@@ -181,6 +181,15 @@ const Forecast = () => {
         <meta property="og:url" content="https://thestormwatcher.com/forecast" />
         <meta name="twitter:title" content="Kp Index Forecast — The Storm Watcher" />
         <meta name="twitter:description" content="3-day Kp index forecast from NOAA. See predicted geomagnetic storm levels and plan your aurora viewing." />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          "name": "Kp Index Forecast — The Storm Watcher",
+          "url": "https://thestormwatcher.com/forecast",
+          "description": "3-day Kp index forecast from NOAA. See predicted geomagnetic storm levels and plan your aurora viewing.",
+          "applicationCategory": "WeatherApplication",
+          "operatingSystem": "Web, iOS, Android"
+        })}</script>
       </Helmet>
       <StarField />
 

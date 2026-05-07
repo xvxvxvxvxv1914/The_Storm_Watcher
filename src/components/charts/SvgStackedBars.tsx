@@ -15,7 +15,9 @@ interface Props {
   height?: number;
 }
 
-export default function SvgStackedBars({ data, series, xKey, height = 280 }: Props) {
+import { memo } from 'react';
+
+function SvgStackedBars({ data, series, xKey, height = 280 }: Props) {
   if (data.length === 0) return null;
 
   const labelH = 28;
@@ -80,3 +82,5 @@ export default function SvgStackedBars({ data, series, xKey, height = 280 }: Pro
     </div>
   );
 }
+
+export default memo(SvgStackedBars);

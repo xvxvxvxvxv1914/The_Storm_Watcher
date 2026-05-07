@@ -38,7 +38,7 @@ const InfoTooltip = React.memo(({ text }: { text: string }) => (
     <div className="w-5 h-5 rounded-full bg-white/10 border border-white/20 flex items-center justify-center cursor-help text-[#94a3b8] hover:text-white hover:bg-white/20 transition-colors" style={{ fontSize: '11px', fontWeight: 700 }}>
       i
     </div>
-    <div className="absolute right-0 bottom-full mb-2 w-56 rounded-xl p-3 text-xs text-[#cbd5e1] leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-30 border border-white/10" style={{ background: 'rgba(10,10,26,0.97)', backdropFilter: 'blur(12px)' }}>
+    <div className="dark-tooltip absolute right-0 bottom-full mb-2 w-56 rounded-xl p-3 text-xs text-[#cbd5e1] leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-30 border border-white/10" style={{ background: 'rgba(10,10,26,0.97)', backdropFilter: 'blur(12px)' }}>
       {text}
     </div>
   </div>
@@ -281,6 +281,15 @@ const Dashboard = () => {
         <meta property="og:url" content="https://thestormwatcher.com/dashboard" />
         <meta name="twitter:title" content="Dashboard — The Storm Watcher" />
         <meta name="twitter:description" content="Live space weather dashboard: Kp index, solar wind, magnetic field and X-ray flux charts updated every minute." />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          "name": "Space Weather Dashboard — The Storm Watcher",
+          "url": "https://thestormwatcher.com/dashboard",
+          "description": "Live space weather dashboard: Kp index, solar wind, magnetic field and X-ray flux charts updated every minute.",
+          "applicationCategory": "WeatherApplication",
+          "operatingSystem": "Web, iOS, Android"
+        })}</script>
       </Helmet>
       <StarField />
 

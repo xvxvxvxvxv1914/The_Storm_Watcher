@@ -37,6 +37,15 @@
           "value": "public, max-age=31536000, immutable"
         }
       ]
+    },
+    {
+      "source": "/.well-known/apple-app-site-association",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        }
+      ]
     }
   ],
   "rewrites": [
@@ -47,6 +56,10 @@
     {
       "source": "/api/gfz/:path*",
       "destination": "https://kp.gfz.de/:path*"
+    },
+    {
+      "source": "/.well-known/(.*)",
+      "destination": "/.well-known/$1"
     },
     {
       "source": "/(.*)",

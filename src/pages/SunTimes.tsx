@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+import { fmtWeekdayLong } from '../utils/dateFormat';
 import { Helmet } from 'react-helmet-async';
 import { Sunrise, Sunset, Sun, Clock } from 'lucide-react';
 import { getSunData, SunDay } from '../services/uvApi';
@@ -12,10 +13,7 @@ const formatDaylight = (seconds: number) => {
   return `${h}h ${m}m`;
 };
 
-const formatDate = (dateStr: string) => {
-  const d = new Date(dateStr);
-  return d.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
-};
+const formatDate = (dateStr: string) => fmtWeekdayLong(new Date(dateStr));
 
 const SunArc = ({ sunrise, sunset }: { sunrise: string; sunset: string }) => {
   const now = new Date();

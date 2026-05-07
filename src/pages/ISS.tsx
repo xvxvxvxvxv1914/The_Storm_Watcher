@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState, useCallback, lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { MapPin, Clock, Eye, Satellite } from 'lucide-react';
+interface GlobeInstance {
+  pointOfView(pov: { lat: number; lng: number; altitude: number }, ms?: number): void;
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Globe = lazy(() => import('react-globe.gl')) as any;
 import { getIssPosition, getIssPasses, IssPosition, IssPass } from '../services/issApi';
@@ -10,8 +14,7 @@ import { useSettings } from '../contexts/SettingsContext';
 const ISS = () => {
   const { t } = useLanguage();
   const { settings } = useSettings();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const globeRef = useRef<any>(null);
+  const globeRef = useRef<GlobeInstance | null>(null);
   const globeContainerRef = useRef<HTMLDivElement>(null);
   const [globeWidth, setGlobeWidth] = useState(780);
   const [position, setPosition] = useState<IssPosition | null>(null);

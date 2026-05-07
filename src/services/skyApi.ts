@@ -1,3 +1,6 @@
+import { logError } from '../utils/logger';
+import { fmtHHMM, fmtWeekdayShort } from '../utils/dateFormat';
+
 const fetchJson = async <T,>(url: string, timeoutMs = 10000): Promise<T> => {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
@@ -55,7 +58,7 @@ export const getSkyVisibility = async (lat: number, lon: number, kp: number): Pr
         const date = new Date(t);
         const isNight = date >= sunset && date <= sunrise;
         return {
-          time: date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }),
+          time: fmtHHMM(date),
           hour: date.getHours(),
           cloudCover: hourly.cloud_cover[i],
           visibility: Math.round(hourly.visibility[i] / 1000), // km
@@ -93,7 +96,7 @@ export const getSkyVisibility = async (lat: number, lon: number, kp: number): Pr
       kp >= 4 ? 'Moderate' :
       kp >= 3 ? 'Low' : 'Very Low';
 
-    const fmtTime = (d: Date) => d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+    const fmtTime = fmtHHMM;
 
     return {
       verdict,
@@ -107,7 +110,7 @@ export const getSkyVisibility = async (lat: number, lon: number, kp: number): Pr
       sunrise: fmtTime(sunrise),
     };
   } catch (error) {
-    console.error('Error fetching Sky Visibility:', error);
+    logError('Error fetching Sky Visibility', error);
     return {
       verdict: 'poor',
       score: 0,

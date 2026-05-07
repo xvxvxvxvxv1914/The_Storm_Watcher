@@ -1,5 +1,6 @@
 import * as satellite from 'satellite.js';
 import { logError } from '../utils/logger';
+import { fmtHHMM, fmtWeekdayShort } from '../utils/dateFormat';
 
 const fetchJson = async <T,>(url: string, timeoutMs = 10000): Promise<T> => {
   const ctrl = new AbortController();
@@ -107,8 +108,8 @@ export const getIssPasses = async (lat: number, lon: number, altMeters = 0): Pro
           const duration = Math.round((t.getTime() - passStartTimestamp) / 1000);
           if (passStart && duration > 30) {
             passes.push({
-              date: passStart.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }),
-              time: passStart.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }),
+              date: fmtWeekdayShort(passStart),
+              time: fmtHHMM(passStart),
               duration,
               maxElevation: Math.round(maxEl),
               timestamp: passStartTimestamp,

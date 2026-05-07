@@ -1,8 +1,14 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import GlobeOrig from 'react-globe.gl';
+import * as THREE from 'three';
+
+interface GlobeInstance {
+  pointOfView(pov: { lat: number; lng: number; altitude: number }, ms?: number): void;
+  scene(): THREE.Scene;
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Globe = GlobeOrig as any;
-import * as THREE from 'three';
 import * as solar from 'solar-calculator';
 import { type AuroraOvationPoint } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -68,11 +74,17 @@ function sunPosAt(dt: number): [number, number] {
   return [longitude - solar.equationOfTime(t) / 4, solar.declination(t)];
 }
 
+const AURORA_LAYERS = [
+  { radius: 102.0, opacity: 0.6 },
+  { radius: 104.0, opacity: 0.35 },
+  { radius: 106.5, opacity: 0.15 },
+] as const;
+
 export default function AuroraGlobe({ globeWidth, isGlobeLoading, auroraData, theme, userLat, userLng }: Props) {
   const { t } = useLanguage();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const globeRef = useRef<any>(null);
+  const globeRef = useRef<GlobeInstance | null>(null);
   const prevAuroraTextureRef = useRef<THREE.CanvasTexture | null>(null);
+  const auroraGeosRef = useRef<THREE.SphereGeometry[]>([]);
 
   const [globeMaterial, setGlobeMaterial] = useState<THREE.ShaderMaterial | null>(null);
 
@@ -162,18 +174,17 @@ export default function AuroraGlobe({ globeWidth, isGlobeLoading, auroraData, th
           .filter((c: THREE.Object3D) => c.userData?.isAurora)
           .forEach((c: THREE.Object3D) => {
             const m = c as THREE.Mesh;
-            m.geometry.dispose();
             (m.material as THREE.Material).dispose();
             scene.remove(c);
           });
 
-        const layers = [
-          { radius: 102.0, opacity: 0.6 },
-          { radius: 104.0, opacity: 0.35 },
-          { radius: 106.5, opacity: 0.15 },
-        ];
-        layers.forEach(({ radius, opacity }) => {
-          const geo = new THREE.SphereGeometry(radius, 128, 64);
+        if (auroraGeosRef.current.length === 0) {
+          auroraGeosRef.current = AURORA_LAYERS.map(({ radius }) =>
+            new THREE.SphereGeometry(radius, 128, 64)
+          );
+        }
+        AURORA_LAYERS.forEach(({ opacity }, i) => {
+          const geo = auroraGeosRef.current[i];
           const mat = new THREE.MeshBasicMaterial({
             map: auroraTexture, transparent: true, opacity,
             blending: THREE.AdditiveBlending, side: THREE.FrontSide,

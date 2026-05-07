@@ -1,3 +1,6 @@
+import { logError } from '../utils/logger';
+import { fmtHHMM } from '../utils/dateFormat';
+
 const fetchJson = async <T,>(url: string, timeoutMs = 10000): Promise<T> => {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
@@ -43,7 +46,7 @@ export const getUvIndex = async (lat: number, lon: number): Promise<UvData> => {
     const currentHour = now.getHours();
 
     const hourly: UvHourlyData[] = data.hourly.time.map((t, i) => ({
-      time: new Date(t).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }),
+      time: fmtHHMM(new Date(t)),
       isoTime: t,
       uv_index: Math.round(data.hourly.uv_index[i] * 10) / 10,
     }));
@@ -55,7 +58,7 @@ export const getUvIndex = async (lat: number, lon: number): Promise<UvData> => {
       timezone: data.timezone,
     };
   } catch (error) {
-    console.error('Error fetching UV Index:', error);
+    logError('Error fetching UV Index', error);
     return { current: 0, max: 0, hourly: [], timezone: 'UTC' };
   }
 };
@@ -89,7 +92,7 @@ export const getSunData = async (lat: number, lon: number): Promise<SunDay[]> =>
       const goldenMorningEnd = new Date(sunrise.getTime() + 60 * 60 * 1000);
       const goldenEveningStart = new Date(sunset.getTime() - 60 * 60 * 1000);
 
-      const fmt = (d: Date) => d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+      const fmt = fmtHHMM;
 
       return {
         date: daily.time[i],
@@ -101,7 +104,7 @@ export const getSunData = async (lat: number, lon: number): Promise<SunDay[]> =>
       };
     });
   } catch (error) {
-    console.error('Error fetching Sun Data:', error);
+    logError('Error fetching Sun Data', error);
     return [];
   }
 };

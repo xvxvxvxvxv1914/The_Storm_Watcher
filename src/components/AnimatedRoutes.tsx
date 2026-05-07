@@ -1,9 +1,12 @@
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { withSentryReactRouterV6Routing } from '@sentry/react';
 import { AnimatePresence } from 'framer-motion';
 import { lazy } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import PlanGuard from './PlanGuard';
 import { AnimatedPage } from './AnimatedPage';
+
+const SentryRoutes = withSentryReactRouterV6Routing(Routes);
 
 const Home = lazy(() => import('../pages/Home'));
 const Dashboard = lazy(() => import('../pages/Dashboard'));
@@ -33,7 +36,7 @@ export const AnimatedRoutes = () => {
 
   return (
     <AnimatePresence mode="wait" initial={false}>
-      <Routes location={location} key={location.pathname}>
+      <SentryRoutes location={location} key={location.pathname}>
         <Route path="/" element={<AnimatedPage><Home /></AnimatedPage>} />
         <Route path="/auth" element={user && user.email_confirmed_at ? <Navigate to="/dashboard" replace /> : <AnimatedPage><Auth /></AnimatedPage>} />
         <Route path="/dashboard" element={<AnimatedPage><Dashboard /></AnimatedPage>} />
@@ -55,7 +58,7 @@ export const AnimatedRoutes = () => {
         <Route path="/privacy" element={<AnimatedPage><Privacy /></AnimatedPage>} />
         <Route path="/terms" element={<AnimatedPage><Terms /></AnimatedPage>} />
         <Route path="*" element={<AnimatedPage><NotFound /></AnimatedPage>} />
-      </Routes>
+      </SentryRoutes>
     </AnimatePresence>
   );
 };

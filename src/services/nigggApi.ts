@@ -1,3 +1,5 @@
+import { logError } from '../utils/logger';
+
 export interface NigggDataPoint {
   time: number;
   value: number;
@@ -150,7 +152,7 @@ export const fetchNigggData = async (): Promise<NigggDataSet> => {
 
     return { hComponent, fComponent };
   } catch (error) {
-    console.error('Error fetching NIGGG data:', error);
+    logError('Error fetching NIGGG data', error);
     return { hComponent: [], fComponent: [] };
   }
 };

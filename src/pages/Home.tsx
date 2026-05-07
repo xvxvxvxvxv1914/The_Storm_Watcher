@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { Activity, AlertTriangle, Zap, Radio, Calendar, Bot, Globe, Bell, Camera, Trophy, Video, Share2, Copy, Twitter, ImageDown, Users } from 'lucide-react';
+import { Activity, AlertTriangle, Zap, Radio, Calendar, Globe, Bell, Share2, Copy, Twitter, ImageDown, Users } from 'lucide-react';
 import ErrorCard from '../components/ErrorCard';
 import { track } from '@vercel/analytics';
 import { generateStormScoreImage } from '../utils/generateStormImage';
@@ -566,22 +566,13 @@ const Home = () => {
             {t('home.features2.title')}
           </h2>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           <div className="glass-surface rounded-2xl p-7 hover:glow-green transition-all group">
             <div className="w-14 h-14 bg-gradient-to-br from-[#10b981] to-[#059669] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Calendar className="w-7 h-7 text-white" />
             </div>
             <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.calendar.title')}</h3>
             <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.calendar.desc')}</p>
-          </div>
-
-          <div className="glass-surface rounded-2xl p-7 hover:glow-purple transition-all group relative opacity-60">
-            <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#7c3aed]/20 text-[#a78bfa] border border-[#7c3aed]/30">{t('home.comingSoon')}</span>
-            <div className="w-14 h-14 bg-gradient-to-br from-[#7c3aed] to-[#6d28d9] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-              <Bot className="w-7 h-7 text-white" />
-            </div>
-            <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.ai.title')}</h3>
-            <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.ai.desc')}</p>
           </div>
 
           <div className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group">
@@ -592,42 +583,13 @@ const Home = () => {
             <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.map.desc')}</p>
           </div>
 
-          <div className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group relative opacity-60">
-            <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#fbbf24]/20 text-[#fbbf24] border border-[#fbbf24]/30">{t('home.comingSoon')}</span>
+          <div className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group">
             <div className="w-14 h-14 bg-gradient-to-br from-[#fbbf24] to-[#f97316] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Bell className="w-7 h-7 text-white" />
             </div>
             <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.alerts.title')}</h3>
             <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.alerts.desc')}</p>
           </div>
-
-          <div className="glass-surface rounded-2xl p-7 hover:glow-green transition-all group relative opacity-60">
-            <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#06b6d4]/20 text-[#22d3ee] border border-[#06b6d4]/30">{t('home.comingSoon')}</span>
-            <div className="w-14 h-14 bg-gradient-to-br from-[#06b6d4] to-[#0891b2] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-              <Camera className="w-7 h-7 text-white" />
-            </div>
-            <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.gallery.title')}</h3>
-            <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.gallery.desc')}</p>
-          </div>
-
-          <div className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group relative opacity-60">
-            <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#f59e0b]/20 text-[#fbbf24] border border-[#f59e0b]/30">{t('home.comingSoon')}</span>
-            <div className="w-14 h-14 bg-gradient-to-br from-[#f59e0b] to-[#d97706] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-              <Trophy className="w-7 h-7 text-white" />
-            </div>
-            <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.hunt.title')}</h3>
-            <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.hunt.desc')}</p>
-          </div>
-
-          <div className="glass-surface rounded-2xl p-7 hover:glow-purple transition-all group relative opacity-60">
-            <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#ec4899]/20 text-[#f472b6] border border-[#ec4899]/30">{t('home.comingSoon')}</span>
-            <div className="w-14 h-14 bg-gradient-to-br from-[#ec4899] to-[#be185d] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-              <Video className="w-7 h-7 text-white" />
-            </div>
-            <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.livestream.title')}</h3>
-            <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.livestream.desc')}</p>
-          </div>
-
         </div>
       </div>
       {/* Data Sources */}

@@ -11,7 +11,9 @@ interface Props {
   formatValue?: (v: number) => string;
 }
 
-export default function SvgBarChart({ bars, height = 220, maxValue, formatValue }: Props) {
+import { memo } from 'react';
+
+function SvgBarChart({ bars, height = 220, maxValue, formatValue }: Props) {
   if (bars.length === 0) return null;
   const max = maxValue ?? Math.max(...bars.map(b => b.value), 1);
   const barW = 68;
@@ -65,3 +67,5 @@ export default function SvgBarChart({ bars, height = 220, maxValue, formatValue 
     </svg>
   );
 }
+
+export default memo(SvgBarChart);
