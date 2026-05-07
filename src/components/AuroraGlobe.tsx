@@ -15,6 +15,8 @@ interface Props {
   isGlobeLoading: boolean;
   auroraData: AuroraOvationPoint[];
   theme?: string;
+  userLat?: number | null;
+  userLng?: number | null;
 }
 
 const DAY_NIGHT_SHADER = {
@@ -66,7 +68,7 @@ function sunPosAt(dt: number): [number, number] {
   return [longitude - solar.equationOfTime(t) / 4, solar.declination(t)];
 }
 
-export default function AuroraGlobe({ globeWidth, isGlobeLoading, auroraData, theme }: Props) {
+export default function AuroraGlobe({ globeWidth, isGlobeLoading, auroraData, theme, userLat, userLng }: Props) {
   const { t } = useLanguage();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const globeRef = useRef<any>(null);
@@ -190,10 +192,13 @@ export default function AuroraGlobe({ globeWidth, isGlobeLoading, auroraData, th
   }, [auroraTexture]);
 
   useEffect(() => {
-    if (globeRef.current) {
-      globeRef.current.pointOfView({ lat: 90, lng: 0, altitude: 2 }, 1000);
+    if (!globeRef.current) return;
+    if (userLat !== null && userLat !== undefined && userLng !== null && userLng !== undefined) {
+      globeRef.current.pointOfView({ lat: userLat, lng: userLng, altitude: 2 }, 1000);
+    } else {
+      globeRef.current.pointOfView({ lat: 70, lng: 0, altitude: 2 }, 1000);
     }
-  }, [auroraData]);
+  }, [auroraData, userLat, userLng]);
 
   const bgColor = theme === 'light' ? 'rgba(200,204,216,1)' : 'rgba(0,0,0,0)';
 
@@ -221,6 +226,13 @@ export default function AuroraGlobe({ globeWidth, isGlobeLoading, auroraData, th
             atmosphereColor={theme === 'light' ? 'rgba(100,160,255,0.4)' : 'rgba(0,180,60,0.15)'}
             atmosphereAltitude={0.15}
             onZoom={handleZoom}
+            pointsData={userLat != null && userLng != null ? [{ lat: userLat, lng: userLng }] : []}
+            pointLat="lat"
+            pointLng="lng"
+            pointColor={() => '#f97316'}
+            pointRadius={0.6}
+            pointAltitude={0.02}
+            pointResolution={16}
           />
         </ErrorBoundary>
       )}

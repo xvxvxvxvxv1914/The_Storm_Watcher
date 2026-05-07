@@ -27,6 +27,8 @@ const Aurora = () => {
   const [isWeatherLoading, setIsWeatherLoading] = useState(false);
   const [isGlobeLoading, setIsGlobeLoading] = useState(true);
   const [shareCopied, setShareCopied] = useState(false);
+  const [userLat, setUserLat] = useState<number | null>(null);
+  const [userLng, setUserLng] = useState<number | null>(null);
   const globeContainerRef = useRef<HTMLDivElement>(null);
 
   const getMoonPhase = () => {
@@ -52,6 +54,8 @@ const Aurora = () => {
     setIsWeatherLoading(true);
 
     const load = async (lat: number, lon: number) => {
+      setUserLat(lat);
+      setUserLng(lon);
       try {
         const data = await getWeatherData(lat, lon);
         if (!mounted) return;
@@ -441,6 +445,8 @@ const Aurora = () => {
                 isGlobeLoading={isGlobeLoading}
                 auroraData={auroraData}
                 theme={theme}
+                userLat={userLat}
+                userLng={userLng}
               />
             </Suspense>
           </div>
