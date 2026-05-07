@@ -15,6 +15,7 @@ import BottomTabBar from './components/BottomTabBar';
 import Footer from './components/Footer';
 
 import ErrorBoundary from './components/ErrorBoundary';
+import HreflangTags from './components/HreflangTags';
 import OnboardingTour from './components/OnboardingTour';
 import ScrollToTop from './components/ScrollToTop';
 import CookieConsent from './components/CookieConsent';
@@ -73,6 +74,7 @@ function AppRoutes() {
       >
         Skip to main content
       </a>
+      <HreflangTags />
       <Navigation />
       <main id="main" className="pt-[env(safe-area-inset-top)] pb-24 lg:pb-0">
       <ErrorBoundary>
