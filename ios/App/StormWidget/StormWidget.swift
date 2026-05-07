@@ -433,6 +433,92 @@ struct StormWidgetMediumView: View {
     }
 }
 
+// MARK: - Lock Screen: Circular
+
+@available(iOS 16.0, *)
+struct StormWidgetCircularView: View {
+    let entry: KpEntry
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .stroke(entry.stormColor.opacity(0.25), lineWidth: 3)
+            VStack(spacing: 0) {
+                Image(systemName: "bolt.fill")
+                    .font(.system(size: 8, weight: .bold))
+                    .foregroundColor(entry.stormColor)
+                Text(String(format: "%.1f", entry.kp))
+                    .font(.system(size: 22, weight: .heavy, design: .rounded))
+                    .foregroundColor(entry.stormColor)
+                    .minimumScaleFactor(0.6)
+                Text("Kp")
+                    .font(.system(size: 8, weight: .semibold, design: .rounded))
+                    .foregroundColor(.secondary)
+            }
+        }
+        .widgetURL(URL(string: "stormwatcher://dashboard"))
+    }
+}
+
+// MARK: - Lock Screen: Rectangular
+
+@available(iOS 16.0, *)
+struct StormWidgetRectangularView: View {
+    let entry: KpEntry
+
+    var body: some View {
+        HStack(spacing: 8) {
+            VStack(alignment: .leading, spacing: 1) {
+                HStack(spacing: 3) {
+                    Image(systemName: "bolt.fill")
+                        .font(.system(size: 9, weight: .bold))
+                        .foregroundColor(entry.stormColor)
+                    Text("KP INDEX")
+                        .font(.system(size: 8, weight: .bold, design: .rounded))
+                        .foregroundColor(.secondary)
+                        .tracking(0.5)
+                }
+                Text(String(format: "%.1f", entry.kp))
+                    .font(.system(size: 28, weight: .heavy, design: .rounded))
+                    .foregroundColor(entry.stormColor)
+                    .minimumScaleFactor(0.6)
+                Text(entry.stormLevel)
+                    .font(.system(size: 9, weight: .bold, design: .rounded))
+                    .foregroundColor(entry.stormColor)
+            }
+            Spacer()
+            VStack(alignment: .trailing, spacing: 3) {
+                Label("\(entry.windSpeed)", systemImage: "wind")
+                    .font(.system(size: 9, weight: .medium))
+                    .foregroundColor(.secondary)
+                Text("km/s")
+                    .font(.system(size: 8))
+                    .foregroundColor(.secondary)
+                Spacer()
+                Text(entry.lastUpdated)
+                    .font(.system(size: 8))
+                    .foregroundColor(.secondary)
+            }
+        }
+        .widgetURL(URL(string: "stormwatcher://dashboard"))
+    }
+}
+
+// MARK: - Lock Screen: Inline
+
+@available(iOS 16.0, *)
+struct StormWidgetInlineView: View {
+    let entry: KpEntry
+
+    var body: some View {
+        Label(
+            "Kp \(String(format: "%.1f", entry.kp))  \(entry.stormLevel)  \(entry.windSpeed) km/s",
+            systemImage: "bolt.fill"
+        )
+        .widgetURL(URL(string: "stormwatcher://dashboard"))
+    }
+}
+
 // MARK: - Entry View
 
 struct StormWidgetEntryView: View {
@@ -441,10 +527,25 @@ struct StormWidgetEntryView: View {
 
     var body: some View {
         Group {
-            if family == .systemSmall {
-                StormWidgetSmallView(entry: entry)
+            if #available(iOS 16.0, *) {
+                switch family {
+                case .accessoryCircular:
+                    StormWidgetCircularView(entry: entry)
+                case .accessoryRectangular:
+                    StormWidgetRectangularView(entry: entry)
+                case .accessoryInline:
+                    StormWidgetInlineView(entry: entry)
+                case .systemSmall:
+                    StormWidgetSmallView(entry: entry)
+                default:
+                    StormWidgetMediumView(entry: entry)
+                }
             } else {
-                StormWidgetMediumView(entry: entry)
+                if family == .systemSmall {
+                    StormWidgetSmallView(entry: entry)
+                } else {
+                    StormWidgetMediumView(entry: entry)
+                }
             }
         }
         .widgetBackground(Color(red: 0.05, green: 0.05, blue: 0.12))
@@ -473,7 +574,14 @@ struct StormWidget: Widget {
         }
         .configurationDisplayName("Storm Watcher")
         .description(WL.widgetDescription)
-        .supportedFamilies([.systemSmall, .systemMedium])
+        .supportedFamilies(StormWidget.supportedFamilies)
+    }
+
+    private static var supportedFamilies: [WidgetFamily] {
+        if #available(iOS 16.0, *) {
+            return [.systemSmall, .systemMedium, .accessoryCircular, .accessoryRectangular, .accessoryInline]
+        }
+        return [.systemSmall, .systemMedium]
     }
 }
 
