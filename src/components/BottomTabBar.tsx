@@ -90,11 +90,11 @@ const BottomTabBar = () => {
                 style={active ? { background: 'rgba(255,255,255,0.12)' } : {}}
               >
                 <Icon
-                  className={active ? 'text-[#10b981]' : 'text-white'}
+                  className={active ? 'text-[#10b981]' : theme === 'light' ? 'text-slate-600' : 'text-white'}
                   size={24}
                   strokeWidth={active ? 2.5 : 1.8}
                 />
-                <span className={`text-[10px] ${active ? 'font-bold text-[#10b981]' : 'font-medium text-white/70'}`}>
+                <span className={`text-[10px] ${active ? 'font-bold text-[#10b981]' : theme === 'light' ? 'font-medium text-slate-500' : 'font-medium text-white/70'}`}>
                   {t(labelKey)}
                 </span>
               </Link>
@@ -109,11 +109,11 @@ const BottomTabBar = () => {
             style={isMoreActive ? { background: 'rgba(255,255,255,0.12)' } : {}}
           >
             <MoreHorizontal
-              className={isMoreActive ? 'text-[#10b981]' : 'text-white'}
+              className={isMoreActive ? 'text-[#10b981]' : theme === 'light' ? 'text-slate-600' : 'text-white'}
               size={24}
               strokeWidth={isMoreActive ? 2.5 : 1.8}
             />
-            <span className={`text-[10px] ${isMoreActive ? 'font-bold text-[#10b981]' : 'font-medium text-white/70'}`}>
+            <span className={`text-[10px] ${isMoreActive ? 'font-bold text-[#10b981]' : theme === 'light' ? 'font-medium text-slate-500' : 'font-medium text-white/70'}`}>
               {t('nav.more') || 'More'}
             </span>
           </button>
@@ -136,9 +136,9 @@ const BottomTabBar = () => {
             </div>
 
             <div className="flex items-center justify-between px-5 pb-3">
-              <span className="text-white font-bold text-lg">{t('nav.more') || 'More'}</span>
+              <span className={`font-bold text-lg ${theme === 'light' ? 'text-slate-800' : 'text-white'}`}>{t('nav.more') || 'More'}</span>
               <button onClick={() => setMoreOpen(false)} aria-label="Close menu" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
-                <X className="w-4 h-4 text-white/70" />
+                <X className={`w-4 h-4 ${theme === 'light' ? 'text-slate-500' : 'text-white/70'}`} />
               </button>
             </div>
 
@@ -154,8 +154,8 @@ const BottomTabBar = () => {
                     <span className={`w-8 h-8 rounded-xl ${badge} flex items-center justify-center shrink-0`}>
                       <Icon className="w-4 h-4 text-white" strokeWidth={2} />
                     </span>
-                    <span className={location.pathname === to ? 'text-[#10b981]' : 'text-white'}>{label}</span>
-                    <ChevronRight className="w-4 h-4 ml-auto text-white/25" />
+                    <span className={location.pathname === to ? 'text-[#10b981]' : theme === 'light' ? 'text-slate-700' : 'text-white'}>{label}</span>
+                    <ChevronRight className={`w-4 h-4 ml-auto ${theme === 'light' ? 'text-slate-400' : 'text-white/25'}`} />
                   </button>
                 ))}
               </div>
@@ -171,7 +171,7 @@ const BottomTabBar = () => {
                   <span className="w-8 h-8 rounded-xl bg-slate-600 flex items-center justify-center shrink-0 text-base leading-none">
                     {theme === 'dark' ? '🌙' : '☀️'}
                   </span>
-                  <span className="text-white">{theme === 'dark' ? t('nav.switchLight') : t('nav.switchDark')}</span>
+                  <span className={theme === 'light' ? 'text-slate-700' : 'text-white'}>{theme === 'dark' ? t('nav.switchLight') : t('nav.switchDark')}</span>
                 </button>
 
                 <button
@@ -181,9 +181,9 @@ const BottomTabBar = () => {
                   <span className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center shrink-0">
                     <Globe className="w-4 h-4 text-white" strokeWidth={2} />
                   </span>
-                  <span className="text-white">{t('nav.language')}</span>
-                  <span className="ml-auto text-white/50 text-sm">{languages.find(l => l.code === language)?.flag}</span>
-                  <ChevronRight className={`w-4 h-4 text-white/25 transition-transform ${langOpen ? 'rotate-90' : ''}`} />
+                  <span className={theme === 'light' ? 'text-slate-700' : 'text-white'}>{t('nav.language')}</span>
+                  <span className={`ml-auto text-sm ${theme === 'light' ? 'text-slate-400' : 'text-white/50'}`}>{languages.find(l => l.code === language)?.flag}</span>
+                  <ChevronRight className={`w-4 h-4 transition-transform ${theme === 'light' ? 'text-slate-400' : 'text-white/25'} ${langOpen ? 'rotate-90' : ''}`} />
                 </button>
 
                 {langOpen && (
@@ -193,7 +193,7 @@ const BottomTabBar = () => {
                         key={lang.code}
                         onClick={() => { setLanguage(lang.code); setLangOpen(false); }}
                         className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm ${
-                          language === lang.code ? 'text-[#10b981] font-semibold' : 'text-white/60'
+                          language === lang.code ? 'text-[#10b981] font-semibold' : theme === 'light' ? 'text-slate-500' : 'text-white/60'
                         }`}
                       >
                         <span>{lang.flag}</span>
@@ -211,8 +211,8 @@ const BottomTabBar = () => {
                 {user ? (
                   <>
                     <div className="px-3 py-2 mb-1">
-                      <p className="text-sm font-semibold text-white">{profile?.full_name || user.email?.split('@')[0]}</p>
-                      <p className="text-xs text-white/40">{user.email}</p>
+                      <p className={`text-sm font-semibold ${theme === 'light' ? 'text-slate-800' : 'text-white'}`}>{profile?.full_name || user.email?.split('@')[0]}</p>
+                      <p className={`text-xs ${theme === 'light' ? 'text-slate-400' : 'text-white/40'}`}>{user.email}</p>
                     </div>
                     <button
                       onClick={() => handleNav('/profile')}
@@ -221,8 +221,8 @@ const BottomTabBar = () => {
                       <span className="w-8 h-8 rounded-xl bg-gray-500 flex items-center justify-center shrink-0">
                         <User className="w-4 h-4 text-white" strokeWidth={2} />
                       </span>
-                      <span className="text-white">{t('nav.profile') || 'Profile'}</span>
-                      <ChevronRight className="w-4 h-4 ml-auto text-white/25" />
+                      <span className={theme === 'light' ? 'text-slate-700' : 'text-white'}>{t('nav.profile') || 'Profile'}</span>
+                      <ChevronRight className={`w-4 h-4 ml-auto ${theme === 'light' ? 'text-slate-400' : 'text-white/25'}`} />
                     </button>
                     <button
                       onClick={() => handleNav('/settings')}
@@ -231,8 +231,8 @@ const BottomTabBar = () => {
                       <span className="w-8 h-8 rounded-xl bg-gray-600 flex items-center justify-center shrink-0">
                         <SlidersHorizontal className="w-4 h-4 text-white" strokeWidth={2} />
                       </span>
-                      <span className="text-white">{t('nav.settings') || 'Settings'}</span>
-                      <ChevronRight className="w-4 h-4 ml-auto text-white/25" />
+                      <span className={theme === 'light' ? 'text-slate-700' : 'text-white'}>{t('nav.settings') || 'Settings'}</span>
+                      <ChevronRight className={`w-4 h-4 ml-auto ${theme === 'light' ? 'text-slate-400' : 'text-white/25'}`} />
                     </button>
                     <button
                       onClick={handleLogout}
