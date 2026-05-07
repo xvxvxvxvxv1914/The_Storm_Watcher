@@ -64,6 +64,8 @@ const UpdateCountdown = React.memo(function UpdateCountdown() {
   return <span className="text-[#f97316] font-mono font-bold tracking-wider">{countdown}</span>;
 });
 
+const NIGGG_COUNTRIES = new Set(['BG', 'RO', 'RS', 'MK', 'GR', 'TR', 'AL', 'ME', 'HR', 'HU', 'MD']);
+
 const Dashboard = () => {
   const { t } = useLanguage();
   const [kpValue, setKpValue] = useState<number>(0);
@@ -73,12 +75,26 @@ const Dashboard = () => {
   const [kpChartData, setKpChartData] = useState<TsPoint[]>([]);
   const [windChartData, setWindChartData] = useState<TsPoint[]>([]);
   const [nigggData, setNigggData] = useState<NigggDataPoint[]>([]);
+  const [inNigggRegion, setInNigggRegion] = useState(false);
   const [kpHistoryRaw, setKpHistoryRaw] = useState<{ time_tag: string; Kp: number }[]>([]);
   const [timeRange, setTimeRange] = useState<'24h' | '48h' | '72h'>('24h');
   const [showYesterday, setShowYesterday] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+
+  useEffect(() => {
+    const cached = sessionStorage.getItem('user_country_code');
+    if (cached) { setInNigggRegion(NIGGG_COUNTRIES.has(cached)); return; }
+    fetch('https://ipapi.co/country/')
+      .then(r => r.text())
+      .then(code => {
+        const c = code.trim().toUpperCase();
+        sessionStorage.setItem('user_country_code', c);
+        setInNigggRegion(NIGGG_COUNTRIES.has(c));
+      })
+      .catch(() => {});
+  }, []);
 
   const chartH    = useChartHeight(190, 300);
   const chartHSm  = useChartHeight(170, 280);
@@ -93,7 +109,7 @@ const Dashboard = () => {
         getMagField(),
         getXrayFlux(),
         getKpHistory3Day(),
-        fetchNigggData(),
+        inNigggRegion ? fetchNigggData() : Promise.resolve(null),
       ]);
 
       const kpData    = kpRes.status    === 'fulfilled' ? kpRes.value    : null;
@@ -164,7 +180,7 @@ const Dashboard = () => {
       setError(true);
       setLoading(false);
     }
-  }, []);
+  }, [inNigggRegion]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
   useVisibilityInterval(fetchData, 60000);
@@ -432,7 +448,7 @@ const Dashboard = () => {
           )}
         </div>
 
-        <div className="glass-surface rounded-2xl p-4 sm:p-8 mb-4 sm:mb-8">
+        {inNigggRegion && <div className="glass-surface rounded-2xl p-4 sm:p-8 mb-4 sm:mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <h3 className="text-lg sm:text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
               <MapPin className="w-6 h-6 text-[#10b981]" />
@@ -470,7 +486,7 @@ const Dashboard = () => {
               {t('dashboard.noData')}
             </div>
           )}
-        </div>
+        </div>}
 
         {dailyKp.length > 0 && (
           <div className="glass-surface rounded-2xl p-4 sm:p-8 mb-4 sm:mb-8">
