@@ -565,6 +565,12 @@ const ja: Record<string, string> = {
   'notFound.description': 'このページは磁気圏の彼方に漂ってしまいました。ご安心ください — 嵐のデータは引き続き届いています。',
   'notFound.backHome': 'ミッションコントロールへ戻る',
   'notFound.goBack': '戻る',
+
+  'location.prompt.title': '現在地',
+  'location.prompt.once': '一度だけ確認します',
+  'location.prompt.desc': '現在地へのアクセスを許可すると、UVインデックス、空の視認性、日の出時刻などをあなたの場所に合わせてパーソナライズできます。',
+  'location.prompt.allow': '位置情報を許可',
+  'location.prompt.skip': 'スキップ',
 };
 
 export default ja;

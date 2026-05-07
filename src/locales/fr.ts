@@ -565,6 +565,12 @@ const fr: Record<string, string> = {
   'notFound.description': 'Cette page a dérivé au-delà de la magnétosphère. Ne vous inquiétez pas — les données de tempête arrivent toujours.',
   'notFound.backHome': 'Retour au Centre de Contrôle',
   'notFound.goBack': 'Retour',
+
+  'location.prompt.title': 'Votre localisation',
+  'location.prompt.once': 'Demandé une seule fois',
+  'location.prompt.desc': "Autorisez l'accès à la localisation pour un indice UV personnalisé, la visibilité du ciel, les heures de lever du soleil et plus — adapté à votre position.",
+  'location.prompt.allow': 'Autoriser la localisation',
+  'location.prompt.skip': 'Ignorer',
 };
 
 export default fr;

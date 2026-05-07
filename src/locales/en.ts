@@ -590,6 +590,12 @@ const en: Record<string, string> = {
   'notFound.description': "This page drifted beyond the magnetosphere. Don't worry — the storm data is still streaming back home.",
   'notFound.backHome': 'Back to Mission Control',
   'notFound.goBack': 'Go Back',
+
+  'location.prompt.title': 'Your Location',
+  'location.prompt.once': 'Asked only once',
+  'location.prompt.desc': 'Allow location access for personalized UV index, sky visibility, sun times and more — tailored to where you are.',
+  'location.prompt.allow': 'Allow Location',
+  'location.prompt.skip': 'Skip',
 };
 
 export default en;

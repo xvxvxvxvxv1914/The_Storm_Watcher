@@ -565,6 +565,12 @@ const zh: Record<string, string> = {
   'notFound.description': '此页面已漂移到磁层之外。别担心——风暴数据仍在传输中。',
   'notFound.backHome': '返回任务控制中心',
   'notFound.goBack': '返回',
+
+  'location.prompt.title': '您的位置',
+  'location.prompt.once': '仅询问一次',
+  'location.prompt.desc': '允许访问位置以获取个性化的紫外线指数、天空能见度、日出时间等——根据您的位置量身定制。',
+  'location.prompt.allow': '允许位置访问',
+  'location.prompt.skip': '跳过',
 };
 
 export default zh;

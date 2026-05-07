@@ -583,6 +583,12 @@ const bg: Record<string, string> = {
   'notFound.description': 'Тази страница се е отдалечила отвъд магнетосферата. Не се притеснявай — данните за бурите продължават да пристигат.',
   'notFound.backHome': 'Обратно към Управлението',
   'notFound.goBack': 'Назад',
+
+  'location.prompt.title': 'Вашата локация',
+  'location.prompt.once': 'Питаме само веднъж',
+  'location.prompt.desc': 'Разрешете достъп до локацията за персонализиран UV индекс, видимост на небето, часове на изгрева и още — съобразено с вашето местоположение.',
+  'location.prompt.allow': 'Разреши локация',
+  'location.prompt.skip': 'Пропусни',
 };
 
 export default bg;

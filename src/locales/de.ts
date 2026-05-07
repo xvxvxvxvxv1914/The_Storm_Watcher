@@ -565,6 +565,12 @@ const de: Record<string, string> = {
   'notFound.description': 'Diese Seite ist jenseits der Magnetosphäre abgedriftet. Keine Sorge — die Sturmdaten werden noch übertragen.',
   'notFound.backHome': 'Zurück zur Mission Control',
   'notFound.goBack': 'Zurück',
+
+  'location.prompt.title': 'Ihr Standort',
+  'location.prompt.once': 'Nur einmal gefragt',
+  'location.prompt.desc': 'Erlauben Sie den Standortzugriff für personalisierten UV-Index, Himmelssichtbarkeit, Sonnenzeiten und mehr — angepasst an Ihren Standort.',
+  'location.prompt.allow': 'Standort erlauben',
+  'location.prompt.skip': 'Überspringen',
 };
 
 export default de;

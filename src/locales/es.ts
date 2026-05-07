@@ -565,6 +565,12 @@ const es: Record<string, string> = {
   'notFound.description': 'Esta página se ha alejado más allá de la magnetosfera. No te preocupes — los datos de tormenta siguen llegando.',
   'notFound.backHome': 'Volver a Control de Misión',
   'notFound.goBack': 'Volver',
+
+  'location.prompt.title': 'Tu ubicación',
+  'location.prompt.once': 'Se pregunta solo una vez',
+  'location.prompt.desc': 'Permite el acceso a la ubicación para índice UV personalizado, visibilidad del cielo, horas del sol y más — adaptado a donde estás.',
+  'location.prompt.allow': 'Permitir ubicación',
+  'location.prompt.skip': 'Omitir',
 };
 
 export default es;
