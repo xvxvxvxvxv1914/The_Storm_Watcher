@@ -148,6 +148,16 @@ const es: Record<string, string> = {
   'forecast.aboutText1': 'Este pronóstico se basa en datos del Centro de Predicción del Clima Espacial de NOAA y muestra el índice Kp esperado para los próximos días.',
   'forecast.aboutText2': 'Los pronósticos se actualizan cada 5 minutos y pueden cambiar según la actividad solar.',
   'forecast.bestViewing': 'Mejor ventana de observación',
+  'forecast.outlook.title': 'Perspectiva del Clima Espacial',
+  'forecast.outlook.issued': 'Emitido',
+  'forecast.outlook.geomag': 'Actividad Geomagnética',
+  'forecast.outlook.radiation': 'Tormentas de Radiación Solar',
+  'forecast.outlook.radio': 'Apagones de Radio',
+  'forecast.outlook.s1plus': 'S1 o superior',
+  'forecast.outlook.r1r2': 'R1–R2',
+  'forecast.outlook.r3plus': 'R3 o superior',
+  'forecast.outlook.assessment': 'Evaluación',
+  'forecast.outlook.source': 'Fuente: NOAA SWPC',
 
   // Aurora
   'aurora.title': 'Pronóstico de aurora',

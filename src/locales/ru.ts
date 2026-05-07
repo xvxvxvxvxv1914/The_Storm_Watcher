@@ -148,6 +148,16 @@ const ru: Record<string, string> = {
   'forecast.aboutText1': 'Этот прогноз основан на данных Центра прогнозирования космической погоды NOAA и показывает ожидаемый Kp индекс на ближайшие дни.',
   'forecast.aboutText2': 'Прогнозы обновляются каждые 5 минут и могут меняться в зависимости от солнечной активности.',
   'forecast.bestViewing': 'Лучшее окно для наблюдения',
+  'forecast.outlook.title': 'Прогноз космической погоды',
+  'forecast.outlook.issued': 'Выпущен',
+  'forecast.outlook.geomag': 'Геомагнитная активность',
+  'forecast.outlook.radiation': 'Радиационные бури',
+  'forecast.outlook.radio': 'Радиопомехи',
+  'forecast.outlook.s1plus': 'S1 или выше',
+  'forecast.outlook.r1r2': 'R1–R2',
+  'forecast.outlook.r3plus': 'R3 или выше',
+  'forecast.outlook.assessment': 'Оценка',
+  'forecast.outlook.source': 'Источник: NOAA SWPC',
 
   // Aurora
   'aurora.title': 'Прогноз полярных сияний',

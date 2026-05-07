@@ -29,6 +29,18 @@ const cached = async <T,>(key: string, ttlMs: number, fetcher: () => Promise<T>)
   return promise;
 };
 
+const getText = async (url: string, timeoutMs = 10000): Promise<string> => {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    const res = await fetch(url, { signal: ctrl.signal });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.text();
+  } finally {
+    clearTimeout(timer);
+  }
+};
+
 const getJson = async <T,>(url: string, timeoutMs = 10000): Promise<T> => {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
@@ -280,6 +292,66 @@ interface OpenMeteoCurrentResponse {
     weather_code: number;
   };
 }
+
+export interface ForecastNarrative {
+  issuedAt: string;
+  dates: string[];
+  geomag: { rationale: string };
+  radiation: { s1: number[]; rationale: string };
+  radio: { r1r2: number[]; r3plus: number[]; rationale: string };
+}
+
+const sliceSection = (text: string, start: string, end: string): string => {
+  const s = text.indexOf(start);
+  if (s === -1) return '';
+  const e = end ? text.indexOf(end) : -1;
+  return e !== -1 && e > s ? text.slice(s, e) : text.slice(s);
+};
+
+const parsePercents = (line: string): number[] =>
+  (line.match(/(\d+)%/g) ?? []).map(m => parseInt(m, 10));
+
+const getRationale = (section: string): string => {
+  const idx = section.indexOf('Rationale:');
+  if (idx === -1) return '';
+  return section.slice(idx + 'Rationale:'.length).trim().replace(/\s+/g, ' ');
+};
+
+export const get3DayForecastNarrative = (): Promise<ForecastNarrative | null> =>
+  cached('3day-narrative', TTL_FORECAST, async () => {
+    try {
+      const text = await getText(`${NOAA_BASE_URL}/text/3-day-forecast.txt`);
+
+      const issuedMatch = text.match(/:Issued:\s*(.+)/);
+      const issuedAt = issuedMatch ? issuedMatch[1].trim() : '';
+
+      const datesMatch = text.match(/^\s+(\w+ \d+)\s+(\w+ \d+)\s+(\w+ \d+)\s*$/m);
+      const dates = datesMatch ? [datesMatch[1], datesMatch[2], datesMatch[3]] : [];
+
+      const sA = sliceSection(text, 'A. NOAA Geomagnetic', 'B. NOAA Solar');
+      const sB = sliceSection(text, 'B. NOAA Solar', 'C. NOAA Radio');
+      const sC = sliceSection(text, 'C. NOAA Radio', '');
+
+      const s1Match = sB.match(/S1 or greater[^\n]*/);
+      const s1 = s1Match ? parsePercents(s1Match[0]) : [0, 0, 0];
+
+      const r1r2Match = sC.match(/R1-R2[^\n]*/);
+      const r3Match = sC.match(/R3 or greater[^\n]*/);
+      const r1r2 = r1r2Match ? parsePercents(r1r2Match[0]) : [0, 0, 0];
+      const r3plus = r3Match ? parsePercents(r3Match[0]) : [0, 0, 0];
+
+      return {
+        issuedAt,
+        dates,
+        geomag: { rationale: getRationale(sA) },
+        radiation: { s1, rationale: getRationale(sB) },
+        radio: { r1r2, r3plus, rationale: getRationale(sC) },
+      };
+    } catch (error) {
+      logError('Error fetching 3-day forecast narrative:', error);
+      return null;
+    }
+  });
 
 export const getWeatherData = (lat: number, lon: number): Promise<WeatherData | null> =>
   cached(`weather-${lat}-${lon}`, TTL_5M, async () => {

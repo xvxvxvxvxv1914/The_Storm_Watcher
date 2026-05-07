@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
 import { Helmet } from 'react-helmet-async';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
-import { Calendar, TrendingUp, AlertCircle, Sun } from 'lucide-react';
-import { getKpForecast, getKpHistory3Day, getStormStatus, getKpGradientStyle } from '../services/noaaApi';
+import { Calendar, TrendingUp, AlertCircle, Sun, Zap, Radio } from 'lucide-react';
+import { getKpForecast, getKpHistory3Day, getStormStatus, getKpGradientStyle, get3DayForecastNarrative, type ForecastNarrative } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import StarField from '../components/StarField';
 import { Skeleton, SkeletonChart } from '../components/Skeleton';
@@ -26,9 +26,11 @@ const Forecast = () => {
   const [, setLastUpdated] = useState<Date>(new Date());
   const [showYesterday, setShowYesterday] = useState(false);
   const [historyRaw, setHistoryRaw] = useState<{ time_tag: string; Kp: number }[]>([]);
+  const [narrative, setNarrative] = useState<ForecastNarrative | null>(null);
 
   const fetchForecast = useCallback(async () => {
     setError(false);
+    get3DayForecastNarrative().then(n => { if (n) setNarrative(n); }).catch(() => {});
     try {
       const kpData = await getKpForecast();
 
@@ -362,6 +364,101 @@ const Forecast = () => {
             </div>
           )}
         </div>
+
+        {narrative && (
+          <div className="mt-4 sm:mt-8 glass-surface rounded-2xl p-4 sm:p-8">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg sm:text-2xl font-bold text-white uppercase tracking-wide">
+                {t('forecast.outlook.title')}
+              </h3>
+              {narrative.issuedAt && (
+                <span className="text-xs text-[#64748b]">{t('forecast.outlook.issued')}: {narrative.issuedAt}</span>
+              )}
+            </div>
+
+            <div className="space-y-6">
+              {/* Geomagnetic */}
+              <div className="rounded-xl border border-white/10 bg-white/5 p-4 sm:p-5">
+                <div className="flex items-center gap-2 mb-3">
+                  <Zap className="w-4 h-4 text-[#f97316]" />
+                  <h4 className="text-sm font-bold text-white uppercase tracking-wider">{t('forecast.outlook.geomag')}</h4>
+                </div>
+                {narrative.geomag.rationale && (
+                  <p className="text-[#94a3b8] text-sm leading-relaxed">{narrative.geomag.rationale}</p>
+                )}
+              </div>
+
+              {/* Solar Radiation + Radio side by side */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Solar Radiation */}
+                <div className="rounded-xl border border-white/10 bg-white/5 p-4 sm:p-5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Sun className="w-4 h-4 text-[#fbbf24]" />
+                    <h4 className="text-sm font-bold text-white uppercase tracking-wider">{t('forecast.outlook.radiation')}</h4>
+                  </div>
+                  {narrative.dates.length > 0 && (
+                    <div className="mb-3">
+                      <div className="grid grid-cols-3 gap-2 mb-1">
+                        {narrative.dates.map(d => (
+                          <div key={d} className="text-center text-xs text-[#64748b] font-semibold">{d}</div>
+                        ))}
+                      </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        {(narrative.radiation.s1.length > 0 ? narrative.radiation.s1 : [0, 0, 0]).map((pct, i) => (
+                          <div key={i} className={`text-center rounded-lg py-2 text-sm font-bold ${pct >= 10 ? 'bg-[#f97316]/20 text-[#f97316]' : 'bg-white/5 text-[#94a3b8]'}`}>
+                            {pct}%
+                          </div>
+                        ))}
+                      </div>
+                      <div className="text-center text-xs text-[#64748b] mt-1">{t('forecast.outlook.s1plus')}</div>
+                    </div>
+                  )}
+                  {narrative.radiation.rationale && (
+                    <p className="text-[#94a3b8] text-xs leading-relaxed">{narrative.radiation.rationale}</p>
+                  )}
+                </div>
+
+                {/* Radio Blackouts */}
+                <div className="rounded-xl border border-white/10 bg-white/5 p-4 sm:p-5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Radio className="w-4 h-4 text-[#a78bfa]" />
+                    <h4 className="text-sm font-bold text-white uppercase tracking-wider">{t('forecast.outlook.radio')}</h4>
+                  </div>
+                  {narrative.dates.length > 0 && (
+                    <div className="mb-3">
+                      <div className="grid grid-cols-3 gap-2 mb-1">
+                        {narrative.dates.map(d => (
+                          <div key={d} className="text-center text-xs text-[#64748b] font-semibold">{d}</div>
+                        ))}
+                      </div>
+                      <div className="grid grid-cols-3 gap-2 mb-1">
+                        {(narrative.radio.r1r2.length > 0 ? narrative.radio.r1r2 : [0, 0, 0]).map((pct, i) => (
+                          <div key={i} className={`text-center rounded-lg py-2 text-sm font-bold ${pct >= 20 ? 'bg-[#a78bfa]/20 text-[#a78bfa]' : 'bg-white/5 text-[#94a3b8]'}`}>
+                            {pct}%
+                          </div>
+                        ))}
+                      </div>
+                      <div className="text-center text-xs text-[#64748b] mb-2">{t('forecast.outlook.r1r2')}</div>
+                      <div className="grid grid-cols-3 gap-2 mb-1">
+                        {(narrative.radio.r3plus.length > 0 ? narrative.radio.r3plus : [0, 0, 0]).map((pct, i) => (
+                          <div key={i} className={`text-center rounded-lg py-2 text-sm font-bold ${pct >= 5 ? 'bg-[#ef4444]/20 text-[#ef4444]' : 'bg-white/5 text-[#94a3b8]'}`}>
+                            {pct}%
+                          </div>
+                        ))}
+                      </div>
+                      <div className="text-center text-xs text-[#64748b]">{t('forecast.outlook.r3plus')}</div>
+                    </div>
+                  )}
+                  {narrative.radio.rationale && (
+                    <p className="text-[#94a3b8] text-xs leading-relaxed">{narrative.radio.rationale}</p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4 text-right text-xs text-[#475569]">{t('forecast.outlook.source')}</div>
+          </div>
+        )}
 
         <div className="mt-4 sm:mt-8 glass-surface rounded-2xl p-4 sm:p-8">
           <h3 className="text-lg sm:text-lg sm:text-2xl font-bold text-white mb-2 sm:mb-4 uppercase tracking-wide">

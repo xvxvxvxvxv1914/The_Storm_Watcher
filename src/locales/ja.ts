@@ -148,6 +148,16 @@ const ja: Record<string, string> = {
   'forecast.aboutText1': 'この予報はNOAA宇宙天気予報センターのデータに基づいており、今後数日間の予想Kp指数を示しています。',
   'forecast.aboutText2': '予報は5分ごとに更新され、太陽活動に応じて変化することがあります。',
   'forecast.bestViewing': '最良の観測時間帯',
+  'forecast.outlook.title': '宇宙天気予報',
+  'forecast.outlook.issued': '発表日時',
+  'forecast.outlook.geomag': '地磁気活動',
+  'forecast.outlook.radiation': '太陽放射線嵐',
+  'forecast.outlook.radio': '電波障害',
+  'forecast.outlook.s1plus': 'S1以上',
+  'forecast.outlook.r1r2': 'R1–R2',
+  'forecast.outlook.r3plus': 'R3以上',
+  'forecast.outlook.assessment': '見解',
+  'forecast.outlook.source': '出典：NOAA SWPC',
 
   // Aurora
   'aurora.title': 'オーロラ予報',

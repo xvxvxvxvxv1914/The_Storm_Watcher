@@ -143,6 +143,16 @@ const en: Record<string, string> = {
   'forecast.aboutText1': 'This forecast is based on data from the NOAA Space Weather Prediction Center and shows the expected Kp index for the coming days.',
   'forecast.aboutText2': 'Forecasts are updated every 5 minutes and may change based on solar activity and space weather conditions.',
   'forecast.bestViewing': 'Best viewing window',
+  'forecast.outlook.title': 'Space Weather Outlook',
+  'forecast.outlook.issued': 'Issued',
+  'forecast.outlook.geomag': 'Geomagnetic Activity',
+  'forecast.outlook.radiation': 'Solar Radiation Storms',
+  'forecast.outlook.radio': 'Radio Blackouts',
+  'forecast.outlook.s1plus': 'S1 or greater',
+  'forecast.outlook.r1r2': 'R1–R2',
+  'forecast.outlook.r3plus': 'R3 or greater',
+  'forecast.outlook.assessment': 'Assessment',
+  'forecast.outlook.source': 'Source: NOAA SWPC',
 
   // Aurora
   'aurora.title': 'Aurora Forecast',

@@ -148,6 +148,16 @@ const fr: Record<string, string> = {
   'forecast.aboutText1': "Cette prévision est basée sur les données du Centre de prévision météorologique spatiale de la NOAA et montre l'indice Kp attendu pour les prochains jours.",
   'forecast.aboutText2': "Les prévisions sont mises à jour toutes les 5 minutes et peuvent changer en fonction de l'activité solaire.",
   'forecast.bestViewing': "Meilleure fenêtre d'observation",
+  'forecast.outlook.title': 'Prévisions Météo Spatiale',
+  'forecast.outlook.issued': 'Émis',
+  'forecast.outlook.geomag': 'Activité Géomagnétique',
+  'forecast.outlook.radiation': 'Tempêtes de Radiation Solaire',
+  'forecast.outlook.radio': 'Pannes Radio',
+  'forecast.outlook.s1plus': 'S1 ou plus',
+  'forecast.outlook.r1r2': 'R1–R2',
+  'forecast.outlook.r3plus': 'R3 ou plus',
+  'forecast.outlook.assessment': 'Évaluation',
+  'forecast.outlook.source': 'Source : NOAA SWPC',
 
   // Aurora
   'aurora.title': 'Prévisions d\'aurores',

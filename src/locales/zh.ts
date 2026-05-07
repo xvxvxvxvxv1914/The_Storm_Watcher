@@ -148,6 +148,16 @@ const zh: Record<string, string> = {
   'forecast.aboutText1': '此预报基于NOAA空间天气预报中心的数据，显示未来几天的预期Kp指数。',
   'forecast.aboutText2': '预报每5分钟更新一次，可能根据太阳活动变化。',
   'forecast.bestViewing': '最佳观测窗口',
+  'forecast.outlook.title': '太空天气预报',
+  'forecast.outlook.issued': '发布时间',
+  'forecast.outlook.geomag': '地磁活动',
+  'forecast.outlook.radiation': '太阳辐射风暴',
+  'forecast.outlook.radio': '无线电干扰',
+  'forecast.outlook.s1plus': 'S1级或以上',
+  'forecast.outlook.r1r2': 'R1–R2',
+  'forecast.outlook.r3plus': 'R3级或以上',
+  'forecast.outlook.assessment': '评估',
+  'forecast.outlook.source': '来源：NOAA SWPC',
 
   // Aurora
   'aurora.title': '极光预报',

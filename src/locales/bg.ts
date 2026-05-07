@@ -142,6 +142,16 @@ const bg: Record<string, string> = {
   'forecast.aboutText1': 'Тази прогноза се базира на данни от NOAA Space Weather Prediction Center и показва очаквания Kp индекс за следващите дни.',
   'forecast.aboutText2': 'Прогнозата се актуализира на всеки 5 минути и може да се промени в зависимост от слънчевата активност.',
   'forecast.bestViewing': 'Най-добро наблюдение',
+  'forecast.outlook.title': 'Прогноза за космическото време',
+  'forecast.outlook.issued': 'Издадена',
+  'forecast.outlook.geomag': 'Геомагнитна активност',
+  'forecast.outlook.radiation': 'Слънчеви радиационни бури',
+  'forecast.outlook.radio': 'Радио смущения',
+  'forecast.outlook.s1plus': 'S1 или по-силна',
+  'forecast.outlook.r1r2': 'R1–R2',
+  'forecast.outlook.r3plus': 'R3 или по-силна',
+  'forecast.outlook.assessment': 'Оценка',
+  'forecast.outlook.source': 'Източник: NOAA SWPC',
 
   // Aurora
   'aurora.title': 'Прогноза за аврора',

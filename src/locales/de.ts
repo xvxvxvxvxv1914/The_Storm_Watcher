@@ -148,6 +148,16 @@ const de: Record<string, string> = {
   'forecast.aboutText1': 'Diese Vorhersage basiert auf Daten des NOAA-Weltraumwettervorhersagezentrums und zeigt den erwarteten Kp-Index für die kommenden Tage.',
   'forecast.aboutText2': 'Vorhersagen werden alle 5 Minuten aktualisiert und können sich je nach Sonnenaktivität ändern.',
   'forecast.bestViewing': 'Bestes Beobachtungsfenster',
+  'forecast.outlook.title': 'Weltraumwetter-Ausblick',
+  'forecast.outlook.issued': 'Ausgegeben',
+  'forecast.outlook.geomag': 'Geomagnetische Aktivität',
+  'forecast.outlook.radiation': 'Solare Strahlungsstürme',
+  'forecast.outlook.radio': 'Funkausfälle',
+  'forecast.outlook.s1plus': 'S1 oder stärker',
+  'forecast.outlook.r1r2': 'R1–R2',
+  'forecast.outlook.r3plus': 'R3 oder stärker',
+  'forecast.outlook.assessment': 'Einschätzung',
+  'forecast.outlook.source': 'Quelle: NOAA SWPC',
 
   // Aurora
   'aurora.title': 'Polarlicht-Vorhersage',
