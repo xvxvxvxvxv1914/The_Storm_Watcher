@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, useCallback, lazy, Suspense, useMemo } fro
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
 import { Helmet } from 'react-helmet-async';
 import { MapPin, Eye, Sparkles, AlertTriangle, Check, Zap, Share2 } from 'lucide-react';
-import { getKpIndex, getAuroraModel, getMagField, getSolarWind, getWeatherData, type AuroraOvationPoint, type WeatherData } from '../services/noaaApi';
+import { getKpIndex, getAuroraModel, getMagField, getSolarWind, getWeatherData, getKpGradientStyle, type AuroraOvationPoint, type WeatherData } from '../services/noaaApi';
 import { calcAuroraVisibility } from '../utils/auroraVisibility';
 import { useLanguage } from '../contexts/LanguageContext';
 import { logError } from '../utils/logger';
