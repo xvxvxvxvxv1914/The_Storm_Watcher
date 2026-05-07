@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback, lazy, Suspense } from 'react';
+import { useEffect, useState, useRef, useCallback, lazy, Suspense, useMemo } from 'react';
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
 import { Helmet } from 'react-helmet-async';
 import { MapPin, Eye, Sparkles, AlertTriangle, Check, Zap, Share2 } from 'lucide-react';
