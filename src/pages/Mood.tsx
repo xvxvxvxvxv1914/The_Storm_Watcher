@@ -193,6 +193,12 @@ const Mood = () => {
       <Helmet>
         <title>Mood Tracker — The Storm Watcher</title>
         <meta name="description" content="Track how geomagnetic storms affect your mood and wellbeing. See community mood patterns correlated with Kp index." />
+        <link rel="canonical" href="https://thestormwatcher.com/mood" />
+        <meta property="og:title" content="Mood Tracker — The Storm Watcher" />
+        <meta property="og:description" content="Track how geomagnetic storms affect your mood and wellbeing. See community mood patterns correlated with Kp index." />
+        <meta property="og:url" content="https://thestormwatcher.com/mood" />
+        <meta name="twitter:title" content="Mood Tracker — The Storm Watcher" />
+        <meta name="twitter:description" content="Track how geomagnetic storms affect your mood and wellbeing. See community mood patterns correlated with Kp index." />
       </Helmet>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8 text-center">

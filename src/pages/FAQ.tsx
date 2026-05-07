@@ -103,6 +103,11 @@ const FAQ = () => {
         <title>Aurora FAQ — Northern Lights Guide | The Storm Watcher</title>
         <meta name="description" content="Everything you need to know about the Northern Lights, Kp index, solar wind, and how to see the aurora. Expert answers to common space weather questions." />
         <link rel="canonical" href="https://thestormwatcher.com/faq" />
+        <meta property="og:title" content="Aurora FAQ — Northern Lights Guide | The Storm Watcher" />
+        <meta property="og:description" content="Everything you need to know about the Northern Lights, Kp index, solar wind, and how to see the aurora." />
+        <meta property="og:url" content="https://thestormwatcher.com/faq" />
+        <meta name="twitter:title" content="Aurora FAQ — Northern Lights Guide | The Storm Watcher" />
+        <meta name="twitter:description" content="Everything you need to know about the Northern Lights, Kp index, solar wind, and how to see the aurora." />
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
 

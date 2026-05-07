@@ -97,6 +97,12 @@ const UV = () => {
       <Helmet>
         <title>UV Index — The Storm Watcher</title>
         <meta name="description" content="Real-time UV index and sun exposure forecast for your location. Know when to apply sunscreen." />
+        <link rel="canonical" href="https://thestormwatcher.com/uv" />
+        <meta property="og:title" content="UV Index — The Storm Watcher" />
+        <meta property="og:description" content="Real-time UV index and sun exposure forecast for your location. Know when to apply sunscreen." />
+        <meta property="og:url" content="https://thestormwatcher.com/uv" />
+        <meta name="twitter:title" content="UV Index — The Storm Watcher" />
+        <meta name="twitter:description" content="Real-time UV index and sun exposure forecast for your location. Know when to apply sunscreen." />
       </Helmet>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 

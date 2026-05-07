@@ -276,6 +276,8 @@ const Privacy = () => {
     <div className="min-h-screen pt-20 pb-24">
       <Helmet>
         <title>Privacy Policy — The Storm Watcher</title>
+        <meta name="description" content="Privacy Policy for The Storm Watcher. Learn how we collect, use and protect your data." />
+        <link rel="canonical" href="https://thestormwatcher.com/privacy" />
       </Helmet>
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
         <div className="flex items-center gap-3 mb-6 mt-4">

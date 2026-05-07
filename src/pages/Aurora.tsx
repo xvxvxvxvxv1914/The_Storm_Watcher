@@ -175,6 +175,11 @@ const Aurora = () => {
         <title>Can I see the Aurora tonight? Live Forecast & Checklist | The Storm Watcher</title>
         <meta name="description" content="Check your local aurora visibility in seconds. Interactive 3D OVATION model, real-time cloud cover, moon phase, and Kp index checklist for perfect aurora hunting." />
         <link rel="canonical" href="https://thestormwatcher.com/aurora" />
+        <meta property="og:title" content="Can I see the Aurora tonight? Live Forecast | The Storm Watcher" />
+        <meta property="og:description" content="Check your local aurora visibility in seconds. Interactive 3D OVATION model, real-time cloud cover, moon phase, and Kp index checklist." />
+        <meta property="og:url" content="https://thestormwatcher.com/aurora" />
+        <meta name="twitter:title" content="Can I see the Aurora tonight? | The Storm Watcher" />
+        <meta name="twitter:description" content="Check your local aurora visibility in seconds. Interactive 3D OVATION model, real-time Kp index and cloud cover." />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebApplication",

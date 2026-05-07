@@ -27,6 +27,12 @@ const About = () => {
       <Helmet>
         <title>{t('about.title')} | The Storm Watcher</title>
         <meta name="description" content={t('about.subtitle')} />
+        <link rel="canonical" href="https://thestormwatcher.com/about" />
+        <meta property="og:title" content="About — The Storm Watcher" />
+        <meta property="og:description" content="Real-time space weather monitoring and aurora forecast app." />
+        <meta property="og:url" content="https://thestormwatcher.com/about" />
+        <meta name="twitter:title" content="About — The Storm Watcher" />
+        <meta name="twitter:description" content="Real-time space weather monitoring and aurora forecast app." />
       </Helmet>
       <div className="star-field">
         {stars.map((s) => (

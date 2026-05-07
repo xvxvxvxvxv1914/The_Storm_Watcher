@@ -276,6 +276,11 @@ const Dashboard = () => {
         <title>Dashboard — The Storm Watcher</title>
         <meta name="description" content="Live space weather dashboard: Kp index, solar wind, magnetic field and X-ray flux charts updated every minute." />
         <link rel="canonical" href="https://thestormwatcher.com/dashboard" />
+        <meta property="og:title" content="Dashboard — The Storm Watcher" />
+        <meta property="og:description" content="Live space weather dashboard: Kp index, solar wind, magnetic field and X-ray flux charts updated every minute." />
+        <meta property="og:url" content="https://thestormwatcher.com/dashboard" />
+        <meta name="twitter:title" content="Dashboard — The Storm Watcher" />
+        <meta name="twitter:description" content="Live space weather dashboard: Kp index, solar wind, magnetic field and X-ray flux charts updated every minute." />
       </Helmet>
       <StarField />
 

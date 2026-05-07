@@ -107,6 +107,11 @@ export default function Pricing() {
         <title>Pricing — The Storm Watcher</title>
         <meta name="description" content="Choose your plan. Free space weather monitoring or Pro/Premium with advanced alerts and aurora forecasting." />
         <link rel="canonical" href="https://thestormwatcher.com/pricing" />
+        <meta property="og:title" content="Pricing — The Storm Watcher" />
+        <meta property="og:description" content="Free space weather monitoring or Pro with advanced alerts and aurora forecasting. Choose your plan." />
+        <meta property="og:url" content="https://thestormwatcher.com/pricing" />
+        <meta name="twitter:title" content="Pricing — The Storm Watcher" />
+        <meta name="twitter:description" content="Free space weather monitoring or Pro with advanced alerts and aurora forecasting. Choose your plan." />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Product",

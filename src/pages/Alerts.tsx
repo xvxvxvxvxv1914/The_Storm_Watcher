@@ -88,6 +88,12 @@ const Alerts = () => {
       <Helmet>
         <title>Space Weather Alerts — The Storm Watcher</title>
         <meta name="description" content="Real-time NOAA space weather alerts, coronal mass ejections and solar flare events." />
+        <link rel="canonical" href="https://thestormwatcher.com/alerts" />
+        <meta property="og:title" content="Space Weather Alerts — The Storm Watcher" />
+        <meta property="og:description" content="Real-time NOAA space weather alerts, coronal mass ejections and solar flare events." />
+        <meta property="og:url" content="https://thestormwatcher.com/alerts" />
+        <meta name="twitter:title" content="Space Weather Alerts — The Storm Watcher" />
+        <meta name="twitter:description" content="Real-time NOAA space weather alerts, coronal mass ejections and solar flare events." />
       </Helmet>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-4 sm:mb-8">

@@ -175,6 +175,12 @@ const Forecast = () => {
       <Helmet>
         <title>Kp Index Forecast — The Storm Watcher</title>
         <meta name="description" content="3-day Kp index forecast from NOAA. See predicted geomagnetic storm levels and plan your aurora viewing." />
+        <link rel="canonical" href="https://thestormwatcher.com/forecast" />
+        <meta property="og:title" content="Kp Index Forecast — The Storm Watcher" />
+        <meta property="og:description" content="3-day Kp index forecast from NOAA. See predicted geomagnetic storm levels and plan your aurora viewing." />
+        <meta property="og:url" content="https://thestormwatcher.com/forecast" />
+        <meta name="twitter:title" content="Kp Index Forecast — The Storm Watcher" />
+        <meta name="twitter:description" content="3-day Kp index forecast from NOAA. See predicted geomagnetic storm levels and plan your aurora viewing." />
       </Helmet>
       <StarField />
 

@@ -75,6 +75,7 @@ export default function Settings() {
       <Helmet>
         <title>Settings — The Storm Watcher</title>
         <meta name="description" content="Configure your location, notification threshold, units and language preferences." />
+        <link rel="canonical" href="https://thestormwatcher.com/settings" />
       </Helmet>
 
       <div className="max-w-2xl mx-auto">

@@ -101,6 +101,13 @@ export default function MagneticEffects() {
     <>
       <Helmet>
         <title>{c.title} — The Storm Watcher</title>
+        <meta name="description" content="How geomagnetic activity affects the human body — headaches, sleep, mood — and what you can do about it." />
+        <link rel="canonical" href="https://thestormwatcher.com/magnetic-effects" />
+        <meta property="og:title" content="Magnetic Storms & Human Health — The Storm Watcher" />
+        <meta property="og:description" content="How geomagnetic activity affects the human body — headaches, sleep, mood — and what you can do about it." />
+        <meta property="og:url" content="https://thestormwatcher.com/magnetic-effects" />
+        <meta name="twitter:title" content="Magnetic Storms & Human Health — The Storm Watcher" />
+        <meta name="twitter:description" content="How geomagnetic activity affects the human body — headaches, sleep, mood — and what you can do about it." />
       </Helmet>
 
       <div className="min-h-screen pt-24 md:pt-20 pb-16 relative">

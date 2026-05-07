@@ -123,6 +123,12 @@ const SkyVisibility = () => {
       <Helmet>
         <title>Sky Visibility Tonight — The Storm Watcher</title>
         <meta name="description" content="Tonight's stargazing and aurora viewing conditions. Cloud cover, visibility and precipitation forecast for astronomers." />
+        <link rel="canonical" href="https://thestormwatcher.com/sky" />
+        <meta property="og:title" content="Sky Visibility Tonight — The Storm Watcher" />
+        <meta property="og:description" content="Tonight's stargazing and aurora viewing conditions. Cloud cover, visibility and precipitation forecast for astronomers." />
+        <meta property="og:url" content="https://thestormwatcher.com/sky" />
+        <meta name="twitter:title" content="Sky Visibility Tonight — The Storm Watcher" />
+        <meta name="twitter:description" content="Tonight's stargazing and aurora viewing conditions. Cloud cover, visibility and precipitation forecast for astronomers." />
       </Helmet>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 

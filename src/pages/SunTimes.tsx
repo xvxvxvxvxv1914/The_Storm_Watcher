@@ -142,6 +142,12 @@ const SunTimes = () => {
       <Helmet>
         <title>Sunrise & Sunset Times — The Storm Watcher</title>
         <meta name="description" content="Accurate sunrise, sunset and golden hour times for your location. Plan your photography and outdoor activities." />
+        <link rel="canonical" href="https://thestormwatcher.com/sun" />
+        <meta property="og:title" content="Sunrise & Sunset Times — The Storm Watcher" />
+        <meta property="og:description" content="Accurate sunrise, sunset and golden hour times for your location. Plan your photography and outdoor activities." />
+        <meta property="og:url" content="https://thestormwatcher.com/sun" />
+        <meta name="twitter:title" content="Sunrise & Sunset Times — The Storm Watcher" />
+        <meta name="twitter:description" content="Accurate sunrise, sunset and golden hour times for your location. Plan your photography and outdoor activities." />
       </Helmet>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 

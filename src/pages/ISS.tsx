@@ -136,6 +136,12 @@ const ISS = () => {
       <Helmet>
         <title>ISS Tracker — The Storm Watcher</title>
         <meta name="description" content="Track the International Space Station in real time. See live position, altitude, speed and next pass times over your location." />
+        <link rel="canonical" href="https://thestormwatcher.com/iss" />
+        <meta property="og:title" content="ISS Tracker — The Storm Watcher" />
+        <meta property="og:description" content="Track the International Space Station in real time. See live position, altitude, speed and next pass times over your location." />
+        <meta property="og:url" content="https://thestormwatcher.com/iss" />
+        <meta name="twitter:title" content="ISS Tracker — The Storm Watcher" />
+        <meta name="twitter:description" content="Track the International Space Station in real time. See live position, altitude, speed and next pass times over your location." />
       </Helmet>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
