@@ -62,7 +62,7 @@ class ErrorBoundary extends Component<Props, State> {
                 </div>
                 {import.meta.env.DEV && (
                   <pre className="mt-6 p-3 rounded-lg bg-black/40 text-left text-xs text-[#ef4444] overflow-auto max-h-40">
-                    {this.state.error.message}
+                    {this.state.error?.message}
                   </pre>
                 )}
               </div>

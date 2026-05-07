@@ -6,21 +6,6 @@ const Footer = () => {
   const { t, language } = useLanguage();
   const isBg = language === 'bg';
 
-  const allLinks = [
-    { to: '/',                 label: t('nav.home') },
-    { to: '/dashboard',        label: t('nav.dashboard') },
-    { to: '/forecast',         label: t('nav.forecast') },
-    { to: '/aurora',           label: t('nav.aurora') },
-    { to: '/alerts',           label: t('nav.alerts') },
-    { to: '/mood',             label: t('nav.mood') },
-    { to: '/iss',              label: 'ISS' },
-    { to: '/sky',              label: isBg ? 'Небе' : 'Sky' },
-    { to: '/uv',               label: 'UV' },
-    { to: '/magnetic-effects', label: isBg ? 'Магнетизъм' : 'Magnetic' },
-    { to: '/faq',              label: 'FAQ' },
-    { to: '/about',            label: isBg ? 'За нас' : 'About' },
-  ];
-
   const navGroups = [
     {
       heading: isBg ? 'Космическо Време' : 'Space Weather',

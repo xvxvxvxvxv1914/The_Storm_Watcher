@@ -118,7 +118,6 @@ const Home = () => {
     fetchAll();
     const interval = setInterval(() => { if (document.visibilityState !== 'hidden') fetchAll(); }, 60000);
     return () => clearInterval(interval);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [retryCount]);
 
   // Update "time ago" every 10 seconds

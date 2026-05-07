@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useCallback } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
 import { Helmet } from 'react-helmet-async';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
