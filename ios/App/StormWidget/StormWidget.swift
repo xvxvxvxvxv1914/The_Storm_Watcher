@@ -433,6 +433,144 @@ struct StormWidgetMediumView: View {
     }
 }
 
+// MARK: - Large Widget
+
+struct StormWidgetLargeView: View {
+    let entry: KpEntry
+
+    var kpFraction: Double { min(entry.kp / 9.0, 1.0) }
+
+    private var gScale: String {
+        switch entry.kp {
+        case 9...: return "G5 — Extreme"
+        case 8...: return "G4 — Severe"
+        case 7...: return "G3 — Strong"
+        case 6...: return "G2 — Moderate"
+        case 5...: return "G1 — Minor"
+        default:   return WL.quiet
+        }
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+
+            // Header
+            HStack {
+                HStack(spacing: 5) {
+                    Image(systemName: "bolt.fill")
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundColor(entry.stormColor)
+                    Text("STORM WATCHER")
+                        .font(.system(size: 9, weight: .bold, design: .rounded))
+                        .foregroundColor(Color.white.opacity(0.35))
+                        .tracking(1)
+                }
+                Spacer()
+                Label(entry.lastUpdated, systemImage: "clock")
+                    .font(.system(size: 9))
+                    .foregroundColor(Color.white.opacity(0.25))
+            }
+            .padding(.bottom, 10)
+
+            // Current Kp + ring
+            HStack(alignment: .center, spacing: 16) {
+                ZStack {
+                    Circle()
+                        .stroke(entry.stormColor.opacity(0.15), lineWidth: 8)
+                    Circle()
+                        .trim(from: 0, to: CGFloat(kpFraction))
+                        .stroke(entry.stormColor, style: StrokeStyle(lineWidth: 8, lineCap: .round))
+                        .rotationEffect(.degrees(-90))
+                    VStack(spacing: 0) {
+                        Text(String(format: "%.1f", entry.kp))
+                            .font(.system(size: 36, weight: .heavy, design: .rounded))
+                            .foregroundColor(entry.stormColor)
+                        Text("Kp")
+                            .font(.system(size: 11, weight: .semibold, design: .rounded))
+                            .foregroundColor(Color.white.opacity(0.4))
+                    }
+                }
+                .frame(width: 90, height: 90)
+
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(gScale)
+                        .font(.system(size: 14, weight: .bold, design: .rounded))
+                        .foregroundColor(entry.stormColor)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Label("\(entry.windSpeed) km/s", systemImage: "wind")
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundColor(.cyan.opacity(0.85))
+                        Label(WL.kpIndex, systemImage: "waveform.path.ecg")
+                            .font(.system(size: 11))
+                            .foregroundColor(Color.white.opacity(0.35))
+                    }
+                }
+                Spacer()
+            }
+            .padding(.bottom, 14)
+
+            // Kp scale bar
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Kp SCALE")
+                    .font(.system(size: 7.5, weight: .bold, design: .rounded))
+                    .foregroundColor(Color.white.opacity(0.3))
+                    .tracking(0.8)
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        LinearGradient(
+                            colors: [.green, .yellow, .orange, .red, .purple],
+                            startPoint: .leading, endPoint: .trailing
+                        )
+                        .frame(height: 6)
+                        .clipShape(Capsule())
+                        .opacity(0.4)
+                        LinearGradient(
+                            colors: [.green, .yellow, .orange, .red, .purple],
+                            startPoint: .leading, endPoint: .trailing
+                        )
+                        .frame(width: geo.size.width * CGFloat(kpFraction), height: 6)
+                        .clipShape(Capsule())
+                        Circle()
+                            .fill(entry.stormColor)
+                            .frame(width: 10, height: 10)
+                            .offset(x: geo.size.width * CGFloat(kpFraction) - 5)
+                    }
+                }
+                .frame(height: 10)
+                HStack {
+                    Text("0").font(.system(size: 8)).foregroundColor(Color.white.opacity(0.2))
+                    Spacer()
+                    Text("G1").font(.system(size: 8)).foregroundColor(.orange.opacity(0.6))
+                    Spacer()
+                    Text("G3").font(.system(size: 8)).foregroundColor(.red.opacity(0.6))
+                    Spacer()
+                    Text("9").font(.system(size: 8)).foregroundColor(Color.white.opacity(0.2))
+                }
+            }
+            .padding(.bottom, 14)
+
+            // 24h forecast bars
+            VStack(alignment: .leading, spacing: 6) {
+                Text(WL.forecast24h)
+                    .font(.system(size: 7.5, weight: .bold, design: .rounded))
+                    .foregroundColor(Color.white.opacity(0.3))
+                    .tracking(0.8)
+                if entry.forecast.isEmpty {
+                    Text(WL.noData)
+                        .font(.system(size: 11))
+                        .foregroundColor(Color.white.opacity(0.2))
+                        .frame(maxWidth: .infinity)
+                } else {
+                    ForecastBarsView(points: entry.forecast, barHeight: 70)
+                }
+            }
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .widgetURL(URL(string: "stormwatcher://forecast"))
+    }
+}
+
 // MARK: - Lock Screen: Circular
 
 @available(iOS 16.0, *)
@@ -535,6 +673,8 @@ struct StormWidgetEntryView: View {
                     StormWidgetRectangularView(entry: entry)
                 case .accessoryInline:
                     StormWidgetInlineView(entry: entry)
+                case .systemLarge:
+                    StormWidgetLargeView(entry: entry)
                 case .systemSmall:
                     StormWidgetSmallView(entry: entry)
                 default:
@@ -543,6 +683,8 @@ struct StormWidgetEntryView: View {
             } else {
                 if family == .systemSmall {
                     StormWidgetSmallView(entry: entry)
+                } else if family == .systemLarge {
+                    StormWidgetLargeView(entry: entry)
                 } else {
                     StormWidgetMediumView(entry: entry)
                 }
@@ -579,9 +721,9 @@ struct StormWidget: Widget {
 
     private static var supportedFamilies: [WidgetFamily] {
         if #available(iOS 16.0, *) {
-            return [.systemSmall, .systemMedium, .accessoryCircular, .accessoryRectangular, .accessoryInline]
+            return [.systemSmall, .systemMedium, .systemLarge, .accessoryCircular, .accessoryRectangular, .accessoryInline]
         }
-        return [.systemSmall, .systemMedium]
+        return [.systemSmall, .systemMedium, .systemLarge]
     }
 }
 
