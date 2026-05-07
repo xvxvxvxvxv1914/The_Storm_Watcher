@@ -70,8 +70,8 @@ describe('NOAA cache + single-flight', () => {
     await getKpIndex();
     expect(mockFetch).toHaveBeenCalledTimes(1);
 
-    // TTL_1M = 60_000 ms
-    await vi.advanceTimersByTimeAsync(60_001);
+    // TTL_FORECAST = 900_000 ms
+    await vi.advanceTimersByTimeAsync(900_001);
     await getKpIndex();
     expect(mockFetch).toHaveBeenCalledTimes(2);
   });
@@ -102,10 +102,11 @@ describe('NOAA cache + single-flight', () => {
     const r1 = await getKpIndex();
     expect(r1).toEqual([]);
 
-    // Failed result IS cached (current behavior — empty array within TTL).
-    // After TTL, the next call refetches. Verify the refetch path works.
+    // Failed result IS cached (empty array) within TTL_FORECAST.
+    // After TTL, the next call refetches. GFZ fails again → NOAA succeeds.
+    mockFetch.mockRejectedValueOnce(new Error('gfz still down'));
     mockFetch.mockResolvedValueOnce(okJson([{ time_tag: 't', kp_index: 4 }]));
-    await vi.advanceTimersByTimeAsync(60_001);
+    await vi.advanceTimersByTimeAsync(900_001);
     const r2 = await getKpIndex();
     expect(r2).toEqual([{ time_tag: 't', kp_index: 4 }]);
   });
