@@ -5,7 +5,8 @@ import { Activity, AlertTriangle, Zap, Radio, Calendar, Bot, Globe, Bell, Camera
 import ErrorCard from '../components/ErrorCard';
 import { track } from '@vercel/analytics';
 import { generateStormScoreImage } from '../utils/generateStormImage';
-import { getKpIndex, getSolarWind, getXrayFlux, getXrayClass, getStormStatus, getKpGradientStyle, getKpHistory3Day } from '../services/noaaApi';
+import { getSolarWind, getXrayFlux, getXrayClass, getStormStatus, getKpGradientStyle, getKpHistory3Day } from '../services/noaaApi';
+import { useKpLive } from '../hooks/useKpLive';
 import { useLanguage } from '../contexts/LanguageContext';
 import StarField from '../components/StarField';
 import { Skeleton } from '../components/Skeleton';
@@ -20,7 +21,7 @@ const getScoreShareStatus = (score: number) => {
 
 const Home = () => {
   const { t } = useLanguage();
-  const [kpValue, setKpValue] = useState<number | null>(null);
+  const kpValue = useKpLive();
   const [windSpeed, setWindSpeed] = useState<number | null>(null);
   const [xrayClass, setXrayClass] = useState<string | null>(null);
   const [kpSparkData, setKpSparkData] = useState<number[]>([]);
@@ -80,13 +81,6 @@ const Home = () => {
     const fetchAll = async () => {
       try {
         await Promise.all([
-          (async () => {
-            const kpData = await getKpIndex();
-            if (kpData && kpData.length > 0) {
-              const latest = kpData[kpData.length - 1];
-              setKpValue(latest.kp_index || latest.estimated_kp || 0);
-            }
-          })(),
           (async () => {
             const windData = await getSolarWind();
             if (windData && windData.length > 0) {

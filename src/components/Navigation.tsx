@@ -1,30 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Sun, Globe, User, LogOut, ChevronDown, AlertTriangle, SlidersHorizontal } from 'lucide-react';
 import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import PushNotificationBell from './PushNotificationBell';
-import { getKpIndex } from '../services/noaaApi';
+import { useKpLive } from '../hooks/useKpLive';
 
 const Navigation = () => {
-  const [stormKp, setStormKp] = useState<number | null>(null);
+  const stormKp = useKpLive();
   const isStorm = stormKp !== null && stormKp >= 5;
-
-  useEffect(() => {
-    const check = async () => {
-      try {
-        const data = await getKpIndex();
-        if (data?.length) {
-          const latest = data[data.length - 1];
-          setStormKp(latest.kp_index || latest.estimated_kp || 0);
-        }
-      } catch { /* silent */ }
-    };
-    check();
-    const interval = setInterval(() => { if (document.visibilityState !== 'hidden') check(); }, 5 * 60 * 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
