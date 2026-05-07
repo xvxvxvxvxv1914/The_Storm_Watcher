@@ -237,18 +237,37 @@ struct ForecastBarsView: View {
     let barHeight: CGFloat
 
     var body: some View {
-        HStack(alignment: .bottom, spacing: 4) {
-            ForEach(Array(points.enumerated()), id: \.offset) { _, point in
-                VStack(spacing: 2) {
-                    Spacer(minLength: 0)
-                    RoundedRectangle(cornerRadius: 2)
-                        .fill(point.color.opacity(0.85))
-                        .frame(height: max(CGFloat(point.kp / 9.0) * barHeight, 3))
-                    Text(point.hourLabel)
-                        .font(.system(size: 7, weight: .medium, design: .rounded))
-                        .foregroundColor(Color.white.opacity(0.3))
+        GeometryReader { geo in
+            ZStack(alignment: .bottomLeading) {
+                // Bars
+                HStack(alignment: .bottom, spacing: 4) {
+                    ForEach(Array(points.enumerated()), id: \.offset) { _, point in
+                        VStack(spacing: 2) {
+                            Spacer(minLength: 0)
+                            RoundedRectangle(cornerRadius: 2)
+                                .fill(point.color.opacity(0.85))
+                                .frame(height: max(CGFloat(point.kp / 9.0) * barHeight, 3))
+                            Text(point.hourLabel)
+                                .font(.system(size: 7, weight: .medium, design: .rounded))
+                                .foregroundColor(Color.white.opacity(0.3))
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
                 }
-                .frame(maxWidth: .infinity)
+                // G1 storm threshold line at Kp = 5
+                let labelHeight: CGFloat = 11
+                let thresholdY = geo.size.height - labelHeight - CGFloat(5.0 / 9.0) * barHeight
+                Path { p in
+                    p.move(to: CGPoint(x: 0, y: thresholdY))
+                    p.addLine(to: CGPoint(x: geo.size.width, y: thresholdY))
+                }
+                .stroke(style: StrokeStyle(lineWidth: 1, dash: [3, 3]))
+                .foregroundColor(Color.orange.opacity(0.5))
+
+                Text("G1")
+                    .font(.system(size: 6, weight: .bold))
+                    .foregroundColor(.orange.opacity(0.7))
+                    .position(x: 9, y: thresholdY - 5)
             }
         }
         .frame(maxWidth: .infinity)
@@ -329,6 +348,7 @@ struct StormWidgetSmallView: View {
         }
         .padding(12)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .widgetURL(URL(string: "stormwatcher://dashboard"))
     }
 }
 
@@ -409,6 +429,7 @@ struct StormWidgetMediumView: View {
         }
         .padding(14)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .widgetURL(URL(string: "stormwatcher://forecast"))
     }
 }
 

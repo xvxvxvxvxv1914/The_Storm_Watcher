@@ -3,6 +3,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { BrowserRouter as Router, useNavigate } from 'react-router-dom';
+import { App as CapApp } from '@capacitor/app';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import { useLanguage } from './contexts/LanguageContext';
@@ -52,6 +53,17 @@ function AppRoutes() {
       navigate('/dashboard', { replace: true });
     }
   }, [user, navigate]);
+
+  // Handle deep links from iOS widget (stormwatcher://dashboard, stormwatcher://forecast)
+  useEffect(() => {
+    const sub = CapApp.addListener('appUrlOpen', ({ url }) => {
+      try {
+        const host = new URL(url).hostname;
+        if (host) navigate(`/${host}`, { replace: true });
+      } catch { /* ignore malformed URLs */ }
+    });
+    return () => { sub.then(h => h.remove()); };
+  }, [navigate]);
 
   return (
     <div className={`min-h-screen ${theme === 'light' ? 'bg-slate-100' : 'bg-[#0a0a1a]'}`}>
