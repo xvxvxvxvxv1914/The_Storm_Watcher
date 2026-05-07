@@ -348,7 +348,6 @@ struct StormWidgetSmallView: View {
         }
         .padding(12)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .widgetURL(URL(string: "stormwatcher://dashboard"))
     }
 }
 
@@ -429,7 +428,6 @@ struct StormWidgetMediumView: View {
         }
         .padding(14)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .widgetURL(URL(string: "stormwatcher://forecast"))
     }
 }
 
@@ -567,7 +565,6 @@ struct StormWidgetLargeView: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .widgetURL(URL(string: "stormwatcher://forecast"))
     }
 }
 
@@ -594,7 +591,6 @@ struct StormWidgetCircularView: View {
                     .foregroundColor(.secondary)
             }
         }
-        .widgetURL(URL(string: "stormwatcher://dashboard"))
     }
 }
 
@@ -638,7 +634,6 @@ struct StormWidgetRectangularView: View {
                     .foregroundColor(.secondary)
             }
         }
-        .widgetURL(URL(string: "stormwatcher://dashboard"))
     }
 }
 
@@ -653,7 +648,6 @@ struct StormWidgetInlineView: View {
             "Kp \(String(format: "%.1f", entry.kp))  \(entry.stormLevel)  \(entry.windSpeed) km/s",
             systemImage: "bolt.fill"
         )
-        .widgetURL(URL(string: "stormwatcher://dashboard"))
     }
 }
 
@@ -662,6 +656,13 @@ struct StormWidgetInlineView: View {
 struct StormWidgetEntryView: View {
     let entry: KpEntry
     @Environment(\.widgetFamily) var family
+
+    private var deepLink: URL? {
+        switch family {
+        case .systemSmall: return URL(string: "stormwatcher://dashboard")
+        default:           return URL(string: "stormwatcher://forecast")
+        }
+    }
 
     var body: some View {
         Group {
@@ -691,6 +692,7 @@ struct StormWidgetEntryView: View {
             }
         }
         .widgetBackground(Color(red: 0.05, green: 0.05, blue: 0.12))
+        .widgetURL(deepLink)
     }
 }
 
