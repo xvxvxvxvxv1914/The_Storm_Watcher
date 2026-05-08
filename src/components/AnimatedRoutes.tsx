@@ -29,6 +29,7 @@ const Pricing = lazy(() => import('../pages/Pricing'));
 const About = lazy(() => import('../pages/About'));
 const Privacy = lazy(() => import('../pages/Privacy'));
 const Terms = lazy(() => import('../pages/Terms'));
+const AuroraCalendar = lazy(() => import('../pages/AuroraCalendar'));
 
 export const AnimatedRoutes = () => {
   const location = useLocation();
@@ -57,6 +58,7 @@ export const AnimatedRoutes = () => {
         <Route path="/about" element={<AnimatedPage><About /></AnimatedPage>} />
         <Route path="/privacy" element={<AnimatedPage><Privacy /></AnimatedPage>} />
         <Route path="/terms" element={<AnimatedPage><Terms /></AnimatedPage>} />
+        <Route path="/calendar" element={<AnimatedPage><AuroraCalendar /></AnimatedPage>} />
         <Route path="*" element={<AnimatedPage><NotFound /></AnimatedPage>} />
       </SentryRoutes>
     </AnimatePresence>

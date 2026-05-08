@@ -159,6 +159,23 @@ const zh: Record<string, string> = {
   'forecast.outlook.assessment': '评估',
   'forecast.outlook.source': '来源：NOAA SWPC',
 
+  // Calendar
+  'calendar.title': '极光日历',
+  'calendar.subtitle': '未来3夜最佳极光观测时机',
+  'calendar.tonight': '今晚',
+  'calendar.tomorrow': '明天',
+  'calendar.score': '极光评分',
+  'calendar.maxKp': '最大Kp（夜间）',
+  'calendar.clouds': '云量',
+  'calendar.bestNight': '最佳之夜',
+  'calendar.sunset': '日落',
+  'calendar.sunrise': '日出',
+  'calendar.excellent': '极佳',
+  'calendar.good': '良好',
+  'calendar.fair': '一般',
+  'calendar.poor': '差',
+  'calendar.scoreInfo': '评分综合预期Kp活动（60%）和天空清晰度（40%）',
+
   // Aurora
   'aurora.title': '极光预报',
   'aurora.subtitle': '北极光可见性预测',
@@ -460,6 +477,7 @@ const zh: Record<string, string> = {
   'footer.comingSoon': '即将推出',
   'footer.mobileSoon': '即将在移动端上线',
   'nav.more': '更多',
+  'nav.calendar': '极光日历',
   'nav.magneticEffects': '磁暴与健康',
   'nav.faq': '极光常见问题',
   'onboarding.welcome.title': '欢迎使用 The Storm Watcher',

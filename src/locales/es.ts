@@ -159,6 +159,23 @@ const es: Record<string, string> = {
   'forecast.outlook.assessment': 'Evaluación',
   'forecast.outlook.source': 'Fuente: NOAA SWPC',
 
+  // Calendar
+  'calendar.title': 'Calendario Aurora',
+  'calendar.subtitle': 'Mejores noches para ver la aurora en los próximos 3 días',
+  'calendar.tonight': 'Esta noche',
+  'calendar.tomorrow': 'Mañana',
+  'calendar.score': 'Puntuación Aurora',
+  'calendar.maxKp': 'Kp máx. (noche)',
+  'calendar.clouds': 'Nubosidad',
+  'calendar.bestNight': 'Mejor Noche',
+  'calendar.sunset': 'Puesta de sol',
+  'calendar.sunrise': 'Amanecer',
+  'calendar.excellent': 'Excelente',
+  'calendar.good': 'Bueno',
+  'calendar.fair': 'Regular',
+  'calendar.poor': 'Malo',
+  'calendar.scoreInfo': 'La puntuación combina la actividad Kp esperada (60%) y la claridad del cielo (40%)',
+
   // Aurora
   'aurora.title': 'Pronóstico de aurora',
   'aurora.subtitle': 'Predicciones de visibilidad de auroras boreales',
@@ -460,6 +477,7 @@ const es: Record<string, string> = {
   'footer.comingSoon': 'Próximamente',
   'footer.mobileSoon': 'Disponible pronto en móvil',
   'nav.more': 'Más',
+  'nav.calendar': 'Calendario Aurora',
   'nav.magneticEffects': 'Tormentas magnéticas y salud',
   'nav.faq': 'Preguntas frecuentes sobre la Aurora',
   'onboarding.welcome.title': 'Bienvenido a The Storm Watcher',

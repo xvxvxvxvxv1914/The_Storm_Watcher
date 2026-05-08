@@ -159,6 +159,23 @@ const de: Record<string, string> = {
   'forecast.outlook.assessment': 'Einschätzung',
   'forecast.outlook.source': 'Quelle: NOAA SWPC',
 
+  // Calendar
+  'calendar.title': 'Aurora-Kalender',
+  'calendar.subtitle': 'Beste Nächte zur Polarlichtbeobachtung in den nächsten 3 Tagen',
+  'calendar.tonight': 'Heute Nacht',
+  'calendar.tomorrow': 'Morgen',
+  'calendar.score': 'Aurora-Wertung',
+  'calendar.maxKp': 'Max Kp (Nacht)',
+  'calendar.clouds': 'Bewölkung',
+  'calendar.bestNight': 'Beste Nacht',
+  'calendar.sunset': 'Sonnenuntergang',
+  'calendar.sunrise': 'Sonnenaufgang',
+  'calendar.excellent': 'Ausgezeichnet',
+  'calendar.good': 'Gut',
+  'calendar.fair': 'Mäßig',
+  'calendar.poor': 'Schlecht',
+  'calendar.scoreInfo': 'Wertung kombiniert erwartete Kp-Aktivität (60%) und Himmelsklarheit (40%)',
+
   // Aurora
   'aurora.title': 'Polarlicht-Vorhersage',
   'aurora.subtitle': 'Vorhersagen zur Sichtbarkeit von Polarlichtern',
@@ -460,6 +477,7 @@ const de: Record<string, string> = {
   'footer.comingSoon': 'Demnächst verfügbar',
   'footer.mobileSoon': 'Bald auf Mobilgeräten verfügbar',
   'nav.more': 'Mehr',
+  'nav.calendar': 'Aurora-Kalender',
   'nav.magneticEffects': 'Magnetstürme & Gesundheit',
   'nav.faq': 'Aurora FAQ',
   'onboarding.welcome.title': 'Willkommen bei The Storm Watcher',

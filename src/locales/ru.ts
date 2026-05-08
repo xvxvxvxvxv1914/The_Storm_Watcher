@@ -159,6 +159,23 @@ const ru: Record<string, string> = {
   'forecast.outlook.assessment': 'Оценка',
   'forecast.outlook.source': 'Источник: NOAA SWPC',
 
+  // Calendar
+  'calendar.title': 'Календарь Авроры',
+  'calendar.subtitle': 'Лучшие ночи для наблюдения авроры в ближайшие 3 дня',
+  'calendar.tonight': 'Сегодня ночью',
+  'calendar.tomorrow': 'Завтра',
+  'calendar.score': 'Оценка авроры',
+  'calendar.maxKp': 'Макс. Kp (ночь)',
+  'calendar.clouds': 'Облачность',
+  'calendar.bestNight': 'Лучшая ночь',
+  'calendar.sunset': 'Закат',
+  'calendar.sunrise': 'Восход',
+  'calendar.excellent': 'Отлично',
+  'calendar.good': 'Хорошо',
+  'calendar.fair': 'Удовлетворительно',
+  'calendar.poor': 'Плохо',
+  'calendar.scoreInfo': 'Оценка учитывает ожидаемую Kp активность (60%) и ясность неба (40%)',
+
   // Aurora
   'aurora.title': 'Прогноз полярных сияний',
   'aurora.subtitle': 'Прогнозы видимости северного сияния',
@@ -460,6 +477,7 @@ const ru: Record<string, string> = {
   'footer.comingSoon': 'Скоро',
   'footer.mobileSoon': 'Скоро доступно на мобильных',
   'nav.more': 'Ещё',
+  'nav.calendar': 'Календарь Авроры',
   'nav.magneticEffects': 'Магнитные бури и здоровье',
   'nav.faq': 'FAQ об авроре',
   'onboarding.welcome.title': 'Добро пожаловать в The Storm Watcher',

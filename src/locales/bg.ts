@@ -12,6 +12,7 @@ const bg: Record<string, string> = {
   'nav.mood': 'Настроение',
   'nav.pricing': 'Цени',
   'nav.more': 'Още',
+  'nav.calendar': 'Аврора Календар',
   'nav.magneticEffects': 'Магнитни бури & Здраве',
   'nav.faq': 'Аврора FAQ',
 
@@ -152,6 +153,23 @@ const bg: Record<string, string> = {
   'forecast.outlook.r3plus': 'R3 или по-силна',
   'forecast.outlook.assessment': 'Оценка',
   'forecast.outlook.source': 'Източник: NOAA SWPC',
+
+  // Calendar
+  'calendar.title': 'Аврора Календар',
+  'calendar.subtitle': 'Най-добрите нощи за наблюдение на аврора през следващите 3 дни',
+  'calendar.tonight': 'Тази нощ',
+  'calendar.tomorrow': 'Утре',
+  'calendar.score': 'Аврора оценка',
+  'calendar.maxKp': 'Макс. Kp (нощ)',
+  'calendar.clouds': 'Облачност',
+  'calendar.bestNight': 'Най-добра нощ',
+  'calendar.sunset': 'Залез',
+  'calendar.sunrise': 'Изгрев',
+  'calendar.excellent': 'Отлично',
+  'calendar.good': 'Добро',
+  'calendar.fair': 'Задоволително',
+  'calendar.poor': 'Лошо',
+  'calendar.scoreInfo': 'Оценката комбинира очакваната Kp активност (60%) и яснотата на небето (40%)',
 
   // Aurora
   'aurora.title': 'Прогноза за аврора',

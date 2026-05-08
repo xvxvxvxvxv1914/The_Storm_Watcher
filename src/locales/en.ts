@@ -12,6 +12,7 @@ const en: Record<string, string> = {
   'nav.mood': 'Mood',
   'nav.pricing': 'Pricing',
   'nav.more': 'More',
+  'nav.calendar': 'Aurora Calendar',
   'nav.magneticEffects': 'Magnetic Storms & Health',
   'nav.faq': 'Aurora FAQ',
 
@@ -153,6 +154,23 @@ const en: Record<string, string> = {
   'forecast.outlook.r3plus': 'R3 or greater',
   'forecast.outlook.assessment': 'Assessment',
   'forecast.outlook.source': 'Source: NOAA SWPC',
+
+  // Calendar
+  'calendar.title': 'Aurora Calendar',
+  'calendar.subtitle': 'Best nights to view the aurora over the next 3 days',
+  'calendar.tonight': 'Tonight',
+  'calendar.tomorrow': 'Tomorrow',
+  'calendar.score': 'Aurora Score',
+  'calendar.maxKp': 'Max Kp (night)',
+  'calendar.clouds': 'Cloud Cover',
+  'calendar.bestNight': 'Best Night',
+  'calendar.sunset': 'Sunset',
+  'calendar.sunrise': 'Sunrise',
+  'calendar.excellent': 'Excellent',
+  'calendar.good': 'Good',
+  'calendar.fair': 'Fair',
+  'calendar.poor': 'Poor',
+  'calendar.scoreInfo': 'Score combines expected Kp activity (60%) and sky clarity (40%)',
 
   // Aurora
   'aurora.title': 'Aurora Forecast',

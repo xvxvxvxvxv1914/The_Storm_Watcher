@@ -34,6 +34,74 @@ export interface SkyData {
   sunrise: string;
 }
 
+export interface NightForecast {
+  date: Date;
+  dateLabel: string;
+  sunset: string;
+  sunrise: string;
+  sunsetTs: number;
+  sunriseTs: number;
+  cloudCoverAvg: number;
+  precipProbAvg: number;
+}
+
+export const getAuroraCalendar = async (lat: number, lon: number): Promise<NightForecast[]> => {
+  try {
+    const params = new URLSearchParams({
+      latitude: String(lat),
+      longitude: String(lon),
+      hourly: 'cloud_cover,precipitation_probability',
+      daily: 'sunrise,sunset',
+      timezone: 'auto',
+      forecast_days: '4',
+    });
+    const { hourly, daily } = await fetchJson<{
+      hourly: { time: string[]; cloud_cover: number[]; precipitation_probability: number[] };
+      daily: { time: string[]; sunrise: string[]; sunset: string[] };
+    }>(`https://api.open-meteo.com/v1/forecast?${params}`);
+
+    const nights: NightForecast[] = [];
+    for (let d = 0; d < 3; d++) {
+      const sunset = new Date(daily.sunset[d]);
+      const sunrise = new Date(daily.sunrise[d + 1]);
+      if (isNaN(sunset.getTime()) || isNaN(sunrise.getTime())) continue;
+
+      const nightHours = hourly.time
+        .map((t, i) => {
+          const dt = new Date(t);
+          return {
+            cloudCover: hourly.cloud_cover[i],
+            precipProb: hourly.precipitation_probability[i],
+            isNight: dt >= sunset && dt <= sunrise,
+          };
+        })
+        .filter(h => h.isNight);
+
+      const cloudCoverAvg = nightHours.length
+        ? Math.round(nightHours.reduce((s, h) => s + h.cloudCover, 0) / nightHours.length)
+        : 100;
+      const precipProbAvg = nightHours.length
+        ? Math.round(nightHours.reduce((s, h) => s + h.precipProb, 0) / nightHours.length)
+        : 100;
+
+      nights.push({
+        date: new Date(daily.time[d]),
+        dateLabel: sunset.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        sunset: fmtHHMM(sunset),
+        sunrise: fmtHHMM(sunrise),
+        sunsetTs: sunset.getTime(),
+        sunriseTs: sunrise.getTime(),
+        cloudCoverAvg,
+        precipProbAvg,
+      });
+    }
+    return nights;
+  } catch (error) {
+    logError('Error fetching aurora calendar', error);
+    return [];
+  }
+};
+
 export const getSkyVisibility = async (lat: number, lon: number, kp: number): Promise<SkyData> => {
   try {
     const params = new URLSearchParams({

@@ -159,6 +159,23 @@ const ja: Record<string, string> = {
   'forecast.outlook.assessment': '見解',
   'forecast.outlook.source': '出典：NOAA SWPC',
 
+  // Calendar
+  'calendar.title': 'オーロラカレンダー',
+  'calendar.subtitle': '今後3夜でオーロラ観測に最適な夜を確認',
+  'calendar.tonight': '今夜',
+  'calendar.tomorrow': '明日',
+  'calendar.score': 'オーロラスコア',
+  'calendar.maxKp': '最大Kp（夜間）',
+  'calendar.clouds': '雲量',
+  'calendar.bestNight': 'ベストナイト',
+  'calendar.sunset': '日没',
+  'calendar.sunrise': '日の出',
+  'calendar.excellent': '最高',
+  'calendar.good': '良好',
+  'calendar.fair': '普通',
+  'calendar.poor': '悪い',
+  'calendar.scoreInfo': 'スコアは予想Kp活動（60%）と空の透明度（40%）を組み合わせています',
+
   // Aurora
   'aurora.title': 'オーロラ予報',
   'aurora.subtitle': 'オーロラの視認性予測',
@@ -460,6 +477,7 @@ const ja: Record<string, string> = {
   'footer.comingSoon': 'まもなく公開',
   'footer.mobileSoon': 'モバイルでまもなく利用可能',
   'nav.more': 'もっと見る',
+  'nav.calendar': 'オーロラカレンダー',
   'nav.magneticEffects': '磁気嵐と健康',
   'nav.faq': 'オーロラ FAQ',
   'onboarding.welcome.title': 'The Storm Watcherへようこそ',
