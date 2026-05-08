@@ -109,22 +109,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       accessSecret: process.env.X_ACCESS_SECRET!,
     });
 
-    // Generate and upload storm image
-    const appUrl = process.env.APP_URL ?? 'https://www.thestormwatcher.com';
-    let mediaId: string | undefined;
-    try {
-      const imgRes = await fetch(`${appUrl}/api/og/storm?kp=${currentKp}&level=${level}`);
-      const imgBuffer = Buffer.from(await imgRes.arrayBuffer());
-      mediaId = await client.v1.uploadMedia(imgBuffer, { mimeType: 'image/png' });
-    } catch (imgErr) {
-      console.warn('Image upload failed, posting without image:', imgErr);
-    }
-
     const tweetText = buildTweet(currentKp, level);
-    const { data: tweet } = await client.v2.tweet({
-      text: tweetText,
-      ...(mediaId ? { media: { media_ids: [mediaId] } } : {}),
-    });
+    const { data: tweet } = await client.v2.tweet(tweetText);
 
     await supabase.from('storm_posts').insert({ kp: currentKp, level, tweet_id: tweet.id });
 
