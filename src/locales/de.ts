@@ -176,6 +176,14 @@ const de: Record<string, string> = {
   'calendar.poor': 'Schlecht',
   'calendar.scoreInfo': 'Wertung kombiniert erwartete Kp-Aktivität (60%) und Himmelsklarheit (40%)',
 
+  // Assistant
+  'assistant.title': 'KI-Assistent',
+  'assistant.subtitle': 'Frag alles über Weltraumwetter · Powered by Claude AI',
+  'assistant.placeholder': 'Frag nach Kp, Polarlichtern, Sonnenstürmen...',
+  'assistant.suggestions': 'Probiere es mit',
+  'assistant.messagesLeft': 'Nachrichten in dieser Sitzung übrig',
+  'assistant.limitReached': 'Sitzungslimit erreicht. Seite neu laden für eine neue Sitzung.',
+
   // Aurora
   'aurora.title': 'Polarlicht-Vorhersage',
   'aurora.subtitle': 'Vorhersagen zur Sichtbarkeit von Polarlichtern',
@@ -478,6 +486,7 @@ const de: Record<string, string> = {
   'footer.mobileSoon': 'Bald auf Mobilgeräten verfügbar',
   'nav.more': 'Mehr',
   'nav.calendar': 'Aurora-Kalender',
+  'nav.assistant': 'KI-Assistent',
   'nav.magneticEffects': 'Magnetstürme & Gesundheit',
   'nav.faq': 'Aurora FAQ',
   'onboarding.welcome.title': 'Willkommen bei The Storm Watcher',

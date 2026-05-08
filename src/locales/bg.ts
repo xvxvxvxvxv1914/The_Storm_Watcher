@@ -13,6 +13,7 @@ const bg: Record<string, string> = {
   'nav.pricing': 'Цени',
   'nav.more': 'Още',
   'nav.calendar': 'Аврора Календар',
+  'nav.assistant': 'AI Асистент',
   'nav.magneticEffects': 'Магнитни бури & Здраве',
   'nav.faq': 'Аврора FAQ',
 
@@ -170,6 +171,14 @@ const bg: Record<string, string> = {
   'calendar.fair': 'Задоволително',
   'calendar.poor': 'Лошо',
   'calendar.scoreInfo': 'Оценката комбинира очакваната Kp активност (60%) и яснотата на небето (40%)',
+
+  // Assistant
+  'assistant.title': 'AI Асистент',
+  'assistant.subtitle': 'Питай за космическото време · Powered by Claude AI',
+  'assistant.placeholder': 'Питай за Kp, аврора, слънчеви бури...',
+  'assistant.suggestions': 'Опитай с',
+  'assistant.messagesLeft': 'съобщения останали за тази сесия',
+  'assistant.limitReached': 'Достигнат лимит за сесията. Опресни страницата за нова сесия.',
 
   // Aurora
   'aurora.title': 'Прогноза за аврора',

@@ -176,6 +176,14 @@ const zh: Record<string, string> = {
   'calendar.poor': '差',
   'calendar.scoreInfo': '评分综合预期Kp活动（60%）和天空清晰度（40%）',
 
+  // Assistant
+  'assistant.title': 'AI助手',
+  'assistant.subtitle': '询问任何关于太空天气的问题 · 由Claude AI驱动',
+  'assistant.placeholder': '询问Kp指数、极光、太阳风暴...',
+  'assistant.suggestions': '试试问',
+  'assistant.messagesLeft': '本次会话剩余消息数',
+  'assistant.limitReached': '已达到会话限制。刷新页面开始新会话。',
+
   // Aurora
   'aurora.title': '极光预报',
   'aurora.subtitle': '北极光可见性预测',
@@ -478,6 +486,7 @@ const zh: Record<string, string> = {
   'footer.mobileSoon': '即将在移动端上线',
   'nav.more': '更多',
   'nav.calendar': '极光日历',
+  'nav.assistant': 'AI助手',
   'nav.magneticEffects': '磁暴与健康',
   'nav.faq': '极光常见问题',
   'onboarding.welcome.title': '欢迎使用 The Storm Watcher',

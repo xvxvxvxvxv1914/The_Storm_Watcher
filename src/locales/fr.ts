@@ -176,6 +176,14 @@ const fr: Record<string, string> = {
   'calendar.poor': 'Mauvais',
   'calendar.scoreInfo': "Le score combine l'activité Kp prévue (60%) et la clarté du ciel (40%)",
 
+  // Assistant
+  'assistant.title': 'Assistant IA',
+  'assistant.subtitle': 'Posez des questions sur la météo spatiale · Powered by Claude AI',
+  'assistant.placeholder': 'Demandez sur Kp, aurores, tempêtes solaires...',
+  'assistant.suggestions': 'Essayez de demander',
+  'assistant.messagesLeft': 'messages restants cette session',
+  'assistant.limitReached': 'Limite de session atteinte. Actualisez pour une nouvelle session.',
+
   // Aurora
   'aurora.title': 'Prévisions d\'aurores',
   'aurora.subtitle': 'Prédictions de visibilité des aurores boréales',
@@ -478,6 +486,7 @@ const fr: Record<string, string> = {
   'footer.mobileSoon': 'Bientôt disponible sur mobile',
   'nav.more': 'Plus',
   'nav.calendar': 'Calendrier Aurora',
+  'nav.assistant': 'Assistant IA',
   'nav.magneticEffects': 'Tempêtes magnétiques et santé',
   'nav.faq': 'FAQ Aurora',
   'onboarding.welcome.title': 'Bienvenue sur The Storm Watcher',

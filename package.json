@@ -17,6 +17,7 @@
     "ios:livereload": "npx cap run ios --livereload --external"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.95.1",
     "@capacitor/android": "^8.3.1",
     "@capacitor/app": "^8.1.0",
     "@capacitor/cli": "^8.3.1",

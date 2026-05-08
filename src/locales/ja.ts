@@ -176,6 +176,14 @@ const ja: Record<string, string> = {
   'calendar.poor': '悪い',
   'calendar.scoreInfo': 'スコアは予想Kp活動（60%）と空の透明度（40%）を組み合わせています',
 
+  // Assistant
+  'assistant.title': 'AIアシスタント',
+  'assistant.subtitle': '宇宙天気について何でも聞いてください · Claude AI搭載',
+  'assistant.placeholder': 'Kp、オーロラ、太陽嵐について質問...',
+  'assistant.suggestions': '試してみてください',
+  'assistant.messagesLeft': 'このセッションの残りメッセージ数',
+  'assistant.limitReached': 'セッション上限に達しました。ページを更新して新しいセッションを開始してください。',
+
   // Aurora
   'aurora.title': 'オーロラ予報',
   'aurora.subtitle': 'オーロラの視認性予測',
@@ -478,6 +486,7 @@ const ja: Record<string, string> = {
   'footer.mobileSoon': 'モバイルでまもなく利用可能',
   'nav.more': 'もっと見る',
   'nav.calendar': 'オーロラカレンダー',
+  'nav.assistant': 'AIアシスタント',
   'nav.magneticEffects': '磁気嵐と健康',
   'nav.faq': 'オーロラ FAQ',
   'onboarding.welcome.title': 'The Storm Watcherへようこそ',

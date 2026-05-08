@@ -176,6 +176,14 @@ const ru: Record<string, string> = {
   'calendar.poor': 'Плохо',
   'calendar.scoreInfo': 'Оценка учитывает ожидаемую Kp активность (60%) и ясность неба (40%)',
 
+  // Assistant
+  'assistant.title': 'ИИ-Ассистент',
+  'assistant.subtitle': 'Спрашивайте о космической погоде · Powered by Claude AI',
+  'assistant.placeholder': 'Спросите про Kp, авроры, солнечные бури...',
+  'assistant.suggestions': 'Попробуйте спросить',
+  'assistant.messagesLeft': 'сообщений осталось в этой сессии',
+  'assistant.limitReached': 'Лимит сессии достигнут. Обновите страницу для новой сессии.',
+
   // Aurora
   'aurora.title': 'Прогноз полярных сияний',
   'aurora.subtitle': 'Прогнозы видимости северного сияния',
@@ -478,6 +486,7 @@ const ru: Record<string, string> = {
   'footer.mobileSoon': 'Скоро доступно на мобильных',
   'nav.more': 'Ещё',
   'nav.calendar': 'Календарь Авроры',
+  'nav.assistant': 'ИИ-Ассистент',
   'nav.magneticEffects': 'Магнитные бури и здоровье',
   'nav.faq': 'FAQ об авроре',
   'onboarding.welcome.title': 'Добро пожаловать в The Storm Watcher',

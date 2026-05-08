@@ -13,6 +13,7 @@ const en: Record<string, string> = {
   'nav.pricing': 'Pricing',
   'nav.more': 'More',
   'nav.calendar': 'Aurora Calendar',
+  'nav.assistant': 'AI Assistant',
   'nav.magneticEffects': 'Magnetic Storms & Health',
   'nav.faq': 'Aurora FAQ',
 
@@ -171,6 +172,14 @@ const en: Record<string, string> = {
   'calendar.fair': 'Fair',
   'calendar.poor': 'Poor',
   'calendar.scoreInfo': 'Score combines expected Kp activity (60%) and sky clarity (40%)',
+
+  // Assistant
+  'assistant.title': 'AI Assistant',
+  'assistant.subtitle': 'Ask anything about space weather · Powered by Claude AI',
+  'assistant.placeholder': 'Ask about Kp, auroras, solar storms...',
+  'assistant.suggestions': 'Try asking',
+  'assistant.messagesLeft': 'messages left this session',
+  'assistant.limitReached': 'Session limit reached. Refresh to start a new session.',
 
   // Aurora
   'aurora.title': 'Aurora Forecast',

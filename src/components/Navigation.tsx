@@ -71,6 +71,7 @@ const Navigation = () => {
     { to: '/sky', label: t('nav.sky') },
     { to: '/iss', label: t('nav.iss') },
     { to: '/calendar', label: t('nav.calendar') },
+    { to: '/assistant', label: t('nav.assistant') },
     { to: '/magnetic-effects', label: t('nav.magneticEffects') },
     { to: '/faq', label: t('nav.faq') },
   ];
