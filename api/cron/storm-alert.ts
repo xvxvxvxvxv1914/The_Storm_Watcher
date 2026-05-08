@@ -1,0 +1,110 @@
+import { TwitterApi } from 'twitter-api-v2';
+import { kv } from '@vercel/kv';
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+
+interface LastPost {
+  kp: number;
+  level: number;
+  postedAt: number;
+}
+
+function getGLevel(kp: number): number {
+  if (kp >= 9) return 5;
+  if (kp >= 8) return 4;
+  if (kp >= 7) return 3;
+  if (kp >= 6) return 2;
+  if (kp >= 5) return 1;
+  return 0;
+}
+
+const STORM_LABELS: Record<number, string> = {
+  1: 'G1 — Minor',
+  2: 'G2 — Moderate',
+  3: 'G3 — Strong',
+  4: 'G4 — Severe',
+  5: 'G5 — Extreme',
+};
+
+const STORM_EMOJIS: Record<number, string> = {
+  1: '🟢',
+  2: '🟡',
+  3: '🟠',
+  4: '🔴',
+  5: '🚨',
+};
+
+function buildTweet(kp: number, level: number): string {
+  const label = STORM_LABELS[level];
+  const emoji = STORM_EMOJIS[level];
+  const appUrl = process.env.APP_URL ?? 'stormwatcher.app';
+
+  const auroraLine = kp >= 7
+    ? '\n🌌 Aurora may be visible at latitudes above 50°N tonight.'
+    : '\n🌌 Aurora may be visible at high latitudes (above 60°N).';
+
+  return `${emoji} Geomagnetic Storm — ${label} (Kp ${kp.toFixed(1)})
+
+Earth is experiencing a geomagnetic storm right now.${auroraLine}
+
+Track live → ${appUrl}
+
+#SpaceWeather #SolarStorm #Aurora #Kp${Math.floor(kp)}`;
+}
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.query.secret !== process.env.CRON_SECRET) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  try {
+    // Fetch real-time Kp from NOAA
+    const response = await fetch('https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json');
+    const rows: [string, string, string, string][] = await response.json();
+
+    // rows[0] is the header — take the latest data row
+    const latest = rows.at(-1);
+    if (!latest || latest[0] === 'time_tag') {
+      return res.status(200).json({ message: 'No data' });
+    }
+
+    const currentKp = parseFloat(latest[1]);
+    const level = getGLevel(currentKp);
+
+    if (level === 0) {
+      return res.status(200).json({ message: `Quiet. Kp=${currentKp.toFixed(1)}` });
+    }
+
+    // Check last post — throttle to 4 hours unless storm is escalating
+    const lastPost = await kv.get<LastPost>('last_storm_post');
+    const fourHoursMs = 4 * 60 * 60 * 1000;
+    const recentlyPosted = lastPost && (Date.now() - lastPost.postedAt) < fourHoursMs;
+    const stormEscalated = lastPost && level > lastPost.level;
+
+    if (recentlyPosted && !stormEscalated) {
+      return res.status(200).json({
+        message: `Throttled. Last post: ${new Date(lastPost!.postedAt).toISOString()}`,
+      });
+    }
+
+    // Post to X
+    const client = new TwitterApi({
+      appKey: process.env.X_API_KEY!,
+      appSecret: process.env.X_API_SECRET!,
+      accessToken: process.env.X_ACCESS_TOKEN!,
+      accessSecret: process.env.X_ACCESS_SECRET!,
+    });
+
+    const tweetText = buildTweet(currentKp, level);
+    const { data: tweet } = await client.v2.tweet(tweetText);
+
+    await kv.set('last_storm_post', { kp: currentKp, level, postedAt: Date.now() });
+
+    console.log(`Storm alert posted: G${level} Kp=${currentKp} id=${tweet.id}`);
+    return res.status(200).json({ posted: true, tweetId: tweet.id, kp: currentKp, level });
+
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    console.error('Storm alert cron error:', message);
+    return res.status(500).json({ error: message });
+  }
+}
