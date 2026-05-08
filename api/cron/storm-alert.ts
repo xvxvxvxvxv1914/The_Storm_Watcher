@@ -1,12 +1,12 @@
 import { TwitterApi } from 'twitter-api-v2';
-import { kv } from '@vercel/kv';
+import { createClient } from '@supabase/supabase-js';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-interface LastPost {
-  kp: number;
-  level: number;
-  postedAt: number;
-}
+const supabase = createClient(
+  process.env.VITE_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+);
+
 
 function getGLevel(kp: number): number {
   if (kp >= 9) return 5;
@@ -75,14 +75,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // Check last post — throttle to 4 hours unless storm is escalating
-    const lastPost = await kv.get<LastPost>('last_storm_post');
+    const { data: lastPost } = await supabase
+      .from('storm_posts')
+      .select('kp, level, posted_at')
+      .order('posted_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
     const fourHoursMs = 4 * 60 * 60 * 1000;
-    const recentlyPosted = lastPost && (Date.now() - lastPost.postedAt) < fourHoursMs;
+    const recentlyPosted = lastPost && (Date.now() - new Date(lastPost.posted_at).getTime()) < fourHoursMs;
     const stormEscalated = lastPost && level > lastPost.level;
 
     if (recentlyPosted && !stormEscalated) {
       return res.status(200).json({
-        message: `Throttled. Last post: ${new Date(lastPost!.postedAt).toISOString()}`,
+        message: `Throttled. Last post: ${lastPost!.posted_at}`,
       });
     }
 
@@ -97,7 +103,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const tweetText = buildTweet(currentKp, level);
     const { data: tweet } = await client.v2.tweet(tweetText);
 
-    await kv.set('last_storm_post', { kp: currentKp, level, postedAt: Date.now() });
+    await supabase.from('storm_posts').insert({ kp: currentKp, level, tweet_id: tweet.id });
 
     console.log(`Storm alert posted: G${level} Kp=${currentKp} id=${tweet.id}`);
     return res.status(200).json({ posted: true, tweetId: tweet.id, kp: currentKp, level });
