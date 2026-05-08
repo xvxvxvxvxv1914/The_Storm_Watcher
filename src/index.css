@@ -312,8 +312,14 @@ html.light .bg-white\/5 {
   background-color: rgba(0, 0, 0, 0.05);
 }
 
-html.light .bg-\[#000008\] {
-  background-color: #ffffff;
+.nav-dropdown {
+  background: rgba(5, 5, 20, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+html.light .nav-dropdown {
+  background: rgba(255, 255, 255, 0.88) !important;
 }
 
 html.light .bg-white\/20 {
