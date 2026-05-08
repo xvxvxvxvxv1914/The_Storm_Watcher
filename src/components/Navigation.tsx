@@ -139,7 +139,7 @@ const Navigation = () => {
                         onClick={() => setIsMoreOpen(false)}
                         className={`block px-4 py-2 text-sm font-medium transition-colors ${
                           isActive(link.to)
-                            ? 'text-[#10b981] bg-[#10b981]/10'
+                            ? 'text-[#f97316] bg-[#f97316]/10'
                             : 'text-[#94a3b8] hover:text-white hover:bg-white/5'
                         }`}
                       >
