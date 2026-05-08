@@ -56,18 +56,28 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
+  const isTest = req.query.test === 'true';
+
   try {
-    // Fetch real-time 1-minute Kp estimates from NOAA
-    const response = await fetch('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json');
-    const entries: { time_tag: string; kp_index: number }[] = await response.json();
+    let currentKp: number;
+    let level: number;
 
-    const latest = entries[entries.length - 1];
-    if (!latest) {
-      return res.status(200).json({ message: 'No data' });
+    if (isTest) {
+      currentKp = 7.3;
+      level = 3;
+    } else {
+      // Fetch real-time 1-minute Kp estimates from NOAA
+      const response = await fetch('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json');
+      const entries: { time_tag: string; kp_index: number }[] = await response.json();
+
+      const latest = entries[entries.length - 1];
+      if (!latest) {
+        return res.status(200).json({ message: 'No data' });
+      }
+
+      currentKp = latest.kp_index;
+      level = getGLevel(currentKp);
     }
-
-    const currentKp = latest.kp_index;
-    const level = getGLevel(currentKp);
 
     if (level === 0) {
       return res.status(200).json({ message: `Quiet. Kp=${currentKp.toFixed(1)}` });
@@ -85,7 +95,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const recentlyPosted = lastPost && (Date.now() - new Date(lastPost.posted_at).getTime()) < fourHoursMs;
     const stormEscalated = lastPost && level > lastPost.level;
 
-    if (recentlyPosted && !stormEscalated) {
+    if (!isTest && recentlyPosted && !stormEscalated) {
       return res.status(200).json({
         message: `Throttled. Last post: ${lastPost!.posted_at}`,
       });
