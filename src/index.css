@@ -227,14 +227,10 @@ html.light span.text-white:not(.gradient-solar):not(.gradient-aurora):not(.gradi
 html.light label.text-white,
 html.light div.text-white,
 html.light svg.text-white,
-html.light li.text-white {
+html.light li.text-white,
+html.light a.text-white,
+html.light button.text-white {
   color: #1e293b;
-}
-
-html.light .gradient-solar,
-html.light .gradient-aurora,
-html.light .gradient-fire {
-  filter: brightness(0.7) saturate(1.4);
 }
 
 html.light .border-white\/10 {
