@@ -62,7 +62,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const rows: [string, string, string, string][] = await response.json();
 
     // rows[0] is the header — take the latest data row
-    const latest = rows.at(-1);
+    const latest = rows[rows.length - 1];
     if (!latest || latest[0] === 'time_tag') {
       return res.status(200).json({ message: 'No data' });
     }
