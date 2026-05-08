@@ -131,7 +131,7 @@ const Navigation = () => {
                   )}
                 </button>
                 {isMoreOpen && (
-                  <div className="absolute left-0 mt-3 w-52 bg-[#0d1117] rounded-xl shadow-2xl py-2 border border-[#f97316]/20">
+                  <div className="absolute left-0 mt-3 w-52 bg-[#000008] rounded-xl shadow-2xl py-2 border border-[#f97316]/20">
                     {moreLinks.map((link) => (
                       <Link
                         key={link.to}
@@ -173,7 +173,7 @@ const Navigation = () => {
                 {languages.find(l => l.code === language)?.flag}
               </button>
               {isLangMenuOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-[#0d1117] rounded-xl shadow-2xl py-2 border border-[#f97316]/20">
+                <div className="absolute right-0 mt-2 w-48 bg-[#000008] rounded-xl shadow-2xl py-2 border border-[#f97316]/20">
                   {languages.map((lang) => (
                     <button
                       key={lang.code}
@@ -205,7 +205,7 @@ const Navigation = () => {
                   </span>
                 </button>
                 {isUserMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-[#0d1117] rounded-xl shadow-2xl py-2 border border-[#f97316]/20">
+                  <div className="absolute right-0 mt-2 w-56 bg-[#000008] rounded-xl shadow-2xl py-2 border border-[#f97316]/20">
                     <div className="px-4 py-2 border-b border-white/10">
                       <p className="text-sm font-medium text-white">{profile?.full_name || t('nav.user')}</p>
                       <p className="text-xs text-[#94a3b8] mt-1">{user.email}</p>
