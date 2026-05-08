@@ -57,17 +57,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    // Fetch real-time Kp from NOAA
-    const response = await fetch('https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json');
-    const rows: [string, string, string, string][] = await response.json();
+    // Fetch real-time 1-minute Kp estimates from NOAA
+    const response = await fetch('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json');
+    const entries: { time_tag: string; kp_index: number }[] = await response.json();
 
-    // rows[0] is the header — take the latest data row
-    const latest = rows[rows.length - 1];
-    if (!latest || latest[0] === 'time_tag') {
+    const latest = entries[entries.length - 1];
+    if (!latest) {
       return res.status(200).json({ message: 'No data' });
     }
 
-    const currentKp = parseFloat(latest[1]);
+    const currentKp = latest.kp_index;
     const level = getGLevel(currentKp);
 
     if (level === 0) {
