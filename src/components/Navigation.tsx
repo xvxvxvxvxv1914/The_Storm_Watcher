@@ -131,7 +131,7 @@ const Navigation = () => {
                   )}
                 </button>
                 {isMoreOpen && (
-                  <div className="absolute left-0 mt-3 w-52 bg-[#0d1117] rounded-xl shadow-2xl py-2 border border-[#10b981]/20">
+                  <div className="absolute left-0 mt-3 w-52 bg-[#0d1117] rounded-xl shadow-2xl py-2 border border-[#f97316]/20">
                     {moreLinks.map((link) => (
                       <Link
                         key={link.to}
