@@ -323,6 +323,11 @@ html.light .dark-tooltip {
   color: #1e293b !important;
 }
 
+/* AI Assistant message text */
+html.light .text-\[\#e2e8f0\] {
+  color: #1e293b;
+}
+
 /* PlanGuard overlay in light mode */
 html.light .plan-guard-overlay {
   background: linear-gradient(to bottom, rgba(241,245,249,0.3) 0%, rgba(241,245,249,0.75) 60%, rgba(241,245,249,0.97) 100%) !important;
