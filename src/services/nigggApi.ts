@@ -59,7 +59,7 @@ const NIGGG_URL = isNative
   ? 'https://pagmag.ngic.bg/pagcal2.php'
   : '/api/niggg';
 
-export const fetchNigggData = async (): Promise<NigggDataSet> => {
+export const fetchNigggData = async (accessToken?: string): Promise<NigggDataSet> => {
   try {
     // We want the last 72 hours to ensure we catch working data.
     const today = new Date();
@@ -83,12 +83,18 @@ export const fetchNigggData = async (): Promise<NigggDataSet> => {
 
     const baseUrl = NIGGG_URL;
 
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    };
+    // Web proxy requires a valid session token; native calls pagmag directly
+    if (!isNative && accessToken) {
+      headers['Authorization'] = `Bearer ${accessToken}`;
+    }
+
     const res = await fetch(baseUrl, {
       method: 'POST',
       body: formData,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
+      headers,
     });
 
     if (!res.ok) {

@@ -7,6 +7,7 @@ import { Activity, Wind, Compass, Sun, Radio, MapPin } from 'lucide-react';
 import { getKpIndex, getSolarWind, getMagField, getXrayFlux, getKpHistory3Day, getStormStatus, getXrayClass, getKpGradientStyle } from '../services/noaaApi';
 import { fetchNigggData, toDeltaSeries, getNigggStormStatus, type NigggDataPoint } from '../services/nigggApi';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useAuth } from '../contexts/AuthContext';
 import StarField from '../components/StarField';
 import { SkeletonCard, SkeletonChart, Skeleton } from '../components/Skeleton';
 import ErrorCard from '../components/ErrorCard';
@@ -68,6 +69,7 @@ const NIGGG_COUNTRIES = new Set(['BG', 'RO', 'RS', 'MK', 'GR', 'TR', 'AL', 'ME',
 
 const Dashboard = () => {
   const { t } = useLanguage();
+  const { session } = useAuth();
   const [kpValue, setKpValue] = useState<number>(0);
   const [solarWindSpeed, setSolarWindSpeed] = useState<number>(0);
   const [bz, setBz] = useState<number>(0);
@@ -109,7 +111,7 @@ const Dashboard = () => {
         getMagField(),
         getXrayFlux(),
         getKpHistory3Day(),
-        inNigggRegion ? fetchNigggData() : Promise.resolve(null),
+        inNigggRegion ? fetchNigggData(session?.access_token) : Promise.resolve(null),
       ]);
 
       const kpData    = kpRes.status    === 'fulfilled' ? kpRes.value    : null;

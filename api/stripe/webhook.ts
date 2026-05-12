@@ -43,6 +43,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ error: 'Webhook signature verification failed' });
   }
 
+  // Deduplicate: insert-first pattern — primary key rejects replays
+  const { error: dedupError } = await supabase
+    .from('stripe_processed_events')
+    .insert({ event_id: event.id });
+  if (dedupError) {
+    // Duplicate key = already processed; any other error = still safe to ack
+    return res.status(200).json({ received: true });
+  }
+
   switch (event.type) {
     case 'checkout.session.completed': {
       const session = event.data.object as Stripe.Checkout.Session;

@@ -18,7 +18,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).end();
 
   const origin = req.headers.origin ?? req.headers.referer ?? '';
-  if (!ALLOWED_ORIGINS.some(o => origin.startsWith(o))) {
+  if (!ALLOWED_ORIGINS.includes(origin)) {
     return res.status(403).json({ error: 'Forbidden' });
   }
 
@@ -62,6 +62,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     subscription_data: {
       metadata: { supabase_user_id: user.id },
     },
+  }, {
+    idempotencyKey: `checkout-${user.id}-${priceId}-${Math.floor(Date.now() / 60_000)}`,
   });
 
   res.status(200).json({ url: session.url });
