@@ -577,13 +577,13 @@ const Home = () => {
           </h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="glass-surface rounded-2xl p-7 hover:glow-green transition-all group">
+          <Link to="/calendar" className="glass-surface rounded-2xl p-7 hover:glow-green transition-all group block">
             <div className="w-14 h-14 bg-gradient-to-br from-[#10b981] to-[#059669] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Calendar className="w-7 h-7 text-white" />
             </div>
             <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.calendar.title')}</h3>
             <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.calendar.desc')}</p>
-          </div>
+          </Link>
 
           <div className="glass-surface rounded-2xl p-7 hover:glow-purple transition-all group relative opacity-60">
             <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#7c3aed]/20 text-[#a78bfa] border border-[#7c3aed]/30">{t('home.comingSoon')}</span>
