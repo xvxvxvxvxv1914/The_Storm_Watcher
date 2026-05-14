@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { logError } from '../utils/logger';
 import { Helmet } from 'react-helmet-async';
 import { Smile, Frown, Meh, ThumbsUp, ThumbsDown, Users, TrendingUp, CheckCircle, AlertCircle } from 'lucide-react';
 import SvgDonut from '../components/charts/SvgDonut';
@@ -68,7 +69,7 @@ const Mood = () => {
         setCurrentKp(latest.kp_index || latest.estimated_kp || 0);
       }
     } catch (error) {
-      console.error('Error fetching Kp:', error);
+      logError('Error fetching Kp:', error);
     }
   };
 
@@ -99,7 +100,7 @@ const Mood = () => {
       .gte('created_at', twentyFourHoursAgo.toISOString());
 
     if (error) {
-      console.error('Error fetching stats:', error);
+      logError('Error fetching stats:', error);
       return;
     }
 

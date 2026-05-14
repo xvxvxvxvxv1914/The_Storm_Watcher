@@ -1,3 +1,5 @@
+import { logError } from '../utils/logger';
+
 const fetchJson = async <T,>(url: string, timeoutMs = 10000): Promise<T> => {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
@@ -55,7 +57,7 @@ export const getUvIndex = async (lat: number, lon: number): Promise<UvData> => {
       timezone: data.timezone,
     };
   } catch (error) {
-    console.error('Error fetching UV Index:', error);
+    logError('Error fetching UV Index:', error);
     return { current: 0, max: 0, hourly: [], timezone: 'UTC' };
   }
 };
@@ -101,7 +103,7 @@ export const getSunData = async (lat: number, lon: number): Promise<SunDay[]> =>
       };
     });
   } catch (error) {
-    console.error('Error fetching Sun Data:', error);
+    logError('Error fetching Sun Data:', error);
     return [];
   }
 };

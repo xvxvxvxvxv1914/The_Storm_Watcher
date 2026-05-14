@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { logError } from '../utils/logger';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { Activity, AlertTriangle, Zap, Radio, Calendar, Bot, Globe, Bell, Camera, Trophy, Video, Share2, Copy, Twitter, ImageDown, Users } from 'lucide-react';
@@ -75,7 +76,7 @@ const Home = () => {
           setPulseData({ mood: topMood, symptom: topSymptom, count: data.length });
         }
       } catch (err) {
-        console.error('Error fetching pulse:', err);
+        logError('Error fetching pulse:', err);
       }
     };
 
@@ -105,7 +106,7 @@ const Home = () => {
         setLoading(false);
         setLastUpdated(new Date());
       } catch (error) {
-        console.error('Error fetching data:', error);
+        logError('Error fetching data:', error);
         setLoading(false);
       }
     };

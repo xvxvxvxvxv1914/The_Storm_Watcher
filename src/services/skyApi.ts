@@ -1,3 +1,5 @@
+import { logError } from '../utils/logger';
+
 export interface NightForecast {
   label: 'tonight' | 'tomorrow' | 'nightAfter';
   date: Date;
@@ -150,7 +152,7 @@ export const getSkyVisibility = async (lat: number, lon: number, kp: number): Pr
       sunrise: fmtTime(sunrise),
     };
   } catch (error) {
-    console.error('Error fetching Sky Visibility:', error);
+    logError('Error fetching Sky Visibility:', error);
     return {
       verdict: 'poor',
       score: 0,

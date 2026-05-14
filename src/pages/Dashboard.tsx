@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { logError } from '../utils/logger';
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
 import { Helmet } from 'react-helmet-async';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
@@ -184,7 +185,7 @@ const Dashboard = () => {
       setLastUpdated(new Date());
       setLoading(false);
     } catch (error) {
-      console.error('Error fetching dashboard data:', error);
+      logError('Error fetching dashboard data:', error);
       setError(true);
       setLoading(false);
     }
