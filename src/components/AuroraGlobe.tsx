@@ -73,6 +73,7 @@ export default function AuroraGlobe({ globeWidth, isGlobeLoading, auroraData, th
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const globeRef = useRef<any>(null);
   const prevAuroraTextureRef = useRef<THREE.CanvasTexture | null>(null);
+  const auroraLayersRef = useRef<THREE.Mesh[]>([]);
 
   const [globeMaterial, setGlobeMaterial] = useState<THREE.ShaderMaterial | null>(null);
 
@@ -172,6 +173,7 @@ export default function AuroraGlobe({ globeWidth, isGlobeLoading, auroraData, th
           { radius: 104.0, opacity: 0.35 },
           { radius: 106.5, opacity: 0.15 },
         ];
+        auroraLayersRef.current = [];
         layers.forEach(({ radius, opacity }) => {
           const geo = new THREE.SphereGeometry(radius, 128, 64);
           const mat = new THREE.MeshBasicMaterial({
@@ -182,6 +184,7 @@ export default function AuroraGlobe({ globeWidth, isGlobeLoading, auroraData, th
           mesh.rotation.y = -Math.PI / 2;
           mesh.userData = { isAurora: true };
           scene.add(mesh);
+          auroraLayersRef.current.push(mesh);
         });
       } catch (err) {
         logError('Aurora overlay update failed', err);
@@ -190,6 +193,21 @@ export default function AuroraGlobe({ globeWidth, isGlobeLoading, auroraData, th
 
     return () => clearTimeout(timer);
   }, [auroraTexture]);
+
+  // Dispose aurora GPU resources on unmount
+  useEffect(() => {
+    return () => {
+      auroraLayersRef.current.forEach(mesh => {
+        mesh.geometry.dispose();
+        (mesh.material as THREE.Material).dispose();
+      });
+      auroraLayersRef.current = [];
+      if (prevAuroraTextureRef.current) {
+        prevAuroraTextureRef.current.dispose();
+        prevAuroraTextureRef.current = null;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!globeRef.current) return;

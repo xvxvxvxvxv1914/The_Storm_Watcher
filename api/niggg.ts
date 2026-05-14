@@ -9,6 +9,16 @@ const supabase = createClient(
 
 const DATE_RE = /^\d{2}-\d{2}-\d{4}$/;
 
+function parseNigggDate(s: string): Date | null {
+  if (!DATE_RE.test(s)) return null;
+  const [dd, mm, yyyy] = s.split('-').map(Number);
+  const d = new Date(Date.UTC(yyyy, mm - 1, dd));
+  if (isNaN(d.getTime()) || d.getUTCFullYear() !== yyyy || d.getUTCMonth() !== mm - 1 || d.getUTCDate() !== dd) return null;
+  const now = Date.now();
+  if (d.getTime() < now - 100 * 365.25 * 86400e3 || d.getTime() > now + 2 * 86400e3) return null;
+  return d;
+}
+
 // Per-IP rate limit: max 20 requests per minute per serverless instance
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 
@@ -43,7 +53,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const chdate1 = typeof raw?.chdate1 === 'string' ? raw.chdate1 : '';
   const chdate2 = typeof raw?.chdate2 === 'string' ? raw.chdate2 : '';
 
-  if (!DATE_RE.test(chdate1) || !DATE_RE.test(chdate2)) {
+  if (!parseNigggDate(chdate1) || !parseNigggDate(chdate2)) {
     return res.status(400).json({ error: 'Invalid date parameters' });
   }
 

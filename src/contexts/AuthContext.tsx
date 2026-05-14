@@ -80,7 +80,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('*')
+        .select('id, email, full_name, avatar_url, plan, subscription_status, subscription_period_end')
         .eq('id', userId)
         .maybeSingle();
 
@@ -89,7 +89,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setProfile(data);
     } catch (error) {
       if (req !== profileReqRef.current) return;
-      console.error('Error fetching profile:', error);
+      console.error('Error fetching profile:', error instanceof Error ? error.message : 'Unknown error');
     } finally {
       if (req === profileReqRef.current) setLoading(false);
     }

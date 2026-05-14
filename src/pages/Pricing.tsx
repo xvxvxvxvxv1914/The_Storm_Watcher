@@ -43,7 +43,7 @@ export default function Pricing() {
   const [error, setError] = useState('');
 
   const currentPlan = profile?.plan ?? 'free';
-  const hasSubscription = !!profile?.stripe_customer_id && profile?.subscription_status === 'active';
+  const hasSubscription = profile?.subscription_status === 'active';
 
   async function subscribe(plan: 'pro' | 'premium') {
     if (!user) { navigate('/auth'); return; }
