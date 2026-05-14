@@ -585,6 +585,14 @@ const en: Record<string, string> = {
   'niggg.calm.detail': 'The magnetic field is stable. No disruptions in navigation or communications.',
   'niggg.calm.humanEffect': 'No reported impact on humans.',
 
+  // Space Weather Outlook
+  'forecast.outlook.title': 'Space Weather Outlook',
+  'forecast.outlook.issued': 'Issued',
+  'forecast.outlook.geomag': 'Geomagnetic',
+  'forecast.outlook.solarRad': 'Solar Radiation',
+  'forecast.outlook.radio': 'Radio Blackout',
+  'forecast.outlook.noData': 'No data available.',
+
   // Aurora Calendar
   'aurora.calendar.title': 'Aurora Calendar',
   'aurora.calendar.subtitle': '3-night viewing outlook',

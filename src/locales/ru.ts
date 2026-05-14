@@ -560,6 +560,14 @@ const ru: Record<string, string> = {
   'uv.mod6': 'Умеренный 6',
   'uv.high8': 'Высокий 8',
 
+  // Space Weather Outlook
+  'forecast.outlook.title': 'Прогноз космической погоды',
+  'forecast.outlook.issued': 'Выпущено',
+  'forecast.outlook.geomag': 'Геомагнитный',
+  'forecast.outlook.solarRad': 'Солнечная радиация',
+  'forecast.outlook.radio': 'Радиопомехи',
+  'forecast.outlook.noData': 'Данные недоступны.',
+
   // Aurora Calendar
   'aurora.calendar.title': 'Календарь Авроры',
   'aurora.calendar.subtitle': 'Прогноз на 3 ночи',

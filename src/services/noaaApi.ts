@@ -299,3 +299,73 @@ export const getWeatherData = (lat: number, lon: number): Promise<WeatherData | 
       return null;
     }
   });
+
+export interface SpaceWeatherOutlook {
+  issuedAt: string;
+  days: string[]; // e.g. ["May 14", "May 15", "May 16"]
+  geomag: {
+    rationale: string;
+  };
+  solarRad: {
+    s1Pct: number[]; // % per day
+    rationale: string;
+  };
+  radioBlackout: {
+    r1r2Pct: number[]; // % per day
+    r3Pct: number[];
+    rationale: string;
+  };
+}
+
+export const getSpaceWeatherOutlook = (): Promise<SpaceWeatherOutlook | null> =>
+  cached('outlook', TTL_FORECAST, async () => {
+    try {
+      const res = await fetch('https://services.swpc.noaa.gov/text/3-day-forecast.txt', { signal: AbortSignal.timeout(10_000) });
+      if (!res.ok) return null;
+      const text = await res.text();
+
+      // Issued timestamp
+      const issuedMatch = text.match(/:Issued:\s*(.+)/);
+      const issuedAt = issuedMatch ? issuedMatch[1].trim() : '';
+
+      // Extract day headers from the Kp table (e.g. "May 14  May 15  May 16")
+      const dayHeaderMatch = text.match(/(\w+ \d+)\s+(\w+ \d+)\s+(\w+ \d+)/);
+      const days = dayHeaderMatch ? [dayHeaderMatch[1], dayHeaderMatch[2], dayHeaderMatch[3]] : [];
+
+      // --- Section A: Geomagnetic rationale ---
+      const geomagRationale = extractRationale(text, 'A.');
+
+      // --- Section B: Solar Radiation ---
+      const s1Match = text.match(/S1 or greater\s+([\d]+)%\s+([\d]+)%\s+([\d]+)%/);
+      const s1Pct = s1Match ? [+s1Match[1], +s1Match[2], +s1Match[3]] : [0, 0, 0];
+      const solarRationale = extractRationale(text, 'B.');
+
+      // --- Section C: Radio Blackout ---
+      const r1r2Match = text.match(/R1-R2\s+([\d]+)%\s+([\d]+)%\s+([\d]+)%/);
+      const r3Match = text.match(/R3 or greater\s+([\d]+)%\s+([\d]+)%\s+([\d]+)%/);
+      const r1r2Pct = r1r2Match ? [+r1r2Match[1], +r1r2Match[2], +r1r2Match[3]] : [0, 0, 0];
+      const r3Pct = r3Match ? [+r3Match[1], +r3Match[2], +r3Match[3]] : [0, 0, 0];
+      const radioRationale = extractRationale(text, 'C.');
+
+      return {
+        issuedAt,
+        days,
+        geomag: { rationale: geomagRationale },
+        solarRad: { s1Pct, rationale: solarRationale },
+        radioBlackout: { r1r2Pct, r3Pct, rationale: radioRationale },
+      };
+    } catch (error) {
+      logError('Error fetching space weather outlook:', error);
+      return null;
+    }
+  });
+
+function extractRationale(text: string, section: string): string {
+  // Find the section, then find "Rationale:" within it, up to the next section or end
+  const sectionIdx = text.indexOf(`\n${section}`);
+  if (sectionIdx === -1) return '';
+  const nextSectionIdx = text.indexOf('\n' + String.fromCharCode(section.charCodeAt(0) + 1) + '.', sectionIdx + 1);
+  const chunk = nextSectionIdx === -1 ? text.slice(sectionIdx) : text.slice(sectionIdx, nextSectionIdx);
+  const rationaleMatch = chunk.match(/Rationale:\s*([\s\S]+?)(?:\n\n|\n[A-Z]\.|$)/);
+  return rationaleMatch ? rationaleMatch[1].trim().replace(/\n/g, ' ') : '';
+}

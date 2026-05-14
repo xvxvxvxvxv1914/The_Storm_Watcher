@@ -560,6 +560,14 @@ const ja: Record<string, string> = {
   'uv.mod6': '中程度 6',
   'uv.high8': '高い 8',
 
+  // Space Weather Outlook
+  'forecast.outlook.title': '宇宙天気予報',
+  'forecast.outlook.issued': '発行',
+  'forecast.outlook.geomag': '地磁気活動',
+  'forecast.outlook.solarRad': '太陽放射線',
+  'forecast.outlook.radio': '電波障害',
+  'forecast.outlook.noData': 'データなし。',
+
   // Aurora Calendar
   'aurora.calendar.title': 'オーロラカレンダー',
   'aurora.calendar.subtitle': '3夜間の予報',

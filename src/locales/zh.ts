@@ -560,6 +560,14 @@ const zh: Record<string, string> = {
   'uv.mod6': '中等 6',
   'uv.high8': '高 8',
 
+  // Space Weather Outlook
+  'forecast.outlook.title': '空间天气预报',
+  'forecast.outlook.issued': '发布时间',
+  'forecast.outlook.geomag': '地磁活动',
+  'forecast.outlook.solarRad': '太阳辐射',
+  'forecast.outlook.radio': '无线电中断',
+  'forecast.outlook.noData': '暂无数据。',
+
   // Aurora Calendar
   'aurora.calendar.title': '极光日历',
   'aurora.calendar.subtitle': '3夜预报',

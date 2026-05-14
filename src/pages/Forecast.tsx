@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
 import { Helmet } from 'react-helmet-async';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
-import { Calendar, TrendingUp, AlertCircle, Sun, Sparkles, Cloud } from 'lucide-react';
-import { getKpForecast, getKpHistory3Day, getStormStatus, getKpGradientStyle } from '../services/noaaApi';
+import { Calendar, TrendingUp, AlertCircle, Sun, Sparkles, Cloud, Radio, Zap, Activity } from 'lucide-react';
+import { getKpForecast, getKpHistory3Day, getStormStatus, getKpGradientStyle, getSpaceWeatherOutlook, type SpaceWeatherOutlook } from '../services/noaaApi';
 import { getNightsCloudCover, type NightForecast } from '../services/skyApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
@@ -30,6 +30,7 @@ const Forecast = () => {
   const [showYesterday, setShowYesterday] = useState(false);
   const [historyRaw, setHistoryRaw] = useState<{ time_tag: string; Kp: number }[]>([]);
   const [nights, setNights] = useState<NightForecast[]>([]);
+  const [outlook, setOutlook] = useState<SpaceWeatherOutlook | null>(null);
 
   const fetchForecast = useCallback(async () => {
     setError(false);
@@ -58,6 +59,10 @@ const Forecast = () => {
 
   useEffect(() => { fetchForecast(); }, [fetchForecast]);
   useVisibilityInterval(fetchForecast, 300000);
+
+  useEffect(() => {
+    getSpaceWeatherOutlook().then(data => { if (data) setOutlook(data); }).catch(() => {});
+  }, []);
 
   const getMaxKp = () => {
     if (forecastData.length === 0) return 0;
@@ -418,6 +423,74 @@ const Forecast = () => {
             </div>
           )}
         </div>
+
+        {/* Space Weather Outlook — NOAA 3-day text forecast */}
+        {outlook && (
+          <div className="mt-4 sm:mt-8 glass-surface rounded-2xl p-4 sm:p-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+              <h3 className="text-lg sm:text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
+                <Activity className="w-6 h-6 text-[#f97316]" />
+                {t('forecast.outlook.title')}
+              </h3>
+              <span className="text-xs text-[#475569]">{t('forecast.outlook.issued')}: {outlook.issuedAt}</span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Geomagnetic */}
+              <div className="glass-surface rounded-xl p-4 border border-white/5">
+                <div className="flex items-center gap-2 mb-3">
+                  <Zap className="w-4 h-4 text-[#f97316]" />
+                  <span className="text-sm font-bold text-white uppercase tracking-wider">{t('forecast.outlook.geomag')}</span>
+                </div>
+                <p className="text-xs text-[#94a3b8] leading-relaxed">{outlook.geomag.rationale || t('forecast.outlook.noData')}</p>
+              </div>
+
+              {/* Solar Radiation */}
+              <div className="glass-surface rounded-xl p-4 border border-white/5">
+                <div className="flex items-center gap-2 mb-3">
+                  <Sun className="w-4 h-4 text-[#fbbf24]" />
+                  <span className="text-sm font-bold text-white uppercase tracking-wider">{t('forecast.outlook.solarRad')}</span>
+                </div>
+                {outlook.days.length > 0 && (
+                  <div className="flex gap-3 mb-3">
+                    {outlook.days.map((day, i) => (
+                      <div key={day} className="flex-1 text-center">
+                        <div className="text-xs text-[#64748b] mb-1 truncate">{day}</div>
+                        <div className={`text-lg font-bold ${outlook.solarRad.s1Pct[i] >= 30 ? 'text-[#fbbf24]' : 'text-[#94a3b8]'}`}>
+                          {outlook.solarRad.s1Pct[i]}%
+                        </div>
+                        <div className="text-[10px] text-[#475569]">S1+</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <p className="text-xs text-[#94a3b8] leading-relaxed">{outlook.solarRad.rationale || t('forecast.outlook.noData')}</p>
+              </div>
+
+              {/* Radio Blackout */}
+              <div className="glass-surface rounded-xl p-4 border border-white/5">
+                <div className="flex items-center gap-2 mb-3">
+                  <Radio className="w-4 h-4 text-[#a855f7]" />
+                  <span className="text-sm font-bold text-white uppercase tracking-wider">{t('forecast.outlook.radio')}</span>
+                </div>
+                {outlook.days.length > 0 && (
+                  <div className="flex gap-3 mb-3">
+                    {outlook.days.map((day, i) => (
+                      <div key={day} className="flex-1 text-center">
+                        <div className="text-xs text-[#64748b] mb-1 truncate">{day}</div>
+                        <div className={`text-lg font-bold ${outlook.radioBlackout.r1r2Pct[i] >= 30 ? 'text-[#a855f7]' : 'text-[#94a3b8]'}`}>
+                          {outlook.radioBlackout.r1r2Pct[i]}%
+                        </div>
+                        <div className="text-[10px] text-[#475569]">R1-R2</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <p className="text-xs text-[#94a3b8] leading-relaxed">{outlook.radioBlackout.rationale || t('forecast.outlook.noData')}</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Aurora Calendar — 3-night outlook */}
         {nights.length > 0 && (

@@ -578,6 +578,14 @@ const bg: Record<string, string> = {
   'dashboard.kp7dayNote': 'Дневен максимален Kp. Слънчевата активност се повтаря на всеки ~27 дни — периодът на въртене на Слънцето.',
   'home.stormScore.saveImage': 'Запази като изображение',
 
+  // Space Weather Outlook
+  'forecast.outlook.title': 'Прогноза за космическото време',
+  'forecast.outlook.issued': 'Издадено',
+  'forecast.outlook.geomag': 'Геомагнетизъм',
+  'forecast.outlook.solarRad': 'Слънчева радиация',
+  'forecast.outlook.radio': 'Радио смущения',
+  'forecast.outlook.noData': 'Няма данни.',
+
   // Aurora Calendar
   'aurora.calendar.title': 'Aurora Календар',
   'aurora.calendar.subtitle': 'Прогноза за 3 нощи',

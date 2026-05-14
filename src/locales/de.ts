@@ -560,6 +560,14 @@ const de: Record<string, string> = {
   'uv.mod6': 'Moderat 6',
   'uv.high8': 'Hoch 8',
 
+  // Space Weather Outlook
+  'forecast.outlook.title': 'Weltraumwetter-Ausblick',
+  'forecast.outlook.issued': 'Ausgegeben',
+  'forecast.outlook.geomag': 'Geomagnetisch',
+  'forecast.outlook.solarRad': 'Solarstrahlung',
+  'forecast.outlook.radio': 'Funkstörungen',
+  'forecast.outlook.noData': 'Keine Daten verfügbar.',
+
   // Aurora Calendar
   'aurora.calendar.title': 'Aurora-Kalender',
   'aurora.calendar.subtitle': '3-Nächte-Vorschau',
