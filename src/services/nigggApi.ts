@@ -15,6 +15,7 @@ export interface NigggStormStatus {
   descKey: string;
   detailKey: string;
   humanEffectKey: string;
+  minDelta: number;
 }
 
 export const toDeltaSeries = (pts: NigggDataPoint[]): NigggDataPoint[] => {
@@ -34,18 +35,21 @@ export const getNigggStormStatus = (minDelta: number): NigggStormStatus => {
     descKey: 'niggg.storm.desc',
     detailKey: 'niggg.storm.detail',
     humanEffectKey: 'niggg.storm.humanEffect',
+    minDelta,
   };
   if (minDelta < -30) return {
     label: 'DISTURBED', color: '#f97316', bg: 'bg-orange-500/10 border-orange-500/30',
     descKey: 'niggg.disturbed.desc',
     detailKey: 'niggg.disturbed.detail',
     humanEffectKey: 'niggg.disturbed.humanEffect',
+    minDelta,
   };
   return {
     label: 'CALM', color: '#10b981', bg: 'bg-emerald-500/10 border-emerald-500/30',
     descKey: 'niggg.calm.desc',
     detailKey: 'niggg.calm.detail',
     humanEffectKey: 'niggg.calm.humanEffect',
+    minDelta,
   };
 };
 
@@ -55,18 +59,16 @@ export const getNigggStormStatus = (minDelta: number): NigggStormStatus => {
 const isNative = typeof (window as Window & { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor?.isNativePlatform === 'function'
   && (window as Window & { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor!.isNativePlatform!();
 
-const NIGGG_URL = isNative
-  ? 'https://pagmag.ngic.bg/pagcal2.php'
+const NIGGG_BASE = isNative
+  ? 'https://pagmag.ngic.bg/assets/php/datacalendar26.php'
   : '/api/niggg';
 
 export const fetchNigggData = async (accessToken?: string): Promise<NigggDataSet> => {
   try {
-    // We want the last 72 hours to ensure we catch working data.
     const today = new Date();
     const threeDaysAgo = new Date(today);
     threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
 
-    // Format DD-MM-YYYY required by the PHP script.
     const formatDate = (date: Date) => {
       const d = String(date.getDate()).padStart(2, '0');
       const m = String(date.getMonth() + 1).padStart(2, '0');
@@ -74,85 +76,59 @@ export const fetchNigggData = async (accessToken?: string): Promise<NigggDataSet
       return `${d}-${m}-${y}`;
     };
 
-    const d1 = formatDate(threeDaysAgo);
-    const d2 = formatDate(today);
+    const start = formatDate(threeDaysAgo);
+    const end   = formatDate(today);
 
-    const formData = new URLSearchParams();
-    formData.append('chdate1', d1);
-    formData.append('chdate2', d2);
+    const url = `${NIGGG_BASE}?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;
 
-    const baseUrl = NIGGG_URL;
-
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    };
-    // Web proxy requires a valid session token; native calls pagmag directly
+    const headers: Record<string, string> = {};
     if (!isNative && accessToken) {
       headers['Authorization'] = `Bearer ${accessToken}`;
     }
 
-    const res = await fetch(baseUrl, {
-      method: 'POST',
-      body: formData,
-      headers,
-    });
+    const res = await fetch(url, { method: 'GET', headers });
 
     if (!res.ok) {
-      throw new Error(`Failed to fetch NIGGG data: ${res.status}`);
+      throw new Error(`NIGGG fetch failed: ${res.status}`);
     }
 
     const text = await res.text();
-    if (!text.trim()) {
-       return { hComponent: [], fComponent: [] };
-    }
+    if (!text.trim()) return { hComponent: [], fComponent: [] };
 
-    const json = JSON.parse(text);
-    
-    // Custom JSON array structure from NIGGG:
-    // json[0] = number of days
-    // json[1] = H component array
-    // json[4] = F component array
-    // json[5] = Array of date strings e.g. ["27-04-2026", "28-04-2026"]
+    const json = JSON.parse(text) as {
+      x: string[];
+      h: number[];
+      f: number[];
+      start: string;
+      end: string;
+    };
 
-    const daysCount = json[0] || 0;
-    const hData = json[1] || [];
-    const fData = json[4] || [];
-    const dateStrings = json[5] || [];
+    if (!json.h || !json.f || !json.start) return { hComponent: [], fComponent: [] };
 
+    // Parse start date (DD-MM-YYYY) to get base UTC midnight timestamp
+    const [dd, mm, yyyy] = json.start.split('-').map(Number);
+    const baseTs = Math.floor(Date.UTC(yyyy, mm - 1, dd) / 1000);
+
+    const INVALID = 1e300;
     const hComponent: NigggDataPoint[] = [];
     const fComponent: NigggDataPoint[] = [];
 
-    // The data arrays have exactly 1440 points (minutes) per day.
-    let globalIndex = 0;
+    // Data is 1440 points per day (one per minute).
+    // Each day starts at UTC midnight of (baseDate + dayIndex).
+    json.h.forEach((hVal, i) => {
+      const dayIdx = Math.floor(i / 1440);
+      const minuteOfDay = i % 1440;
+      const timestamp = baseTs + dayIdx * 86400 + minuteOfDay * 60;
 
-    for (let dayIdx = 0; dayIdx < daysCount; dayIdx++) {
-      // Parse the date string "DD-MM-YYYY"
-      const dateStr = dateStrings[dayIdx];
-      if (!dateStr) continue;
-
-      const [dd, mm, yyyy] = dateStr.split('-');
-      // Create date object at UTC midnight for this date
-      const baseDate = new Date(Date.UTC(parseInt(yyyy), parseInt(mm) - 1, parseInt(dd)));
-      const baseTimestamp = Math.floor(baseDate.getTime() / 1000);
-
-      for (let min = 0; min < 1440; min++) {
-        const hVal = hData[globalIndex];
-        const fVal = fData[globalIndex];
-        
-        const timestamp = baseTimestamp + (min * 60);
-
-        // Filter out missing/invalid values (> 1e300)
-        if (hVal !== null && hVal !== undefined && hVal < 1e100) {
-          hComponent.push({ time: timestamp, value: Number(hVal.toFixed(2)) });
-        }
-        
-        if (fVal !== null && fVal !== undefined && fVal < 1e100) {
-          fComponent.push({ time: timestamp, value: Number(fVal.toFixed(2)) });
-        }
-
-        globalIndex++;
+      if (hVal !== null && hVal !== undefined && Math.abs(hVal) < INVALID) {
+        hComponent.push({ time: timestamp, value: Number(hVal.toFixed(2)) });
       }
-    }
+
+      const fVal = json.f[i];
+      if (fVal !== null && fVal !== undefined && Math.abs(fVal) < INVALID) {
+        fComponent.push({ time: timestamp, value: Number(fVal.toFixed(2)) });
+      }
+    });
 
     return { hComponent, fComponent };
   } catch (error) {

@@ -8,6 +8,7 @@ import { getKpIndex, getSolarWind, getMagField, getXrayFlux, getKpHistory3Day, g
 import { fetchNigggData, toDeltaSeries, getNigggStormStatus, type NigggDataPoint } from '../services/nigggApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
 import StarField from '../components/StarField';
 import { SkeletonCard, SkeletonChart, Skeleton } from '../components/Skeleton';
 import ErrorCard from '../components/ErrorCard';
@@ -105,13 +106,18 @@ const Dashboard = () => {
   const fetchData = useCallback(async () => {
     setError(false);
     try {
+      // Always read a fresh token so NIGGG data works even when the session
+      // wasn't available when this callback was first created.
+      const freshToken = session?.access_token
+        ?? (await supabase.auth.getSession()).data.session?.access_token;
+
       const [kpRes, windRes, magRes, xrayRes, kp3dayRes, nigggRes] = await Promise.allSettled([
         getKpIndex(),
         getSolarWind(),
         getMagField(),
         getXrayFlux(),
         getKpHistory3Day(),
-        inNigggRegion ? fetchNigggData(session?.access_token) : Promise.resolve(null),
+        inNigggRegion ? fetchNigggData(freshToken) : Promise.resolve(null),
       ]);
 
       const kpData    = kpRes.status    === 'fulfilled' ? kpRes.value    : null;
