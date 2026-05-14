@@ -66,12 +66,16 @@ const Navigation = () => {
   ];
 
   const moreLinks = [
-    { to: '/uv', label: t('nav.uv') },
-    { to: '/sun', label: t('nav.sun') },
-    { to: '/sky', label: t('nav.sky') },
-    { to: '/iss', label: t('nav.iss') },
+    { to: '/uv',               label: t('nav.uv') },
+    { to: '/sun',              label: t('nav.sun') },
+    { to: '/sky',              label: t('nav.sky') },
+    { to: '/iss',              label: t('nav.iss') },
+    { to: '/gallery',          label: t('nav.gallery') || 'Gallery' },
+    { to: '/hunt',             label: t('nav.hunt') || 'Aurora Hunt' },
+    { to: '/livestream',       label: t('nav.livestream') || 'Livestream' },
+    { to: '/calendar',         label: t('nav.calendar') || 'Aurora Calendar' },
     { to: '/magnetic-effects', label: t('nav.magneticEffects') },
-    { to: '/faq', label: t('nav.faq') },
+    { to: '/faq',              label: t('nav.faq') },
   ];
 
   const isActive = (path: string) => location.pathname === path;
