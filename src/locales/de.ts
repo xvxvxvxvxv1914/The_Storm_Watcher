@@ -602,6 +602,21 @@ const de: Record<string, string> = {
   'location.prompt.desc': 'Erlauben Sie den Standortzugriff für personalisierten UV-Index, Himmelssichtbarkeit, Sonnenzeiten und mehr — angepasst an Ihren Standort.',
   'location.prompt.allow': 'Standort erlauben',
   'location.prompt.skip': 'Überspringen',
+
+  // Aurora Gallery
+  'gallery.title': 'Aurora-Galerie',
+  'gallery.subtitle': 'Gemeinschaftliche Aurora-Fotos',
+  'nav.gallery': 'Galerie',
+  'gallery.upload': 'Foto teilen',
+  'gallery.share': 'Teilen',
+  'gallery.uploading': 'Wird hochgeladen…',
+  'gallery.uploadSuccess': 'Foto geteilt!',
+  'gallery.uploadError': 'Foto konnte nicht hochgeladen werden',
+  'gallery.noPhotos': 'Noch keine Fotos. Sei der Erste!',
+  'gallery.description': 'Bildunterschrift (optional)',
+  'gallery.locationName': 'Ort (optional)',
+  'gallery.signInToUpload': 'Anmelden, um Fotos zu teilen',
+  'gallery.loadMore': 'Mehr laden',
 };
 
 export default de;

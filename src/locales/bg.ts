@@ -620,6 +620,21 @@ const bg: Record<string, string> = {
   'location.prompt.desc': 'Разрешете достъп до локацията за персонализиран UV индекс, видимост на небето, часове на изгрева и още — съобразено с вашето местоположение.',
   'location.prompt.allow': 'Разреши локация',
   'location.prompt.skip': 'Пропусни',
+
+  // Aurora Gallery
+  'gallery.title': 'Aurora Галерия',
+  'gallery.subtitle': 'Снимки на аврора от общността',
+  'nav.gallery': 'Галерия',
+  'gallery.upload': 'Сподели снимка',
+  'gallery.share': 'Сподели',
+  'gallery.uploading': 'Качване…',
+  'gallery.uploadSuccess': 'Снимката е споделена!',
+  'gallery.uploadError': 'Грешка при качването',
+  'gallery.noPhotos': 'Все още няма снимки. Бъди първи!',
+  'gallery.description': 'Надпис (по избор)',
+  'gallery.locationName': 'Местоположение (по избор)',
+  'gallery.signInToUpload': 'Влез за да споделиш снимки',
+  'gallery.loadMore': 'Зареди още',
 };
 
 export default bg;

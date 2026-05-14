@@ -627,6 +627,21 @@ const en: Record<string, string> = {
   'location.prompt.desc': 'Allow location access for personalized UV index, sky visibility, sun times and more — tailored to where you are.',
   'location.prompt.allow': 'Allow Location',
   'location.prompt.skip': 'Skip',
+
+  // Aurora Gallery
+  'gallery.title': 'Aurora Gallery',
+  'gallery.subtitle': 'Community aurora photos',
+  'nav.gallery': 'Gallery',
+  'gallery.upload': 'Share your photo',
+  'gallery.share': 'Share',
+  'gallery.uploading': 'Uploading…',
+  'gallery.uploadSuccess': 'Photo shared!',
+  'gallery.uploadError': 'Failed to upload photo',
+  'gallery.noPhotos': 'No photos yet. Be the first to share!',
+  'gallery.description': 'Caption (optional)',
+  'gallery.locationName': 'Location (optional)',
+  'gallery.signInToUpload': 'Sign in to share photos',
+  'gallery.loadMore': 'Load more',
 };
 
 export default en;
