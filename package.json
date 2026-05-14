@@ -49,7 +49,9 @@
     "three": "^0.184.0"
   },
   "overrides": {
-    "serialize-javascript": "^7.0.5"
+    "serialize-javascript": "^7.0.5",
+    "smol-toml": "^1.6.1",
+    "undici": "^7.25.0"
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.5",
@@ -57,7 +59,7 @@
     "@playwright/test": "^1.59.1",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
-    "@vercel/node": "^5.7.13",
+    "@vercel/node": "^5.8.1",
     "@vitejs/plugin-react": "^5.2.0",
     "autoprefixer": "^10.4.18",
     "eslint": "^9.39.4",
