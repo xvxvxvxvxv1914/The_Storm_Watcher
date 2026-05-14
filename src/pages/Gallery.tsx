@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Camera, Upload, X, MapPin, Image } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -65,7 +65,7 @@ export default function Gallery() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] = useState<GalleryPhoto | null>(null);
 
-  const fetchPhotos = async (start: number, append: boolean) => {
+  const fetchPhotos = useCallback(async (start: number, append: boolean) => {
     if (append) setLoadingMore(true);
 
     const { data } = await supabase
@@ -84,9 +84,9 @@ export default function Gallery() {
     setHasMore(rows.length === PAGE_SIZE);
     setLoading(false);
     setLoadingMore(false);
-  };
+  }, []);
 
-  useEffect(() => { fetchPhotos(0, false); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { fetchPhotos(0, false); }, [fetchPhotos]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

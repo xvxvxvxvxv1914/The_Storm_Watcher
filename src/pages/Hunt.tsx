@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Trophy, MapPin, Star, ChevronDown, ChevronUp, Target } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -83,7 +83,7 @@ export default function Hunt() {
     return () => clearInterval(timer);
   }, [cooldownMs]);
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     const [recentRes, leaderRes, myRes] = await Promise.all([
       supabase.from('aurora_sightings').select('*').order('created_at', { ascending: false }).limit(20),
       supabase.from('hunter_leaderboard').select('*').limit(10),
@@ -93,9 +93,9 @@ export default function Hunt() {
     setLeaderboard((leaderRes.data ?? []) as LeaderEntry[]);
     setMySightings((myRes.data ?? []) as Sighting[]);
     setLoading(false);
-  };
+  }, [user]);
 
-  useEffect(() => { loadData(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { loadData(); }, [loadData]);
 
   const earnedBadges = BADGES.filter(b => b.req(mySightings)).map(b => b.id);
 

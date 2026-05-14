@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Bell, Ruler, Globe, Check, Loader2, LocateFixed, X, HelpCircle } from 'lucide-react';
+import { ArrowLeft, MapPin, Bell, Ruler, Globe, Check, Loader2, X, HelpCircle } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
 import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useOnboarding } from '../hooks/useOnboarding';
+import LocationPicker from '../components/LocationPicker';
 
 export default function Settings() {
   const { settings, updateSettings } = useSettings();
@@ -38,14 +39,19 @@ export default function Settings() {
     setLocating(true);
     setLocError('');
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
+      async (pos) => {
         const lat = parseFloat(pos.coords.latitude.toFixed(4));
         const lon = parseFloat(pos.coords.longitude.toFixed(4));
-        updateSettings({
-          preferredLat: lat,
-          preferredLon: lon,
-          preferredLocationName: `${lat}, ${lon}`,
-        });
+        let name = `${lat}, ${lon}`;
+        try {
+          const geo = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
+          ).then(r => r.json());
+          const city = geo.address?.city || geo.address?.town || geo.address?.village || '';
+          const country = geo.address?.country || '';
+          if (city || country) name = [city, country].filter(Boolean).join(', ');
+        } catch { /* keep lat,lon fallback */ }
+        updateSettings({ preferredLat: lat, preferredLon: lon, preferredLocationName: name });
         setLocating(false);
       },
       () => {
@@ -54,6 +60,10 @@ export default function Settings() {
       },
       { timeout: 10000 }
     );
+  };
+
+  const handleLocationSelect = (lat: number, lon: number, name: string) => {
+    updateSettings({ preferredLat: lat, preferredLon: lon, preferredLocationName: name });
   };
 
   const handleClearLocation = () => {
@@ -104,34 +114,32 @@ export default function Settings() {
               {t('settings.locationDesc') || 'Used on Aurora, UV, Sun Times and Sky Visibility pages instead of asking for GPS every time.'}
             </p>
 
-            {settings.preferredLat !== null ? (
-              <div className="flex items-center justify-between p-3 rounded-xl bg-[#10b981]/10 border border-[#10b981]/30 mb-4">
-                <div className="flex items-center gap-2">
-                  <LocateFixed className="w-4 h-4 text-[#10b981] shrink-0" />
-                  <span className="text-sm text-white font-medium">
-                    {settings.preferredLocationName || `${settings.preferredLat}, ${settings.preferredLon}`}
-                  </span>
-                </div>
-                <button
-                  onClick={handleClearLocation}
-                  className="text-[#94a3b8] hover:text-white transition-colors p-1"
-                  aria-label={t('settings.clearLocation') || 'Clear location'}
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-            ) : (
-              <p className="text-sm text-[#64748b] mb-4">{t('settings.noLocation') || 'No preferred location saved. Pages will use your live GPS.'}</p>
+            <div className="mb-4">
+              <LocationPicker
+                lat={settings.preferredLat ?? 42.7}
+                lon={settings.preferredLon ?? 23.3}
+                locationName={settings.preferredLocationName || ''}
+                onSelect={handleLocationSelect}
+                onRequestGPS={handleUseGPS}
+              />
+            </div>
+
+            {settings.preferredLat !== null && (
+              <button
+                onClick={handleClearLocation}
+                className="flex items-center gap-1.5 text-xs text-[#475569] hover:text-[#94a3b8] transition-colors"
+              >
+                <X className="w-3.5 h-3.5" />
+                {t('settings.clearLocation') || 'Clear saved location'}
+              </button>
             )}
 
-            <button
-              onClick={handleUseGPS}
-              disabled={locating}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#f97316]/10 text-[#f97316] hover:bg-[#f97316]/20 transition-colors font-medium text-sm disabled:opacity-50"
-            >
-              {locating ? <Loader2 className="w-4 h-4 animate-spin" /> : <LocateFixed className="w-4 h-4" />}
-              {locating ? (t('settings.detectingLocation') || 'Detecting…') : (t('settings.useGPS') || 'Use My Current GPS Location')}
-            </button>
+            {locating && (
+              <div className="flex items-center gap-2 mt-3 text-sm text-[#94a3b8]">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                {t('settings.detectingLocation') || 'Detecting location…'}
+              </div>
+            )}
 
             {locError && (
               <p className="mt-3 text-sm text-red-400">{locError}</p>
