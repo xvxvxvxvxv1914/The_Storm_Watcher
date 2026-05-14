@@ -31,6 +31,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { priceId } = req.body as { priceId: string };
   if (!priceId) return res.status(400).json({ error: 'Missing priceId' });
 
+  const ALLOWED_PRICES = new Set([
+    'price_1TSJBmLqQEtEOCx4utzZ07gf', // Pro Monthly
+    'price_1TSJGvLqQEtEOCx4VGsGFSyH', // Pro Yearly
+    'price_1TSJHYLqQEtEOCx43ks9UAAc', // Premium Monthly
+    'price_1TSJHtLqQEtEOCx4Q1RuknHo', // Premium Yearly
+  ]);
+  if (!ALLOWED_PRICES.has(priceId)) return res.status(400).json({ error: 'Invalid price' });
+
   const { data: profile } = await supabase
     .from('profiles')
     .select('stripe_customer_id, email')

@@ -12,6 +12,20 @@ const supabase = createClient(
 
 const APP_URL = 'https://thestormwatcher.com';
 
+// In-memory rate limit: max 5 requests per user per minute
+const portalRateLimit = new Map<string, { count: number; resetAt: number }>();
+
+function isPortalRateLimited(userId: string): boolean {
+  const now = Date.now();
+  const entry = portalRateLimit.get(userId);
+  if (!entry || now > entry.resetAt) {
+    portalRateLimit.set(userId, { count: 1, resetAt: now + 60_000 });
+    return false;
+  }
+  entry.count++;
+  return entry.count > 5;
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).end();
 
@@ -20,6 +34,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const { data: { user }, error: authError } = await supabase.auth.getUser(token);
   if (authError || !user) return res.status(401).json({ error: 'Unauthorized' });
+
+  if (isPortalRateLimited(user.id)) return res.status(429).json({ error: 'Too many requests' });
 
   const { data: profile } = await supabase
     .from('profiles')

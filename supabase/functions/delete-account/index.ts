@@ -1,11 +1,26 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-const CORS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'content-type, authorization',
-};
+const ALLOWED_ORIGINS = new Set([
+  'https://thestormwatcher.com',
+  'https://www.thestormwatcher.com',
+  'capacitor://localhost',
+  'http://localhost:5173',
+]);
+
+function corsHeaders(req: Request): Record<string, string> {
+  const origin = req.headers.get('origin') ?? '';
+  return {
+    'Access-Control-Allow-Origin': ALLOWED_ORIGINS.has(origin) ? origin : 'https://thestormwatcher.com',
+    'Access-Control-Allow-Headers': 'content-type, authorization',
+  };
+}
+
+// In-memory rate limit: 1 request per user per hour
+const rateLimitMap = new Map<string, number>();
 
 Deno.serve(async (req: Request) => {
+  const CORS = corsHeaders(req);
+
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: CORS });
   }
@@ -17,7 +32,6 @@ Deno.serve(async (req: Request) => {
     });
   }
 
-  // Verify the caller is authenticated via their JWT
   const authHeader = req.headers.get('authorization');
   if (!authHeader?.startsWith('Bearer ')) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
@@ -27,7 +41,6 @@ Deno.serve(async (req: Request) => {
   }
   const jwt = authHeader.slice(7);
 
-  // Verify JWT and get the user ID using the anon client
   const anonClient = createClient(
     Deno.env.get('SUPABASE_URL')!,
     Deno.env.get('SUPABASE_ANON_KEY')!,
@@ -40,7 +53,17 @@ Deno.serve(async (req: Request) => {
     });
   }
 
-  // Use the service role client to delete the user
+  // Rate limit: 1 request per user per hour
+  const now = Date.now();
+  const lastAttempt = rateLimitMap.get(user.id) ?? 0;
+  if (now - lastAttempt < 60 * 60 * 1000) {
+    return new Response(JSON.stringify({ error: 'Too many requests' }), {
+      status: 429,
+      headers: { ...CORS, 'Content-Type': 'application/json' },
+    });
+  }
+  rateLimitMap.set(user.id, now);
+
   const adminClient = createClient(
     Deno.env.get('SUPABASE_URL')!,
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,

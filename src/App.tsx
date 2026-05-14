@@ -55,12 +55,23 @@ function AppRoutes() {
     }
   }, [user, navigate]);
 
+  // Block unverified email users from accessing the app
+  useEffect(() => {
+    if (user && !user.email_confirmed_at) {
+      const path = window.location.pathname;
+      if (path !== '/auth' && path !== '/auth/reset' && path !== '/privacy' && path !== '/terms') {
+        navigate('/auth?verify=pending', { replace: true });
+      }
+    }
+  }, [user, navigate]);
+
   // Handle deep links from iOS widget (stormwatcher://dashboard, stormwatcher://forecast)
   useEffect(() => {
+    const ALLOWED_ROUTES = new Set(['dashboard','forecast','aurora','alerts','uv','sun','mood','iss','profile','settings','pricing','privacy','terms']);
     const sub = CapApp.addListener('appUrlOpen', ({ url }) => {
       try {
         const host = new URL(url).hostname;
-        if (host) navigate(`/${host}`, { replace: true });
+        if (ALLOWED_ROUTES.has(host)) navigate(`/${host}`, { replace: true });
       } catch { /* ignore malformed URLs */ }
     });
     return () => { sub.then(h => h.remove()); };

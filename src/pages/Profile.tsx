@@ -37,7 +37,7 @@ export default function Profile() {
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.access_token}` },
       });
       const data = await res.json() as { url?: string };
-      if (data.url) window.location.href = data.url;
+      if (data.url && /^https:\/\/billing\.stripe\.com\//.test(data.url)) window.location.href = data.url;
     } catch {
       setError('Failed to open billing portal');
     } finally {

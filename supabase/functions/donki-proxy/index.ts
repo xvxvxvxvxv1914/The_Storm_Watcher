@@ -1,19 +1,29 @@
 const UPSTREAM = 'https://kauai.ccmc.gsfc.nasa.gov/DONKI/WS/get';
 
-const CORS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'content-type, authorization',
-};
+const ALLOWED_ORIGINS = new Set([
+  'https://thestormwatcher.com',
+  'https://www.thestormwatcher.com',
+  'capacitor://localhost',
+  'http://localhost:5173',
+]);
+
+function corsHeaders(req: Request): Record<string, string> {
+  const origin = req.headers.get('origin') ?? '';
+  return {
+    'Access-Control-Allow-Origin': ALLOWED_ORIGINS.has(origin) ? origin : 'https://thestormwatcher.com',
+    'Access-Control-Allow-Headers': 'content-type, authorization',
+  };
+}
 
 Deno.serve(async (req: Request) => {
+  const CORS = corsHeaders(req);
+
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: CORS });
   }
 
   const url = new URL(req.url);
 
-  // Strip everything up to and including "donki-proxy" from the path.
-  // e.g. /functions/v1/donki-proxy/CME?startDate=... → /CME?startDate=...
   const path = url.pathname.replace(/^.*\/donki-proxy/, '') || '/';
   const upstreamUrl = `${UPSTREAM}${path}${url.search}`;
 

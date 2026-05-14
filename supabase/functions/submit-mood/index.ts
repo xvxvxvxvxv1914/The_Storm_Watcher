@@ -1,14 +1,26 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-const CORS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'content-type, authorization',
-};
+const ALLOWED_ORIGINS = new Set([
+  'https://thestormwatcher.com',
+  'https://www.thestormwatcher.com',
+  'capacitor://localhost',
+  'http://localhost:5173',
+]);
+
+function corsHeaders(req: Request): Record<string, string> {
+  const origin = req.headers.get('origin') ?? '';
+  return {
+    'Access-Control-Allow-Origin': ALLOWED_ORIGINS.has(origin) ? origin : 'https://thestormwatcher.com',
+    'Access-Control-Allow-Headers': 'content-type, authorization',
+  };
+}
 
 const VALID_MOODS = ['great', 'good', 'okay', 'bad', 'terrible'] as const;
 type MoodType = typeof VALID_MOODS[number];
 
 Deno.serve(async (req: Request) => {
+  const CORS = corsHeaders(req);
+
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: CORS });
   }
@@ -32,7 +44,6 @@ Deno.serve(async (req: Request) => {
 
   const { session_id, mood_type, symptoms, kp_index } = body;
 
-  // Input validation
   if (typeof session_id !== 'string' || !/^[0-9a-f-]{36}$/.test(session_id)) {
     return new Response(JSON.stringify({ error: 'Invalid session_id' }), {
       status: 400,
@@ -57,7 +68,6 @@ Deno.serve(async (req: Request) => {
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
   );
 
-  // Rate limit: one entry per session per calendar day (UTC)
   const todayMidnight = new Date();
   todayMidnight.setUTCHours(0, 0, 0, 0);
 

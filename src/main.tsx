@@ -15,6 +15,21 @@ Sentry.init({
   environment: import.meta.env.MODE,
   tracesSampleRate: 0.1,
   replaysOnErrorSampleRate: 0,
+  beforeSend(event) {
+    if (event.user) {
+      delete event.user.email;
+      delete event.user.username;
+      delete event.user.ip_address;
+    }
+    if (event.request?.url) {
+      try {
+        const u = new URL(event.request.url);
+        u.search = '';
+        event.request.url = u.toString();
+      } catch {}
+    }
+    return event;
+  },
 });
 
 createRoot(document.getElementById('root')!).render(
