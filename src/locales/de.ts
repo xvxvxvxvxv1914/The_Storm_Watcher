@@ -617,6 +617,18 @@ const de: Record<string, string> = {
   'gallery.locationName': 'Ort (optional)',
   'gallery.signInToUpload': 'Anmelden, um Fotos zu teilen',
   'gallery.loadMore': 'Mehr laden',
+
+  'nav.livestream': 'Livestream',
+  'livestream.title': 'Aurora Livestream',
+  'livestream.subtitle': 'Live-Kameras aus der Polarlichter-Zone',
+  'livestream.disclaimer': 'Streams werden von Drittorganisationen bereitgestellt. Verfügbarkeit kann variieren.',
+  'livestream.openExternal': 'Website öffnen',
+  'livestream.noEmbed': 'Diese Quelle unterstützt keine direkte Einbettung.',
+  'livestream.openSite': 'In neuem Tab öffnen',
+  'livestream.preview': 'Vorschau',
+  'livestream.open': 'Öffnen',
+  'livestream.tipTitle': 'Tipp:',
+  'livestream.tip': 'Die beste Polarlicht-Sichtbarkeit liegt zwischen 22:00 und 02:00 Uhr Ortszeit bei klarem, dunklem Himmel.',
 };
 
 export default de;

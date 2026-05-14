@@ -668,6 +668,18 @@ const en: Record<string, string> = {
   'hunt.recentSightings': 'Recent Sightings',
   'hunt.noSightings': 'No sightings yet. Be the first!',
   'hunt.anonymous': 'Anonymous',
+
+  'nav.livestream': 'Livestream',
+  'livestream.title': 'Aurora Livestream',
+  'livestream.subtitle': 'Live cameras from the aurora zone',
+  'livestream.disclaimer': 'Streams are provided by third-party organizations. Availability may vary. Click any camera to open it in a new tab.',
+  'livestream.openExternal': 'Open site',
+  'livestream.noEmbed': 'This source does not support direct embedding.',
+  'livestream.openSite': 'Open in new tab',
+  'livestream.preview': 'Preview',
+  'livestream.open': 'Open',
+  'livestream.tipTitle': 'Tip:',
+  'livestream.tip': 'Best aurora visibility occurs between 10 PM and 2 AM local time on clear, dark nights. Check the Dashboard for the current Kp index before heading out.',
 };
 
 export default en;

@@ -28,6 +28,7 @@ const Privacy = lazy(() => import('../pages/Privacy'));
 const Terms = lazy(() => import('../pages/Terms'));
 const Gallery = lazy(() => import('../pages/Gallery'));
 const Hunt = lazy(() => import('../pages/Hunt'));
+const Livestream = lazy(() => import('../pages/Livestream'));
 
 export const AnimatedRoutes = () => {
   const location = useLocation();
@@ -58,6 +59,7 @@ export const AnimatedRoutes = () => {
         <Route path="/terms" element={<AnimatedPage><Terms /></AnimatedPage>} />
         <Route path="/gallery" element={<AnimatedPage><Gallery /></AnimatedPage>} />
         <Route path="/hunt" element={<AnimatedPage><Hunt /></AnimatedPage>} />
+        <Route path="/livestream" element={<AnimatedPage><Livestream /></AnimatedPage>} />
         <Route path="*" element={<AnimatedPage><NotFound /></AnimatedPage>} />
       </Routes>
     </AnimatePresence>

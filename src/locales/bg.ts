@@ -661,6 +661,18 @@ const bg: Record<string, string> = {
   'hunt.recentSightings': 'Последни наблюдения',
   'hunt.noSightings': 'Все още няма наблюдения. Бъди първи!',
   'hunt.anonymous': 'Анонимен',
+
+  'nav.livestream': 'Livestream',
+  'livestream.title': 'Aurora Livestream',
+  'livestream.subtitle': 'Камери на живо от авроралната зона',
+  'livestream.disclaimer': 'Потоците се предоставят от трети организации. Наличността може да варира. Кликнете върху камера, за да я отворите в нов раздел.',
+  'livestream.openExternal': 'Отвори сайта',
+  'livestream.noEmbed': 'Този източник не поддържа вграждане.',
+  'livestream.openSite': 'Отвори в нов раздел',
+  'livestream.preview': 'Преглед',
+  'livestream.open': 'Отвори',
+  'livestream.tipTitle': 'Съвет:',
+  'livestream.tip': 'Най-добра видимост на аврората се наблюдава между 22:00 и 02:00 ч. местно време при ясно, тъмно небе. Проверете индекса Kp в таблото преди да излезете.',
 };
 
 export default bg;
