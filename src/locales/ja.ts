@@ -560,6 +560,20 @@ const ja: Record<string, string> = {
   'uv.mod6': '中程度 6',
   'uv.high8': '高い 8',
 
+  // Aurora Calendar
+  'aurora.calendar.title': 'オーロラカレンダー',
+  'aurora.calendar.subtitle': '3夜間の予報',
+  'aurora.calendar.tonight': '今夜',
+  'aurora.calendar.tomorrow': '明日の夜',
+  'aurora.calendar.nightAfter': '明後日の夜',
+  'aurora.calendar.bestNight': 'ベストナイト',
+  'aurora.calendar.cloud': '雲量',
+  'aurora.calendar.maxKp': '最大Kp',
+  'aurora.calendar.noLocation': '雲量を表示するには、設定で場所を設定してください。',
+  'aurora.calendar.clear': '晴れ',
+  'aurora.calendar.partlyCloudy': '一部曇り',
+  'aurora.calendar.overcast': '曇り',
+
   // 404 Not Found
   'notFound.title': '宇宙で迷子になった',
   'notFound.description': 'このページは磁気圏の彼方に漂ってしまいました。ご安心ください — 嵐のデータは引き続き届いています。',

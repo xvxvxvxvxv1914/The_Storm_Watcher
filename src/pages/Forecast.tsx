@@ -2,9 +2,11 @@ import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
 import { Helmet } from 'react-helmet-async';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
-import { Calendar, TrendingUp, AlertCircle, Sun } from 'lucide-react';
+import { Calendar, TrendingUp, AlertCircle, Sun, Sparkles, Cloud } from 'lucide-react';
 import { getKpForecast, getKpHistory3Day, getStormStatus, getKpGradientStyle } from '../services/noaaApi';
+import { getNightsCloudCover, type NightForecast } from '../services/skyApi';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSettings } from '../contexts/SettingsContext';
 import StarField from '../components/StarField';
 import { Skeleton, SkeletonChart } from '../components/Skeleton';
 import ErrorCard from '../components/ErrorCard';
@@ -19,6 +21,7 @@ interface ForecastItem {
 
 const Forecast = () => {
   const { t } = useLanguage();
+  const { settings } = useSettings();
   const chartH = useChartHeight(190, 300);
   const [forecastData, setForecastData] = useState<ForecastItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -26,6 +29,7 @@ const Forecast = () => {
   const [, setLastUpdated] = useState<Date>(new Date());
   const [showYesterday, setShowYesterday] = useState(false);
   const [historyRaw, setHistoryRaw] = useState<{ time_tag: string; Kp: number }[]>([]);
+  const [nights, setNights] = useState<NightForecast[]>([]);
 
   const fetchForecast = useCallback(async () => {
     setError(false);
@@ -90,6 +94,67 @@ const Forecast = () => {
     if (!showYesterday || historyRaw.length > 0) return;
     getKpHistory3Day().then(data => { if (data) setHistoryRaw(data); }).catch(() => {});
   }, [showYesterday, historyRaw.length]);
+
+  // Build Aurora Calendar: 3 nights with max Kp + optional cloud cover
+  useEffect(() => {
+    if (forecastData.length === 0) return;
+
+    const buildNights = async () => {
+      const NIGHT_START = 20, NIGHT_END = 6; // local hours considered "night"
+      const labels: NightForecast['label'][] = ['tonight', 'tomorrow', 'nightAfter'];
+
+      // Group forecast by date-key, pick nighttime hours (20–23 today, 0–6 tomorrow)
+      const kpByDateNight: { date: Date; maxKp: number }[] = [];
+      const today = new Date();
+      for (let d = 0; d < 3; d++) {
+        const target = new Date(today);
+        target.setDate(today.getDate() + d);
+        const targetDate = target.toDateString();
+        const nextDate = new Date(target);
+        nextDate.setDate(target.getDate() + 1);
+        const nextDateStr = nextDate.toDateString();
+
+        const nightItems = forecastData.filter(item => {
+          const h = item.date.getHours();
+          return (item.date.toDateString() === targetDate && h >= NIGHT_START) ||
+                 (item.date.toDateString() === nextDateStr && h < NIGHT_END);
+        });
+        const maxKp = nightItems.length > 0 ? Math.max(...nightItems.map(i => i.kp)) : 0;
+        kpByDateNight.push({ date: target, maxKp });
+      }
+
+      // Fetch cloud cover if location is set
+      let cloudNights: { date: Date; cloudCoverAvg: number }[] = [];
+      const { preferredLat: lat, preferredLon: lon } = settings;
+      if (lat !== null && lon !== null) {
+        try { cloudNights = await getNightsCloudCover(lat, lon); } catch { /* keep empty */ }
+      }
+
+      // Combine
+      const combined: NightForecast[] = kpByDateNight.map((n, i) => {
+        const cloud = cloudNights[i];
+        return {
+          label: labels[i],
+          date: n.date,
+          maxKp: n.maxKp,
+          cloudCoverAvg: cloud ? cloud.cloudCoverAvg : null,
+          isBest: false,
+        };
+      });
+
+      // Mark best night: highest kp score (60%) + lowest cloud (40%)
+      const scored = combined.map(n => ({
+        ...n,
+        score: (n.maxKp / 9) * 60 + (n.cloudCoverAvg !== null ? (100 - n.cloudCoverAvg) / 100 * 40 : (n.maxKp / 9) * 40),
+      }));
+      const bestIdx = scored.reduce((bi, s, i) => s.score > scored[bi].score ? i : bi, 0);
+      combined[bestIdx].isBest = true;
+      setNights(combined);
+    };
+
+    buildNights();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [forecastData, settings.preferredLat, settings.preferredLon]);
 
   const yesterdayForecastChart = useMemo((): TsPoint[] => {
     if (!showYesterday || historyRaw.length === 0) return [];
@@ -353,6 +418,67 @@ const Forecast = () => {
             </div>
           )}
         </div>
+
+        {/* Aurora Calendar — 3-night outlook */}
+        {nights.length > 0 && (
+          <div className="mt-4 sm:mt-8 glass-surface rounded-2xl p-4 sm:p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <Sparkles className="w-6 h-6 text-[#10b981]" />
+              <div>
+                <h3 className="text-lg sm:text-2xl font-bold text-white uppercase tracking-wide">
+                  {t('aurora.calendar.title')}
+                </h3>
+                <p className="text-[#64748b] text-sm">{t('aurora.calendar.subtitle')}</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {nights.map(night => {
+                const kp = night.maxKp;
+                const cloud = night.cloudCoverAvg;
+                const cloudLabel = cloud === null ? null : cloud < 30 ? t('aurora.calendar.clear') : cloud < 70 ? t('aurora.calendar.partlyCloudy') : t('aurora.calendar.overcast');
+                const nightLabel =
+                  night.label === 'tonight' ? t('aurora.calendar.tonight') :
+                  night.label === 'tomorrow' ? t('aurora.calendar.tomorrow') :
+                  t('aurora.calendar.nightAfter');
+
+                return (
+                  <div key={night.label} className={`relative rounded-2xl p-5 border transition-all ${
+                    night.isBest
+                      ? 'border-[#10b981]/50 bg-[#10b981]/5'
+                      : 'border-white/10 bg-white/5'
+                  }`}>
+                    {night.isBest && (
+                      <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] font-bold px-3 py-0.5 rounded-full bg-[#10b981] text-white whitespace-nowrap">
+                        ★ {t('aurora.calendar.bestNight')}
+                      </span>
+                    )}
+                    <div className="text-sm font-semibold text-[#94a3b8] uppercase tracking-wider mb-4">
+                      {nightLabel}
+                    </div>
+
+                    <div className="mb-3">
+                      <div className="text-xs text-[#64748b] uppercase tracking-wider mb-1">{t('aurora.calendar.maxKp')}</div>
+                      <div className="text-4xl font-bold" style={getKpGradientStyle(kp)}>
+                        {kp.toFixed(1)}
+                      </div>
+                    </div>
+
+                    {cloud !== null ? (
+                      <div className="flex items-center gap-2 mt-3 pt-3 border-t border-white/5">
+                        <Cloud className="w-4 h-4 text-[#64748b]" />
+                        <span className="text-sm text-[#94a3b8]">{cloud}% — {cloudLabel}</span>
+                      </div>
+                    ) : (
+                      <p className="text-xs text-[#475569] mt-3 pt-3 border-t border-white/5">
+                        {t('aurora.calendar.noLocation')}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         <div className="mt-4 sm:mt-8 glass-surface rounded-2xl p-4 sm:p-8">
           <h3 className="text-lg sm:text-lg sm:text-2xl font-bold text-white mb-2 sm:mb-4 uppercase tracking-wide">

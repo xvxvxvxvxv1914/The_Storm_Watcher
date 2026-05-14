@@ -560,6 +560,20 @@ const fr: Record<string, string> = {
   'uv.mod6': 'Modéré 6',
   'uv.high8': 'Élevé 8',
 
+  // Aurora Calendar
+  'aurora.calendar.title': 'Calendrier Aurora',
+  'aurora.calendar.subtitle': 'Prévisions sur 3 nuits',
+  'aurora.calendar.tonight': 'Ce soir',
+  'aurora.calendar.tomorrow': 'Demain soir',
+  'aurora.calendar.nightAfter': 'Après-demain soir',
+  'aurora.calendar.bestNight': 'Meilleure nuit',
+  'aurora.calendar.cloud': 'Couverture nuageuse',
+  'aurora.calendar.maxKp': 'Kp max',
+  'aurora.calendar.noLocation': 'Définissez un lieu dans les Paramètres pour voir la couverture nuageuse.',
+  'aurora.calendar.clear': 'Dégagé',
+  'aurora.calendar.partlyCloudy': 'Partiellement nuageux',
+  'aurora.calendar.overcast': 'Couvert',
+
   // 404 Not Found
   'notFound.title': "Perdu dans l'Espace",
   'notFound.description': 'Cette page a dérivé au-delà de la magnétosphère. Ne vous inquiétez pas — les données de tempête arrivent toujours.',

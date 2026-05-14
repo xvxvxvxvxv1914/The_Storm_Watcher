@@ -585,6 +585,20 @@ const en: Record<string, string> = {
   'niggg.calm.detail': 'The magnetic field is stable. No disruptions in navigation or communications.',
   'niggg.calm.humanEffect': 'No reported impact on humans.',
 
+  // Aurora Calendar
+  'aurora.calendar.title': 'Aurora Calendar',
+  'aurora.calendar.subtitle': '3-night viewing outlook',
+  'aurora.calendar.tonight': 'Tonight',
+  'aurora.calendar.tomorrow': 'Tomorrow night',
+  'aurora.calendar.nightAfter': 'Night after',
+  'aurora.calendar.bestNight': 'Best night',
+  'aurora.calendar.cloud': 'Cloud cover',
+  'aurora.calendar.maxKp': 'Max Kp',
+  'aurora.calendar.noLocation': 'Set a preferred location in Settings to see cloud cover.',
+  'aurora.calendar.clear': 'Clear',
+  'aurora.calendar.partlyCloudy': 'Partly cloudy',
+  'aurora.calendar.overcast': 'Overcast',
+
   // 404 Not Found
   'notFound.title': 'Lost in Space',
   'notFound.description': "This page drifted beyond the magnetosphere. Don't worry — the storm data is still streaming back home.",

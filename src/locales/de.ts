@@ -560,6 +560,20 @@ const de: Record<string, string> = {
   'uv.mod6': 'Moderat 6',
   'uv.high8': 'Hoch 8',
 
+  // Aurora Calendar
+  'aurora.calendar.title': 'Aurora-Kalender',
+  'aurora.calendar.subtitle': '3-Nächte-Vorschau',
+  'aurora.calendar.tonight': 'Heute Nacht',
+  'aurora.calendar.tomorrow': 'Morgen Nacht',
+  'aurora.calendar.nightAfter': 'Übermorgen Nacht',
+  'aurora.calendar.bestNight': 'Beste Nacht',
+  'aurora.calendar.cloud': 'Bewölkung',
+  'aurora.calendar.maxKp': 'Max Kp',
+  'aurora.calendar.noLocation': 'Bevorzugten Standort in den Einstellungen festlegen, um Bewölkung zu sehen.',
+  'aurora.calendar.clear': 'Klar',
+  'aurora.calendar.partlyCloudy': 'Teilweise bewölkt',
+  'aurora.calendar.overcast': 'Bedeckt',
+
   // 404 Not Found
   'notFound.title': 'Im Weltraum verloren',
   'notFound.description': 'Diese Seite ist jenseits der Magnetosphäre abgedriftet. Keine Sorge — die Sturmdaten werden noch übertragen.',

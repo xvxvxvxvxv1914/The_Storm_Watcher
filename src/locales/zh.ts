@@ -560,6 +560,20 @@ const zh: Record<string, string> = {
   'uv.mod6': '中等 6',
   'uv.high8': '高 8',
 
+  // Aurora Calendar
+  'aurora.calendar.title': '极光日历',
+  'aurora.calendar.subtitle': '3夜预报',
+  'aurora.calendar.tonight': '今晚',
+  'aurora.calendar.tomorrow': '明晚',
+  'aurora.calendar.nightAfter': '后天晚上',
+  'aurora.calendar.bestNight': '最佳夜晚',
+  'aurora.calendar.cloud': '云量',
+  'aurora.calendar.maxKp': '最大Kp',
+  'aurora.calendar.noLocation': '在设置中设置首选位置以查看云量。',
+  'aurora.calendar.clear': '晴朗',
+  'aurora.calendar.partlyCloudy': '部分多云',
+  'aurora.calendar.overcast': '阴天',
+
   // 404 Not Found
   'notFound.title': '迷失在太空',
   'notFound.description': '此页面已漂移到磁层之外。别担心——风暴数据仍在传输中。',

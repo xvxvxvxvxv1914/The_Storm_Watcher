@@ -1,3 +1,11 @@
+export interface NightForecast {
+  label: 'tonight' | 'tomorrow' | 'nightAfter';
+  date: Date;
+  maxKp: number;
+  cloudCoverAvg: number | null; // null if location unknown
+  isBest: boolean;
+}
+
 const fetchJson = async <T,>(url: string, timeoutMs = 10000): Promise<T> => {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
@@ -29,6 +37,41 @@ export interface SkyData {
   nightHours: SkyHour[];
   sunset: string;
   sunrise: string;
+}
+
+// Returns avg cloud cover % for nighttime hours across 3 nights (null per night if data missing).
+// kpByHour: map of ISO-hour-string → kp value from the NOAA forecast.
+export async function getNightsCloudCover(
+  lat: number,
+  lon: number,
+): Promise<{ date: Date; cloudCoverAvg: number }[]> {
+  const params = new URLSearchParams({
+    latitude: String(lat),
+    longitude: String(lon),
+    hourly: 'cloud_cover',
+    daily: 'sunrise,sunset',
+    timezone: 'auto',
+    forecast_days: '4',
+  });
+  const { hourly, daily } = await fetchJson<{
+    hourly: { time: string[]; cloud_cover: number[] };
+    daily: { sunrise: string[]; sunset: string[]; time: string[] };
+  }>(`https://api.open-meteo.com/v1/forecast?${params}`);
+
+  const nights: { date: Date; cloudCoverAvg: number }[] = [];
+  // Process first 3 nights: sunset[i] → sunrise[i+1]
+  for (let i = 0; i < 3 && i < daily.sunset.length - 1; i++) {
+    const sunset = new Date(daily.sunset[i]);
+    const sunrise = new Date(daily.sunrise[i + 1]);
+    const nightHours = hourly.time
+      .map((t, idx) => ({ date: new Date(t), cover: hourly.cloud_cover[idx] }))
+      .filter(h => h.date >= sunset && h.date <= sunrise);
+    const avg = nightHours.length
+      ? Math.round(nightHours.reduce((s, h) => s + h.cover, 0) / nightHours.length)
+      : 100;
+    nights.push({ date: new Date(daily.time[i]), cloudCoverAvg: avg });
+  }
+  return nights;
 }
 
 export const getSkyVisibility = async (lat: number, lon: number, kp: number): Promise<SkyData> => {

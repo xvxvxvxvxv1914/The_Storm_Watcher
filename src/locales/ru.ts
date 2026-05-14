@@ -560,6 +560,20 @@ const ru: Record<string, string> = {
   'uv.mod6': 'Умеренный 6',
   'uv.high8': 'Высокий 8',
 
+  // Aurora Calendar
+  'aurora.calendar.title': 'Календарь Авроры',
+  'aurora.calendar.subtitle': 'Прогноз на 3 ночи',
+  'aurora.calendar.tonight': 'Сегодня ночью',
+  'aurora.calendar.tomorrow': 'Завтра ночью',
+  'aurora.calendar.nightAfter': 'Послезавтра ночью',
+  'aurora.calendar.bestNight': 'Лучшая ночь',
+  'aurora.calendar.cloud': 'Облачность',
+  'aurora.calendar.maxKp': 'Макс Kp',
+  'aurora.calendar.noLocation': 'Укажите местоположение в Настройках, чтобы видеть облачность.',
+  'aurora.calendar.clear': 'Ясно',
+  'aurora.calendar.partlyCloudy': 'Переменная облачность',
+  'aurora.calendar.overcast': 'Пасмурно',
+
   // 404 Not Found
   'notFound.title': 'Потерян в Космосе',
   'notFound.description': 'Эта страница улетела за пределы магнитосферы. Не беспокойтесь — данные о буре продолжают поступать.',

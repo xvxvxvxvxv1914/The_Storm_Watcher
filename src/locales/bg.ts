@@ -578,6 +578,20 @@ const bg: Record<string, string> = {
   'dashboard.kp7dayNote': 'Дневен максимален Kp. Слънчевата активност се повтаря на всеки ~27 дни — периодът на въртене на Слънцето.',
   'home.stormScore.saveImage': 'Запази като изображение',
 
+  // Aurora Calendar
+  'aurora.calendar.title': 'Aurora Календар',
+  'aurora.calendar.subtitle': 'Прогноза за 3 нощи',
+  'aurora.calendar.tonight': 'Тази вечер',
+  'aurora.calendar.tomorrow': 'Утре вечер',
+  'aurora.calendar.nightAfter': 'Вдругиден',
+  'aurora.calendar.bestNight': 'Най-добра нощ',
+  'aurora.calendar.cloud': 'Облачност',
+  'aurora.calendar.maxKp': 'Макс Kp',
+  'aurora.calendar.noLocation': 'Задайте местоположение в Настройки за да видите облачността.',
+  'aurora.calendar.clear': 'Ясно',
+  'aurora.calendar.partlyCloudy': 'Частично облачно',
+  'aurora.calendar.overcast': 'Облачно',
+
   // 404 Not Found
   'notFound.title': 'Изгубен в Космоса',
   'notFound.description': 'Тази страница се е отдалечила отвъд магнетосферата. Не се притеснявай — данните за бурите продължават да пристигат.',

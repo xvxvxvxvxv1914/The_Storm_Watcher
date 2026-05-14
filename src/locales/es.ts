@@ -560,6 +560,20 @@ const es: Record<string, string> = {
   'uv.mod6': 'Moderado 6',
   'uv.high8': 'Alto 8',
 
+  // Aurora Calendar
+  'aurora.calendar.title': 'Calendario Aurora',
+  'aurora.calendar.subtitle': 'Pronóstico de 3 noches',
+  'aurora.calendar.tonight': 'Esta noche',
+  'aurora.calendar.tomorrow': 'Mañana por la noche',
+  'aurora.calendar.nightAfter': 'Pasado mañana',
+  'aurora.calendar.bestNight': 'Mejor noche',
+  'aurora.calendar.cloud': 'Nubosidad',
+  'aurora.calendar.maxKp': 'Kp máx',
+  'aurora.calendar.noLocation': 'Establece una ubicación en Ajustes para ver la nubosidad.',
+  'aurora.calendar.clear': 'Despejado',
+  'aurora.calendar.partlyCloudy': 'Parcialmente nublado',
+  'aurora.calendar.overcast': 'Nublado',
+
   // 404 Not Found
   'notFound.title': 'Perdido en el Espacio',
   'notFound.description': 'Esta página se ha alejado más allá de la magnetosfera. No te preocupes — los datos de tormenta siguen llegando.',
