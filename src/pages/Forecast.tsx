@@ -553,7 +553,8 @@ const Forecast = () => {
                       </div>
                     ) : (
                       <p className="text-xs text-[#475569] mt-3 pt-3 border-t border-white/5">
-                        {t('aurora.calendar.noLocation')}
+                        {t('aurora.calendar.noLocationShort') || 'No cloud data —'}{' '}
+                        <Link to="/settings" className="text-[#10b981] hover:underline">{t('nav.settings') || 'set location'}</Link>
                       </p>
                     )}
                   </div>

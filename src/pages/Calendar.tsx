@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { CalendarDays, Cloud, Sparkles } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { getKpForecast, getKpGradientStyle } from '../services/noaaApi';
 import { getNightsCloudCover, type NightForecast } from '../services/skyApi';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -147,7 +148,7 @@ export default function Calendar() {
       </div>
 
       {/* Location picker */}
-      <div className="mb-8">
+      <div className="mb-3">
         <LocationPicker
           lat={lat}
           lon={lon}
@@ -156,6 +157,12 @@ export default function Calendar() {
           onRequestGPS={handleRequestGPS}
         />
       </div>
+      {!hasLocation && (
+        <p className="text-[#475569] text-xs mb-6">
+          {t('aurora.calendar.noLocationHint') || 'No location saved — cloud cover not available. Set a location above or in'}{' '}
+          <Link to="/settings" className="text-[#10b981] hover:underline">{t('nav.settings') || 'Settings'}</Link>.
+        </p>
+      )}
 
       {/* Night cards */}
       {loading ? (

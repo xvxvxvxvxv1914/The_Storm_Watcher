@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { AlertTriangle, Info, AlertOctagon, ShieldAlert, Flame, Wind } from 'lucide-react';
 import { getAlerts, Alert as AlertType } from '../services/noaaApi';
@@ -11,27 +11,31 @@ const Alerts = () => {
   const [cmeEvents, setCmeEvents] = useState<CmeEvent[]>([]);
   const [flareEvents, setFlareEvents] = useState<FlareEvent[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
 
-  useEffect(() => {
-    const fetchAlerts = async () => {
-      try {
-        const [noaaData, cmeData, flareData] = await Promise.allSettled([
-          getAlerts(),
-          getDonkiCme(),
-          getDonkiFlares(),
-        ]);
-        if (noaaData.status === 'fulfilled') setAlerts(noaaData.value || []);
-        if (cmeData.status === 'fulfilled') setCmeEvents(cmeData.value || []);
-        if (flareData.status === 'fulfilled') setFlareEvents(flareData.value || []);
-        setLastUpdated(new Date());
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching alerts:', error);
-        setLoading(false);
-      }
-    };
+  const fetchAlerts = useCallback(async () => {
+    setLoading(true);
+    const [noaaData, cmeData, flareData] = await Promise.allSettled([
+      getAlerts(),
+      getDonkiCme(),
+      getDonkiFlares(),
+    ]);
+    const anySucceeded = [noaaData, cmeData, flareData].some(r => r.status === 'fulfilled');
+    if (!anySucceeded) {
+      setFetchError(true);
+      setLoading(false);
+      return;
+    }
+    setFetchError(false);
+    if (noaaData.status === 'fulfilled') setAlerts(noaaData.value || []);
+    if (cmeData.status === 'fulfilled') setCmeEvents(cmeData.value || []);
+    if (flareData.status === 'fulfilled') setFlareEvents(flareData.value || []);
+    setLastUpdated(new Date());
+    setLoading(false);
+  }, []);
 
+  useEffect(() => {
     fetchAlerts();
     const interval = setInterval(() => { if (document.visibilityState !== 'hidden') fetchAlerts(); }, 120000);
     return () => clearInterval(interval);
@@ -79,6 +83,24 @@ const Alerts = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="w-16 h-16 border-4 border-[#00ff88]/20 border-t-[#00ff88] rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (fetchError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <div className="text-center glass-surface rounded-2xl p-10 border border-white/10 max-w-sm w-full">
+          <AlertOctagon className="w-12 h-12 text-[#ef4444] mx-auto mb-4" />
+          <h2 className="text-white font-semibold text-lg mb-2">{t('alerts.fetchError') || 'Could not load alerts'}</h2>
+          <p className="text-[#64748b] text-sm mb-6">{t('alerts.fetchErrorDesc') || 'NOAA servers may be temporarily unavailable.'}</p>
+          <button
+            onClick={fetchAlerts}
+            className="px-5 py-2.5 rounded-xl bg-[#ef4444]/20 border border-[#ef4444]/30 text-[#ef4444] text-sm font-medium hover:bg-[#ef4444]/30 transition-colors"
+          >
+            {t('alerts.retry') || 'Try again'}
+          </button>
+        </div>
       </div>
     );
   }

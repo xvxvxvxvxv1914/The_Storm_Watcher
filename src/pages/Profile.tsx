@@ -44,6 +44,7 @@ export default function Profile() {
   const [error, setError] = useState('');
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleteEmailInput, setDeleteEmailInput] = useState('');
   const [portalLoading, setPortalLoading] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [avatarMsg, setAvatarMsg] = useState('');
@@ -327,7 +328,7 @@ export default function Profile() {
 
         {!confirmDelete ? (
           <button
-            onClick={() => setConfirmDelete(true)}
+            onClick={() => { setConfirmDelete(true); setDeleteEmailInput(''); }}
             className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-[#ef4444]/40 text-[#ef4444] text-sm font-medium hover:bg-[#ef4444]/10 transition-colors"
           >
             <Trash2 className="w-4 h-4" />
@@ -336,9 +337,19 @@ export default function Profile() {
         ) : (
           <div className="space-y-3">
             <p className="text-[#ef4444] text-sm font-semibold">{t('profile.deleteConfirm') || 'Are you sure? This is permanent.'}</p>
+            <p className="text-[#64748b] text-xs">{t('profile.deleteTypeEmail') || 'Type your email address to confirm:'} <span className="text-[#94a3b8] font-mono">{user?.email}</span></p>
+            <input
+              type="email"
+              value={deleteEmailInput}
+              onChange={e => setDeleteEmailInput(e.target.value)}
+              placeholder={user?.email || ''}
+              className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#ef4444]/50"
+            />
             <div className="flex gap-3">
               <button
+                disabled={deleting || deleteEmailInput !== user?.email}
                 onClick={async () => {
+                  if (deleteEmailInput !== user?.email) return;
                   setDeleting(true);
                   try {
                     const { data: { session } } = await supabase.auth.getSession();
@@ -359,7 +370,6 @@ export default function Profile() {
                     setConfirmDelete(false);
                   }
                 }}
-                disabled={deleting}
                 className="px-5 py-2.5 rounded-xl bg-[#ef4444] text-white text-sm font-semibold hover:bg-[#dc2626] transition-colors disabled:opacity-50"
               >
                 {deleting ? (t('profile.deleting') || 'Deleting…') : (t('profile.confirmDelete') || 'Yes, delete everything')}

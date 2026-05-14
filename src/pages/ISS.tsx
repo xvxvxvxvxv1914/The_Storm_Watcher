@@ -211,7 +211,7 @@ const ISS = () => {
                   </div>
                   <div className="text-center">
                     <div className="text-[#64748b] text-xs uppercase tracking-wider mb-1">{t('iss.speed')}</div>
-                    <div className="text-xl font-bold text-white">{(position.velocity / 3600).toFixed(2)} km/s</div>
+                    <div className="text-xl font-bold text-white">{Math.round(position.velocity).toLocaleString()} km/h</div>
                   </div>
                 </div>
               )}

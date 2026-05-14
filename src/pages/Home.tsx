@@ -29,6 +29,7 @@ const Home = () => {
   const [retryCount, setRetryCount] = useState(0);
   const [shareOpen, setShareOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [downloaded, setDownloaded] = useState(false);
   const [pulseData, setPulseData] = useState<{ mood: string; symptom: string; count: number } | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [timeAgo, setTimeAgo] = useState('');
@@ -417,6 +418,11 @@ const Home = () => {
                 >
                   {kpValue !== null ? Math.round((kpValue / 9) * 100) : 0}
                 </div>
+                {downloaded && (
+                  <div className="self-start mt-2 px-3 py-1.5 rounded-lg bg-[#10b981]/20 border border-[#10b981]/30 text-[#10b981] text-xs font-medium animate-fade-in">
+                    ✓ {t('home.stormScore.imageSaved') || 'Image saved!'}
+                  </div>
+                )}
                 <div className="relative self-start mt-4" ref={shareRef}>
                   <button
                     onClick={() => setShareOpen(p => !p)}
@@ -486,6 +492,9 @@ const Home = () => {
                               a.download = `storm-score-${score}.png`;
                               a.click();
                               URL.revokeObjectURL(url);
+                              setDownloaded(true);
+                              setShareOpen(false);
+                              setTimeout(() => setDownloaded(false), 2500);
                             }
                           }}
                           className="w-full flex items-center gap-3 px-4 py-2 text-sm text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors"

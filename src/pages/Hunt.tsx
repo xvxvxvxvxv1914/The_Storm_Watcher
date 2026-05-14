@@ -188,9 +188,12 @@ export default function Hunt() {
               {t('hunt.signInToReport') || 'Sign in to report'}
             </Link>
           ) : cooldownMs > 0 ? (
-            <span className="text-[#64748b] text-sm px-4 py-2 rounded-xl border border-white/10">
-              {t('hunt.cooldown') || 'Next report in'} {fmtCooldown(cooldownMs)}
-            </span>
+            <div className="text-center">
+              <span className="text-[#64748b] text-sm px-4 py-2 rounded-xl border border-white/10 inline-block">
+                {t('hunt.cooldown') || 'Next report in'} {fmtCooldown(cooldownMs)}
+              </span>
+              <p className="text-[#334155] text-xs mt-1.5">{t('hunt.cooldownHint') || 'One report per hour to keep the data accurate.'}</p>
+            </div>
           ) : (
             <button
               onClick={() => setShowForm(f => !f)}

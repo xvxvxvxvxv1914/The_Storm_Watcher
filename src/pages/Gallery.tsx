@@ -63,6 +63,7 @@ export default function Gallery() {
   const [showForm, setShowForm] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<GalleryPhoto | null>(null);
 
   const fetchPhotos = async (start: number, append: boolean) => {
     if (append) setLoadingMore(true);
@@ -159,10 +160,11 @@ export default function Gallery() {
     }
   };
 
-  const handleDelete = async (photo: GalleryPhoto) => {
-    if (!user || user.id !== photo.user_id) return;
-    await supabase.from('aurora_photos').delete().eq('id', photo.id);
-    setPhotos(prev => prev.filter(p => p.id !== photo.id));
+  const handleDelete = async () => {
+    if (!pendingDelete || !user || user.id !== pendingDelete.user_id) return;
+    await supabase.from('aurora_photos').delete().eq('id', pendingDelete.id);
+    setPhotos(prev => prev.filter(p => p.id !== pendingDelete.id));
+    setPendingDelete(null);
   };
 
   return (
@@ -308,9 +310,9 @@ export default function Gallery() {
                     )}
                     {user && user.id === photo.user_id && (
                       <button
-                        onClick={() => handleDelete(photo)}
+                        onClick={() => setPendingDelete(photo)}
                         className="ml-auto text-[#ef4444]/70 hover:text-[#ef4444] transition-colors"
-                        title="Delete"
+                        title="Delete photo"
                       >
                         <X className="w-3.5 h-3.5" />
                       </button>
@@ -332,6 +334,30 @@ export default function Gallery() {
             </div>
           )}
         </>
+      )}
+
+      {/* Delete confirmation modal */}
+      {pendingDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/60" onClick={() => setPendingDelete(null)}>
+          <div className="glass-surface rounded-2xl p-6 border border-white/10 max-w-sm w-full" onClick={e => e.stopPropagation()}>
+            <h3 className="text-white font-semibold mb-2">{t('gallery.deleteTitle') || 'Delete photo?'}</h3>
+            <p className="text-[#64748b] text-sm mb-5">{t('gallery.deleteConfirm') || 'This photo will be permanently removed from the gallery.'}</p>
+            <div className="flex gap-3">
+              <button
+                onClick={handleDelete}
+                className="flex-1 py-2.5 rounded-xl bg-[#ef4444] text-white text-sm font-semibold hover:bg-[#dc2626] transition-colors"
+              >
+                {t('gallery.deleteYes') || 'Delete'}
+              </button>
+              <button
+                onClick={() => setPendingDelete(null)}
+                className="flex-1 py-2.5 rounded-xl border border-white/10 text-[#94a3b8] text-sm font-medium hover:text-white hover:bg-white/5 transition-colors"
+              >
+                {t('profile.cancel') || 'Cancel'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

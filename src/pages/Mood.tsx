@@ -50,6 +50,7 @@ const Mood = () => {
   const [hourlyData, setHourlyData] = useState<HourlyData[]>([]);
   const [totalEntries, setTotalEntries] = useState(0);
   const [hasSubmittedToday, setHasSubmittedToday] = useState(false);
+  const [submittedAt, setSubmittedAt] = useState<Date | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitMessage, setSubmitMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
@@ -78,12 +79,13 @@ const Mood = () => {
 
     const { data } = await supabase
       .from('mood_entries')
-      .select('id')
+      .select('id, created_at')
       .eq('user_session_id', sessionId)
       .gte('created_at', today.toISOString())
       .maybeSingle();
 
     setHasSubmittedToday(!!data);
+    if (data) setSubmittedAt(new Date((data as { id: string; created_at: string }).created_at));
     setLoading(false);
   };
 
@@ -319,6 +321,11 @@ const Mood = () => {
             </div>
             <h3 className="text-2xl font-semibold text-white mb-2">{t('mood.thankYou')}</h3>
             <p className="text-gray-400">{t('mood.alreadySubmitted')}</p>
+            {submittedAt && (
+              <p className="text-[#475569] text-xs mt-2">
+                {t('mood.submittedAt') || 'Submitted at'} {submittedAt.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
+              </p>
+            )}
           </div>
         )}
 
