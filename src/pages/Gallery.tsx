@@ -276,7 +276,24 @@ export default function Gallery() {
       ) : photos.length === 0 ? (
         <div className="text-center py-24">
           <Image className="w-16 h-16 text-[#334155] mx-auto mb-4" />
-          <p className="text-[#64748b] text-lg">{t('gallery.noPhotos') || 'No photos yet. Be the first to share!'}</p>
+          <p className="text-white font-semibold text-lg mb-1">{t('gallery.noPhotos') || 'No photos yet'}</p>
+          <p className="text-[#64748b] text-sm mb-5">Be the first to share an aurora photo with the community!</p>
+          {user ? (
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] text-white font-semibold text-sm hover:opacity-90 transition-opacity"
+            >
+              <Upload className="w-4 h-4" />
+              Upload a Photo
+            </button>
+          ) : (
+            <Link
+              to="/auth"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] text-white font-semibold text-sm hover:opacity-90 transition-opacity"
+            >
+              Sign in to Upload
+            </Link>
+          )}
         </div>
       ) : (
         <>

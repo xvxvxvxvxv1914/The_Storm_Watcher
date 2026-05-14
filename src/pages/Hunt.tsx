@@ -354,7 +354,10 @@ export default function Hunt() {
             {[1, 2, 3].map(i => <div key={i} className="h-8 rounded-lg skeleton" />)}
           </div>
         ) : leaderboard.length === 0 ? (
-          <p className="text-[#64748b] text-sm">{t('hunt.noSightings') || 'No sightings yet.'}</p>
+          <div className="text-center py-4">
+            <p className="text-[#94a3b8] text-sm font-semibold mb-1">{t('hunt.noSightings') || 'No sightings yet'}</p>
+            <p className="text-[#475569] text-xs">Report the first aurora sighting and claim the top spot!</p>
+          </div>
         ) : (
           <div className="space-y-2">
             {leaderboard.map((entry, idx) => (
@@ -366,7 +369,7 @@ export default function Hunt() {
                   <span className={`text-sm font-bold w-6 text-center ${idx === 0 ? 'text-[#fbbf24]' : idx === 1 ? 'text-[#94a3b8]' : idx === 2 ? 'text-[#cd7f32]' : 'text-[#475569]'}`}>
                     {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx + 1}`}
                   </span>
-                  <span className="text-white text-sm">{entry.display_name ?? t('hunt.anonymous') || 'Anonymous'}</span>
+                  <span className="text-white text-sm">{entry.display_name ?? (t('hunt.anonymous') || 'Anonymous')}</span>
                 </div>
                 <span className="text-[#fbbf24] text-sm font-bold">{entry.sightings_count} {t('hunt.sightings') || 'sightings'}</span>
               </div>
@@ -383,14 +386,17 @@ export default function Hunt() {
             {[1, 2, 3].map(i => <div key={i} className="h-12 rounded-xl skeleton" />)}
           </div>
         ) : recentSightings.length === 0 ? (
-          <p className="text-[#64748b] text-sm">{t('hunt.noSightings') || 'No sightings yet. Be the first!'}</p>
+          <div className="text-center py-4">
+            <p className="text-[#94a3b8] text-sm font-semibold mb-1">No community sightings yet</p>
+            <p className="text-[#475569] text-xs">Use the form above to log your first aurora sighting.</p>
+          </div>
         ) : (
           <div className="space-y-3">
             {recentSightings.map(s => (
               <div key={s.id} className="flex items-start justify-between gap-4 py-2 border-b border-white/5 last:border-0">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-white text-sm font-medium truncate">{s.display_name ?? t('hunt.anonymous') || 'Anonymous'}</span>
+                    <span className="text-white text-sm font-medium truncate">{s.display_name ?? (t('hunt.anonymous') || 'Anonymous')}</span>
                     {s.location_name && (
                       <span className="inline-flex items-center gap-1 text-[#64748b] text-xs">
                         <MapPin className="w-3 h-3 flex-shrink-0" />

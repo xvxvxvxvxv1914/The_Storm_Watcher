@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback, lazy, Suspense, useMemo } from 'react';
+import { useEffect, useState, useRef, useCallback, lazy, Suspense, useMemo, Component, type ReactNode } from 'react';
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
 import { Helmet } from 'react-helmet-async';
 import { MapPin, Eye, Sparkles, AlertTriangle, Check, Zap, Share2 } from 'lucide-react';
@@ -10,6 +10,27 @@ import { useTheme } from '../contexts/ThemeContext';
 import { logError } from '../utils/logger';
 
 const AuroraGlobe = lazy(() => import('../components/AuroraGlobe'));
+
+class GlobeErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  render() {
+    if (this.state.failed) {
+      return (
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center px-6">
+          <div className="text-[#64748b] text-sm">3D globe failed to load</div>
+          <button
+            className="text-xs px-4 py-1.5 rounded-full border border-[#10b981]/40 text-[#10b981] hover:bg-[#10b981]/10 transition-colors"
+            onClick={() => this.setState({ failed: false })}
+          >
+            Retry
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 const Aurora = () => {
   const { t } = useLanguage();
@@ -433,21 +454,23 @@ const Aurora = () => {
           </div>
           
           <div ref={globeContainerRef} className="relative w-full flex justify-center cursor-grab active:cursor-grabbing" style={{ minHeight: Math.max(320, Math.round(globeWidth * 0.75)), background: '#050510' }}>
-            <Suspense fallback={
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <div className="w-12 h-12 border-4 border-[#10b981]/20 border-t-[#10b981] rounded-full animate-spin mb-4" />
-                <div className="text-[#10b981] font-bold tracking-widest text-sm uppercase animate-pulse">{t('aurora.loadingModel')}</div>
-              </div>
-            }>
-              <AuroraGlobe
-                globeWidth={globeWidth}
-                isGlobeLoading={isGlobeLoading}
-                auroraData={auroraData}
-                theme={theme}
-                userLat={userLat}
-                userLng={userLng}
-              />
-            </Suspense>
+            <GlobeErrorBoundary>
+              <Suspense fallback={
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <div className="w-12 h-12 border-4 border-[#10b981]/20 border-t-[#10b981] rounded-full animate-spin mb-4" />
+                  <div className="text-[#10b981] font-bold tracking-widest text-sm uppercase animate-pulse">{t('aurora.loadingModel')}</div>
+                </div>
+              }>
+                <AuroraGlobe
+                  globeWidth={globeWidth}
+                  isGlobeLoading={isGlobeLoading}
+                  auroraData={auroraData}
+                  theme={theme}
+                  userLat={userLat}
+                  userLng={userLng}
+                />
+              </Suspense>
+            </GlobeErrorBoundary>
           </div>
           
           <div className="w-full px-8 py-6" style={{ borderTop: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)' }}>

@@ -12,6 +12,7 @@ interface Camera {
   flag: string;
   url: string;
   embedUrl?: string;
+  live?: boolean;
   description: string;
   tags: string[];
 }
@@ -26,6 +27,7 @@ const CAMERAS: Camera[] = [
     flag: '🇨🇦',
     url: 'https://explore.org/livecams/arctic-and-northern-lights/northern-lights-camera-arviat',
     embedUrl: 'https://explore.org/livecams/arctic-and-northern-lights/northern-lights-camera-arviat',
+    live: true,
     description: 'Live camera from the Canadian Arctic, optimized for aurora viewing.',
     tags: ['24/7', 'Sky Camera'],
   },
@@ -199,7 +201,17 @@ export default function Livestream() {
             className="glass-surface rounded-2xl p-5 border border-white/10 hover:border-white/20 transition-all group flex flex-col"
           >
             <div className="flex items-start justify-between mb-3">
-              <span className="text-2xl">{cam.flag}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">{cam.flag}</span>
+                {cam.live ? (
+                  <span className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse inline-block" />
+                    LIVE
+                  </span>
+                ) : (
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-[#475569]">External</span>
+                )}
+              </div>
               <div className="flex gap-1 flex-wrap justify-end">
                 {cam.tags.map(tag => (
                   <span key={tag} className="text-[10px] px-2 py-0.5 rounded-full bg-white/5 text-[#64748b] border border-white/5">{tag}</span>

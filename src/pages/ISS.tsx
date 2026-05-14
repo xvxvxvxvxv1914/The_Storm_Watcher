@@ -238,7 +238,13 @@ const ISS = () => {
               <div className="w-10 h-10 border-4 border-[#f97316]/20 border-t-[#f97316] rounded-full animate-spin" />
             </div>
           ) : passes.length === 0 ? (
-            <div className="text-center py-8 text-[#94a3b8]">{t('iss.noPasses')}</div>
+            <div className="text-center py-10">
+              <Satellite className="w-10 h-10 text-[#334155] mx-auto mb-3" />
+              <p className="text-[#94a3b8] text-sm font-semibold mb-1">{t('iss.noPasses') || 'No visible passes in the next 7 days'}</p>
+              <p className="text-[#475569] text-xs max-w-xs mx-auto leading-relaxed">
+                The ISS orbit doesn't always align with your location at night. Try checking again in a few days, or update your location in Settings.
+              </p>
+            </div>
           ) : (
             <div className="space-y-4">
               {passes.map((pass, i) => (
