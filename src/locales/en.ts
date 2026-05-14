@@ -642,6 +642,32 @@ const en: Record<string, string> = {
   'gallery.locationName': 'Location (optional)',
   'gallery.signInToUpload': 'Sign in to share photos',
   'gallery.loadMore': 'Load more',
+
+  // Aurora Hunt
+  'hunt.title': 'Aurora Hunt',
+  'hunt.subtitle': 'Report sightings, earn badges, lead the hunt',
+  'nav.hunt': 'Aurora Hunt',
+  'hunt.report': 'Report Sighting',
+  'hunt.signInToReport': 'Sign in to report',
+  'hunt.location': 'Location',
+  'hunt.intensity': 'Aurora intensity',
+  'hunt.notes': 'Notes (optional)',
+  'hunt.submit': 'Submit Sighting',
+  'hunt.reportSuccess': 'Sighting reported! +10 points',
+  'hunt.reportError': 'Failed to report sighting',
+  'hunt.locationRequired': 'Please enter your location',
+  'hunt.cooldown': 'Next report in',
+  'hunt.currentKp': 'Current Kp:',
+  'hunt.newBadge': 'New badge:',
+  'hunt.myStats': 'My Stats',
+  'hunt.sightings': 'Sightings',
+  'hunt.points': 'Points',
+  'hunt.rank': 'Rank',
+  'hunt.mySightings': 'My sightings',
+  'hunt.leaderboard': 'Leaderboard',
+  'hunt.recentSightings': 'Recent Sightings',
+  'hunt.noSightings': 'No sightings yet. Be the first!',
+  'hunt.anonymous': 'Anonymous',
 };
 
 export default en;

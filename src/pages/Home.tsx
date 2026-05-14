@@ -609,14 +609,13 @@ const Home = () => {
             <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.gallery.desc')}</p>
           </Link>
 
-          <div className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group relative opacity-60">
-            <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#f59e0b]/20 text-[#fbbf24] border border-[#f59e0b]/30">{t('home.comingSoon')}</span>
+          <Link to="/hunt" className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group block">
             <div className="w-14 h-14 bg-gradient-to-br from-[#f59e0b] to-[#d97706] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Trophy className="w-7 h-7 text-white" />
             </div>
             <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.hunt.title')}</h3>
             <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.hunt.desc')}</p>
-          </div>
+          </Link>
 
           <div className="glass-surface rounded-2xl p-7 hover:glow-purple transition-all group relative opacity-60">
             <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#ec4899]/20 text-[#f472b6] border border-[#ec4899]/30">{t('home.comingSoon')}</span>

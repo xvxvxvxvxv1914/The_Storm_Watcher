@@ -635,6 +635,32 @@ const bg: Record<string, string> = {
   'gallery.locationName': 'Местоположение (по избор)',
   'gallery.signInToUpload': 'Влез за да споделиш снимки',
   'gallery.loadMore': 'Зареди още',
+
+  // Aurora Hunt
+  'hunt.title': 'Лов на Аврора',
+  'hunt.subtitle': 'Докладвай наблюдения, спечели значки, води класацията',
+  'nav.hunt': 'Лов на Аврора',
+  'hunt.report': 'Докладвай наблюдение',
+  'hunt.signInToReport': 'Влез за да докладваш',
+  'hunt.location': 'Местоположение',
+  'hunt.intensity': 'Интензивност на авророта',
+  'hunt.notes': 'Бележки (по избор)',
+  'hunt.submit': 'Изпрати',
+  'hunt.reportSuccess': 'Наблюдението е докладвано! +10 точки',
+  'hunt.reportError': 'Грешка при докладването',
+  'hunt.locationRequired': 'Моля въведи местоположение',
+  'hunt.cooldown': 'Следващо докладване след',
+  'hunt.currentKp': 'Текущо Kp:',
+  'hunt.newBadge': 'Нова значка:',
+  'hunt.myStats': 'Моя статистика',
+  'hunt.sightings': 'Наблюдения',
+  'hunt.points': 'Точки',
+  'hunt.rank': 'Ранг',
+  'hunt.mySightings': 'Моите наблюдения',
+  'hunt.leaderboard': 'Класация',
+  'hunt.recentSightings': 'Последни наблюдения',
+  'hunt.noSightings': 'Все още няма наблюдения. Бъди първи!',
+  'hunt.anonymous': 'Анонимен',
 };
 
 export default bg;

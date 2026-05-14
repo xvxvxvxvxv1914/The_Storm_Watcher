@@ -30,6 +30,7 @@ const Footer = () => {
       heading: isBg ? 'Здраве & Информация' : 'Health & Info',
       links: [
         { to: '/gallery',          label: t('nav.gallery') || 'Gallery' },
+        { to: '/hunt',             label: t('hunt.title') || 'Aurora Hunt' },
         { to: '/mood',             label: t('nav.mood') },
         { to: '/magnetic-effects', label: isBg ? 'Магнитни бури & Здраве' : 'Magnetic & Health' },
         { to: '/faq',              label: 'Aurora FAQ' },
