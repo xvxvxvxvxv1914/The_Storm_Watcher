@@ -425,6 +425,15 @@ const en: Record<string, string> = {
   'profile.cancel': 'Cancel',
   'profile.deleting': 'Deleting…',
   'profile.deleteError': 'Failed to delete account. Please try again.',
+  'profile.currentPlan': 'Current plan',
+  'profile.manageSubscription': 'Manage subscription',
+  'profile.upgrade': 'Upgrade',
+  'profile.portalError': 'Failed to open billing portal',
+  'profile.memberSince': 'Member since',
+  'profile.subscriptionEnds': 'Subscription ends',
+  'profile.uploadAvatar': 'Upload photo',
+  'profile.avatarUpdated': 'Photo updated!',
+  'profile.avatarError': 'Failed to upload photo',
 
   // Settings page
   'settings.title': 'Settings',

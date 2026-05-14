@@ -1,16 +1,42 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
-import { User, Save, ArrowLeft, Trash2, Zap, Star, CreditCard } from 'lucide-react';
+import { User, Save, ArrowLeft, Trash2, Zap, Star, CreditCard, Camera } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { supabase } from '../lib/supabase';
 import { Link } from 'react-router-dom';
 
+function compressImage(file: File, maxSize = 256): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const size = Math.min(img.width, img.height, maxSize);
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d')!;
+      const sx = (img.width - size) / 2;
+      const sy = (img.height - size) / 2;
+      ctx.drawImage(img, sx, sy, size, size, 0, 0, size, size);
+      canvas.toBlob(
+        (blob) => { if (blob) resolve(blob); else reject(new Error('toBlob failed')); },
+        'image/jpeg',
+        0.85,
+      );
+    };
+    img.onerror = reject;
+    img.src = url;
+  });
+}
+
 export default function Profile() {
   const { user, profile, updateProfile, loading } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [fullName, setFullName] = useState('');
   const [saving, setSaving] = useState(false);
@@ -19,6 +45,8 @@ export default function Profile() {
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [portalLoading, setPortalLoading] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [avatarMsg, setAvatarMsg] = useState('');
 
   const plan = profile?.plan ?? 'free';
   const isPro = plan === 'pro';
@@ -27,6 +55,14 @@ export default function Profile() {
 
   const planColor = isPremium ? '#a855f7' : isPro ? '#f97316' : '#10b981';
   const PlanIcon = isPremium ? Star : isPro ? Zap : null;
+
+  const memberSince = profile?.created_at
+    ? new Date(profile.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
+    : null;
+
+  const subscriptionEnd = profile?.subscription_period_end
+    ? new Date(profile.subscription_period_end * 1000).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
+    : null;
 
   const openPortal = async () => {
     setPortalLoading(true);
@@ -39,9 +75,38 @@ export default function Profile() {
       const data = await res.json() as { url?: string };
       if (data.url && /^https:\/\/billing\.stripe\.com\//.test(data.url)) window.location.href = data.url;
     } catch {
-      setError('Failed to open billing portal');
+      setError(t('profile.portalError') || 'Failed to open billing portal');
     } finally {
       setPortalLoading(false);
+    }
+  };
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    if (!file.type.startsWith('image/')) {
+      setError(t('profile.avatarError') || 'Failed to upload photo');
+      return;
+    }
+    setUploadingAvatar(true);
+    setAvatarMsg('');
+    setError('');
+    try {
+      const blob = await compressImage(file, 256);
+      const path = `${user.id}/avatar.jpg`;
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(path, blob, { upsert: true, contentType: 'image/jpeg' });
+      if (uploadError) throw uploadError;
+      const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path);
+      await updateProfile({ avatar_url: `${publicUrl}?t=${Date.now()}` });
+      setAvatarMsg(t('profile.avatarUpdated') || 'Photo updated!');
+      setTimeout(() => setAvatarMsg(''), 3000);
+    } catch {
+      setError(t('profile.avatarError') || 'Failed to upload photo');
+    } finally {
+      setUploadingAvatar(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
 
@@ -106,8 +171,34 @@ export default function Profile() {
       </Link>
 
       <div className="flex items-center gap-4 mb-8">
-        <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ background: `${planColor}22` }}>
-          <User className="w-8 h-8" style={{ color: planColor }} />
+        <div className="relative group">
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploadingAvatar}
+            className="w-16 h-16 rounded-full flex items-center justify-center overflow-hidden focus:outline-none focus:ring-2 focus:ring-[#f97316]/50"
+            style={{ background: `${planColor}22` }}
+            title={t('profile.uploadAvatar') || 'Upload photo'}
+          >
+            {profile?.avatar_url ? (
+              <img src={profile.avatar_url} alt="avatar" className="w-full h-full object-cover" />
+            ) : (
+              <User className="w-8 h-8" style={{ color: planColor }} />
+            )}
+            <span className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-full">
+              {uploadingAvatar ? (
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <Camera className="w-4 h-4 text-white" />
+              )}
+            </span>
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleAvatarChange}
+          />
         </div>
         <div>
           <div className="flex items-center gap-2 flex-wrap">
@@ -121,18 +212,36 @@ export default function Profile() {
             </span>
           </div>
           <p className="text-[#94a3b8] text-sm">{user?.email}</p>
+          {memberSince && (
+            <p className="text-[#475569] text-xs mt-0.5">
+              {t('profile.memberSince') || 'Member since'} {memberSince}
+            </p>
+          )}
         </div>
       </div>
+
+      {avatarMsg && (
+        <p className="text-[#10b981] text-sm bg-[#10b981]/10 border border-[#10b981]/20 rounded-lg px-4 py-2 mb-4">
+          {avatarMsg}
+        </p>
+      )}
 
       {/* Subscription card */}
       <div className="glass-surface rounded-2xl p-4 sm:p-6 border mb-4" style={{ borderColor: `${planColor}33` }}>
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
-            <p className="text-[#94a3b8] text-xs uppercase tracking-widest mb-1">Current plan</p>
+            <p className="text-[#94a3b8] text-xs uppercase tracking-widest mb-1">
+              {t('profile.currentPlan') || 'Current plan'}
+            </p>
             <p className="text-white font-bold text-lg capitalize flex items-center gap-2">
               {PlanIcon && <PlanIcon className="w-4 h-4" style={{ color: planColor }} />}
               Storm Watcher {plan.charAt(0).toUpperCase() + plan.slice(1)}
             </p>
+            {isPaid && subscriptionEnd && (
+              <p className="text-[#475569] text-xs mt-1">
+                {t('profile.subscriptionEnds') || 'Subscription ends'} {subscriptionEnd}
+              </p>
+            )}
           </div>
           {isPaid ? (
             <button
@@ -142,7 +251,7 @@ export default function Profile() {
               style={{ background: `linear-gradient(to right, ${planColor}, ${isPremium ? '#6d28d9' : '#fbbf24'})` }}
             >
               <CreditCard className="w-4 h-4" />
-              {portalLoading ? 'Loading…' : 'Manage subscription'}
+              {portalLoading ? (t('app.loading') || 'Loading…') : (t('profile.manageSubscription') || 'Manage subscription')}
             </button>
           ) : (
             <Link
@@ -151,7 +260,7 @@ export default function Profile() {
               style={{ background: 'linear-gradient(to right, #f97316, #fbbf24)' }}
             >
               <Zap className="w-4 h-4" />
-              Upgrade
+              {t('profile.upgrade') || 'Upgrade'}
             </Link>
           )}
         </div>
