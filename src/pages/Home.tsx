@@ -159,7 +159,7 @@ const Home = () => {
     return (
       <div className="min-h-screen flex items-center justify-center relative">
         <StarField />
-        <ErrorCard onRetry={() => { setLoading(true); setKpValue(null); setRetryCount(c => c + 1); }} />
+        <ErrorCard onRetry={() => { setLoading(true); setRetryCount(c => c + 1); }} />
       </div>
     );
   }

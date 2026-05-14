@@ -11,9 +11,9 @@ const HreflangTags = () => {
   return (
     <Helmet>
       {LANGS.map(lang => (
-        <link key={lang} rel="alternate" hreflang={lang} href={url} />
+        <link key={lang} rel="alternate" hrefLang={lang} href={url} />
       ))}
-      <link rel="alternate" hreflang="x-default" href={url} />
+      <link rel="alternate" hrefLang="x-default" href={url} />
     </Helmet>
   );
 };
