@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
 import { Helmet } from 'react-helmet-async';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
-import { Calendar, TrendingUp, AlertCircle, Sun, Sparkles, Cloud, Radio, Zap, Activity } from 'lucide-react';
+import { Calendar, TrendingUp, AlertCircle, Sun, Sparkles, Cloud, Radio, Zap, Activity, ExternalLink } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { getKpForecast, getKpHistory3Day, getStormStatus, getKpGradientStyle, getSpaceWeatherOutlook, type SpaceWeatherOutlook } from '../services/noaaApi';
 import { getNightsCloudCover, type NightForecast } from '../services/skyApi';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -495,14 +496,23 @@ const Forecast = () => {
         {/* Aurora Calendar — 3-night outlook */}
         {nights.length > 0 && (
           <div className="mt-4 sm:mt-8 glass-surface rounded-2xl p-4 sm:p-8">
-            <div className="flex items-center gap-3 mb-6">
-              <Sparkles className="w-6 h-6 text-[#10b981]" />
-              <div>
-                <h3 className="text-lg sm:text-2xl font-bold text-white uppercase tracking-wide">
-                  {t('aurora.calendar.title')}
-                </h3>
-                <p className="text-[#64748b] text-sm">{t('aurora.calendar.subtitle')}</p>
+            <div className="flex items-center justify-between gap-3 mb-6">
+              <div className="flex items-center gap-3">
+                <Sparkles className="w-6 h-6 text-[#10b981]" />
+                <div>
+                  <h3 className="text-lg sm:text-2xl font-bold text-white uppercase tracking-wide">
+                    {t('aurora.calendar.title')}
+                  </h3>
+                  <p className="text-[#64748b] text-sm">{t('aurora.calendar.subtitle')}</p>
+                </div>
               </div>
+              <Link
+                to="/calendar"
+                className="flex items-center gap-1 text-xs text-[#10b981] hover:text-white transition-colors whitespace-nowrap"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                {t('aurora.calendar.fullView') || 'Full view'}
+              </Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {nights.map(night => {

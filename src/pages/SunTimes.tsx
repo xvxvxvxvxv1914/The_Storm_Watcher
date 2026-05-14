@@ -114,9 +114,9 @@ const SunTimes = () => {
   const requestGPS = useCallback(() => {
     navigator.geolocation?.getCurrentPosition(
       (pos) => loadForCoords(pos.coords.latitude, pos.coords.longitude),
-      () => loadForCoords(42.7, 23.3, t('uv.defaultLocation')),
+      () => loadForCoords(42.7, 23.3),
     );
-  }, [loadForCoords, t]);
+  }, [loadForCoords]);
 
   useEffect(() => {
     if (settings.preferredLat !== null && settings.preferredLon !== null) {
@@ -124,8 +124,7 @@ const SunTimes = () => {
     } else {
       requestGPS();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [settings.preferredLat, settings.preferredLon, settings.preferredLocationName, loadForCoords, requestGPS]);
 
   if (loading) {
     return (

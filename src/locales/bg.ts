@@ -608,6 +608,8 @@ const bg: Record<string, string> = {
   'aurora.calendar.clear': 'Ясно',
   'aurora.calendar.partlyCloudy': 'Частично облачно',
   'aurora.calendar.overcast': 'Облачно',
+  'aurora.calendar.fullView': 'Пълен изглед',
+  'nav.calendar': 'Аврора Календар',
 
   // 404 Not Found
   'notFound.title': 'Изгубен в Космоса',

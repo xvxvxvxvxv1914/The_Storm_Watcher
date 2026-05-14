@@ -48,13 +48,13 @@ const UV = () => {
   }, []);
 
   const requestGPS = useCallback(() => {
-    if (!navigator.geolocation) { loadForCoords(42.7, 23.3, t('uv.defaultLocation')); return; }
+    if (!navigator.geolocation) { loadForCoords(42.7, 23.3); return; }
     navigator.geolocation.getCurrentPosition(
       (pos) => loadForCoords(pos.coords.latitude, pos.coords.longitude),
-      () => loadForCoords(42.7, 23.3, t('uv.defaultLocation')),
+      () => loadForCoords(42.7, 23.3),
       { timeout: 5000 }
     );
-  }, [loadForCoords, t]);
+  }, [loadForCoords]);
 
   useEffect(() => {
     if (settings.preferredLat !== null && settings.preferredLon !== null) {
@@ -62,8 +62,7 @@ const UV = () => {
     } else {
       requestGPS();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [settings.preferredLat, settings.preferredLon, settings.preferredLocationName, loadForCoords, requestGPS]);
 
   if (loading) {
     return (

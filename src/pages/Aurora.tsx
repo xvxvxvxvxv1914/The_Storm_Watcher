@@ -80,8 +80,7 @@ const Aurora = () => {
     }
 
     return () => { mounted = false; };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [settings.preferredLat, settings.preferredLon]);
 
   const handleGlobeResize = useCallback((entries: ResizeObserverEntry[]) => {
     for (const entry of entries) {

@@ -19,11 +19,12 @@ const Footer = () => {
     {
       heading: isBg ? 'Наблюдение' : 'Sky & Observation',
       links: [
-        { to: '/aurora', label: t('nav.aurora') },
-        { to: '/iss',    label: 'ISS Tracker' },
-        { to: '/sky',    label: 'Sky Visibility' },
-        { to: '/sun',    label: 'Sun Times' },
-        { to: '/uv',     label: 'UV Index' },
+        { to: '/aurora',    label: t('nav.aurora') },
+        { to: '/iss',       label: 'ISS Tracker' },
+        { to: '/calendar',  label: t('nav.calendar') || 'Aurora Calendar' },
+        { to: '/sky',       label: 'Sky Visibility' },
+        { to: '/sun',       label: 'Sun Times' },
+        { to: '/uv',        label: 'UV Index' },
       ],
     },
     {

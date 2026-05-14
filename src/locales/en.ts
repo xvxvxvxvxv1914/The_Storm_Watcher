@@ -615,6 +615,8 @@ const en: Record<string, string> = {
   'aurora.calendar.clear': 'Clear',
   'aurora.calendar.partlyCloudy': 'Partly cloudy',
   'aurora.calendar.overcast': 'Overcast',
+  'aurora.calendar.fullView': 'Full view',
+  'nav.calendar': 'Aurora Calendar',
 
   // 404 Not Found
   'notFound.title': 'Lost in Space',
