@@ -83,6 +83,7 @@ const Footer = () => {
               <ul className="space-y-2">
                 {[
                   { to: '/iss',              label: 'ISS Tracker' },
+                  { to: '/calendar',         label: isBg ? 'Аврора Календар' : 'Aurora Calendar' },
                   { to: '/sky',              label: isBg ? 'Небе' : 'Sky Tonight' },
                   { to: '/sun',              label: isBg ? 'Слънце' : 'Sun Times' },
                   { to: '/uv',               label: 'UV Index' },

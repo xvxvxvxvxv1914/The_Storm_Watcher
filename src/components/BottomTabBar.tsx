@@ -4,7 +4,7 @@ import {
   Home, LayoutDashboard, TrendingUp, Sparkles, MoreHorizontal,
   X, Sun, Eye, Satellite, AlertTriangle, SmilePlus,
   User, LogOut, SlidersHorizontal, Globe, ChevronRight,
-  Magnet, HelpCircle,
+  Magnet, HelpCircle, Camera, Trophy, Video, CalendarDays,
 } from 'lucide-react';
 import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -17,7 +17,7 @@ const tabs = [
   { to: '/aurora',    icon: Sparkles,        labelKey: 'nav.aurora' },
 ];
 
-const moreRoutes = ['/alerts', '/mood', '/uv', '/sun', '/sky', '/iss', '/magnetic-effects', '/faq', '/profile', '/settings'];
+const moreRoutes = ['/alerts', '/mood', '/uv', '/sun', '/sky', '/iss', '/magnetic-effects', '/faq', '/profile', '/settings', '/gallery', '/hunt', '/livestream', '/calendar'];
 
 const BottomTabBar = () => {
   const [moreOpen, setMoreOpen] = useState(false);
@@ -61,14 +61,18 @@ const BottomTabBar = () => {
   };
 
   const moreLinks = [
-    { to: '/alerts',           icon: AlertTriangle, label: t('nav.alerts'),                        badge: 'bg-red-500' },
-    { to: '/mood',             icon: SmilePlus,     label: t('nav.mood'),                          badge: 'bg-purple-500' },
-    { to: '/uv',               icon: Sun,           label: t('nav.uv') || 'UV Index',              badge: 'bg-amber-500' },
-    { to: '/sun',              icon: Sun,           label: t('nav.sun') || 'Sun Times',            badge: 'bg-orange-500' },
-    { to: '/sky',              icon: Eye,           label: t('nav.sky') || 'Sky Tonight',          badge: 'bg-sky-500' },
-    { to: '/iss',              icon: Satellite,     label: t('nav.iss') || 'ISS Tracker',          badge: 'bg-indigo-500' },
-    { to: '/magnetic-effects', icon: Magnet,        label: t('nav.magneticEffects') || 'Magnetic', badge: 'bg-teal-600' },
-    { to: '/faq',              icon: HelpCircle,    label: t('nav.faq') || 'FAQ',                  badge: 'bg-slate-500' },
+    { to: '/alerts',           icon: AlertTriangle, label: t('nav.alerts'),                          badge: 'bg-red-500' },
+    { to: '/gallery',          icon: Camera,        label: t('nav.gallery') || 'Gallery',            badge: 'bg-violet-500' },
+    { to: '/hunt',             icon: Trophy,        label: t('nav.hunt') || 'Aurora Hunt',           badge: 'bg-amber-600' },
+    { to: '/livestream',       icon: Video,         label: t('nav.livestream') || 'Livestream',      badge: 'bg-pink-600' },
+    { to: '/calendar',         icon: CalendarDays,  label: t('nav.calendar') || 'Aurora Calendar',   badge: 'bg-emerald-600' },
+    { to: '/mood',             icon: SmilePlus,     label: t('nav.mood'),                            badge: 'bg-purple-500' },
+    { to: '/uv',               icon: Sun,           label: t('nav.uv') || 'UV Index',                badge: 'bg-amber-500' },
+    { to: '/sun',              icon: Sun,           label: t('nav.sun') || 'Sun Times',              badge: 'bg-orange-500' },
+    { to: '/sky',              icon: Eye,           label: t('nav.sky') || 'Sky Tonight',            badge: 'bg-sky-500' },
+    { to: '/iss',              icon: Satellite,     label: t('nav.iss') || 'ISS Tracker',            badge: 'bg-indigo-500' },
+    { to: '/magnetic-effects', icon: Magnet,        label: t('nav.magneticEffects') || 'Magnetic',   badge: 'bg-teal-600' },
+    { to: '/faq',              icon: HelpCircle,    label: t('nav.faq') || 'FAQ',                    badge: 'bg-slate-500' },
   ];
 
   return (
