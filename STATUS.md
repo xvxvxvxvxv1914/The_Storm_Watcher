@@ -1,4 +1,4 @@
-# The Storm Watcher — Project Status (2026-05-14)
+# The Storm Watcher — Project Status (2026-05-14, updated)
 
 ## ✅ НАПРАВЕНО
 
@@ -85,6 +85,37 @@
 - Graceful degradation без локация (само Kp)
 - Преведено на 8 езика
 
+#### Profile — Avatar upload + subscription info (commit 3e4b2c5)
+- Аватар upload: click → file input → canvas compression (256px JPEG) → Supabase Storage `avatars/`
+- Member since дата от `profile.created_at`
+- Subscription end date от `profile.subscription_period_end`
+- Всички hardcoded strings → `t()` ключове в 8 езика
+
+#### Community Photo Gallery (commit d63ce5e)
+- `/gallery` — нова страница
+- Upload: паралелна компресия full (1920px) + thumb (400px) → `aurora-gallery` Supabase Storage
+- Grid 2/3/4 колони с hover overlay (caption, location, Kp, username)
+- Denormalized `display_name` + `avatar_url` при upload
+- Supabase: `aurora_photos` таблица + `aurora-gallery` bucket + RLS
+
+#### Aurora Hunt — Gamification (commit b239fda)
+- `/hunt` — нова страница
+- 6 значки (First Light, Storm Chaser, Night Owl, G3 Witness, Dedicated, Veteran)
+- Точки: 10 base + 2× Kp при всяко наблюдение
+- Leaderboard view в Supabase: `hunter_leaderboard`
+- 1-часов cooldown в localStorage срещу spam
+- Supabase: `aurora_sightings` таблица + RLS
+
+#### Aurora Livestream (commit cbb7a58)
+- `/livestream` — нова страница
+- 8 куриращи камери: Explore.org, Tromsø, Iceland Vedur, Sodankylä SGO, AuroraMAX, Kevo, Alta, NOAA SWPC
+- Featured player: iframe ако има `embedUrl`, иначе "Open in new tab"
+- Grid 3-4 колони с Preview + Open бутони
+- CSP: добавен `explore.org` в `frame-src`
+
+#### Security fixes (commits 33420db)
+- **M11** — OAuth password reset: `window.location.origin` → hardcoded `thestormwatcher.com`
+
 ---
 
 ## 🔲 ОСТАВА
@@ -121,26 +152,6 @@
 
 ---
 
-### 🔴 Сложни функции
-
-**Community Photo Gallery**
-- Supabase Storage + thumbnails
-- Upload flow с client-side compression
-- AI верификация (Claude Vision) — дали снимката е aurora
-- Нова страница `/gallery`
-
-**Aurora Hunt (Gamification)**
-- Supabase таблици: `user_sightings`, `badges`, `leaderboard`
-- Badges: "First Sighting", "G3 Storm Chaser" и т.н.
-- Нова страница `/hunt`
-
-**Livestream**
-- Real stream sources от камери в Норвегия/Исландия/Финландия
-- Cloudflare Stream или HLS embed
-- Нова страница `/livestream`
-
----
-
 ### 📦 npm Vulnerabilities
 - 12 уязвимости останали (всички в devDependencies)
 - Production = 0 уязвимости
@@ -151,6 +162,13 @@
 
 ## Commit история (последни)
 ```
+33420db  M11 fix + explore.org CSP frame-src
+cbb7a58  Aurora Livestream page (8 cameras)
+b239fda  Aurora Hunt (gamification, leaderboard, badges)
+d63ce5e  Community Photo Gallery
+3e4b2c5  Profile: avatar upload + subscription info
+7df48f4  Space Weather Outlook (NOAA 3-day text)
+0fe8a31  NIGGG API fix (new endpoint)
 3bf830d  Aurora Calendar (3-night outlook)
 142908c  TypeScript fixes (0 errors)
 e042320  Offline fallback + DB migrations
@@ -158,7 +176,4 @@ e042320  Offline fallback + DB migrations
 14e5caf  RLS InitPlan performance fix
 fdcc4b3  Supabase Security Advisor fixes
 1c1af4b  npm audit Sprint 4
-7ab3eca  MEDIUM audit findings Sprint 3
-c4f9411  HIGH audit findings Sprint 2
-fbff2b2  CRITICAL audit findings Sprint 1
 ```
