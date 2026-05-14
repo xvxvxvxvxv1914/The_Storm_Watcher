@@ -1,7 +1,7 @@
 /// <reference lib="webworker" />
 import { clientsClaim } from 'workbox-core';
 import { precacheAndRoute, cleanupOutdatedCaches } from 'workbox-precaching';
-import { registerRoute } from 'workbox-routing';
+import { registerRoute, setCatchHandler } from 'workbox-routing';
 import { NetworkFirst, StaleWhileRevalidate } from 'workbox-strategies';
 import { ExpirationPlugin } from 'workbox-expiration';
 
@@ -51,6 +51,14 @@ registerRoute(
     plugins: [new ExpirationPlugin({ maxAgeSeconds: 300, maxEntries: 5 })],
   })
 );
+
+// Offline fallback — navigation requests that miss the cache serve /offline.html
+setCatchHandler(({ request }) => {
+  if (request.destination === 'document') {
+    return caches.match('/offline.html') as Promise<Response>;
+  }
+  return Response.error();
+});
 
 // Push notification — payload: { title, body, url, kp }
 self.addEventListener('push', (event) => {
