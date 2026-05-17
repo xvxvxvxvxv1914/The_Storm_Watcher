@@ -648,26 +648,27 @@ const Home = () => {
       {/* Data Sources */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="glass-surface rounded-3xl p-10 border border-white/10 text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4 uppercase tracking-wide">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4 uppercase tracking-wide flex items-center justify-center gap-3">
+            <span className="w-2 h-2 rounded-full bg-[#10b981] inline-block flex-shrink-0" />
             {t('home.trustedSources')}
           </h2>
           <p className="text-[#94a3b8] max-w-2xl mx-auto mb-10 leading-relaxed">
             {t('home.trustedSourcesDesc')}
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
-              { name: 'NOAA SWPC', sub: 'Space Weather Prediction Center', color: 'from-[#0ea5e9] to-[#0284c7]', flag: 'us' },
-              { name: 'NASA DONKI', sub: 'Space Weather Database', color: 'from-[#6366f1] to-[#4f46e5]', flag: 'us' },
-              { name: 'GFZ Potsdam', sub: 'Official Kp Index Authority', color: 'from-[#f59e0b] to-[#d97706]', flag: 'de' },
-              { name: 'ESA', sub: 'Space Weather Service', color: 'from-[#10b981] to-[#059669]', flag: 'eu' },
-              { name: 'NIGGG', sub: 'Bulgaria Geophysics Institute', color: 'from-[#f97316] to-[#ea580c]', flag: 'bg' },
+              { name: 'NOAA SWPC', sub: 'Space Weather Prediction Center', flag: 'us' },
+              { name: 'NASA DONKI', sub: 'Space Weather Database', flag: 'us' },
+              { name: 'GFZ Potsdam', sub: 'Official Kp Index Authority', flag: 'de' },
+              { name: 'ESA', sub: 'Space Weather Service', flag: 'eu' },
+              { name: 'NIGGG', sub: 'Bulgaria Geophysics Institute', flag: 'bg' },
             ].map(source => (
-              <div key={source.name} className="glass-surface rounded-xl p-5 border border-white/5 relative">
-                <img src={`https://flagcdn.com/32x24/${source.flag}.png`} alt={source.flag} className="absolute top-2 right-2 rounded-sm shadow-sm" width={32} height={24} />
-                <div className={`text-2xl font-bold mb-1 bg-gradient-to-br ${source.color} bg-clip-text text-transparent`}>
+              <div key={source.name} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '16px 24px' }} className="relative text-left">
+                <img src={`https://flagcdn.com/32x24/${source.flag}.png`} alt={source.flag} className="absolute top-3 right-3 rounded-sm shadow-sm" style={{ opacity: 0.8 }} width={32} height={24} />
+                <div className="text-xl font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.9)' }}>
                   {source.name}
                 </div>
-                <div className="text-[#64748b] text-xs leading-snug">{source.sub}</div>
+                <div className="leading-snug" style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.75rem' }}>{source.sub}</div>
               </div>
             ))}
           </div>
