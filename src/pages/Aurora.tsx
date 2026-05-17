@@ -51,6 +51,7 @@ const Aurora = () => {
   const [userLat, setUserLat] = useState<number | null>(null);
   const [userLng, setUserLng] = useState<number | null>(null);
   const globeContainerRef = useRef<HTMLDivElement>(null);
+  const [isGlobeVisible, setIsGlobeVisible] = useState(true);
 
   const getMoonPhase = () => {
     const date = new Date();
@@ -115,6 +116,17 @@ const Aurora = () => {
     ro.observe(globeContainerRef.current);
     return () => ro.disconnect();
   }, [handleGlobeResize]);
+
+  useEffect(() => {
+    const el = globeContainerRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => setIsGlobeVisible(entry.isIntersecting),
+      { threshold: 0 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   const fetchAuroraModel = useCallback(async () => {
     setIsGlobeLoading(true);
@@ -468,6 +480,7 @@ const Aurora = () => {
                   theme={theme}
                   userLat={userLat}
                   userLng={userLng}
+                  active={isGlobeVisible}
                 />
               </Suspense>
             </GlobeErrorBoundary>

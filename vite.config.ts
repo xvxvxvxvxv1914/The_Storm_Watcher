@@ -14,7 +14,7 @@ export default defineConfig(({ command }) => ({
       injectManifest: {
         globPatterns: ['**/*.{js,css,html,ico,svg,woff2}'],
         // Exclude heavy 3D chunks — only needed on Aurora page, let browser cache them
-        globIgnores: ['**/globe-vendor*', '**/three-vendor*'],
+        globIgnores: ['**/globe-vendor*', '**/three-vendor*', '**/charts-vendor*'],
         maximumFileSizeToCacheInBytes: 2 * 1024 * 1024,
       },
       // Manifest is served from public/manifest.json; vite-plugin-pwa skips generation.

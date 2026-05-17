@@ -17,6 +17,7 @@ interface Props {
   theme?: string;
   userLat?: number | null;
   userLng?: number | null;
+  active?: boolean;
 }
 
 const DAY_NIGHT_SHADER = {
@@ -68,7 +69,7 @@ function sunPosAt(dt: number): [number, number] {
   return [longitude - solar.equationOfTime(t) / 4, solar.declination(t)];
 }
 
-export default function AuroraGlobe({ globeWidth, isGlobeLoading, auroraData, theme, userLat, userLng }: Props) {
+export default function AuroraGlobe({ globeWidth, isGlobeLoading, auroraData, theme, userLat, userLng, active = true }: Props) {
   const { t } = useLanguage();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const globeRef = useRef<any>(null);
@@ -193,6 +194,16 @@ export default function AuroraGlobe({ globeWidth, isGlobeLoading, auroraData, th
 
     return () => clearTimeout(timer);
   }, [auroraTexture]);
+
+  // Pause WebGL render loop when globe scrolls out of view
+  useEffect(() => {
+    if (!globeRef.current) return;
+    if (active) {
+      globeRef.current.resumeAnimation?.();
+    } else {
+      globeRef.current.pauseAnimation?.();
+    }
+  }, [active]);
 
   // Dispose aurora GPU resources on unmount
   useEffect(() => {
