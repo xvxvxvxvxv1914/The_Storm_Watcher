@@ -79,35 +79,29 @@ const BottomTabBar = () => {
     <>
       {/* Floating pill tab bar */}
       <nav
-        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 px-4"
-        style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 8px)' }}
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-50"
+        style={{
+          background: theme === 'light' ? '#ffffff' : '#0a0c18',
+          borderTop: theme === 'light' ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.08)',
+          paddingBottom: 'env(safe-area-inset-bottom)',
+        }}
         aria-label="Main navigation"
       >
-        <div
-          className="flex items-center rounded-[28px] px-2 py-1.5 border"
-          style={{
-            background: theme === 'light' ? 'rgba(255,255,255,0.92)' : 'rgba(10,12,24,0.88)',
-            borderColor: theme === 'light' ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.10)',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            boxShadow: theme === 'light' ? '0 -2px 20px rgba(0,0,0,0.08)' : '0 -2px 20px rgba(0,0,0,0.5)',
-          }}
-        >
+        <div className="flex items-center px-1 py-1">
           {tabs.map(({ to, icon: Icon, labelKey }) => {
             const active = location.pathname === to;
             return (
               <Link
                 key={to}
                 to={to}
-                className="flex flex-col items-center flex-1 py-1.5 gap-0.5 rounded-[22px]"
-                style={active ? { background: 'rgba(255,255,255,0.12)' } : {}}
+                className="flex flex-col items-center flex-1 py-2 gap-1"
               >
                 <Icon
-                  className={active ? 'text-[#10b981]' : theme === 'light' ? 'text-slate-600' : 'text-white'}
+                  className={active ? 'text-[#10b981]' : theme === 'light' ? 'text-slate-400' : 'text-[#4a5568]'}
                   size={24}
                   strokeWidth={active ? 2.5 : 1.8}
                 />
-                <span className={`text-[10px] ${active ? 'font-bold text-[#10b981]' : theme === 'light' ? 'font-medium text-slate-500' : 'font-medium text-white/70'}`}>
+                <span className={`text-[10px] ${active ? 'font-bold text-[#10b981]' : theme === 'light' ? 'font-medium text-slate-400' : 'font-medium text-[#4a5568]'}`}>
                   {t(labelKey)}
                 </span>
               </Link>
@@ -118,15 +112,14 @@ const BottomTabBar = () => {
             aria-label="Open more menu"
             aria-expanded={moreOpen}
             aria-haspopup="menu"
-            className="flex flex-col items-center flex-1 py-1.5 gap-0.5 rounded-[22px]"
-            style={isMoreActive ? { background: 'rgba(255,255,255,0.12)' } : {}}
+            className="flex flex-col items-center flex-1 py-2 gap-1"
           >
             <MoreHorizontal
-              className={isMoreActive ? 'text-[#10b981]' : theme === 'light' ? 'text-slate-600' : 'text-white'}
+              className={isMoreActive ? 'text-[#10b981]' : theme === 'light' ? 'text-slate-400' : 'text-[#4a5568]'}
               size={24}
               strokeWidth={isMoreActive ? 2.5 : 1.8}
             />
-            <span className={`text-[10px] ${isMoreActive ? 'font-bold text-[#10b981]' : theme === 'light' ? 'font-medium text-slate-500' : 'font-medium text-white/70'}`}>
+            <span className={`text-[10px] ${isMoreActive ? 'font-bold text-[#10b981]' : theme === 'light' ? 'font-medium text-slate-400' : 'font-medium text-[#4a5568]'}`}>
               {t('nav.more') || 'More'}
             </span>
           </button>
