@@ -150,6 +150,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signOut = async () => {
     await supabase.auth.signOut();
     sessionStorage.removeItem('session_id');
+    // Clear user-specific localStorage keys on logout.
+    // Intentionally kept: 'theme', 'language', 'tsw_settings', 'cookie-consent',
+    // 'tsw_location_asked' — these are device-level preferences, not account data.
+    localStorage.removeItem('tsw_hunt_last_sighting');
     setProfile(null);
   };
 
