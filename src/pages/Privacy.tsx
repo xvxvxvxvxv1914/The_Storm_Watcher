@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+import PageMeta from '../components/PageMeta';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Shield } from 'lucide-react';
 
@@ -274,11 +274,11 @@ const Privacy = () => {
 
   return (
     <div className="min-h-screen pt-20 pb-24">
-      <Helmet>
-        <title>Privacy Policy — The Storm Watcher</title>
-        <meta name="description" content="Privacy Policy for The Storm Watcher. Learn how we collect, use and protect your data." />
-        <link rel="canonical" href="https://thestormwatcher.com/privacy" />
-      </Helmet>
+      <PageMeta
+        title="Privacy Policy — The Storm Watcher"
+        description="Privacy Policy for The Storm Watcher. Learn how we collect, use and protect your data."
+        path="/privacy"
+      />
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
         <div className="flex items-center gap-3 mb-6 mt-4">
           <div className="w-10 h-10 rounded-xl bg-[#10b981]/10 flex items-center justify-center">

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
+import PageMeta from '../components/PageMeta';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, MapPin, Bell, Ruler, Globe, Check, Loader2, X, HelpCircle } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
@@ -82,11 +82,12 @@ export default function Settings() {
 
   return (
     <div className="min-h-screen pt-20 pb-16 px-4 sm:px-6 lg:px-8">
-      <Helmet>
-        <title>Settings — The Storm Watcher</title>
-        <meta name="description" content="Configure your location, notification threshold, units and language preferences." />
-        <link rel="canonical" href="https://thestormwatcher.com/settings" />
-      </Helmet>
+      <PageMeta
+        title="Settings — The Storm Watcher"
+        description="Configure your location, notification threshold, units and language preferences."
+        path="/settings"
+        noindex
+      />
 
       <div className="max-w-2xl mx-auto">
         <div className="mb-8">

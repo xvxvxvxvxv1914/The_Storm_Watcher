@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { logError } from '../utils/logger';
-import { Helmet } from 'react-helmet-async';
+import PageMeta from '../components/PageMeta';
 import { Smile, Frown, Meh, ThumbsUp, ThumbsDown, Users, TrendingUp, CheckCircle, AlertCircle } from 'lucide-react';
 import SvgDonut from '../components/charts/SvgDonut';
 import SvgStackedBars, { type DataRow } from '../components/charts/SvgStackedBars';
@@ -193,16 +193,11 @@ const Mood = () => {
 
   return (
     <div className="min-h-screen pt-20 pb-16 md:pt-24">
-      <Helmet>
-        <title>Mood Tracker — The Storm Watcher</title>
-        <meta name="description" content="Track how geomagnetic storms affect your mood and wellbeing. See community mood patterns correlated with Kp index." />
-        <link rel="canonical" href="https://thestormwatcher.com/mood" />
-        <meta property="og:title" content="Mood Tracker — The Storm Watcher" />
-        <meta property="og:description" content="Track how geomagnetic storms affect your mood and wellbeing. See community mood patterns correlated with Kp index." />
-        <meta property="og:url" content="https://thestormwatcher.com/mood" />
-        <meta name="twitter:title" content="Mood Tracker — The Storm Watcher" />
-        <meta name="twitter:description" content="Track how geomagnetic storms affect your mood and wellbeing. See community mood patterns correlated with Kp index." />
-      </Helmet>
+      <PageMeta
+        title="Mood Tracker — The Storm Watcher"
+        description="Track how geomagnetic storms affect your mood and wellbeing. See community mood patterns correlated with Kp index."
+        path="/mood"
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8 text-center">
           <h1 className="text-4xl font-bold text-white mb-2">{t('mood.title')}</h1>

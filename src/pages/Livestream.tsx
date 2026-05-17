@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
+import PageMeta from '../components/PageMeta';
 import { Video, ExternalLink, MonitorPlay, Globe } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -116,11 +116,11 @@ export default function Livestream() {
 
   return (
     <div className="min-h-screen px-4 py-20 max-w-6xl mx-auto">
-      <Helmet>
-        <title>Aurora Livestream — The Storm Watcher</title>
-        <meta name="description" content="Live aurora cameras from Norway, Iceland, Finland and Canada. Watch the northern lights in real time." />
-        <link rel="canonical" href="https://thestormwatcher.com/livestream" />
-      </Helmet>
+      <PageMeta
+        title="Aurora Livestream — The Storm Watcher"
+        description="Live aurora cameras from Norway, Iceland, Finland and Canada. Watch the northern lights in real time."
+        path="/livestream"
+      />
 
       <div className="flex items-center gap-4 mb-3">
         <div className="w-14 h-14 bg-gradient-to-br from-[#ec4899] to-[#be185d] rounded-2xl flex items-center justify-center flex-shrink-0">

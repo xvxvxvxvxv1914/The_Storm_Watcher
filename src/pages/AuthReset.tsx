@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
+import PageMeta from '../components/PageMeta';
 import { useNavigate } from 'react-router-dom';
 import { Lock } from 'lucide-react';
 import { supabase } from '../lib/supabase';
@@ -62,12 +62,12 @@ export default function AuthReset() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-16">
-      <Helmet>
-        <title>Reset Password — The Storm Watcher</title>
-        <meta name="description" content="Set a new password for your Storm Watcher account." />
-        <link rel="canonical" href="https://thestormwatcher.com/auth/reset" />
-        <meta name="robots" content="noindex" />
-      </Helmet>
+      <PageMeta
+        title="Reset Password — The Storm Watcher"
+        description="Set a new password for your Storm Watcher account."
+        path="/auth/reset"
+        noindex
+      />
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">

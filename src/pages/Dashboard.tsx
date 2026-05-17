@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { logError } from '../utils/logger';
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
-import { Helmet } from 'react-helmet-async';
+import PageMeta from '../components/PageMeta';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
 import SvgBarChart from '../components/charts/SvgBarChart';
 import { Activity, Wind, Compass, Sun, Radio, MapPin } from 'lucide-react';
@@ -189,6 +189,7 @@ const Dashboard = () => {
       setError(true);
       setLoading(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- session is read at call time via getSession() fallback; intentionally not a dep
   }, [inNigggRegion]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
@@ -281,16 +282,11 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16 relative">
-      <Helmet>
-        <title>Dashboard — The Storm Watcher</title>
-        <meta name="description" content="Live space weather dashboard: Kp index, solar wind, magnetic field and X-ray flux charts updated every minute." />
-        <link rel="canonical" href="https://thestormwatcher.com/dashboard" />
-        <meta property="og:title" content="Dashboard — The Storm Watcher" />
-        <meta property="og:description" content="Live space weather dashboard: Kp index, solar wind, magnetic field and X-ray flux charts updated every minute." />
-        <meta property="og:url" content="https://thestormwatcher.com/dashboard" />
-        <meta name="twitter:title" content="Dashboard — The Storm Watcher" />
-        <meta name="twitter:description" content="Live space weather dashboard: Kp index, solar wind, magnetic field and X-ray flux charts updated every minute." />
-      </Helmet>
+      <PageMeta
+        title="Dashboard — The Storm Watcher"
+        description="Live space weather dashboard: Kp index, solar wind, magnetic field and X-ray flux charts updated every minute."
+        path="/dashboard"
+      />
       <StarField />
 
       <div className="solar-orb" style={{ top: '100px', right: '-300px' }} />

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Helmet } from 'react-helmet-async';
+import PageMeta from '../components/PageMeta';
 import { Trophy, MapPin, Star, ChevronDown, ChevronUp, Target } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -146,11 +146,11 @@ export default function Hunt() {
 
   return (
     <div className="min-h-screen px-4 py-20 max-w-4xl mx-auto">
-      <Helmet>
-        <title>Aurora Hunt — The Storm Watcher</title>
-        <meta name="description" content="Report aurora sightings, earn badges and compete on the leaderboard with other aurora hunters." />
-        <link rel="canonical" href="https://thestormwatcher.com/hunt" />
-      </Helmet>
+      <PageMeta
+        title="Aurora Hunt — The Storm Watcher"
+        description="Report aurora sightings, earn badges and compete on the leaderboard with other aurora hunters."
+        path="/hunt"
+      />
 
       {/* Header */}
       <div className="flex items-center gap-4 mb-8">

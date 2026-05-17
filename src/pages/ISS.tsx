@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback, lazy, Suspense } from 'react';
-import { Helmet } from 'react-helmet-async';
+import PageMeta from '../components/PageMeta';
 import { MapPin, Clock, Eye, Satellite } from 'lucide-react';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Globe = lazy(() => import('react-globe.gl')) as any;
@@ -99,7 +99,7 @@ const ISS = () => {
     }
 
     return () => { mounted = false; };
-  }, []);
+  }, [settings.preferredLat, settings.preferredLon, settings.preferredLocationName]);
 
   const getElevationColor = (el: number) => {
     if (el >= 60) return '#10b981';
@@ -133,16 +133,11 @@ const ISS = () => {
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16">
-      <Helmet>
-        <title>ISS Tracker — The Storm Watcher</title>
-        <meta name="description" content="Track the International Space Station in real time. See live position, altitude, speed and next pass times over your location." />
-        <link rel="canonical" href="https://thestormwatcher.com/iss" />
-        <meta property="og:title" content="ISS Tracker — The Storm Watcher" />
-        <meta property="og:description" content="Track the International Space Station in real time. See live position, altitude, speed and next pass times over your location." />
-        <meta property="og:url" content="https://thestormwatcher.com/iss" />
-        <meta name="twitter:title" content="ISS Tracker — The Storm Watcher" />
-        <meta name="twitter:description" content="Track the International Space Station in real time. See live position, altitude, speed and next pass times over your location." />
-      </Helmet>
+      <PageMeta
+        title="ISS Tracker — The Storm Watcher"
+        description="Track the International Space Station in real time. See live position, altitude, speed and next pass times over your location."
+        path="/iss"
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}

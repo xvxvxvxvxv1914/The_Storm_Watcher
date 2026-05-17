@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Helmet } from 'react-helmet-async';
+import PageMeta from '../components/PageMeta';
 import { CalendarDays, Cloud, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getKpForecast, getKpGradientStyle } from '../services/noaaApi';
@@ -130,11 +130,11 @@ export default function Calendar() {
 
   return (
     <div className="min-h-screen px-4 py-20 max-w-5xl mx-auto">
-      <Helmet>
-        <title>Aurora Calendar — The Storm Watcher</title>
-        <meta name="description" content="3-night aurora viewing outlook with Kp forecast and cloud cover. Find your best night to watch the northern lights." />
-        <link rel="canonical" href="https://thestormwatcher.com/calendar" />
-      </Helmet>
+      <PageMeta
+        title="Aurora Calendar — The Storm Watcher"
+        description="3-night aurora viewing outlook with Kp forecast and cloud cover. Find your best night to watch the northern lights."
+        path="/calendar"
+      />
 
       {/* Header */}
       <div className="flex items-center gap-4 mb-3">

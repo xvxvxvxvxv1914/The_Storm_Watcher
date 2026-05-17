@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Helmet } from 'react-helmet-async';
+import PageMeta from '../components/PageMeta';
 import { useNavigate } from 'react-router-dom';
 import { User, Save, ArrowLeft, Trash2, Zap, Star, CreditCard, Camera } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -157,12 +157,12 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen px-4 py-20 max-w-2xl mx-auto">
-      <Helmet>
-        <title>Profile — The Storm Watcher</title>
-        <meta name="description" content="Manage your Storm Watcher profile, subscription and account settings." />
-        <link rel="canonical" href="https://thestormwatcher.com/profile" />
-        <meta name="robots" content="noindex" />
-      </Helmet>
+      <PageMeta
+        title="Profile — The Storm Watcher"
+        description="Manage your Storm Watcher profile, subscription and account settings."
+        path="/profile"
+        noindex
+      />
       <Link
         to="/dashboard"
         className="inline-flex items-center gap-2 text-sm text-[#94a3b8] hover:text-white transition-colors mb-8"

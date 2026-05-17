@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Helmet } from 'react-helmet-async';
+import PageMeta from '../components/PageMeta';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
 import { Sun, Shield } from 'lucide-react';
 import { getUvIndex, getUvLevel, UvData } from '../services/uvApi';
@@ -93,16 +93,11 @@ const UV = () => {
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16">
-      <Helmet>
-        <title>UV Index — The Storm Watcher</title>
-        <meta name="description" content="Real-time UV index and sun exposure forecast for your location. Know when to apply sunscreen." />
-        <link rel="canonical" href="https://thestormwatcher.com/uv" />
-        <meta property="og:title" content="UV Index — The Storm Watcher" />
-        <meta property="og:description" content="Real-time UV index and sun exposure forecast for your location. Know when to apply sunscreen." />
-        <meta property="og:url" content="https://thestormwatcher.com/uv" />
-        <meta name="twitter:title" content="UV Index — The Storm Watcher" />
-        <meta name="twitter:description" content="Real-time UV index and sun exposure forecast for your location. Know when to apply sunscreen." />
-      </Helmet>
+      <PageMeta
+        title="UV Index — The Storm Watcher"
+        description="Real-time UV index and sun exposure forecast for your location. Know when to apply sunscreen."
+        path="/uv"
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}

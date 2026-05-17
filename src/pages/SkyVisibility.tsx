@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Helmet } from 'react-helmet-async';
+import PageMeta from '../components/PageMeta';
 import { Cloud, Eye, Droplets, Star } from 'lucide-react';
 import { getSkyVisibility, SkyData } from '../services/skyApi';
 import { getKpIndex } from '../services/noaaApi';
@@ -119,16 +119,11 @@ const SkyVisibility = () => {
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16">
-      <Helmet>
-        <title>Sky Visibility Tonight — The Storm Watcher</title>
-        <meta name="description" content="Tonight's stargazing and aurora viewing conditions. Cloud cover, visibility and precipitation forecast for astronomers." />
-        <link rel="canonical" href="https://thestormwatcher.com/sky" />
-        <meta property="og:title" content="Sky Visibility Tonight — The Storm Watcher" />
-        <meta property="og:description" content="Tonight's stargazing and aurora viewing conditions. Cloud cover, visibility and precipitation forecast for astronomers." />
-        <meta property="og:url" content="https://thestormwatcher.com/sky" />
-        <meta name="twitter:title" content="Sky Visibility Tonight — The Storm Watcher" />
-        <meta name="twitter:description" content="Tonight's stargazing and aurora viewing conditions. Cloud cover, visibility and precipitation forecast for astronomers." />
-      </Helmet>
+      <PageMeta
+        title="Sky Visibility Tonight — The Storm Watcher"
+        description="Tonight's stargazing and aurora viewing conditions. Cloud cover, visibility and precipitation forecast for astronomers."
+        path="/sky"
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}

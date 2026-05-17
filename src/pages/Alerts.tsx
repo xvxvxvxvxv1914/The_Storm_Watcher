@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
+import PageMeta from '../components/PageMeta';
 import { AlertTriangle, Info, AlertOctagon, ShieldAlert, Flame, Wind } from 'lucide-react';
 import { getAlerts, Alert as AlertType } from '../services/noaaApi';
 import { getDonkiCme, getDonkiFlares, CmeEvent, FlareEvent } from '../services/donkiApi';
@@ -39,7 +39,7 @@ const Alerts = () => {
     fetchAlerts();
     const interval = setInterval(() => { if (document.visibilityState !== 'hidden') fetchAlerts(); }, 120000);
     return () => clearInterval(interval);
-  }, []);
+  }, [fetchAlerts]);
 
   const getSeverityInfo = (message: string) => {
     const upper = message.toUpperCase();
@@ -107,16 +107,11 @@ const Alerts = () => {
 
   return (
     <div className="min-h-screen pt-20 pb-16 md:pt-24">
-      <Helmet>
-        <title>Space Weather Alerts — The Storm Watcher</title>
-        <meta name="description" content="Real-time NOAA space weather alerts, coronal mass ejections and solar flare events." />
-        <link rel="canonical" href="https://thestormwatcher.com/alerts" />
-        <meta property="og:title" content="Space Weather Alerts — The Storm Watcher" />
-        <meta property="og:description" content="Real-time NOAA space weather alerts, coronal mass ejections and solar flare events." />
-        <meta property="og:url" content="https://thestormwatcher.com/alerts" />
-        <meta name="twitter:title" content="Space Weather Alerts — The Storm Watcher" />
-        <meta name="twitter:description" content="Real-time NOAA space weather alerts, coronal mass ejections and solar flare events." />
-      </Helmet>
+      <PageMeta
+        title="Space Weather Alerts — The Storm Watcher"
+        description="Real-time NOAA space weather alerts, coronal mass ejections and solar flare events."
+        path="/alerts"
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-4 sm:mb-8">
           <h1 className="text-2xl sm:text-4xl font-bold text-white mb-1 sm:mb-2">{t('alerts.title')}</h1>

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
-import { Helmet } from 'react-helmet-async';
+import PageMeta from '../components/PageMeta';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
 import { Calendar, TrendingUp, AlertCircle, Sun, Sparkles, Cloud, Radio, Zap, Activity, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -243,16 +243,11 @@ const Forecast = () => {
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16 relative">
-      <Helmet>
-        <title>Kp Index Forecast — The Storm Watcher</title>
-        <meta name="description" content="3-day Kp index forecast from NOAA. See predicted geomagnetic storm levels and plan your aurora viewing." />
-        <link rel="canonical" href="https://thestormwatcher.com/forecast" />
-        <meta property="og:title" content="Kp Index Forecast — The Storm Watcher" />
-        <meta property="og:description" content="3-day Kp index forecast from NOAA. See predicted geomagnetic storm levels and plan your aurora viewing." />
-        <meta property="og:url" content="https://thestormwatcher.com/forecast" />
-        <meta name="twitter:title" content="Kp Index Forecast — The Storm Watcher" />
-        <meta name="twitter:description" content="3-day Kp index forecast from NOAA. See predicted geomagnetic storm levels and plan your aurora viewing." />
-      </Helmet>
+      <PageMeta
+        title="Kp Index Forecast — The Storm Watcher"
+        description="3-day Kp index forecast from NOAA. See predicted geomagnetic storm levels and plan your aurora viewing."
+        path="/forecast"
+      />
       <StarField />
 
       <div className="magnetic-orb" style={{ top: '200px', left: '-200px' }} />

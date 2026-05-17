@@ -26,7 +26,7 @@ Sentry.init({
         const u = new URL(event.request.url);
         u.search = '';
         event.request.url = u.toString();
-      } catch {}
+      } catch { /* URL parse failure — keep original */ }
     }
     return event;
   },

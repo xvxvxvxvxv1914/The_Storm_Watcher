@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
+import PageMeta from '../components/PageMeta';
 import { useNavigate } from 'react-router-dom';
 import { Check, Zap, Star, CreditCard } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -105,15 +105,11 @@ export default function Pricing() {
     <div className="min-h-screen flex flex-col items-center px-4 py-16"
       style={{ background: 'radial-gradient(ellipse at top, #0d1b2a 0%, #0a0a1a 60%)' }}
     >
-      <Helmet>
-        <title>Pricing — The Storm Watcher</title>
-        <meta name="description" content="Choose your plan. Free space weather monitoring or Pro/Premium with advanced alerts and aurora forecasting." />
-        <link rel="canonical" href="https://thestormwatcher.com/pricing" />
-        <meta property="og:title" content="Pricing — The Storm Watcher" />
-        <meta property="og:description" content="Free space weather monitoring or Pro with advanced alerts and aurora forecasting. Choose your plan." />
-        <meta property="og:url" content="https://thestormwatcher.com/pricing" />
-        <meta name="twitter:title" content="Pricing — The Storm Watcher" />
-        <meta name="twitter:description" content="Free space weather monitoring or Pro with advanced alerts and aurora forecasting. Choose your plan." />
+      <PageMeta
+        title="Pricing — The Storm Watcher"
+        description="Choose your plan. Free space weather monitoring or Pro/Premium with advanced alerts and aurora forecasting."
+        path="/pricing"
+      >
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Product",
@@ -121,7 +117,7 @@ export default function Pricing() {
           "url": "https://thestormwatcher.com/pricing",
           "offers": { "@type": "Offer", "priceCurrency": "EUR", "availability": "https://schema.org/InStock" }
         })}</script>
-      </Helmet>
+      </PageMeta>
       <div className="max-w-4xl w-full">
         {/* Header */}
         <div className="text-center mb-12">

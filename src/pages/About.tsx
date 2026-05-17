@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Helmet } from 'react-helmet-async';
+import PageMeta from '../components/PageMeta';
 import { Shield, Database, Users, AlertCircle, Heart, Code } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -24,16 +24,11 @@ const About = () => {
 
   return (
     <div className="min-h-screen pt-28 md:pt-24 pb-16 relative">
-      <Helmet>
-        <title>{t('about.title')} | The Storm Watcher</title>
-        <meta name="description" content={t('about.subtitle')} />
-        <link rel="canonical" href="https://thestormwatcher.com/about" />
-        <meta property="og:title" content="About — The Storm Watcher" />
-        <meta property="og:description" content="Real-time space weather monitoring and aurora forecast app." />
-        <meta property="og:url" content="https://thestormwatcher.com/about" />
-        <meta name="twitter:title" content="About — The Storm Watcher" />
-        <meta name="twitter:description" content="Real-time space weather monitoring and aurora forecast app." />
-      </Helmet>
+      <PageMeta
+        title="About — The Storm Watcher"
+        description="Real-time space weather monitoring and aurora forecast app."
+        path="/about"
+      />
       <div className="star-field">
         {stars.map((s) => (
           <div

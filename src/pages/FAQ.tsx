@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
+import PageMeta from '../components/PageMeta';
 import { ChevronDown, Zap, Sun, Eye, Sparkles, Wind, Moon } from 'lucide-react';
 
 interface FaqItem {
@@ -99,17 +99,13 @@ const FAQ = () => {
 
   return (
     <div className="min-h-screen px-4 pt-32 pb-12 sm:pt-44 sm:pb-24 max-w-3xl mx-auto relative z-10">
-      <Helmet>
-        <title>Aurora FAQ — Northern Lights Guide | The Storm Watcher</title>
-        <meta name="description" content="Everything you need to know about the Northern Lights, Kp index, solar wind, and how to see the aurora. Expert answers to common space weather questions." />
-        <link rel="canonical" href="https://thestormwatcher.com/faq" />
-        <meta property="og:title" content="Aurora FAQ — Northern Lights Guide | The Storm Watcher" />
-        <meta property="og:description" content="Everything you need to know about the Northern Lights, Kp index, solar wind, and how to see the aurora." />
-        <meta property="og:url" content="https://thestormwatcher.com/faq" />
-        <meta name="twitter:title" content="Aurora FAQ — Northern Lights Guide | The Storm Watcher" />
-        <meta name="twitter:description" content="Everything you need to know about the Northern Lights, Kp index, solar wind, and how to see the aurora." />
+      <PageMeta
+        title="Aurora FAQ — Northern Lights Guide | The Storm Watcher"
+        description="Everything you need to know about the Northern Lights, Kp index, solar wind, and how to see the aurora. Expert answers to common space weather questions."
+        path="/faq"
+      >
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
-      </Helmet>
+      </PageMeta>
 
       <div className="text-center mb-6 md:mb-12">
         <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4 uppercase tracking-wide">

@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { useState } from 'react';
 import { MapPin, X } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';

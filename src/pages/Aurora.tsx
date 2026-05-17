@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback, lazy, Suspense, useMemo, Component, type ReactNode } from 'react';
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
-import { Helmet } from 'react-helmet-async';
+import PageMeta from '../components/PageMeta';
 import { MapPin, Eye, Sparkles, AlertTriangle, Check, Zap, Share2 } from 'lucide-react';
 import { getKpIndex, getAuroraModel, getMagField, getSolarWind, getWeatherData, getKpGradientStyle, type AuroraOvationPoint, type WeatherData } from '../services/noaaApi';
 import { calcAuroraVisibility } from '../utils/auroraVisibility';
@@ -209,15 +209,11 @@ const Aurora = () => {
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16 relative">
-      <Helmet>
-        <title>Can I see the Aurora tonight? Live Forecast & Checklist | The Storm Watcher</title>
-        <meta name="description" content="Check your local aurora visibility in seconds. Interactive 3D OVATION model, real-time cloud cover, moon phase, and Kp index checklist for perfect aurora hunting." />
-        <link rel="canonical" href="https://thestormwatcher.com/aurora" />
-        <meta property="og:title" content="Can I see the Aurora tonight? Live Forecast | The Storm Watcher" />
-        <meta property="og:description" content="Check your local aurora visibility in seconds. Interactive 3D OVATION model, real-time cloud cover, moon phase, and Kp index checklist." />
-        <meta property="og:url" content="https://thestormwatcher.com/aurora" />
-        <meta name="twitter:title" content="Can I see the Aurora tonight? | The Storm Watcher" />
-        <meta name="twitter:description" content="Check your local aurora visibility in seconds. Interactive 3D OVATION model, real-time Kp index and cloud cover." />
+      <PageMeta
+        title="Can I see the Aurora tonight? Live Forecast & Checklist | The Storm Watcher"
+        description="Check your local aurora visibility in seconds. Interactive 3D OVATION model, real-time cloud cover, moon phase, and Kp index checklist for perfect aurora hunting."
+        path="/aurora"
+      >
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebApplication",
@@ -225,7 +221,7 @@ const Aurora = () => {
           "url": "https://thestormwatcher.com/aurora",
           "description": "Live aurora borealis forecast with 3D OVATION model and real-time Kp index"
         })}</script>
-      </Helmet>
+      </PageMeta>
       <div className="star-field">
         {stars.map((s) => (
           <div

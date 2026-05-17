@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
+import PageMeta from '../components/PageMeta';
 import { Sparkles, Home, ArrowLeft } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import StarField from '../components/StarField';
@@ -9,10 +9,12 @@ const NotFound = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
-      <Helmet>
-        <title>404 — Lost in Space | The Storm Watcher</title>
-        <meta name="robots" content="noindex" />
-      </Helmet>
+      <PageMeta
+        title="404 — Lost in Space | The Storm Watcher"
+        description="Page not found."
+        path="/404"
+        noindex
+      />
 
       <StarField />
 

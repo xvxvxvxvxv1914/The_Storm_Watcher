@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Helmet } from 'react-helmet-async';
+import PageMeta from '../components/PageMeta';
 import { Camera, Upload, X, MapPin, Image } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -169,11 +169,11 @@ export default function Gallery() {
 
   return (
     <div className="min-h-screen px-4 py-20 max-w-6xl mx-auto">
-      <Helmet>
-        <title>Aurora Gallery — The Storm Watcher</title>
-        <meta name="description" content="Community aurora photos from around the world. Share your northern lights sightings." />
-        <link rel="canonical" href="https://thestormwatcher.com/gallery" />
-      </Helmet>
+      <PageMeta
+        title="Aurora Gallery — The Storm Watcher"
+        description="Community aurora photos from around the world. Share your northern lights sightings."
+        path="/gallery"
+      />
 
       <div className="flex items-center justify-between flex-wrap gap-4 mb-8">
         <div>
