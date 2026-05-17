@@ -586,8 +586,8 @@ const Home = () => {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <Link to="/calendar" className="glass-surface rounded-2xl p-7 hover:glow-green transition-all group block">
-            <div className="w-14 h-14 bg-gradient-to-br from-[#10b981] to-[#059669] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-              <Calendar className="w-7 h-7 text-white" />
+            <div className="w-14 h-14 bg-[#2DD4BF]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+              <Calendar className="w-7 h-7 text-[#2DD4BF]" />
             </div>
             <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.calendar.title')}</h3>
             <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.calendar.desc')}</p>
@@ -595,16 +595,16 @@ const Home = () => {
 
           <div className="glass-surface rounded-2xl p-7 hover:glow-purple transition-all group relative opacity-60">
             <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#7c3aed]/20 text-[#a78bfa] border border-[#7c3aed]/30">{t('home.comingSoon')}</span>
-            <div className="w-14 h-14 bg-gradient-to-br from-[#7c3aed] to-[#6d28d9] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-              <Bot className="w-7 h-7 text-white" />
+            <div className="w-14 h-14 bg-[#2DD4BF]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+              <Bot className="w-7 h-7 text-[#2DD4BF]" />
             </div>
             <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.ai.title')}</h3>
             <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.ai.desc')}</p>
           </div>
 
           <div className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group">
-            <div className="w-14 h-14 bg-gradient-to-br from-[#f97316] to-[#ef4444] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-              <Globe className="w-7 h-7 text-white" />
+            <div className="w-14 h-14 bg-[#F97316]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+              <Globe className="w-7 h-7 text-[#F97316]" />
             </div>
             <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.map.title')}</h3>
             <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.map.desc')}</p>
@@ -612,32 +612,32 @@ const Home = () => {
 
           <div className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group relative opacity-60">
             <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#fbbf24]/20 text-[#fbbf24] border border-[#fbbf24]/30">{t('home.comingSoon')}</span>
-            <div className="w-14 h-14 bg-gradient-to-br from-[#fbbf24] to-[#f97316] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-              <Bell className="w-7 h-7 text-white" />
+            <div className="w-14 h-14 bg-[#F97316]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+              <Bell className="w-7 h-7 text-[#F97316]" />
             </div>
             <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.alerts.title')}</h3>
             <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.alerts.desc')}</p>
           </div>
 
           <Link to="/gallery" className="glass-surface rounded-2xl p-7 hover:glow-green transition-all group block">
-            <div className="w-14 h-14 bg-gradient-to-br from-[#06b6d4] to-[#0891b2] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-              <Camera className="w-7 h-7 text-white" />
+            <div className="w-14 h-14 bg-[#2DD4BF]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+              <Camera className="w-7 h-7 text-[#2DD4BF]" />
             </div>
             <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.gallery.title')}</h3>
             <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.gallery.desc')}</p>
           </Link>
 
           <Link to="/hunt" className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group block">
-            <div className="w-14 h-14 bg-gradient-to-br from-[#f59e0b] to-[#d97706] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-              <Trophy className="w-7 h-7 text-white" />
+            <div className="w-14 h-14 bg-[#2DD4BF]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+              <Trophy className="w-7 h-7 text-[#2DD4BF]" />
             </div>
             <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.hunt.title')}</h3>
             <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.hunt.desc')}</p>
           </Link>
 
           <Link to="/livestream" className="glass-surface rounded-2xl p-7 hover:glow-purple transition-all group block">
-            <div className="w-14 h-14 bg-gradient-to-br from-[#ec4899] to-[#be185d] rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-              <Video className="w-7 h-7 text-white" />
+            <div className="w-14 h-14 bg-[#2DD4BF]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+              <Video className="w-7 h-7 text-[#2DD4BF]" />
             </div>
             <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.livestream.title')}</h3>
             <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.livestream.desc')}</p>
