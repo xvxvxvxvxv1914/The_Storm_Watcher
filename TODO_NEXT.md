@@ -1,6 +1,6 @@
 # The Storm Watcher — Следваща сесия
 
-Последен commit: `f8973a9` (2026-05-14)
+Последен commit: `757677b` (2026-05-17)
 
 ---
 
@@ -16,44 +16,51 @@
 ### Supabase Leaked Password Protection
 - Изисква Supabase Pro план (~$25/мес)
 - Supabase Dashboard → Authentication → Security → Enable leaked password check
-- 1 WARN в audit остава незатворен без Pro
 
----
+### Sentry Source Maps (P9)
+- Изисква `VITE_SENTRY_DSN` в Vercel env vars
+- Сетъп: `npm install @sentry/vite-plugin` + добави в vite.config.ts
+- После: `SENTRY_AUTH_TOKEN` в Vercel за upload при build
 
-## 🟡 ТЕХНИЧЕСКИ (може автоматично)
-
-### iOS DEVELOPMENT_TEAM в xcconfig
-- `/ios/debug.xcconfig` и нов `release.xcconfig` трябва да включват:
-  `DEVELOPMENT_TEAM = <твоят Apple Team ID>`
-- Нужен е платен Apple Developer акаунт ($99/год)
-
-### CSP report-uri (M6)
-- Добавяне на Sentry CSP endpoint в `vercel.json` за violation tracking
+### M6 — CSP report-uri
 - Изисква Sentry проект с DSN
+- Добави в `vercel.json`: `report-uri https://o...sentry.io/api/.../security/?sentry_key=...`
+
+### M9 — iOS DEVELOPMENT_TEAM
+- Изисква платен Apple Developer акаунт ($99/год)
+- `/ios/debug.xcconfig` и `release.xcconfig`: `DEVELOPMENT_TEAM = <твоят Apple Team ID>`
+
+### M12 — Password strength (Supabase Dashboard)
+- Supabase Dashboard → Authentication → Policies → задай минимум 10 char + complexity
 
 ---
 
-## ✅ НАПРАВЕНО В ПОСЛЕДНИТЕ 2 СЕСИИ
+## ✅ НАПРАВЕНО В ПОСЛЕДНИТЕ 3 СЕСИИ
+
+**Сигурност (audit 2026-05-12):**
+- C1–C5 CRITICAL ✅
+- H1–H13 HIGH ✅ (H3 skip — payments disabled)
+- M1–M14 ✅ (M6/M9/M12/M13 — manual/pending)
+- L1–L3 ✅ (L2 localStorage cleanup на logout, L3 a11y OK)
+
+**Performance:**
+- P3: charts-vendor изключен от PWA precache (1.59 MiB → 1.37 MiB) ✅
+- P6: Globe пауза при off-screen (IntersectionObserver) ✅
+- P8: mood.submittedAt i18n ключ добавен ✅
+- P10: husky + lint-staged pre-commit hooks ✅
+- P11: GitHub Actions CI/CD (вече беше направено) ✅
 
 **UX подобрения:**
 - Aurora Globe ErrorBoundary (спира infinite spinner)
 - Livestream: LIVE badge / External label по камери
-- ISS: подобрен empty state за пасажи (обяснение + link to Settings)
-- Gallery: empty state с Upload button / Sign in CTA
-- Hunt: leaderboard + recent sightings — насочващ текст
-- Forecast карти: "No cloud data — set location" link
-- Gallery: delete confirmation modal
-- Profile: type-email-to-delete guard
-- Mood: показва час на submitted
-- Hunt: cooldown обяснение
-- Alerts: error card + retry при total failure
-
-**Code quality:**
-- useEffect deps fix: SkyVisibility, Hunt, Gallery, Aurora, UV, SunTimes
+- ISS: подобрен empty state за пасажи
+- Gallery: empty state + Upload button / Sign in CTA
+- Hunt: leaderboard + recent sightings насочващ текст
+- Gallery/Hunt: useCallback за loadData/fetchPhotos
 - Settings: LocationPicker (city search) + GPS reverse geocode
-- logError migration: donkiApi, uvApi, skyApi, nigggApi, Dashboard, Home, Mood
 - Home Calendar card → `<Link to="/calendar">`
 - Hunt `??/||` precedence bug fix
+- logError migration: всички сервиси
 
 **Нови страници:**
 - `/calendar` — Aurora Calendar (3-night outlook, hourly Kp bars, cloud cover)
@@ -61,19 +68,15 @@
 - `/gallery` — Community photos (Supabase Storage, compression, delete confirm)
 - `/hunt` — Aurora Hunt gamification (sightings, badges, leaderboard)
 
-**Сигурност (audit):**
-- С1-С5 CRITICAL done
-- H1-H13 HIGH done (H3 skip — payments disabled)
-- M1-M4, M8, M10, M11, M14 MEDIUM done
-- M5 useEffect deps — почти всички fixed
-
 ---
 
 ## 📦 STACK REMINDER
 - React + TypeScript + Vite, Vercel, Supabase (srzfoxlmhxyulrgkchjr)
 - Capacitor v8 (iOS + Android)
 - Stripe payments hidden behind `VITE_PAYMENTS_ENABLED=false`
-- Локали: en, bg, de, es, fr, ru, zh, ja — нови ключове само в en.ts + bg.ts (останалите fallback)
+- Локали: en, bg — нови ключове само в en.ts + bg.ts (останалите fallback)
 - `t('key') || 'fallback'` pattern навсякъде
 - `LocationPicker` props: `{ lat, lon, locationName, onSelect, onRequestGPS }` (без compact/onChange)
 - `getKpGradientStyle()` → CSS gradient (text-fill), `getKpColor()` → plain hex за background
+- Pre-commit hook: eslint + tsc (lint-staged + husky)
+- CI: GitHub Actions — typecheck, lint, vitest, build, playwright
