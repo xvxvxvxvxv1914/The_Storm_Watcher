@@ -14,7 +14,8 @@
     "test:e2e": "playwright test",
     "ios:deploy": "bash scripts/ios-deploy.sh",
     "ios:open": "npm run build && npx cap sync ios && npx cap open ios",
-    "ios:livereload": "npx cap run ios --livereload --external"
+    "ios:livereload": "npx cap run ios --livereload --external",
+    "prepare": "husky"
   },
   "dependencies": {
     "@capacitor/android": "^8.3.1",
@@ -49,6 +50,12 @@
     "three": "^0.184.0",
     "twitter-api-v2": "^1.29.0"
   },
+  "lint-staged": {
+    "src/**/*.{ts,tsx}": [
+      "eslint --max-warnings 0",
+      "bash -c 'tsc --noEmit -p tsconfig.app.json'"
+    ]
+  },
   "overrides": {
     "serialize-javascript": "^7.0.5",
     "smol-toml": "^1.6.1",
@@ -68,6 +75,8 @@
     "eslint-plugin-react-refresh": "^0.4.26",
     "globals": "^15.9.0",
     "happy-dom": "^20.9.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.5",
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.5.3",

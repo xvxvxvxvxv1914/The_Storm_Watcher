@@ -45,6 +45,7 @@ const en: Record<string, string> = {
   'mood.aboutText1': 'Space weather can affect how people feel. This page allows you to share how you feel and see how others feel.',
   'mood.aboutText2': 'Your data is completely anonymous and used only for statistical purposes. You can vote once a day.',
   'mood.error': 'Error saving. Please try again.',
+  'mood.submittedAt': 'Submitted at',
 
   // Home Page
   'home.hero.title': 'Space Weather Monitoring',
