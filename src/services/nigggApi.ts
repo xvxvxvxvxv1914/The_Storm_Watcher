@@ -65,7 +65,7 @@ const NIGGG_BASE = isNative
   ? 'https://pagmag.ngic.bg/assets/php/datacalendar26.php'
   : '/api/niggg';
 
-export const fetchNigggData = async (accessToken?: string): Promise<NigggDataSet> => {
+export const fetchNigggData = async (): Promise<NigggDataSet> => {
   try {
     const today = new Date();
     const threeDaysAgo = new Date(today);
@@ -83,12 +83,7 @@ export const fetchNigggData = async (accessToken?: string): Promise<NigggDataSet
 
     const url = `${NIGGG_BASE}?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;
 
-    const headers: Record<string, string> = {};
-    if (!isNative && accessToken) {
-      headers['Authorization'] = `Bearer ${accessToken}`;
-    }
-
-    const res = await fetch(url, { method: 'GET', headers });
+    const res = await fetch(url, { method: 'GET' });
 
     if (!res.ok) {
       throw new Error(`NIGGG fetch failed: ${res.status}`);

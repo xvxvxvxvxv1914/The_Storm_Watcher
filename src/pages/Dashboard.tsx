@@ -8,8 +8,7 @@ import { Activity, Wind, Compass, Sun, Radio, MapPin } from 'lucide-react';
 import { getKpIndex, getSolarWind, getMagField, getXrayFlux, getKpHistory3Day, getStormStatus, getXrayClass, getKpGradientStyle } from '../services/noaaApi';
 import { fetchNigggData, toDeltaSeries, getNigggStormStatus, type NigggDataPoint } from '../services/nigggApi';
 import { useLanguage } from '../contexts/LanguageContext';
-import { useAuth } from '../contexts/AuthContext';
-import { supabase } from '../lib/supabase';
+import { useSettings } from '../contexts/SettingsContext';
 import StarField from '../components/StarField';
 import { SkeletonCard, SkeletonChart, Skeleton } from '../components/Skeleton';
 import ErrorCard from '../components/ErrorCard';
@@ -69,9 +68,13 @@ const UpdateCountdown = React.memo(function UpdateCountdown() {
 
 const NIGGG_COUNTRIES = new Set(['BG', 'RO', 'RS', 'MK', 'GR', 'TR', 'AL', 'ME', 'HR', 'HU', 'MD']);
 
+// Bounding box covering NIGGG_COUNTRIES region (roughly SE Europe + Turkey)
+const isInNigggBbox = (lat: number, lon: number) =>
+  lat >= 35 && lat <= 48 && lon >= 14 && lon <= 42;
+
 const Dashboard = () => {
   const { t } = useLanguage();
-  const { session } = useAuth();
+  const { settings } = useSettings();
   const [kpValue, setKpValue] = useState<number>(0);
   const [solarWindSpeed, setSolarWindSpeed] = useState<number>(0);
   const [bz, setBz] = useState<number>(0);
@@ -88,6 +91,12 @@ const Dashboard = () => {
   const [error, setError] = useState(false);
 
   useEffect(() => {
+    // Fast path: use saved preferred location from settings
+    if (settings.preferredLat !== null && settings.preferredLon !== null) {
+      setInNigggRegion(isInNigggBbox(settings.preferredLat, settings.preferredLon));
+      return;
+    }
+    // Cached IP lookup
     const cached = sessionStorage.getItem('user_country_code');
     if (cached) { setInNigggRegion(NIGGG_COUNTRIES.has(cached)); return; }
     fetch('https://ipapi.co/country/')
@@ -97,8 +106,15 @@ const Dashboard = () => {
         sessionStorage.setItem('user_country_code', c);
         setInNigggRegion(NIGGG_COUNTRIES.has(c));
       })
-      .catch(() => {});
-  }, []);
+      .catch(() => {
+        // ipapi.co failed — fall back to GPS if available
+        navigator.geolocation?.getCurrentPosition(
+          ({ coords }) => setInNigggRegion(isInNigggBbox(coords.latitude, coords.longitude)),
+          () => {},
+          { timeout: 5000 },
+        );
+      });
+  }, [settings.preferredLat, settings.preferredLon]);
 
   const chartH    = useChartHeight(190, 300);
   const chartHSm  = useChartHeight(170, 280);
@@ -107,18 +123,13 @@ const Dashboard = () => {
   const fetchData = useCallback(async () => {
     setError(false);
     try {
-      // Always read a fresh token so NIGGG data works even when the session
-      // wasn't available when this callback was first created.
-      const freshToken = session?.access_token
-        ?? (await supabase.auth.getSession()).data.session?.access_token;
-
       const [kpRes, windRes, magRes, xrayRes, kp3dayRes, nigggRes] = await Promise.allSettled([
         getKpIndex(),
         getSolarWind(),
         getMagField(),
         getXrayFlux(),
         getKpHistory3Day(),
-        inNigggRegion ? fetchNigggData(freshToken) : Promise.resolve(null),
+        inNigggRegion ? fetchNigggData() : Promise.resolve(null),
       ]);
 
       const kpData    = kpRes.status    === 'fulfilled' ? kpRes.value    : null;
@@ -189,7 +200,6 @@ const Dashboard = () => {
       setError(true);
       setLoading(false);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- session is read at call time via getSession() fallback; intentionally not a dep
   }, [inNigggRegion]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
