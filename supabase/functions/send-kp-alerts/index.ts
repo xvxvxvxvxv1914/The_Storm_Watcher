@@ -67,6 +67,8 @@ Deno.serve(async (req: Request) => {
 
   const cooldownCutoff = new Date(Date.now() - COOLDOWN_MS).toISOString();
 
+  // cooldownCutoff is an internally-generated ISO 8601 string — no user input,
+  // no special chars that would break PostgREST OR filter syntax.
   const { data: subs, error: subsError } = await supabase
     .from('push_subscriptions')
     .select('id, endpoint, p256dh, auth, threshold_kp')
