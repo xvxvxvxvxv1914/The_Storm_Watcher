@@ -103,3 +103,74 @@
 - Each article should use the PageMeta component with a unique title and description
 - Add each new article to public/sitemap.xml
 - After adding articles, run: npm run build:ssg && git push
+
+---
+
+## 6. B2B API Product — Aurora & Space Weather Data as a Service
+**Priority: Medium — Future Revenue Stream**
+**Goal:** Sell processed, value-added space weather data to businesses that need aurora forecasting but don't want to deal with raw NOAA/NASA APIs directly.
+
+### Legal basis:
+- NOAA, NASA and GFZ Potsdam data is publicly available and free for commercial use
+- We CANNOT sell the raw data or claim it as ours
+- We CAN sell: processing, aggregation, formatting, alerts, history, and derived metrics
+- Always attribute data sources in API responses (e.g. "source": "NOAA SWPC")
+
+### What the API product should offer (differentiators from free NOAA):
+
+**Endpoint 1: Aurora Probability Score**
+- GET /api/v1/aurora?lat=68.5&lon=27.3
+- Returns a single 0-100 probability score for a specific GPS coordinate
+- Combines Kp index + Bz component + solar wind speed + cloud cover + magnetic latitude + darkness window
+- NOAA does not offer this — it's our own calculation
+
+**Endpoint 2: Geomagnetic Storm Alerts (Webhook)**
+- POST /api/v1/alerts/subscribe
+- Client registers a webhook URL + threshold (e.g. Kp > 5)
+- We fire a POST to their webhook when conditions are met
+- NOAA has email alerts but no webhook/API alerts
+
+**Endpoint 3: Aggregated Real-Time Feed**
+- GET /api/v1/realtime
+- Returns combined data from NOAA + GFZ Potsdam + NIGGG Panagyurishte in one clean JSON response
+- Saves clients from hitting 3 separate APIs and merging data themselves
+
+**Endpoint 4: Historical Archive**
+- GET /api/v1/history?start=2024-01-01&end=2024-12-31&metric=kp
+- NOAA keeps limited rolling history — we store everything in Supabase permanently
+- Aurora tour operators need historical data to plan seasons and market their trips
+
+**Endpoint 5: Location-based Visibility Forecast**
+- GET /api/v1/forecast?lat=69.6&lon=18.9&days=3
+- 3-day aurora visibility forecast for a specific location
+- Combines space weather forecast + weather forecast (cloud cover) + sunrise/sunset times
+
+### Target customers:
+- Aurora tour operators in Norway, Finland, Sweden, Iceland (Hurtigruten, Lights over Lapland, etc.)
+- Hotels and resorts in the auroral belt that want to offer aurora alerts to guests
+- Travel apps and booking platforms (Airbnb Experiences, GetYourGuide)
+- Mobile app developers who want aurora data without building the infrastructure
+- Research institutions that need aggregated real-time data
+- Insurance companies assessing geomagnetic storm risk for satellites/power grids
+
+### Pricing model:
+- Free tier: 100 API calls/month (for developers to test)
+- Starter: $49/month — 10,000 calls/month, real-time + forecast endpoints
+- Business: $199/month — 100,000 calls/month, all endpoints + webhooks + history
+- Enterprise: custom pricing — SLA, dedicated support, white-label option
+
+### Technical implementation (when ready):
+- Create api/v1/ folder with Vercel serverless functions
+- Use Supabase for storing historical data and API keys
+- Implement API key authentication (generate key on signup, validate on each request)
+- Add rate limiting per API key using Supabase or Upstash Redis
+- Build a simple developer dashboard at /developers showing usage, docs, and key management
+- Use Stripe to gate access by plan (already planned for main app)
+- Write OpenAPI/Swagger documentation at /api/docs
+- Add "For Developers" link in the footer
+
+### First step when ready to implement:
+1. Create a simple /developers landing page explaining the API
+2. Add a waitlist form (just email collection) to gauge interest before building
+3. Reach out directly to 5-10 aurora tour operators in Scandinavia with a cold email offering beta access
+4. Only build the full API after confirming at least 3 paying customers
