@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:ssg": "vite build && npx tsx scripts/prerender.ts",
+    "build:ssg": "vite build && npx playwright install chromium --with-deps && npx tsx scripts/prerender.ts",
     "lint": "eslint .",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
