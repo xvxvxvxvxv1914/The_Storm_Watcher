@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { logError } from '../utils/logger';
 import PageMeta from '../components/PageMeta';
-import { Smile, Frown, Meh, ThumbsUp, ThumbsDown, Users, TrendingUp, CheckCircle, AlertCircle } from 'lucide-react';
+import { Users, TrendingUp, CheckCircle, AlertCircle, ThumbsUp } from 'lucide-react';
 import SvgDonut from '../components/charts/SvgDonut';
 import SvgStackedBars, { type DataRow } from '../components/charts/SvgStackedBars';
 import { supabase, getSessionId } from '../lib/supabase';
@@ -23,12 +23,91 @@ interface HourlyData {
   terrible: number;
 }
 
+const MoodIconGreat = ({ active }: { active: boolean }) => (
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-10 h-10">
+    <circle cx="32" cy="32" r="10" fill={active ? '#22c55e' : '#22c55e99'} />
+    <circle cx="32" cy="32" r="10" fill="url(#gGreat)" opacity="0.6" />
+    {[0,45,90,135,180,225,270,315].map((deg, i) => (
+      <line key={i}
+        x1={32 + 13 * Math.cos(deg * Math.PI / 180)}
+        y1={32 + 13 * Math.sin(deg * Math.PI / 180)}
+        x2={32 + 20 * Math.cos(deg * Math.PI / 180)}
+        y2={32 + 20 * Math.sin(deg * Math.PI / 180)}
+        stroke={active ? '#4ade80' : '#22c55e88'} strokeWidth="2.5" strokeLinecap="round"
+      />
+    ))}
+    {[22.5,67.5,112.5,157.5,202.5,247.5,292.5,337.5].map((deg, i) => (
+      <line key={i}
+        x1={32 + 13 * Math.cos(deg * Math.PI / 180)}
+        y1={32 + 13 * Math.sin(deg * Math.PI / 180)}
+        x2={32 + 16 * Math.cos(deg * Math.PI / 180)}
+        y2={32 + 16 * Math.sin(deg * Math.PI / 180)}
+        stroke={active ? '#86efac' : '#22c55e55'} strokeWidth="1.5" strokeLinecap="round"
+      />
+    ))}
+    <defs>
+      <radialGradient id="gGreat" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stopColor="#bbf7d0" />
+        <stop offset="100%" stopColor="#22c55e" stopOpacity="0" />
+      </radialGradient>
+    </defs>
+  </svg>
+);
+
+const MoodIconGood = ({ active }: { active: boolean }) => (
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-10 h-10">
+    <circle cx="32" cy="32" r="10" fill={active ? '#10b981' : '#10b98199'} />
+    {[0,60,120,180,240,300].map((deg, i) => (
+      <line key={i}
+        x1={32 + 13 * Math.cos(deg * Math.PI / 180)}
+        y1={32 + 13 * Math.sin(deg * Math.PI / 180)}
+        x2={32 + 19 * Math.cos(deg * Math.PI / 180)}
+        y2={32 + 19 * Math.sin(deg * Math.PI / 180)}
+        stroke={active ? '#34d399' : '#10b98188'} strokeWidth="2.5" strokeLinecap="round"
+      />
+    ))}
+    <circle cx="32" cy="32" r="15" stroke={active ? '#34d39940' : '#10b98130'} strokeWidth="1.5" strokeDasharray="3 4" />
+  </svg>
+);
+
+const MoodIconOkay = ({ active }: { active: boolean }) => (
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-10 h-10">
+    <circle cx="32" cy="32" r="10" fill={active ? '#eab308' : '#eab30899'} />
+    <circle cx="32" cy="32" r="16" stroke={active ? '#eab308' : '#eab30855'} strokeWidth="1.5" />
+    <circle cx="32" cy="32" r="22" stroke={active ? '#eab30850' : '#eab30825'} strokeWidth="1" />
+    <path d="M 20 32 Q 26 26 32 32 Q 38 38 44 32" stroke={active ? '#fde047' : '#eab30888'} strokeWidth="2" strokeLinecap="round" fill="none" />
+  </svg>
+);
+
+const MoodIconBad = ({ active }: { active: boolean }) => (
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-10 h-10">
+    <circle cx="32" cy="32" r="10" fill={active ? '#f97316' : '#f9731699'} />
+    <path d="M 14 22 Q 20 28 26 22 Q 32 16 38 22 Q 44 28 50 22" stroke={active ? '#fb923c' : '#f9731666'} strokeWidth="2" strokeLinecap="round" fill="none" />
+    <path d="M 14 42 Q 20 36 26 42 Q 32 48 38 42 Q 44 36 50 42" stroke={active ? '#fb923c' : '#f9731666'} strokeWidth="2" strokeLinecap="round" fill="none" />
+    <path d="M 10 32 Q 18 24 26 32 Q 34 40 42 32 Q 50 24 54 32" stroke={active ? '#f97316' : '#f9731644'} strokeWidth="1.5" strokeLinecap="round" fill="none" />
+  </svg>
+);
+
+const MoodIconTerrible = ({ active }: { active: boolean }) => (
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-10 h-10">
+    <circle cx="32" cy="32" r="9" fill={active ? '#ef4444' : '#ef444499'} />
+    {[0,1,2,3,4].map(i => {
+      const r1 = 13 + i * 4.5;
+      const r2 = r1 + 2.5;
+      const dash = `${(2 + i) * 1.5} ${2 + i}`;
+      return <circle key={i} cx="32" cy="32" r={r1} stroke={active ? `rgba(239,68,68,${0.7 - i * 0.12})` : `rgba(239,68,68,${0.3 - i * 0.05})`} strokeWidth={r2 - r1} strokeDasharray={dash} />;
+    })}
+    <line x1="24" y1="24" x2="40" y2="40" stroke={active ? '#fca5a5' : '#ef444466'} strokeWidth="2.5" strokeLinecap="round" />
+    <line x1="40" y1="24" x2="24" y2="40" stroke={active ? '#fca5a5' : '#ef444466'} strokeWidth="2.5" strokeLinecap="round" />
+  </svg>
+);
+
 const MOODS = [
-  { type: 'great', labelKey: 'mood.great', icon: ThumbsUp, color: 'bg-green-500', textColor: 'text-green-500' },
-  { type: 'good', labelKey: 'mood.good', icon: Smile, color: 'bg-emerald-500', textColor: 'text-emerald-500' },
-  { type: 'okay', labelKey: 'mood.okay', icon: Meh, color: 'bg-yellow-500', textColor: 'text-yellow-500' },
-  { type: 'bad', labelKey: 'mood.bad', icon: Frown, color: 'bg-orange-500', textColor: 'text-orange-500' },
-  { type: 'terrible', labelKey: 'mood.terrible', icon: ThumbsDown, color: 'bg-red-500', textColor: 'text-red-500' },
+  { type: 'great',    labelKey: 'mood.great',    Icon: MoodIconGreat,    ring: 'ring-green-400',   glow: 'shadow-green-500/50',   bg: 'bg-green-500/10',   selectedBg: 'bg-green-500',   selectedRing: 'ring-green-300' },
+  { type: 'good',     labelKey: 'mood.good',     Icon: MoodIconGood,     ring: 'ring-emerald-400', glow: 'shadow-emerald-500/50', bg: 'bg-emerald-500/10', selectedBg: 'bg-emerald-500', selectedRing: 'ring-emerald-300' },
+  { type: 'okay',     labelKey: 'mood.okay',     Icon: MoodIconOkay,     ring: 'ring-yellow-400',  glow: 'shadow-yellow-500/50',  bg: 'bg-yellow-500/10',  selectedBg: 'bg-yellow-500',  selectedRing: 'ring-yellow-300' },
+  { type: 'bad',      labelKey: 'mood.bad',      Icon: MoodIconBad,      ring: 'ring-orange-400',  glow: 'shadow-orange-500/50',  bg: 'bg-orange-500/10',  selectedBg: 'bg-orange-500',  selectedRing: 'ring-orange-300' },
+  { type: 'terrible', labelKey: 'mood.terrible', Icon: MoodIconTerrible, ring: 'ring-red-400',     glow: 'shadow-red-500/50',     bg: 'bg-red-500/10',     selectedBg: 'bg-red-500',     selectedRing: 'ring-red-300' },
 ];
 
 const SYMPTOM_KEYS = [
@@ -41,6 +120,13 @@ const SYMPTOM_KEYS = [
   'mood.symptom.concentration',
   'mood.symptom.palpitations',
 ];
+
+const getKpGlow = (kp: number): string => {
+  if (kp >= 7) return 'radial-gradient(ellipse 80% 40% at 50% 0%, rgba(239,68,68,0.18) 0%, transparent 70%)';
+  if (kp >= 5) return 'radial-gradient(ellipse 80% 40% at 50% 0%, rgba(249,115,22,0.15) 0%, transparent 70%)';
+  if (kp >= 3) return 'radial-gradient(ellipse 80% 40% at 50% 0%, rgba(234,179,8,0.12) 0%, transparent 70%)';
+  return 'radial-gradient(ellipse 80% 40% at 50% 0%, rgba(16,185,129,0.12) 0%, transparent 70%)';
+};
 
 const Mood = () => {
   const { t } = useLanguage();
@@ -192,7 +278,7 @@ const Mood = () => {
   }
 
   return (
-    <div className="min-h-screen pt-20 pb-16 md:pt-24">
+    <div className="min-h-screen pt-20 pb-16 md:pt-24" style={{ background: getKpGlow(currentKp) }}>
       <PageMeta
         title="Mood Tracker — The Storm Watcher"
         description="Track how geomagnetic storms affect your mood and wellbeing. See community mood patterns correlated with Kp index."
@@ -223,7 +309,7 @@ const Mood = () => {
 
           <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
             <div className="flex items-center gap-3 mb-2">
-              <Smile className="w-5 h-5 text-[#8b5cf6]" />
+              <span className="text-lg">😊</span>
               <h3 className="text-gray-400 text-sm">{t('mood.topMood')}</h3>
             </div>
             <div className="text-2xl font-bold text-white">
@@ -249,24 +335,25 @@ const Mood = () => {
           <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 mb-8">
             <h2 className="text-2xl font-semibold text-white mb-6">{t('mood.rateTitle')}</h2>
 
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-8">
+            <div className="flex flex-wrap justify-center gap-6 mb-8">
               {MOODS.map((mood) => {
-                const Icon = mood.icon;
                 const isSelected = selectedMood === mood.type;
                 return (
                   <button
                     key={mood.type}
                     onClick={() => setSelectedMood(mood.type)}
-                    className={`p-6 rounded-xl border-2 transition-all ${
-                      isSelected
-                        ? `${mood.color} border-white`
-                        : 'bg-white/5 border-white/10 hover:border-white/30'
-                    }`}
+                    className={`flex flex-col items-center gap-3 transition-all duration-200 group ${isSelected ? 'scale-110' : 'hover:scale-105'}`}
                   >
-                    <Icon className={`w-12 h-12 mx-auto mb-3 ${isSelected ? 'text-white' : mood.textColor}`} />
-                    <div className={`font-semibold text-sm ${isSelected ? 'text-white' : 'text-gray-300'}`}>
-                      {t(mood.labelKey)}
+                    <div className={`w-20 h-20 rounded-full flex items-center justify-center ring-2 shadow-lg transition-all duration-200 ${
+                      isSelected
+                        ? `${mood.selectedBg}/20 ${mood.selectedRing} ${mood.glow} shadow-xl`
+                        : `${mood.bg} ring-white/10 group-hover:${mood.ring}`
+                    }`}>
+                      <mood.Icon active={isSelected} />
                     </div>
+                    <span className={`text-sm font-semibold transition-colors ${isSelected ? 'text-white' : 'text-gray-400 group-hover:text-white'}`}>
+                      {t(mood.labelKey)}
+                    </span>
                   </button>
                 );
               })}
@@ -352,7 +439,7 @@ const Mood = () => {
                     if (!moodInfo) return null;
                     return (
                       <div key={stat.mood_type} className="flex items-center gap-2">
-                        <div className={`w-3 h-3 rounded-full ${moodInfo.color}`} />
+                        <div className={`w-3 h-3 rounded-full ${moodInfo.selectedBg} opacity-80`} />
                         <span className="text-gray-300 text-sm">{t(moodInfo.labelKey)} ({stat.percentage.toFixed(0)}%)</span>
                       </div>
                     );

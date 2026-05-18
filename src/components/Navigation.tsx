@@ -133,7 +133,13 @@ const Navigation = () => {
                   )}
                 </button>
                 {isMoreOpen && (
-                  <div className="absolute left-0 mt-3 w-96 rounded-xl shadow-2xl py-2 border border-[#10b981]/20 glass-surface" style={{ backgroundColor: 'rgba(10,10,26,0.85)', backdropFilter: 'blur(16px)' }}>
+                  <div
+                    className="absolute left-0 mt-3 w-96 rounded-xl shadow-2xl py-2 border border-[#10b981]/20"
+                    style={{
+                      backgroundColor: theme === 'dark' ? 'rgba(10,10,26,0.95)' : 'rgba(255,255,255,0.97)',
+                      backdropFilter: 'blur(16px)',
+                    }}
+                  >
                     <div className="grid grid-cols-2">
                       {moreLinks.map((link) => (
                         <Link
@@ -143,7 +149,9 @@ const Navigation = () => {
                           className={`block px-4 py-2 text-sm font-medium transition-colors ${
                             isActive(link.to)
                               ? 'text-[#10b981] bg-[#10b981]/10'
-                              : 'text-[#94a3b8] hover:text-white hover:bg-white/5'
+                              : theme === 'dark'
+                                ? 'text-[#94a3b8] hover:text-white hover:bg-white/5'
+                                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                           }`}
                         >
                           {link.label}
@@ -177,13 +185,23 @@ const Navigation = () => {
                 {languages.find(l => l.code === language)?.flag}
               </button>
               {isLangMenuOpen && (
-                <div className="absolute right-0 mt-2 w-48 glass-surface rounded-xl shadow-2xl py-2 border border-[#f97316]/20">
+                <div
+                  className="absolute right-0 mt-2 w-48 rounded-xl shadow-2xl py-2 border border-[#f97316]/20"
+                  style={{
+                    backgroundColor: theme === 'dark' ? 'rgba(10,10,26,0.95)' : 'rgba(255,255,255,0.97)',
+                    backdropFilter: 'blur(16px)',
+                  }}
+                >
                   {languages.map((lang) => (
                     <button
                       key={lang.code}
                       onClick={() => { setLanguage(lang.code); setIsLangMenuOpen(false); }}
                       className={`w-full text-left px-4 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${
-                        language === lang.code ? 'text-[#f97316] bg-[#f97316]/10' : 'text-[#94a3b8] hover:text-white hover:bg-white/5'
+                        language === lang.code
+                          ? 'text-[#f97316] bg-[#f97316]/10'
+                          : theme === 'dark'
+                            ? 'text-[#94a3b8] hover:text-white hover:bg-white/5'
+                            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                       }`}
                     >
                       <span>{lang.flag}</span>
@@ -209,18 +227,24 @@ const Navigation = () => {
                   </span>
                 </button>
                 {isUserMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-56 glass-surface rounded-xl shadow-2xl py-2 border border-[#f97316]/20">
-                    <div className="px-4 py-2 border-b border-white/10">
-                      <p className="text-sm font-medium text-white">{profile?.full_name || t('nav.user')}</p>
-                      <p className="text-xs text-[#94a3b8] mt-1">{user.email}</p>
+                  <div
+                    className="absolute right-0 mt-2 w-56 rounded-xl shadow-2xl py-2 border border-[#f97316]/20"
+                    style={{
+                      backgroundColor: theme === 'dark' ? 'rgba(10,10,26,0.95)' : 'rgba(255,255,255,0.97)',
+                      backdropFilter: 'blur(16px)',
+                    }}
+                  >
+                    <div className={`px-4 py-2 border-b ${theme === 'dark' ? 'border-white/10' : 'border-slate-200'}`}>
+                      <p className={`text-sm font-medium ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>{profile?.full_name || t('nav.user')}</p>
+                      <p className={`text-xs mt-1 ${theme === 'dark' ? 'text-[#94a3b8]' : 'text-slate-500'}`}>{user.email}</p>
                     </div>
-                    <Link to="/profile" onClick={() => setIsUserMenuOpen(false)} className="w-full text-left px-4 py-2 text-sm font-medium text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors flex items-center gap-2">
+                    <Link to="/profile" onClick={() => setIsUserMenuOpen(false)} className={`w-full text-left px-4 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${theme === 'dark' ? 'text-[#94a3b8] hover:text-white hover:bg-white/5' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'}`}>
                       <User className="w-4 h-4" />{t('nav.profile')}
                     </Link>
-                    <Link to="/settings" onClick={() => setIsUserMenuOpen(false)} className="w-full text-left px-4 py-2 text-sm font-medium text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors flex items-center gap-2">
+                    <Link to="/settings" onClick={() => setIsUserMenuOpen(false)} className={`w-full text-left px-4 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${theme === 'dark' ? 'text-[#94a3b8] hover:text-white hover:bg-white/5' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'}`}>
                       <SlidersHorizontal className="w-4 h-4" />{t('nav.settings')}
                     </Link>
-                    <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm font-medium text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors flex items-center gap-2">
+                    <button onClick={handleLogout} className={`w-full text-left px-4 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${theme === 'dark' ? 'text-[#94a3b8] hover:text-white hover:bg-white/5' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'}`}>
                       <LogOut className="w-4 h-4" />{t('auth.logout')}
                     </button>
                   </div>
