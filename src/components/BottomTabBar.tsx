@@ -79,25 +79,33 @@ const BottomTabBar = () => {
     <>
       {/* Floating pill tab bar */}
       <nav
-        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 glass-surface"
-        style={{
-          borderTop: theme === 'light' ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.08)',
-          borderLeft: 'none',
-          borderRight: 'none',
-          borderBottom: 'none',
-          borderRadius: 0,
-          paddingBottom: 'env(safe-area-inset-bottom)',
-        }}
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 flex justify-center pointer-events-none"
+        style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 12px)' }}
         aria-label="Main navigation"
       >
-        <div className="flex items-center px-1 py-1">
+        <div
+          className="pointer-events-auto flex items-center"
+          style={{
+            background: theme === 'light' ? 'rgba(242,242,247,0.82)' : 'rgba(18,18,30,0.82)',
+            backdropFilter: 'blur(10px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(10px) saturate(180%)',
+            border: theme === 'light' ? '1px solid rgba(0,0,0,0.10)' : '1px solid rgba(255,255,255,0.10)',
+            borderRadius: 100,
+            boxShadow: theme === 'light'
+              ? '0 8px 30px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08)'
+              : '0 8px 30px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.3)',
+            padding: '6px 8px',
+            gap: 0,
+          }}
+        >
           {tabs.map(({ to, icon: Icon, labelKey }) => {
             const active = location.pathname === to;
             return (
               <Link
                 key={to}
                 to={to}
-                className="flex flex-col items-center flex-1 py-2 gap-1"
+                className="flex flex-col items-center py-1.5 gap-0.5"
+                style={{ minWidth: 64, borderRadius: 80 }}
               >
                 <Icon
                   className={active ? 'text-[#10b981]' : theme === 'light' ? 'text-slate-400' : 'text-[#4a5568]'}
@@ -115,7 +123,8 @@ const BottomTabBar = () => {
             aria-label="Open more menu"
             aria-expanded={moreOpen}
             aria-haspopup="menu"
-            className="flex flex-col items-center flex-1 py-2 gap-1"
+            className="flex flex-col items-center py-1.5 gap-0.5"
+            style={{ minWidth: 64 }}
           >
             <MoreHorizontal
               className={isMoreActive ? 'text-[#10b981]' : theme === 'light' ? 'text-slate-400' : 'text-[#4a5568]'}
