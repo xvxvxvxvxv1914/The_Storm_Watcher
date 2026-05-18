@@ -81,7 +81,9 @@ const BottomTabBar = () => {
       <nav
         className="lg:hidden fixed bottom-0 left-0 right-0 z-50"
         style={{
-          background: theme === 'light' ? '#ffffff' : '#0a0c18',
+          background: theme === 'light' ? 'rgba(255,255,255,0.72)' : 'rgba(10,12,24,0.72)',
+          backdropFilter: 'blur(24px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(24px) saturate(180%)',
           borderTop: theme === 'light' ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.08)',
           paddingBottom: 'env(safe-area-inset-bottom)',
         }}
