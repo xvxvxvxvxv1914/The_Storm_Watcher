@@ -121,7 +121,7 @@ const SkyVisibility = () => {
     <div className="min-h-screen pt-24 md:pt-20 pb-16">
       <PageMeta
         title="Sky Visibility Tonight — The Storm Watcher"
-        description="Tonight's stargazing and aurora viewing conditions. Cloud cover, visibility and precipitation forecast for astronomers."
+        description="Tonight's aurora and stargazing conditions at your location. Cloud cover, atmospheric transparency and precipitation forecast — know if the sky will be clear."
         path="/sky"
       />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -95,7 +95,7 @@ const UV = () => {
     <div className="min-h-screen pt-24 md:pt-20 pb-16">
       <PageMeta
         title="UV Index — The Storm Watcher"
-        description="Real-time UV index and sun exposure forecast for your location. Know when to apply sunscreen."
+        description="Real-time UV index forecast for your location. Hourly and daily sun exposure data to plan outdoor activities and aurora photography sessions safely."
         path="/uv"
       />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

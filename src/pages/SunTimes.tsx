@@ -140,7 +140,7 @@ const SunTimes = () => {
     <div className="min-h-screen pt-24 md:pt-20 pb-16">
       <PageMeta
         title="Sunrise & Sunset Times — The Storm Watcher"
-        description="Accurate sunrise, sunset and golden hour times for your location. Plan your photography and outdoor activities."
+        description="Exact sunrise, sunset, dawn and dusk times for your location. Plan aurora photography, outdoor activities and golden-hour shoots with accurate daily sun data."
         path="/sun"
       />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

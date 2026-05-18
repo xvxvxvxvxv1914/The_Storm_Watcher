@@ -172,23 +172,16 @@ const Home = () => {
   return (
     <div className="min-h-screen relative">
       <Helmet>
-        <title>
-          {kpValue !== null && kpValue >= 5
-            ? `⚠️ Solar Storm Alert: Kp ${kpValue.toFixed(1)} | Real-Time Space Weather`
-            : `Live Kp: ${kpValue?.toFixed(1) ?? '0.0'} | Real-Time Aurora & Space Weather`}
-        </title>
+        <title>The Storm Watcher — Real-Time Aurora Forecast &amp; Space Weather Monitoring</title>
         <link rel="canonical" href="https://thestormwatcher.com/" />
-        <meta 
-          name="description" 
-          content={kpValue !== null 
-            ? `Monitor current solar activity: Kp index ${kpValue.toFixed(1)}. Track real-time solar wind speeds, X-ray flares, and geomagnetic storm alerts to plan your aurora hunting.`
-            : "Get live space weather updates. Track Kp index, solar wind, and geomagnetic storm alerts in real-time. The ultimate dashboard for aurora hunters and space weather enthusiasts."
-          } 
+        <meta
+          name="description"
+          content="Track geomagnetic storms, Kp index, solar wind and aurora forecasts in real time. Free alerts for aurora chasers and space weather enthusiasts worldwide."
         />
-        <meta property="og:title" content={kpValue !== null && kpValue >= 5 ? `⚠️ LIVE ALERT: Geomagnetic Storm Kp ${kpValue.toFixed(1)}` : "The Storm Watcher — Real-Time Space Weather Dashboard"} />
-        <meta property="og:description" content={kpValue !== null ? `Current Kp index is ${kpValue.toFixed(1)}. Solar wind is at ${windSpeed?.toFixed(0) || '---'} km/s. See if a storm is coming!` : "Monitor solar activity and aurora forecasts with our professional-grade live dashboard."} />
-        <meta name="twitter:title" content={kpValue !== null && kpValue >= 5 ? `⚠️ ALERT: Solar Storm Kp ${kpValue.toFixed(1)}` : "The Storm Watcher"} />
-        <meta name="twitter:description" content={kpValue !== null ? `Current Kp index is ${kpValue.toFixed(1)}. Solar wind at ${windSpeed?.toFixed(0) || '---'} km/s.` : "Monitor solar activity and aurora forecasts with our live dashboard."} />
+        <meta property="og:title" content="The Storm Watcher — Real-Time Aurora Forecast &amp; Space Weather Monitoring" />
+        <meta property="og:description" content="Track geomagnetic storms, Kp index, solar wind and aurora forecasts in real time. Free alerts for aurora chasers and space weather enthusiasts worldwide." />
+        <meta name="twitter:title" content="The Storm Watcher — Real-Time Aurora Forecast &amp; Space Weather Monitoring" />
+        <meta name="twitter:description" content="Track geomagnetic storms, Kp index, solar wind and aurora forecasts in real time. Free alerts for aurora chasers and space weather enthusiasts worldwide." />
         <meta property="og:image" content="https://thestormwatcher.com/og-image.webp" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />

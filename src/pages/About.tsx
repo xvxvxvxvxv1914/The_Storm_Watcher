@@ -26,7 +26,7 @@ const About = () => {
     <div className="min-h-screen pt-28 md:pt-24 pb-16 relative">
       <PageMeta
         title="About — The Storm Watcher"
-        description="Real-time space weather monitoring and aurora forecast app."
+        description="The Storm Watcher is a free space weather app tracking Kp index, geomagnetic storms, solar wind and aurora activity in real time. Built for aurora chasers worldwide."
         path="/about"
       />
       <div className="star-field">

@@ -451,7 +451,7 @@ const Alerts = () => {
     <div className="min-h-screen pt-20 pb-24 md:pt-24">
       <PageMeta
         title="Space Weather Alerts — The Storm Watcher"
-        description="Real-time NOAA space weather alerts, coronal mass ejections and solar flare events."
+        description="Live geomagnetic storm warnings, solar flare alerts and coronal mass ejection reports from NOAA SWPC and NASA DONKI. Know what's happening in space right now."
         path="/alerts"
       />
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
