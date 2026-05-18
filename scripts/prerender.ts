@@ -86,6 +86,37 @@ async function startPreview(port: number): Promise<() => void> {
   });
 }
 
+// ── HTML post-processing ──────────────────────────────────────────────────────
+
+/**
+ * Clean the raw Playwright HTML before saving:
+ *  1. Replace localhost preview URLs with root-relative paths.
+ *  2. Remove static meta/link tags from index.html that react-helmet-async
+ *     overrides (identified by presence of data-rh="true" on the Helmet
+ *     versions). Keeping duplicates causes Google to use the wrong (first)
+ *     description / og:title.
+ */
+function cleanHtml(html: string): string {
+  // 1. localhost → relative
+  let out = html.replace(/https?:\/\/localhost:\d+\//g, '/');
+
+  // 2. Drop static <meta> tags superseded by Helmet (og:*, twitter:*, description)
+  out = out.replace(/<meta [^>]*>/g, tag => {
+    if (tag.includes('data-rh=')) return tag;           // Helmet tag — keep
+    const prop = tag.match(/property="([^"]+)"/)?.[1] ?? '';
+    const name = tag.match(/(?<!\w)name="([^"]+)"/)?.[1] ?? '';
+    if (/^og:/.test(prop) || /^twitter:/.test(name) || name === 'description') return '';
+    return tag;
+  });
+
+  // 3. Drop static hreflang alternates — HreflangTags component adds correct ones
+  out = out.replace(/<link rel="alternate" hreflang="[^"]+"[^>]*>/g, tag =>
+    tag.includes('data-rh=') ? tag : '',
+  );
+
+  return out;
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -137,8 +168,7 @@ async function main() {
       );
 
       const rawHtml = await page.content();
-      // Fix any remaining relative paths Playwright may have preserved.
-      const html = rawHtml.replace(/(src|href)="\.\//g, '$1="/');
+      const html = cleanHtml(rawHtml);
 
       if (route === '/') {
         await writeFile(join('dist', 'index.html'), html, 'utf-8');
