@@ -174,3 +174,57 @@
 2. Add a waitlist form (just email collection) to gauge interest before building
 3. Reach out directly to 5-10 aurora tour operators in Scandinavia with a cold email offering beta access
 4. Only build the full API after confirming at least 3 paying customers
+
+---
+
+## 7. Localization Priority — Target Markets by Revenue Potential
+
+### Languages to add/improve (in order of priority):
+
+**Priority 1 — Add immediately (highest revenue potential):**
+- Norwegian (no) — Tromsø is the aurora capital of the world, highest disposable income in Europe
+- Swedish (sv) — large aurora market, millions of potential users
+- Finnish (fi) — aurora is part of national identity, strong domestic + tourist market
+- Korean (ko) — Koreans travel massively to Finland/Norway for aurora, underserved market
+
+**Priority 2 — Improve existing translations:**
+- German (de) — already exists but verify quality; largest European market, Germans travel heavily to Scandinavia
+- Japanese (ja) — already exists but verify quality; Japanese are obsessed with aurora tourism, very high app spend
+
+**Priority 3 — Add later:**
+- French (fr) — already exists, France has large aurora tourism segment traveling to Scandinavia
+- Dutch (nl) — Netherlands has high income, many aurora chasers
+- Danish (da) — small but high income, completes Scandinavian coverage
+- Icelandic (is) — small population but aurora is national identity, high tourist volume
+
+**Do NOT prioritize:**
+- Spanish (es) — already exists but Spain/Latin America has very low aurora interest and low conversion for this product
+- Russian (ru) — already exists but monetization is very difficult due to payment infrastructure
+- Chinese (zh) — already exists but Chinese app market requires separate strategy (different app stores, payment methods)
+
+### What to translate for each language (minimum viable):
+For each new language, translate at minimum:
+- App title and tagline
+- Meta titles and descriptions for: /, /aurora, /forecast, /faq, /alerts, /about, /pricing
+- Push notification text (storm alerts)
+- Pricing page (plan names, feature descriptions, CTA buttons)
+- Onboarding flow
+- Error messages
+
+### Implementation notes:
+- Norwegian and Swedish are very similar — translate Norwegian first, Swedish adaptation is fast
+- Finnish is completely different from Scandinavian languages — needs separate translator
+- Korean and Japanese need native speakers — do not use machine translation for these, the aurora tourism audience is sophisticated
+- Use DeepL API for initial drafts of Norwegian, Swedish, Danish, Dutch — quality is good enough for UI strings
+- Always have a native speaker review the pricing page and push notification copy before launching in a new market
+- After adding each language, update hreflang tags in HreflangTags.tsx and public/sitemap.xml
+- Run npm run build:ssg after each language addition to update prerendered HTML
+
+### Revenue estimate per market (monthly, at scale):
+- Norway: ~$8-12 average revenue per paying user
+- Sweden/Finland: ~$6-9
+- Germany: ~$5-8
+- Japan: ~$7-10
+- Korea: ~$6-9
+- UK: ~$5-7
+- Canada/USA: ~$4-6
