@@ -1,20 +1,26 @@
-import { useEffect, useRef, useState, useCallback, lazy, Suspense } from 'react';
+import { useEffect, useRef, useState, useCallback, Suspense } from 'react';
 import PageMeta from '../components/PageMeta';
 import { MapPin, Clock, Eye, Satellite } from 'lucide-react';
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const Globe = lazy(() => import('react-globe.gl')) as any;
+import ISSGlobe from '../components/ISSGlobe';
 import { getIssPosition, getIssPasses, IssPosition, IssPass } from '../services/issApi';
+import { getAuroraModel, AuroraOvationPoint } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 const ISS = () => {
   const { t } = useLanguage();
   const { settings } = useSettings();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const globeRef = useRef<any>(null);
+  const { theme } = useTheme();
   const globeContainerRef = useRef<HTMLDivElement>(null);
   const [globeWidth, setGlobeWidth] = useState(780);
   const [position, setPosition] = useState<IssPosition | null>(null);
+  const [passes, setPasses] = useState<IssPass[]>([]);
+  const [loadingPos, setLoadingPos] = useState(true);
+  const [loadingPasses, setLoadingPasses] = useState(true);
+  const [locationName, setLocationName] = useState('');
+  const [userCoords, setUserCoords] = useState<{ lat: number; lon: number } | null>(null);
+  const [auroraData, setAuroraData] = useState<AuroraOvationPoint[]>([]);
 
   const handleGlobeResize = useCallback((entries: ResizeObserverEntry[]) => {
     for (const entry of entries) {
@@ -30,11 +36,11 @@ const ISS = () => {
     ro.observe(globeContainerRef.current);
     return () => ro.disconnect();
   }, [handleGlobeResize]);
-  const [passes, setPasses] = useState<IssPass[]>([]);
-  const [loadingPos, setLoadingPos] = useState(true);
-  const [loadingPasses, setLoadingPasses] = useState(true);
-  const [locationName, setLocationName] = useState('');
-  const [userCoords, setUserCoords] = useState<{ lat: number; lon: number } | null>(null);
+
+  // Fetch aurora OVATION data once on mount
+  useEffect(() => {
+    getAuroraModel().then(setAuroraData).catch(() => {});
+  }, []);
 
   // Live ISS position — refresh every 5s
   useEffect(() => {
@@ -52,16 +58,7 @@ const ISS = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Point globe at ISS when position updates
-  useEffect(() => {
-    if (globeRef.current && position) {
-      globeRef.current.pointOfView({ lat: position.latitude, lng: position.longitude, altitude: 2 }, 1000);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: only re-animate when lat/lng change, not on velocity/visibility updates
-  }, [position?.latitude, position?.longitude]);
-
   // Pass predictions + reverse geocode — run once on mount only.
-  // Nominatim limits 1 req/s and will block abusers; never re-run on ISS position changes.
   useEffect(() => {
     let mounted = true;
 
@@ -84,7 +81,7 @@ const ISS = () => {
         const country = geo.address?.country || '';
         if (mounted) setLocationName([city, country].filter(Boolean).join(', '));
       } catch {
-        // silent — location name is optional
+        // silent
       }
     };
 
@@ -112,24 +109,6 @@ const ISS = () => {
     if (el >= 30) return t('iss.goodShort') || 'Good';
     return t('iss.lowShort') || 'Low';
   };
-
-  // Points for globe
-  const points = [
-    ...(position ? [{
-      lat: position.latitude,
-      lng: position.longitude,
-      size: 0.8,
-      color: '#f97316',
-      label: t('iss.markerIss'),
-    }] : []),
-    ...(userCoords ? [{
-      lat: userCoords.lat,
-      lng: userCoords.lon,
-      size: 0.5,
-      color: '#10b981',
-      label: t('iss.markerYou'),
-    }] : []),
-  ];
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16">
@@ -163,60 +142,53 @@ const ISS = () => {
           </div>
 
           <div ref={globeContainerRef} style={{ minHeight: Math.max(280, Math.round(globeWidth * 0.74)) }} className="w-full flex flex-col items-center justify-center relative">
-          {loadingPos ? (
-            <div className="flex justify-center py-16">
-              <div className="w-10 h-10 border-4 border-[#f97316]/20 border-t-[#f97316] rounded-full animate-spin" />
+            {loadingPos ? (
+              <div className="flex justify-center py-16">
+                <div className="w-10 h-10 border-4 border-[#f97316]/20 border-t-[#f97316] rounded-full animate-spin" />
+              </div>
+            ) : (
+              <>
+                <Suspense fallback={<div style={{ width: globeWidth, height: Math.max(280, Math.round(globeWidth * 0.74)), background: '#050510' }} />}>
+                  <ISSGlobe
+                    globeWidth={globeWidth}
+                    auroraData={auroraData}
+                    issLat={position?.latitude ?? null}
+                    issLng={position?.longitude ?? null}
+                    userLat={userCoords?.lat}
+                    userLng={userCoords?.lon}
+                    theme={theme}
+                    active={true}
+                  />
+                </Suspense>
+
+                {/* Stats */}
+                {position && (
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full px-8 pb-8">
+                    <div className="text-center">
+                      <div className="text-[#64748b] text-xs uppercase tracking-wider mb-1">{t('iss.latitude')}</div>
+                      <div className="text-xl font-bold text-white">{position.latitude.toFixed(2)}°</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-[#64748b] text-xs uppercase tracking-wider mb-1">{t('iss.longitude')}</div>
+                      <div className="text-xl font-bold text-white">{position.longitude.toFixed(2)}°</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-[#64748b] text-xs uppercase tracking-wider mb-1">{t('iss.altitude')}</div>
+                      <div className="text-xl font-bold text-white">{position.altitude.toFixed(0)} km</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-[#64748b] text-xs uppercase tracking-wider mb-1">{t('iss.speed')}</div>
+                      <div className="text-xl font-bold text-white">{Math.round(position.velocity).toLocaleString()} km/h</div>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+
+            <div className="flex gap-6 pb-5 text-xs text-[#64748b]">
+              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#f97316] inline-block" />{t('iss.locIss')}</span>
+              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#10b981] inline-block" />{t('iss.locYou')}</span>
             </div>
-          ) : (
-            <>
-              <Suspense fallback={<div style={{ width: globeWidth, height: Math.max(280, Math.round(globeWidth * 0.74)), background: '#050510' }} />}>
-              <Globe
-                ref={globeRef}
-                width={globeWidth}
-                height={Math.max(280, Math.round(globeWidth * 0.74))}
-                backgroundColor="rgba(0,0,0,0)"
-                globeImageUrl="/textures/earth-night.jpg"
-                atmosphereColor="#f97316"
-                atmosphereAltitude={0.15}
-                pointsData={points}
-                pointLat="lat"
-                pointLng="lng"
-                pointColor="color"
-                pointRadius="size"
-                pointAltitude={0.02}
-                pointLabel="label"
-                enablePointerInteraction={true}
-              />
-            </Suspense>
-
-              {/* Stats */}
-              {position && (
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full px-8 pb-8">
-                  <div className="text-center">
-                    <div className="text-[#64748b] text-xs uppercase tracking-wider mb-1">{t('iss.latitude')}</div>
-                    <div className="text-xl font-bold text-white">{position.latitude.toFixed(2)}°</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-[#64748b] text-xs uppercase tracking-wider mb-1">{t('iss.longitude')}</div>
-                    <div className="text-xl font-bold text-white">{position.longitude.toFixed(2)}°</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-[#64748b] text-xs uppercase tracking-wider mb-1">{t('iss.altitude')}</div>
-                    <div className="text-xl font-bold text-white">{position.altitude.toFixed(0)} km</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-[#64748b] text-xs uppercase tracking-wider mb-1">{t('iss.speed')}</div>
-                    <div className="text-xl font-bold text-white">{Math.round(position.velocity).toLocaleString()} km/h</div>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
-
-          <div className="flex gap-6 pb-5 text-xs text-[#64748b]">
-            <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#f97316] inline-block" />{t('iss.locIss')}</span>
-            <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#10b981] inline-block" />{t('iss.locYou')}</span>
-          </div>
           </div>
         </div>
 
