@@ -9,6 +9,8 @@ import { generateStormScoreImage } from '../utils/generateStormImage';
 import { getSolarWind, getXrayFlux, getXrayClass, getStormStatus, getKpGradientStyle, getKpHistory3Day } from '../services/noaaApi';
 import { useKpLive } from '../hooks/useKpLive';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSettings } from '../contexts/SettingsContext';
+import { calcAuroraVisibility } from '../utils/auroraVisibility';
 import StarField from '../components/StarField';
 import { Skeleton } from '../components/Skeleton';
 import { supabase } from '../lib/supabase';
@@ -22,6 +24,7 @@ const getScoreShareStatus = (score: number) => {
 
 const Home = () => {
   const { t } = useLanguage();
+  const { settings } = useSettings();
   const kpValue = useKpLive();
   const [windSpeed, setWindSpeed] = useState<number | null>(null);
   const [xrayClass, setXrayClass] = useState<string | null>(null);
@@ -256,46 +259,22 @@ const Home = () => {
 
       <div className="relative overflow-hidden">
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-24 sm:pt-44 sm:pb-32">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-24 sm:pt-36 sm:pb-32">
           <div className="text-center">
 
             {/* Live badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-surface border border-[#f97316]/30 mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-surface border border-[#f97316]/30 mb-6">
               <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse" />
               <span className="text-[#94a3b8] text-sm font-semibold uppercase tracking-widest">{t('home.liveSpaceWeather')}</span>
             </div>
 
-            <h1 className="text-5xl sm:text-7xl font-bold mb-6 gradient-solar">
+            <h1 className="text-4xl sm:text-5xl font-bold mb-8 gradient-solar">
               The Storm Watcher
             </h1>
 
-            <p className="text-2xl sm:text-3xl text-white font-semibold mb-4">
-              {t('home.hero.tagline')}
-            </p>
-
-            <p className="text-lg text-[#94a3b8] mb-10 max-w-2xl mx-auto leading-relaxed">
-              {t('home.hero.desc')}
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-14">
-              <Link
-                to="/auth"
-                className="px-8 py-4 bg-gradient-to-r from-[#f97316] to-[#ef4444] text-white rounded-lg font-bold uppercase tracking-wider hover:scale-105 transition-transform glow-orange"
-              >
-                {t('home.hero.getStarted')}
-              </Link>
-              <Link
-                to="/dashboard"
-                className="px-8 py-4 glass-surface text-white rounded-lg font-bold uppercase tracking-wider hover:glow-orange transition-all border border-white/10"
-              >
-                {t('home.hero.viewMap')}
-              </Link>
-            </div>
-
-            {/* Live Kp */}
+            {/* Live Kp — first thing people see */}
             {loading ? (
               <div className="my-8 flex flex-col items-center gap-4">
-                {/* Adjusted height to match 8xl (96px) and 160px text more closely to prevent CLS */}
                 <Skeleton className="w-40 h-24 sm:w-64 sm:h-40 rounded-2xl" />
                 <Skeleton className="w-48 h-8 rounded-full" />
                 <div className="flex gap-3 mt-2">
@@ -303,7 +282,7 @@ const Home = () => {
                 </div>
               </div>
             ) : (
-              <div className="my-8">
+              <div className="my-6">
                 <div className="flex items-center justify-center gap-2 mb-2">
                   <span className="relative flex h-2.5 w-2.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10b981] opacity-75"></span>
@@ -334,11 +313,8 @@ const Home = () => {
                     </span>
                   </div>
                 )}
-              </div>
-            )}
 
-            {!loading && (
-              <>
+                {/* Stats pills */}
                 <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
                   <div className="glass-surface rounded-xl px-5 py-3 flex items-center gap-3">
                     <Activity className="w-4 h-4 text-[#f97316]" />
@@ -359,44 +335,81 @@ const Home = () => {
                       <span className="text-white font-bold">Class {xrayClass}</span>
                     </div>
                   )}
+                  {/* Aurora visibility for saved location */}
+                  {settings.preferredLat !== null && settings.preferredLon !== null && kpValue !== null && (() => {
+                    const chance = calcAuroraVisibility(settings.preferredLat!, settings.preferredLon!, kpValue);
+                    const color = chance >= 60 ? '#10b981' : chance >= 30 ? '#eab308' : '#64748b';
+                    return (
+                      <Link to="/aurora" className="glass-surface rounded-xl px-5 py-3 flex items-center gap-3 hover:border-[#10b981]/30 border border-transparent transition-all">
+                        <span className="text-lg">🌌</span>
+                        <span className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('nav.aurora')}</span>
+                        <span className="font-bold" style={{ color }}>{chance}%</span>
+                      </Link>
+                    );
+                  })()}
                 </div>
                 {kpSparkData.length > 1 && <KpSparkline data={kpSparkData} />}
+              </div>
+            )}
 
-                {/* Community Pulse Widget */}
-                <div className="mt-6 sm:mt-12 flex justify-center">
-                  <Link 
-                    to="/mood"
-                    className="glass-surface rounded-2xl px-6 py-4 border border-white/5 hover:border-[#f97316]/30 transition-all group max-w-sm"
-                  >
-                    <div className="flex items-center gap-4 text-left">
-                      <div className="w-12 h-12 rounded-xl bg-[#f97316]/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Users className="w-6 h-6 text-[#f97316]" />
-                      </div>
-                      <div>
-                        <div className="text-xs text-[#64748b] uppercase tracking-widest font-bold mb-0.5">
-                          {t('home.pulse.title')}
-                        </div>
-                        {pulseData ? (
-                          <>
-                            <div className="text-white font-semibold text-sm leading-tight">
-                              {pulseData.symptom 
-                                ? `${t('home.pulse.topSymptom')}: ${t(pulseData.symptom)}`
-                                : `${t('home.pulse.mostCommon')}: ${t(`mood.${pulseData.mood}`)}`}
-                            </div>
-                            <div className="text-[10px] text-[#475569] mt-1 uppercase tracking-wide">
-                              {pulseData.count} {t('home.pulse.participants')} · 24h
-                            </div>
-                          </>
-                        ) : (
-                          <div className="text-[#475569] text-xs italic">
-                            {t('home.pulse.noData')}
-                          </div>
-                        )}
-                      </div>
+            {/* Tagline + CTA — after live data */}
+            <p className="text-xl sm:text-2xl text-white font-semibold mb-3 mt-4">
+              {t('home.hero.tagline')}
+            </p>
+            <p className="text-base text-[#94a3b8] mb-8 max-w-xl mx-auto leading-relaxed">
+              {t('home.hero.desc')}
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
+              <Link
+                to="/auth"
+                className="px-8 py-4 bg-gradient-to-r from-[#f97316] to-[#ef4444] text-white rounded-lg font-bold uppercase tracking-wider hover:scale-105 transition-transform glow-orange"
+              >
+                {t('home.hero.getStarted')}
+              </Link>
+              <Link
+                to="/dashboard"
+                className="px-8 py-4 glass-surface text-white rounded-lg font-bold uppercase tracking-wider hover:glow-orange transition-all border border-white/10"
+              >
+                {t('home.hero.viewMap')}
+              </Link>
+            </div>
+
+            {/* Community Pulse Widget */}
+            {!loading && (
+              <div className="flex justify-center">
+                <Link
+                  to="/mood"
+                  className="glass-surface rounded-2xl px-6 py-4 border border-white/5 hover:border-[#f97316]/30 transition-all group max-w-sm"
+                >
+                  <div className="flex items-center gap-4 text-left">
+                    <div className="w-12 h-12 rounded-xl bg-[#f97316]/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <Users className="w-6 h-6 text-[#f97316]" />
                     </div>
-                  </Link>
-                </div>
-              </>
+                    <div>
+                      <div className="text-xs text-[#64748b] uppercase tracking-widest font-bold mb-0.5">
+                        {t('home.pulse.title')}
+                      </div>
+                      {pulseData ? (
+                        <>
+                          <div className="text-white font-semibold text-sm leading-tight">
+                            {pulseData.symptom
+                              ? `${t('home.pulse.topSymptom')}: ${t(pulseData.symptom)}`
+                              : `${t('home.pulse.mostCommon')}: ${t(`mood.${pulseData.mood}`)}`}
+                          </div>
+                          <div className="text-[10px] text-[#475569] mt-1 uppercase tracking-wide">
+                            {pulseData.count} {t('home.pulse.participants')} · 24h
+                          </div>
+                        </>
+                      ) : (
+                        <div className="text-[#475569] text-xs italic">
+                          {t('home.pulse.noData')}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              </div>
             )}
           </div>
         </div>
