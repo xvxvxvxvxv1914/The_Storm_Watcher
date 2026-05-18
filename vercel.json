@@ -1,60 +1,37 @@
 {
-  "headers": [
+  "routes": [
     {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
-        },
-        {
-          "key": "Permissions-Policy",
-          "value": "camera=(), microphone=(), geolocation=(self)"
-        },
-        {
-          "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://js.stripe.com https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://srzfoxlmhxyulrgkchjr.supabase.co https://kauai.ccmc.gsfc.nasa.gov https://kp.gfz.de https://pagmag.ngic.bg https://services.swpc.noaa.gov https://api.open-meteo.com https://ipapi.co https://api.stripe.com https://vitals.vercel-insights.com wss://srzfoxlmhxyulrgkchjr.supabase.co; frame-src https://js.stripe.com https://hooks.stripe.com https://explore.org; object-src 'none'; base-uri 'self'"
-        },
-        {
-          "key": "Strict-Transport-Security",
-          "value": "max-age=31536000; includeSubDomains; preload"
-        },
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
+      "src": "/(.*)",
+      "headers": {
+        "X-Frame-Options": "DENY",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "Permissions-Policy": "camera=(), microphone=(), geolocation=(self)",
+        "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline' https://js.stripe.com https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://srzfoxlmhxyulrgkchjr.supabase.co https://kauai.ccmc.gsfc.nasa.gov https://kp.gfz.de https://pagmag.ngic.bg https://services.swpc.noaa.gov https://api.open-meteo.com https://ipapi.co https://api.stripe.com https://vitals.vercel-insights.com wss://srzfoxlmhxyulrgkchjr.supabase.co; frame-src https://js.stripe.com https://hooks.stripe.com https://explore.org; object-src 'none'; base-uri 'self'",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      },
+      "continue": true
     },
     {
-      "source": "/assets/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/donki/:path*",
-      "destination": "https://kauai.ccmc.gsfc.nasa.gov/DONKI/WS/get/:path*"
+      "src": "/assets/(.*)",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      },
+      "continue": true
     },
     {
-      "source": "/api/gfz/:path*",
-      "destination": "https://kp.gfz.de/:path*"
+      "src": "/donki/(.*)",
+      "dest": "https://kauai.ccmc.gsfc.nasa.gov/DONKI/WS/get/$1"
     },
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "/api/gfz/(.*)",
+      "dest": "https://kp.gfz.de/$1"
+    },
+    { "handle": "filesystem" },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
