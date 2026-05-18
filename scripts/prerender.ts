@@ -138,6 +138,9 @@ async function main() {
   const browser = await chromium.launch();
   const context  = await browser.newContext();
 
+  // Ensure output folder exists.
+  await mkdir('prerendered', { recursive: true });
+
   console.log(`📄 Prerendering ${ROUTES.length} routes...\n`);
 
   let ok = 0, fail = 0;
@@ -171,14 +174,14 @@ async function main() {
       const html = cleanHtml(rawHtml);
 
       if (route === '/') {
-        await writeFile(join('dist', 'index.html'), html, 'utf-8');
-        console.log(`  ✅  /  →  dist/index.html`);
+        await writeFile(join('prerendered', 'index.html'), html, 'utf-8');
+        console.log(`  ✅  /  →  prerendered/index.html`);
       } else {
         const slug = route.slice(1);
-        const dir  = join('dist', slug);
+        const dir  = join('prerendered', slug);
         await mkdir(dir, { recursive: true });
         await writeFile(join(dir, 'index.html'), html, 'utf-8');
-        console.log(`  ✅  ${route}  →  dist/${slug}/index.html`);
+        console.log(`  ✅  ${route}  →  prerendered/${slug}/index.html`);
       }
 
       ok++;

@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:ssg": "vite build && npx tsx scripts/prerender.ts",
+    "postbuild": "node scripts/copy-prerendered.js",
+    "build:ssg": "vite build && npx tsx scripts/prerender.ts && node scripts/copy-prerendered.js",
     "lint": "eslint .",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
