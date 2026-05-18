@@ -7,7 +7,7 @@ const SplashAnimation = () => {
   const [phase, setPhase] = useState<'enter' | 'show' | 'exit' | 'done'>('enter');
 
   useEffect(() => {
-    if (sessionStorage.getItem(SPLASH_KEY)) {
+    if (localStorage.getItem('PRERENDER') === 'true' || sessionStorage.getItem(SPLASH_KEY)) {
       setPhase('done');
       return;
     }
