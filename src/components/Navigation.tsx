@@ -133,21 +133,23 @@ const Navigation = () => {
                   )}
                 </button>
                 {isMoreOpen && (
-                  <div className="absolute left-0 mt-3 w-52 glass-surface rounded-xl shadow-2xl py-2 border border-[#10b981]/20">
-                    {moreLinks.map((link) => (
-                      <Link
-                        key={link.to}
-                        to={link.to}
-                        onClick={() => setIsMoreOpen(false)}
-                        className={`block px-4 py-2 text-sm font-medium transition-colors ${
-                          isActive(link.to)
-                            ? 'text-[#10b981] bg-[#10b981]/10'
-                            : 'text-[#94a3b8] hover:text-white hover:bg-white/5'
-                        }`}
-                      >
-                        {link.label}
-                      </Link>
-                    ))}
+                  <div className="absolute left-0 mt-3 w-96 rounded-xl shadow-2xl py-2 border border-[#10b981]/20 glass-surface" style={{ backgroundColor: 'rgba(10,10,26,0.85)', backdropFilter: 'blur(16px)' }}>
+                    <div className="grid grid-cols-2">
+                      {moreLinks.map((link) => (
+                        <Link
+                          key={link.to}
+                          to={link.to}
+                          onClick={() => setIsMoreOpen(false)}
+                          className={`block px-4 py-2 text-sm font-medium transition-colors ${
+                            isActive(link.to)
+                              ? 'text-[#10b981] bg-[#10b981]/10'
+                              : 'text-[#94a3b8] hover:text-white hover:bg-white/5'
+                          }`}
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
