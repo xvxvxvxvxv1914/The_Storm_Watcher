@@ -195,14 +195,39 @@ const Home = () => {
               "@context": "https://schema.org",
               "@type": "SoftwareApplication",
               "name": "The Storm Watcher",
-              "operatingSystem": "Web",
+              "url": "https://thestormwatcher.com",
+              "operatingSystem": "Web, Android, iOS",
               "applicationCategory": "ScientificApplication",
-              "description": "Real-time space weather monitoring and aurora forecasts.",
-              "offers": {
-                "@type": "Offer",
-                "price": "0",
-                "priceCurrency": "USD"
-              }
+              "description": "Track geomagnetic storms, Kp index, solar wind and aurora forecasts in real time. Free alerts for aurora chasers and space weather enthusiasts worldwide.",
+              "featureList": [
+                "Real-time Kp index monitoring",
+                "Aurora forecast and visibility alerts",
+                "Solar wind and Bz component tracking",
+                "Geomagnetic storm alerts",
+                "X-ray flux monitoring"
+              ],
+              "offers": [
+                {
+                  "@type": "Offer",
+                  "name": "Free",
+                  "price": "0",
+                  "priceCurrency": "USD"
+                },
+                {
+                  "@type": "Offer",
+                  "name": "Pro",
+                  "price": "4.99",
+                  "priceCurrency": "USD",
+                  "billingPeriod": "P1M"
+                },
+                {
+                  "@type": "Offer",
+                  "name": "Premium",
+                  "price": "9.99",
+                  "priceCurrency": "USD",
+                  "billingPeriod": "P1M"
+                }
+              ]
             },
             {
               "@context": "https://schema.org",
