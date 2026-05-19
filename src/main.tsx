@@ -9,6 +9,30 @@ import { LanguageProvider } from './contexts/LanguageContext';
 
 registerSW({ immediate: true });
 
+// ── Chunk-load error recovery ──────────────────────────────────
+// After a new Vercel deploy, old cached index.html may reference JS chunks with
+// hashes that no longer exist. Vite's lazy import() will fail with a TypeError.
+// We detect this, tell the SW to drop its navigation cache, and reload once so
+// the browser picks up the fresh index.html with correct chunk references.
+const RELOAD_KEY = 'tsw_chunk_reload';
+window.addEventListener('error', (e) => {
+  // Vite wraps dynamic import failures in a regular Error with a recognisable message
+  if (
+    e.message?.includes('Failed to fetch dynamically imported module') ||
+    e.message?.includes('Importing a module script failed') ||
+    e.message?.includes('error loading dynamically imported module')
+  ) {
+    if (!sessionStorage.getItem(RELOAD_KEY)) {
+      sessionStorage.setItem(RELOAD_KEY, '1');
+      // Ask SW to clear its HTML cache
+      navigator.serviceWorker?.controller?.postMessage({ type: 'CHUNK_LOAD_FAILED' });
+      window.location.reload();
+    }
+  }
+});
+// Clear the reload guard on successful load so future deploys can trigger it again
+window.addEventListener('load', () => sessionStorage.removeItem(RELOAD_KEY));
+
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
   enabled: import.meta.env.PROD && !!import.meta.env.VITE_SENTRY_DSN,

@@ -22,7 +22,7 @@ export default defineConfig(({ command }) => ({
       devOptions: { enabled: false },
     }),
   ],
-  base: './',
+  base: '/',
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
