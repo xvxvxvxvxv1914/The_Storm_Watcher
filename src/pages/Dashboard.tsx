@@ -274,11 +274,11 @@ const Dashboard = () => {
       <div className="min-h-screen pt-24 md:pt-20 pb-16 relative">
         <StarField />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-6 md:mb-12">
+          <div className="mb-3 md:mb-12">
             <Skeleton className="h-12 w-72 mb-3" />
             <Skeleton className="h-4 w-48" />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 md:mb-12">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6 mb-4 md:mb-12">
             {[...Array(4)].map((_, i) => <SkeletonCard key={i} />)}
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -302,7 +302,7 @@ const Dashboard = () => {
       <div className="solar-orb" style={{ top: '100px', right: '-300px' }} />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-6 md:mb-12">
+        <div className="mb-3 md:mb-12">
           <h1 className="text-3xl sm:text-5xl font-bold gradient-solar mb-2 sm:mb-3 uppercase tracking-tight">
             {t('dashboard.title')}
           </h1>
@@ -319,26 +319,26 @@ const Dashboard = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 md:mb-12">
-          <div data-tour="kp-card" className={`relative glass-surface rounded-2xl p-4 sm:p-6 ${
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6 mb-4 md:mb-12">
+          <div data-tour="kp-card" className={`relative glass-surface rounded-2xl p-3 sm:p-6 ${
             kpValue >= 5 ? 'glow-red' : kpValue >= 4 ? 'glow-orange' : 'glow-green'
           } hover:scale-105 transition-transform`}>
             <InfoTooltip text={t('dashboard.tooltip.kp')} />
-            <div className="flex items-center gap-3 mb-4">
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+            <div className="flex items-center gap-2 mb-2 sm:mb-4">
+              <div className={`w-8 h-8 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center ${
                 kpValue >= 5 ? 'bg-gradient-to-br from-[#ef4444] to-[#dc2626]' :
                 kpValue >= 4 ? 'bg-gradient-to-br from-[#f97316] to-[#ea580c]' :
                 kpValue >= 2 ? 'bg-gradient-to-br from-[#eab308] to-[#10b981]' :
                 'bg-gradient-to-br from-[#10b981] to-[#059669]'
               }`}>
-                <Activity className="w-6 h-6 text-white" />
+                <Activity className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
               </div>
-              <h3 className="text-[#94a3b8] text-sm uppercase tracking-wider font-bold">
+              <h3 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
                 {t('dashboard.kpIndex')}
               </h3>
             </div>
-            <div className="text-4xl sm:text-6xl font-bold mb-2 sm:mb-3" style={getKpGradientStyle(kpValue)}>{kpDisplay.toFixed(1)}</div>
-            <div className={`inline-block px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider ${
+            <div className="text-[1.4rem] sm:text-6xl font-bold mb-2 sm:mb-3" style={getKpGradientStyle(kpValue)}>{kpDisplay.toFixed(1)}</div>
+            <div className={`inline-block px-2 py-1 sm:px-4 sm:py-2 rounded-lg text-[0.6rem] sm:text-xs font-bold uppercase tracking-wider ${
               kpValue >= 7 ? 'bg-gradient-to-r from-[#ef4444] to-[#dc2626] text-white' :
               kpValue >= 5 ? 'bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white' :
               kpValue >= 4 ? 'bg-gradient-to-r from-[#eab308] to-[#ca8a04] text-white' :
@@ -348,48 +348,48 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div data-tour="wind-card" className="relative glass-surface rounded-2xl p-4 sm:p-6 hover:glow-purple transition-all hover:scale-105">
+          <div data-tour="wind-card" className="relative glass-surface rounded-2xl p-3 sm:p-6 hover:glow-purple transition-all hover:scale-105">
             <InfoTooltip text={t('dashboard.tooltip.wind')} />
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-[#7c3aed] to-[#6d28d9] rounded-xl flex items-center justify-center">
-                <Wind className="w-6 h-6 text-white" />
+            <div className="flex items-center gap-2 mb-2 sm:mb-4">
+              <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-[#7c3aed] to-[#6d28d9] rounded-xl flex items-center justify-center">
+                <Wind className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
               </div>
-              <h3 className="text-[#94a3b8] text-sm uppercase tracking-wider font-bold">
+              <h3 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
                 {t('dashboard.solarWind')}
               </h3>
             </div>
-            <div className="text-4xl sm:text-6xl font-bold text-white mb-2 sm:mb-3">{windDisplay.toFixed(0)}</div>
-            <div className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('dashboard.kms')}</div>
+            <div className="text-[1.4rem] sm:text-6xl font-bold text-white mb-2 sm:mb-3">{windDisplay.toFixed(0)}</div>
+            <div className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider">{t('dashboard.kms')}</div>
           </div>
 
-          <div className="relative glass-surface rounded-2xl p-4 sm:p-6 hover:glow-orange transition-all hover:scale-105">
+          <div className="relative glass-surface rounded-2xl p-3 sm:p-6 hover:glow-orange transition-all hover:scale-105">
             <InfoTooltip text={t('dashboard.tooltip.bz')} />
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-[#06b6d4] to-[#0891b2] rounded-xl flex items-center justify-center">
-                <Compass className="w-6 h-6 text-white" />
+            <div className="flex items-center gap-2 mb-2 sm:mb-4">
+              <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-[#06b6d4] to-[#0891b2] rounded-xl flex items-center justify-center">
+                <Compass className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
               </div>
-              <h3 className="text-[#94a3b8] text-sm uppercase tracking-wider font-bold">
+              <h3 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
                 {t('dashboard.bz')}
               </h3>
             </div>
-            <div className={`text-4xl sm:text-6xl font-bold mb-2 sm:mb-3 ${bz < 0 ? 'text-[#ef4444]' : 'text-[#10b981]'}`}>
+            <div className={`text-[1.4rem] sm:text-6xl font-bold mb-2 sm:mb-3 ${bz < 0 ? 'text-[#ef4444]' : 'text-[#10b981]'}`}>
               {bzDisplay.toFixed(1)}
             </div>
-            <div className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('dashboard.nt')}</div>
+            <div className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider">{t('dashboard.nt')}</div>
           </div>
 
-          <div className="relative glass-surface rounded-2xl p-4 sm:p-6 hover:glow-orange transition-all hover:scale-105">
+          <div className="relative glass-surface rounded-2xl p-3 sm:p-6 hover:glow-orange transition-all hover:scale-105">
             <InfoTooltip text={t('dashboard.tooltip.xray')} />
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-[#fbbf24] to-[#f59e0b] rounded-xl flex items-center justify-center">
-                <Sun className="w-6 h-6 text-white" />
+            <div className="flex items-center gap-2 mb-2 sm:mb-4">
+              <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-[#fbbf24] to-[#f59e0b] rounded-xl flex items-center justify-center">
+                <Sun className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
               </div>
-              <h3 className="text-[#94a3b8] text-sm uppercase tracking-wider font-bold">
+              <h3 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
                 {t('dashboard.xray')}
               </h3>
             </div>
-            <div className="text-4xl sm:text-4xl sm:text-6xl font-bold gradient-solar mb-2 sm:mb-3">{xrayClass}</div>
-            <div className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('dashboard.classTxt')}</div>
+            <div className="text-[1.4rem] sm:text-6xl font-bold gradient-solar mb-2 sm:mb-3">{xrayClass}</div>
+            <div className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider">{t('dashboard.classTxt')}</div>
           </div>
         </div>
 

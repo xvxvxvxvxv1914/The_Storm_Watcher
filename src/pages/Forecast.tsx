@@ -206,9 +206,9 @@ const Forecast = () => {
             <Skeleton className="h-12 w-80 mb-3" />
             <Skeleton className="h-4 w-64" />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-6 mb-5 sm:mb-10">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-6 mb-4 sm:mb-10">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="glass-surface rounded-2xl p-4 sm:p-6 border border-white/5">
+              <div key={i} className="glass-surface rounded-2xl p-3 sm:p-6 border border-white/5">
                 <Skeleton className="h-4 w-24 mb-3" />
                 <Skeleton className="h-10 w-16 mb-2" />
                 <Skeleton className="h-3 w-20" />
@@ -253,7 +253,7 @@ const Forecast = () => {
       <div className="magnetic-orb" style={{ top: '200px', left: '-200px' }} />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-6 md:mb-12">
+        <div className="mb-3 md:mb-12">
           <h1 className="text-3xl sm:text-5xl font-bold gradient-solar mb-2 sm:mb-3 uppercase tracking-tight">
             {t('forecast.title')}
           </h1>
@@ -262,54 +262,54 @@ const Forecast = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-6 mb-6 md:mb-12">
-          <div className={`glass-surface rounded-2xl p-4 sm:p-8 ${maxKp >= 5 ? 'glow-red' : 'glow-green'} hover:scale-105 transition-transform`}>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-[#ef4444] to-[#dc2626] rounded-xl flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-white" />
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-6 mb-4 md:mb-12">
+          <div className={`glass-surface rounded-2xl p-3 sm:p-8 ${maxKp >= 5 ? 'glow-red' : 'glow-green'} hover:scale-105 transition-transform`}>
+            <div className="flex items-center gap-2 mb-2 sm:mb-4">
+              <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-[#ef4444] to-[#dc2626] rounded-xl flex items-center justify-center">
+                <TrendingUp className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
               </div>
-              <h3 className="text-[#94a3b8] text-sm uppercase tracking-wider font-bold">
+              <h3 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
                 {t('forecast.maxKp')}
               </h3>
             </div>
-            <div className="text-4xl sm:text-4xl sm:text-6xl font-bold mb-2" style={getKpGradientStyle(maxKp)}>{maxKp.toFixed(1)}</div>
-            <div className="text-[#94a3b8] text-sm uppercase tracking-wider">
+            <div className="text-[1.4rem] sm:text-6xl font-bold mb-1 sm:mb-2" style={getKpGradientStyle(maxKp)}>{maxKp.toFixed(1)}</div>
+            <div className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider">
               {t('forecast.next3Days')}
             </div>
           </div>
 
-          <div className="glass-surface rounded-2xl p-4 sm:p-8 hover:glow-orange transition-all hover:scale-105">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-[#fbbf24] to-[#f59e0b] rounded-xl flex items-center justify-center">
-                <Calendar className="w-6 h-6 text-white" />
+          <div className="glass-surface rounded-2xl p-3 sm:p-8 hover:glow-orange transition-all hover:scale-105">
+            <div className="flex items-center gap-2 mb-2 sm:mb-4">
+              <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-[#fbbf24] to-[#f59e0b] rounded-xl flex items-center justify-center">
+                <Calendar className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
               </div>
-              <h3 className="text-[#94a3b8] text-sm uppercase tracking-wider font-bold">
+              <h3 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
                 {t('forecast.avgKp')}
               </h3>
             </div>
-            <div className="text-4xl sm:text-4xl sm:text-6xl font-bold mb-2" style={getKpGradientStyle(avgKp)}>{avgKp.toFixed(1)}</div>
-            <div className="text-[#94a3b8] text-sm uppercase tracking-wider">
+            <div className="text-[1.4rem] sm:text-6xl font-bold mb-1 sm:mb-2" style={getKpGradientStyle(avgKp)}>{avgKp.toFixed(1)}</div>
+            <div className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider">
               {t('forecast.avgKp')}
             </div>
           </div>
 
-          <div className={`glass-surface rounded-2xl p-4 sm:p-8 ${stormDays > 0 ? 'glow-orange' : 'glow-green'} hover:scale-105 transition-transform`}>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-[#f97316] to-[#ea580c] rounded-xl flex items-center justify-center">
-                <AlertCircle className="w-6 h-6 text-white" />
+          <div className={`glass-surface rounded-2xl p-3 sm:p-8 ${stormDays > 0 ? 'glow-orange' : 'glow-green'} hover:scale-105 transition-transform`}>
+            <div className="flex items-center gap-2 mb-2 sm:mb-4">
+              <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-[#f97316] to-[#ea580c] rounded-xl flex items-center justify-center">
+                <AlertCircle className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
               </div>
-              <h3 className="text-[#94a3b8] text-sm uppercase tracking-wider font-bold">
+              <h3 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
                 {t('forecast.stormPeriods')}
               </h3>
             </div>
-            <div className="text-4xl sm:text-4xl sm:text-6xl font-bold text-white mb-2">{stormDays}</div>
-            <div className="text-[#94a3b8] text-sm uppercase tracking-wider">
+            <div className="text-[1.4rem] sm:text-6xl font-bold text-white mb-1 sm:mb-2">{stormDays}</div>
+            <div className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider">
               {t('forecast.threehourPeriods')}
             </div>
           </div>
         </div>
         
-        <div className="glass-surface rounded-2xl p-4 sm:p-8 mb-4 sm:mb-8">
+        <div className="glass-surface rounded-2xl p-3 sm:p-8 mb-4 sm:mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <h3 className="text-lg sm:text-lg sm:text-lg sm:text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
               <Sun className="w-6 h-6 text-[#f97316]" />
@@ -348,7 +348,7 @@ const Forecast = () => {
           )}
         </div>
 
-        <div className="glass-surface rounded-2xl p-4 sm:p-8">
+        <div className="glass-surface rounded-2xl p-3 sm:p-8">
           <h3 className="text-lg sm:text-lg sm:text-2xl font-bold text-white mb-3 sm:mb-6 uppercase tracking-wide">
             {t('forecast.dailyForecast')}
           </h3>
@@ -422,7 +422,7 @@ const Forecast = () => {
 
         {/* Space Weather Outlook — NOAA 3-day text forecast */}
         {outlook && (
-          <div className="mt-4 sm:mt-8 glass-surface rounded-2xl p-4 sm:p-8">
+          <div className="mt-4 sm:mt-8 glass-surface rounded-2xl p-3 sm:p-8">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
               <h3 className="text-lg sm:text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
                 <Activity className="w-6 h-6 text-[#f97316]" />
@@ -490,7 +490,7 @@ const Forecast = () => {
 
         {/* Aurora Calendar — 3-night outlook */}
         {nights.length > 0 && (
-          <div className="mt-4 sm:mt-8 glass-surface rounded-2xl p-4 sm:p-8">
+          <div className="mt-4 sm:mt-8 glass-surface rounded-2xl p-3 sm:p-8">
             <div className="flex items-center justify-between gap-3 mb-6">
               <div className="flex items-center gap-3">
                 <Sparkles className="w-6 h-6 text-[#10b981]" />
@@ -559,7 +559,7 @@ const Forecast = () => {
           </div>
         )}
 
-        <div className="mt-4 sm:mt-8 glass-surface rounded-2xl p-4 sm:p-8">
+        <div className="mt-4 sm:mt-8 glass-surface rounded-2xl p-3 sm:p-8">
           <h3 className="text-lg sm:text-lg sm:text-2xl font-bold text-white mb-2 sm:mb-4 uppercase tracking-wide">
             {t('forecast.aboutTitle')}
           </h3>
