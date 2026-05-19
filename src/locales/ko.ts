@@ -683,6 +683,9 @@ const ko: Record<string, string> = {
   'livestream.open': '열기',
   'livestream.tipTitle': '팁:',
   'livestream.tip': '오로라 가시성은 맑고 어두운 밤에 현지 시간 오후 10시에서 오전 2시 사이에 최고입니다. 외출 전에 대시보드에서 현재 Kp 지수를 확인하세요.',
+  'planguard.availableOn': 'Pro 및 Premium 플랜에서 사용 가능합니다.',
+  'auth.error': '오류가 발생했습니다. 다시 시도해 주세요.',
+  'nav.user': '사용자',
 };
 
 export default ko;

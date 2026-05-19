@@ -602,6 +602,9 @@ const fr: Record<string, string> = {
   'location.prompt.desc': "Autorisez l'accès à la localisation pour un indice UV personnalisé, la visibilité du ciel, les heures de lever du soleil et plus — adapté à votre position.",
   'location.prompt.allow': 'Autoriser la localisation',
   'location.prompt.skip': 'Ignorer',
+  'planguard.availableOn': 'Disponible avec Pro et Premium.',
+  'auth.error': 'Une erreur s\'est produite. Veuillez réessayer.',
+  'nav.user': 'Utilisateur',
 };
 
 export default fr;

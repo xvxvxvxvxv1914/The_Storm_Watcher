@@ -645,6 +645,9 @@ const is_: Record<string, string> = {
   'livestream.open': 'Opna',
   'livestream.tipTitle': 'Ráð:',
   'livestream.tip': 'Bestur sýnileiki norðurljósa er milli 22:00 og 02:00 að staðartíma á skýlægum, dökkum nætur.',
+  'planguard.availableOn': 'Fáanlegt með Pro og Premium.',
+  'auth.error': 'Villa kom upp. Reyndu aftur.',
+  'nav.user': 'Notandi',
 };
 
 export default is_;

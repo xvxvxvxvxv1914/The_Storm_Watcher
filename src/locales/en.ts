@@ -683,6 +683,21 @@ const en: Record<string, string> = {
   'livestream.open': 'Open',
   'livestream.tipTitle': 'Tip:',
   'livestream.tip': 'Best aurora visibility occurs between 10 PM and 2 AM local time on clear, dark nights. Check the Dashboard for the current Kp index before heading out.',
+  'planguard.availableOn': 'Available on Pro and Premium plans.',
+  'auth.error': 'An error occurred. Please try again.',
+  'nav.user': 'User',
+  'alerts.fetchError': 'Could not load alerts',
+  'alerts.fetchErrorDesc': 'NOAA servers may be temporarily unavailable.',
+  'alerts.retry': 'Try again',
+  'aurora.calendar.noLocationHint': 'No location saved — cloud cover not available. Set a preferred location in Settings.',
+  'aurora.calendar.noLocationShort': 'No cloud data —',
+  'gallery.deleteTitle': 'Delete photo?',
+  'gallery.deleteConfirm': 'This photo will be permanently removed from the gallery.',
+  'gallery.deleteYes': 'Delete',
+  'home.stormScore.imageSaved': 'Image saved!',
+  'hunt.cooldownHint': 'One report per hour to keep the data accurate.',
+  'profile.back': 'Back',
+  'profile.deleteTypeEmail': 'Type your email address to confirm:',
 };
 
 export default en;

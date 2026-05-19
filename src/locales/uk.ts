@@ -645,6 +645,9 @@ const uk: Record<string, string> = {
   'livestream.open': 'Відкрити',
   'livestream.tipTitle': 'Порада:',
   'livestream.tip': 'Найкраща видимість сяйва — між 22:00 та 02:00 місцевого часу в ясні темні ночі.',
+  'planguard.availableOn': 'Доступно з Pro та Premium.',
+  'auth.error': 'Сталася помилка. Будь ласка, спробуйте ще раз.',
+  'nav.user': 'Користувач',
 };
 
 export default uk;

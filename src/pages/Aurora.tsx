@@ -22,6 +22,7 @@ class GlobeErrorBoundary extends Component<{ children: ReactNode }, { failed: bo
           <button
             className="text-xs px-4 py-1.5 rounded-full border border-[#10b981]/40 text-[#10b981] hover:bg-[#10b981]/10 transition-colors"
             onClick={() => this.setState({ failed: false })}
+            aria-label="Retry loading 3D globe"
           >
             Retry
           </button>

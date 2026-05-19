@@ -330,6 +330,7 @@ export default function Gallery() {
                         onClick={() => setPendingDelete(photo)}
                         className="ml-auto text-[#ef4444]/70 hover:text-[#ef4444] transition-colors"
                         title="Delete photo"
+                        aria-label="Delete photo"
                       >
                         <X className="w-3.5 h-3.5" />
                       </button>

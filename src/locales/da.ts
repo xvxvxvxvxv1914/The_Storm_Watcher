@@ -645,6 +645,9 @@ const da: Record<string, string> = {
   'livestream.open': 'Åbn',
   'livestream.tipTitle': 'Tip:',
   'livestream.tip': 'Bedste nordlyssynlighed sker mellem 22:00 og 02:00 lokal tid på klare, mørke nætter.',
+  'planguard.availableOn': 'Tilgængelig med Pro og Premium.',
+  'auth.error': 'Der opstod en fejl. Prøv igen.',
+  'nav.user': 'Bruger',
 };
 
 export default da;

@@ -602,6 +602,9 @@ const ja: Record<string, string> = {
   'location.prompt.desc': '現在地へのアクセスを許可すると、UVインデックス、空の視認性、日の出時刻などをあなたの場所に合わせてパーソナライズできます。',
   'location.prompt.allow': '位置情報を許可',
   'location.prompt.skip': 'スキップ',
+  'planguard.availableOn': 'Pro と Premium プランでご利用いただけます。',
+  'auth.error': 'エラーが発生しました。もう一度お試しください。',
+  'nav.user': 'ユーザー',
 };
 
 export default ja;

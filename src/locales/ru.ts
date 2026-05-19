@@ -602,6 +602,9 @@ const ru: Record<string, string> = {
   'location.prompt.desc': 'Разрешите доступ к местоположению для персонализированного УФ-индекса, видимости неба, времени восхода и многого другого — настроено под ваше местонахождение.',
   'location.prompt.allow': 'Разрешить местоположение',
   'location.prompt.skip': 'Пропустить',
+  'planguard.availableOn': 'Доступно для Pro и Premium.',
+  'auth.error': 'Произошла ошибка. Пожалуйста, повторите попытку.',
+  'nav.user': 'Пользователь',
 };
 
 export default ru;

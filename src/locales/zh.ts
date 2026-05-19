@@ -602,6 +602,9 @@ const zh: Record<string, string> = {
   'location.prompt.desc': '允许访问位置以获取个性化的紫外线指数、天空能见度、日出时间等——根据您的位置量身定制。',
   'location.prompt.allow': '允许位置访问',
   'location.prompt.skip': '跳过',
+  'planguard.availableOn': '适用于 Pro 和 Premium 计划。',
+  'auth.error': '发生错误，请重试。',
+  'nav.user': '用户',
 };
 
 export default zh;

@@ -645,6 +645,9 @@ const fi: Record<string, string> = {
   'livestream.open': 'Avaa',
   'livestream.tipTitle': 'Vinkki:',
   'livestream.tip': 'Paras revontulten näkyvyys tapahtuu klo 22–02 paikallista aikaa kirkkailla, pimeillä öillä.',
+  'planguard.availableOn': 'Saatavilla Pro- ja Premium-paketeissa.',
+  'auth.error': 'Tapahtui virhe. Yritä uudelleen.',
+  'nav.user': 'Käyttäjä',
 };
 
 export default fi;

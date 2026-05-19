@@ -645,6 +645,9 @@ const sv: Record<string, string> = {
   'livestream.open': 'Öppna',
   'livestream.tipTitle': 'Tips:',
   'livestream.tip': 'Bäst norrskenssiktbarhet sker mellan 22:00 och 02:00 lokal tid på klara, mörka nätter.',
+  'planguard.availableOn': 'Tillgänglig med Pro och Premium.',
+  'auth.error': 'Ett fel uppstod. Försök igen.',
+  'nav.user': 'Användare',
 };
 
 export default sv;

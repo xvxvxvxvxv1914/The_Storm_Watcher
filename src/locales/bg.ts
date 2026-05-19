@@ -676,6 +676,9 @@ const bg: Record<string, string> = {
   'livestream.open': 'Отвори',
   'livestream.tipTitle': 'Съвет:',
   'livestream.tip': 'Най-добра видимост на аврората се наблюдава между 22:00 и 02:00 ч. местно време при ясно, тъмно небе. Проверете индекса Kp в таблото преди да излезете.',
+  'planguard.availableOn': 'Достъпно с Pro и Premium.',
+  'auth.error': 'Възникна грешка. Моля, опитайте отново.',
+  'nav.user': 'Потребител',
 };
 
 export default bg;

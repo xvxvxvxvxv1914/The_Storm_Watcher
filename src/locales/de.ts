@@ -629,6 +629,9 @@ const de: Record<string, string> = {
   'livestream.open': 'Öffnen',
   'livestream.tipTitle': 'Tipp:',
   'livestream.tip': 'Die beste Polarlicht-Sichtbarkeit liegt zwischen 22:00 und 02:00 Uhr Ortszeit bei klarem, dunklem Himmel.',
+  'planguard.availableOn': 'Verfügbar mit Pro und Premium.',
+  'auth.error': 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.',
+  'nav.user': 'Benutzer',
 };
 
 export default de;

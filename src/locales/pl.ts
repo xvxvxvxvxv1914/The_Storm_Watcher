@@ -645,6 +645,9 @@ const pl: Record<string, string> = {
   'livestream.open': 'Otwórz',
   'livestream.tipTitle': 'Wskazówka:',
   'livestream.tip': 'Najlepsza widoczność zorzy między 22:00 a 02:00 czasu lokalnego przy czystym, ciemnym niebie.',
+  'planguard.availableOn': 'Dostępne w planach Pro i Premium.',
+  'auth.error': 'Wystąpił błąd. Spróbuj ponownie.',
+  'nav.user': 'Użytkownik',
 };
 
 export default pl;

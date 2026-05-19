@@ -602,6 +602,9 @@ const es: Record<string, string> = {
   'location.prompt.desc': 'Permite el acceso a la ubicación para índice UV personalizado, visibilidad del cielo, horas del sol y más — adaptado a donde estás.',
   'location.prompt.allow': 'Permitir ubicación',
   'location.prompt.skip': 'Omitir',
+  'planguard.availableOn': 'Disponible en los planes Pro y Premium.',
+  'auth.error': 'Ocurrió un error. Inténtalo de nuevo.',
+  'nav.user': 'Usuario',
 };
 
 export default es;
