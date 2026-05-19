@@ -1,8 +1,10 @@
 import { Helmet } from 'react-helmet-async';
 import { useLocation } from 'react-router-dom';
 
-const BASE = 'https://thestormwatcher.com';
-const LANGS = ['en', 'bg', 'es', 'fr', 'de', 'ru', 'zh', 'ja'];
+const BASE = 'https://www.thestormwatcher.com';
+// SPA — no locale subpaths; all hreflang point to the same canonical URL.
+// When locale routing is added, update href to `${BASE}/${lang}${pathname}`.
+const LANGS = ['en', 'no', 'fi', 'sv', 'is', 'de', 'da', 'fr', 'pl', 'uk', 'ja', 'ko'];
 
 const HreflangTags = () => {
   const { pathname } = useLocation();

@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-type Language = 'en' | 'bg' | 'es' | 'fr' | 'de' | 'ru' | 'zh' | 'ja';
+type Language = 'en' | 'bg' | 'es' | 'fr' | 'de' | 'ru' | 'zh' | 'ja' | 'no' | 'fi' | 'sv' | 'is' | 'da' | 'pl' | 'uk' | 'ko';
 
 interface LanguageContextType {
   language: Language;
@@ -22,6 +22,14 @@ const loaders: Record<Language, () => Promise<{ default: Record<string, string> 
   ru: () => import('../locales/ru'),
   zh: () => import('../locales/zh'),
   ja: () => import('../locales/ja'),
+  no: () => import('../locales/no'),
+  fi: () => import('../locales/fi'),
+  sv: () => import('../locales/sv'),
+  is: () => import('../locales/is'),
+  da: () => import('../locales/da'),
+  pl: () => import('../locales/pl'),
+  uk: () => import('../locales/uk'),
+  ko: () => import('../locales/ko'),
 };
 
 // In-memory cache so switching languages twice doesn't re-fetch.
@@ -31,7 +39,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguageState] = useState<Language>(() => {
     const saved = localStorage.getItem('language');
     if (saved) return saved as Language;
-    const supported: Language[] = ['en', 'bg', 'es', 'fr', 'de', 'ru', 'zh', 'ja'];
+    const supported: Language[] = ['en', 'bg', 'es', 'fr', 'de', 'ru', 'zh', 'ja', 'no', 'fi', 'sv', 'is', 'da', 'pl', 'uk', 'ko'];
     const nav = (navigator.language || navigator.languages?.[0] || 'en').slice(0, 2).toLowerCase();
     return supported.includes(nav as Language) ? (nav as Language) : 'en';
   });
@@ -82,11 +90,19 @@ export const useLanguage = () => {
 
 export const languages = [
   { code: 'en' as Language, name: 'English', flag: '🇬🇧' },
+  { code: 'no' as Language, name: 'Norsk', flag: '🇳🇴' },
+  { code: 'fi' as Language, name: 'Suomi', flag: '🇫🇮' },
+  { code: 'sv' as Language, name: 'Svenska', flag: '🇸🇪' },
+  { code: 'is' as Language, name: 'Íslenska', flag: '🇮🇸' },
+  { code: 'de' as Language, name: 'Deutsch', flag: '🇩🇪' },
+  { code: 'da' as Language, name: 'Dansk', flag: '🇩🇰' },
+  { code: 'fr' as Language, name: 'Français', flag: '🇫🇷' },
+  { code: 'pl' as Language, name: 'Polski', flag: '🇵🇱' },
+  { code: 'uk' as Language, name: 'Українська', flag: '🇺🇦' },
+  { code: 'ja' as Language, name: '日本語', flag: '🇯🇵' },
+  { code: 'ko' as Language, name: '한국어', flag: '🇰🇷' },
   { code: 'bg' as Language, name: 'Български', flag: '🇧🇬' },
   { code: 'es' as Language, name: 'Español', flag: '🇪🇸' },
-  { code: 'fr' as Language, name: 'Français', flag: '🇫🇷' },
-  { code: 'de' as Language, name: 'Deutsch', flag: '🇩🇪' },
   { code: 'ru' as Language, name: 'Русский', flag: '🇷🇺' },
   { code: 'zh' as Language, name: '中文', flag: '🇨🇳' },
-  { code: 'ja' as Language, name: '日本語', flag: '🇯🇵' },
 ];
