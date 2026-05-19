@@ -30,6 +30,7 @@ const Gallery = lazy(() => import('../pages/Gallery'));
 const Hunt = lazy(() => import('../pages/Hunt'));
 const Livestream = lazy(() => import('../pages/Livestream'));
 const Calendar = lazy(() => import('../pages/Calendar'));
+const LanguageSettings = lazy(() => import('../pages/LanguageSettings'));
 
 export const AnimatedRoutes = () => {
   const location = useLocation();
@@ -52,6 +53,7 @@ export const AnimatedRoutes = () => {
         <Route path="/auth/reset" element={<AnimatedPage><AuthReset /></AnimatedPage>} />
         <Route path="/profile" element={<AnimatedPage><Profile /></AnimatedPage>} />
         <Route path="/settings" element={<AnimatedPage><Settings /></AnimatedPage>} />
+        <Route path="/settings/language" element={<AnimatedPage><LanguageSettings /></AnimatedPage>} />
         <Route path="/faq" element={<AnimatedPage><FAQ /></AnimatedPage>} />
         <Route path="/magnetic-effects" element={<AnimatedPage><MagneticEffects /></AnimatedPage>} />
         <Route path="/pricing" element={<AnimatedPage><Pricing /></AnimatedPage>} />
