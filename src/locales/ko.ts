@@ -686,6 +686,18 @@ const ko: Record<string, string> = {
   'planguard.availableOn': 'Pro 및 Premium 플랜에서 사용 가능합니다.',
   'auth.error': '오류가 발생했습니다. 다시 시도해 주세요.',
   'nav.user': '사용자',
+  'alerts.fetchError': '알림을 불러올 수 없습니다',
+  'alerts.fetchErrorDesc': 'NOAA 서버가 일시적으로 이용 불가능할 수 있습니다.',
+  'alerts.retry': '다시 시도',
+  'aurora.calendar.noLocationHint': '저장된 위치 없음 — 구름 양 데이터를 사용할 수 없습니다. 설정에서 위치를 설정하세요.',
+  'aurora.calendar.noLocationShort': '구름 데이터 없음 —',
+  'gallery.deleteTitle': '사진을 삭제하시겠습니까?',
+  'gallery.deleteConfirm': '이 사진은 갤러리에서 영구적으로 삭제됩니다.',
+  'gallery.deleteYes': '삭제',
+  'home.stormScore.imageSaved': '이미지 저장됨!',
+  'hunt.cooldownHint': '데이터 정확성을 위해 시간당 보고 1회.',
+  'profile.back': '뒤로',
+  'profile.deleteTypeEmail': '확인을 위해 이메일 주소를 입력하세요:',
 };
 
 export default ko;

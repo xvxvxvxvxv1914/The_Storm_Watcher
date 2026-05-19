@@ -648,6 +648,18 @@ const is_: Record<string, string> = {
   'planguard.availableOn': 'Fáanlegt með Pro og Premium.',
   'auth.error': 'Villa kom upp. Reyndu aftur.',
   'nav.user': 'Notandi',
+  'alerts.fetchError': 'Tókst ekki að hlaða viðvörunum',
+  'alerts.fetchErrorDesc': 'NOAA-þjónar geta verið tímabundið óaðgengilegir.',
+  'alerts.retry': 'Reyna aftur',
+  'aurora.calendar.noLocationHint': 'Engin staðsetning vistuð — skýjaþekja ekki tiltæk. Stilltu staðsetningu í Stillingum.',
+  'aurora.calendar.noLocationShort': 'Engin skýjagögn —',
+  'gallery.deleteTitle': 'Eyða mynd?',
+  'gallery.deleteConfirm': 'Þessi mynd verður fjarlægð varanlega úr myndasafninu.',
+  'gallery.deleteYes': 'Eyða',
+  'home.stormScore.imageSaved': 'Mynd vistuð!',
+  'hunt.cooldownHint': 'Ein skýrsla á klukkustund til að gögn séu nákvæm.',
+  'profile.back': 'Til baka',
+  'profile.deleteTypeEmail': 'Sláðu inn netfangið þitt til staðfestingar:',
 };
 
 export default is_;

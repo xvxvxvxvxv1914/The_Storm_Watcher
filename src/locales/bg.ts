@@ -679,6 +679,18 @@ const bg: Record<string, string> = {
   'planguard.availableOn': 'Достъпно с Pro и Premium.',
   'auth.error': 'Възникна грешка. Моля, опитайте отново.',
   'nav.user': 'Потребител',
+  'alerts.fetchError': 'Грешка при зареждане на предупрежденията',
+  'alerts.fetchErrorDesc': 'NOAA сървърите може временно да са недостъпни.',
+  'alerts.retry': 'Опитай пак',
+  'aurora.calendar.noLocationHint': 'Няма запазено местоположение — облачността не е достъпна. Задайте предпочитано местоположение в Настройките.',
+  'aurora.calendar.noLocationShort': 'Без данни за облаци —',
+  'gallery.deleteTitle': 'Изтриване на снимката?',
+  'gallery.deleteConfirm': 'Тази снимка ще бъде трайно премахната от галерията.',
+  'gallery.deleteYes': 'Изтрий',
+  'home.stormScore.imageSaved': 'Изображението е запазено!',
+  'hunt.cooldownHint': 'Едно докладване на час за по-точни данни.',
+  'profile.back': 'Назад',
+  'profile.deleteTypeEmail': 'Въведете имейл адреса си за потвърждение:',
 };
 
 export default bg;

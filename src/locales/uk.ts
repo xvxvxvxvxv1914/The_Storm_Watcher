@@ -648,6 +648,18 @@ const uk: Record<string, string> = {
   'planguard.availableOn': 'Доступно з Pro та Premium.',
   'auth.error': 'Сталася помилка. Будь ласка, спробуйте ще раз.',
   'nav.user': 'Користувач',
+  'alerts.fetchError': 'Не вдалося завантажити попередження',
+  'alerts.fetchErrorDesc': 'Сервери NOAA можуть бути тимчасово недоступні.',
+  'alerts.retry': 'Спробувати ще раз',
+  'aurora.calendar.noLocationHint': 'Місцезнаходження не збережено — дані про хмарність недоступні. Встановіть місцезнаходження в Налаштуваннях.',
+  'aurora.calendar.noLocationShort': 'Немає даних про хмарність —',
+  'gallery.deleteTitle': 'Видалити фото?',
+  'gallery.deleteConfirm': 'Це фото буде назавжди видалено з галереї.',
+  'gallery.deleteYes': 'Видалити',
+  'home.stormScore.imageSaved': 'Зображення збережено!',
+  'hunt.cooldownHint': 'Один звіт на годину для точності даних.',
+  'profile.back': 'Назад',
+  'profile.deleteTypeEmail': 'Введіть свою адресу електронної пошти для підтвердження:',
 };
 
 export default uk;

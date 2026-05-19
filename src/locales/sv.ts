@@ -648,6 +648,18 @@ const sv: Record<string, string> = {
   'planguard.availableOn': 'Tillgänglig med Pro och Premium.',
   'auth.error': 'Ett fel uppstod. Försök igen.',
   'nav.user': 'Användare',
+  'alerts.fetchError': 'Det gick inte att ladda varningar',
+  'alerts.fetchErrorDesc': 'NOAA-servrar kan vara tillfälligt otillgängliga.',
+  'alerts.retry': 'Försök igen',
+  'aurora.calendar.noLocationHint': 'Ingen sparad plats — molntäcke inte tillgängligt. Ange plats i Inställningar.',
+  'aurora.calendar.noLocationShort': 'Inga molndata —',
+  'gallery.deleteTitle': 'Ta bort bilden?',
+  'gallery.deleteConfirm': 'Det här fotot kommer att tas bort permanent från galleriet.',
+  'gallery.deleteYes': 'Ta bort',
+  'home.stormScore.imageSaved': 'Bild sparad!',
+  'hunt.cooldownHint': 'En rapport per timme för noggranna data.',
+  'profile.back': 'Tillbaka',
+  'profile.deleteTypeEmail': 'Ange din e-postadress för att bekräfta:',
 };
 
 export default sv;

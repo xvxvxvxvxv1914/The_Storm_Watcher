@@ -648,6 +648,18 @@ const no: Record<string, string> = {
   'planguard.availableOn': 'Tilgjengelig på Pro og Premium.',
   'auth.error': 'Det oppstod en feil. Vennligst prøv igjen.',
   'nav.user': 'Bruker',
+  'alerts.fetchError': 'Kunne ikke laste varsler',
+  'alerts.fetchErrorDesc': 'NOAA-servere kan være midlertidig utilgjengelige.',
+  'alerts.retry': 'Prøv igjen',
+  'aurora.calendar.noLocationHint': 'Ingen lagret posisjon — skydekke ikke tilgjengelig. Angi foretrukket posisjon i Innstillinger.',
+  'aurora.calendar.noLocationShort': 'Ingen skydata —',
+  'gallery.deleteTitle': 'Slette bildet?',
+  'gallery.deleteConfirm': 'Dette bildet vil bli permanent fjernet fra galleriet.',
+  'gallery.deleteYes': 'Slett',
+  'home.stormScore.imageSaved': 'Bilde lagret!',
+  'hunt.cooldownHint': 'Én rapport per time for nøyaktige data.',
+  'profile.back': 'Tilbake',
+  'profile.deleteTypeEmail': 'Skriv inn e-postadressen din for å bekrefte:',
 };
 
 export default no;

@@ -648,6 +648,18 @@ const pl: Record<string, string> = {
   'planguard.availableOn': 'Dostępne w planach Pro i Premium.',
   'auth.error': 'Wystąpił błąd. Spróbuj ponownie.',
   'nav.user': 'Użytkownik',
+  'alerts.fetchError': 'Nie udało się załadować alertów',
+  'alerts.fetchErrorDesc': 'Serwery NOAA mogą być tymczasowo niedostępne.',
+  'alerts.retry': 'Spróbuj ponownie',
+  'aurora.calendar.noLocationHint': 'Brak zapisanej lokalizacji — dane o zachmurzeniu niedostępne. Ustaw lokalizację w Ustawieniach.',
+  'aurora.calendar.noLocationShort': 'Brak danych o chmurach —',
+  'gallery.deleteTitle': 'Usunąć zdjęcie?',
+  'gallery.deleteConfirm': 'To zdjęcie zostanie trwale usunięte z galerii.',
+  'gallery.deleteYes': 'Usuń',
+  'home.stormScore.imageSaved': 'Obraz zapisany!',
+  'hunt.cooldownHint': 'Jeden raport na godzinę dla dokładności danych.',
+  'profile.back': 'Wstecz',
+  'profile.deleteTypeEmail': 'Wpisz swój adres e-mail, aby potwierdzić:',
 };
 
 export default pl;

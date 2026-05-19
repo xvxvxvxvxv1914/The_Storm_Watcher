@@ -648,6 +648,18 @@ const fi: Record<string, string> = {
   'planguard.availableOn': 'Saatavilla Pro- ja Premium-paketeissa.',
   'auth.error': 'Tapahtui virhe. Yritä uudelleen.',
   'nav.user': 'Käyttäjä',
+  'alerts.fetchError': 'Hälytysten lataaminen epäonnistui',
+  'alerts.fetchErrorDesc': 'NOAA-palvelimet saattavat olla tilapäisesti poissa käytöstä.',
+  'alerts.retry': 'Yritä uudelleen',
+  'aurora.calendar.noLocationHint': 'Sijaintia ei tallennettu — pilvisyystiedot eivät ole saatavilla. Aseta sijainti Asetuksissa.',
+  'aurora.calendar.noLocationShort': 'Ei pilvisyystietoja —',
+  'gallery.deleteTitle': 'Poistetaanko kuva?',
+  'gallery.deleteConfirm': 'Tämä kuva poistetaan pysyvästi galleriasta.',
+  'gallery.deleteYes': 'Poista',
+  'home.stormScore.imageSaved': 'Kuva tallennettu!',
+  'hunt.cooldownHint': 'Yksi raportti tunnissa tietojen tarkkuuden varmistamiseksi.',
+  'profile.back': 'Takaisin',
+  'profile.deleteTypeEmail': 'Syötä sähköpostiosoitteesi vahvistukseksi:',
 };
 
 export default fi;
