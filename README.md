@@ -19,7 +19,8 @@ Real-time space weather monitoring — Kp index, solar wind, aurora forecast and
 - **Sky Visibility** — Cloud cover + precipitation scoring for tonight's viewing conditions
 - **Mood Tracker** — Community mood reporting correlated with space weather events
 - **Push Notifications** — Browser-based Kp threshold alerts via Web Push API
-- **8 Languages** — EN, BG, ES, FR, DE, RU, ZH, JA
+- **16 Languages** — EN, BG, DE, ES, FR, JA, KO, RU, ZH + NO, FI, SV, IS, DA, PL, UK
+- **Language Settings** — Dedicated settings page with auto-detection from browser locale
 
 ## Tech Stack
 
@@ -40,6 +41,8 @@ Real-time space weather monitoring — Kp index, solar wind, aurora forecast and
 ## Data Sources
 
 - [NOAA SWPC](https://www.swpc.noaa.gov/) — Kp index, solar wind, magnetic field, X-ray, aurora oval, alerts
+- [GFZ Potsdam](https://www.gfz-potsdam.de/) — Kp index (primary source, NOAA as fallback)
+- [NIGGG Bulgaria](http://niggg.bas.bg/) — Local magnetic field (H/F components)
 - [NASA DONKI](https://kauai.ccmc.gsfc.nasa.gov/DONKI/) — CME and solar flare events
 - [Open-Meteo](https://open-meteo.com/) — UV index, sun times, cloud cover
 - [WhereTheISS.at](https://wheretheiss.at/) — ISS position
@@ -86,22 +89,6 @@ VITE_DONKI_BASE_URL=your_donki_proxy_url  # for Capacitor builds
 ```bash
 npm run ios:open     # Build + sync + open Xcode
 npm run ios:deploy   # Deploy via script
-```
-
-## Project Structure
-
-```
-src/
-├── components/      # Reusable UI components
-│   └── charts/      # TimeSeriesChart, SvgBarChart, etc.
-├── contexts/        # React contexts (Auth, Theme, Language, Settings)
-├── hooks/           # Custom hooks (swipe, favorites, onboarding)
-├── lib/             # Supabase client
-├── locales/         # i18n translations (8 languages)
-├── pages/           # Route pages
-├── services/        # API clients (NOAA, ISS, UV, Sky, DONKI)
-├── utils/           # Utility functions
-└── sw.ts            # Service worker (Workbox)
 ```
 
 ## License
