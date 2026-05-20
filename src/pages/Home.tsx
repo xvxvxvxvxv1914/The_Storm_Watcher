@@ -397,9 +397,7 @@ const Home = () => {
                               ? `${t('home.pulse.topSymptom')}: ${t(pulseData.symptom)}`
                               : `${t('home.pulse.mostCommon')}: ${t(`mood.${pulseData.mood}`)}`}
                           </div>
-                          <div className="text-[10px] text-[#475569] mt-1 uppercase tracking-wide">
-                            {pulseData.count} {t('home.pulse.participants')} · 24h
-                          </div>
+
                         </>
                       ) : (
                         <div className="text-[#475569] text-xs italic">
