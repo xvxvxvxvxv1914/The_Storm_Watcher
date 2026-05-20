@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { logError } from '../utils/logger';
 import PageMeta from '../components/PageMeta';
-import { Users, TrendingUp, CheckCircle, AlertCircle, ThumbsUp } from 'lucide-react';
+import { TrendingUp, CheckCircle, AlertCircle, ThumbsUp } from 'lucide-react';
 import SvgDonut from '../components/charts/SvgDonut';
 import SvgStackedBars, { type DataRow } from '../components/charts/SvgStackedBars';
 import { supabase, getSessionId } from '../lib/supabase';
@@ -135,7 +135,7 @@ const Mood = () => {
   const [currentKp, setCurrentKp] = useState<number>(0);
   const [stats, setStats] = useState<MoodStats[]>([]);
   const [hourlyData, setHourlyData] = useState<HourlyData[]>([]);
-  const [totalEntries, setTotalEntries] = useState(0);
+  const [, setTotalEntries] = useState(0);
   const [hasSubmittedToday, setHasSubmittedToday] = useState(false);
   const [submittedAt, setSubmittedAt] = useState<Date | null>(null);
   const [loading, setLoading] = useState(true);
@@ -291,14 +291,6 @@ const Mood = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
-            <div className="flex items-center gap-3 mb-2">
-              <Users className="w-5 h-5 text-[#00ff88]" />
-              <h3 className="text-gray-400 text-sm">{t('mood.participants')}</h3>
-            </div>
-            <div className="text-4xl font-bold text-white">{totalEntries}</div>
-          </div>
-
           <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
             <div className="flex items-center gap-3 mb-2">
               <TrendingUp className="w-5 h-5 text-[#3b82f6]" />
