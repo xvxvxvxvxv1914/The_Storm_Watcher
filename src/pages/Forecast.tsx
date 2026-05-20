@@ -2,9 +2,15 @@ import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
 import PageMeta from '../components/PageMeta';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
-import { Calendar, TrendingUp, AlertCircle, Sun, Sparkles, Cloud, Radio, Zap, Activity, ExternalLink } from 'lucide-react';
+import {
+  Calendar, TrendingUp, AlertCircle, Sun, Sparkles, Cloud, Radio, Zap, Activity,
+  ExternalLink, ChevronDown, Star,
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { getKpForecast, getKpHistory3Day, getStormStatus, getKpGradientStyle, getSpaceWeatherOutlook, type SpaceWeatherOutlook } from '../services/noaaApi';
+import {
+  getKpForecast, getKpHistory3Day, get27DayOutlook, getStormStatus, getKpGradientStyle,
+  getSpaceWeatherOutlook, type SpaceWeatherOutlook, type DayOutlook,
+} from '../services/noaaApi';
 import { getNightsCloudCover, type NightForecast } from '../services/skyApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
@@ -20,11 +26,20 @@ interface ForecastItem {
   date: Date;
 }
 
+interface DayForecast {
+  date: Date;
+  maxKp: number;
+  hourly: ForecastItem[] | null;
+  source: 'detailed' | 'outlook';
+  apIndex?: number;
+}
+
 const Forecast = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { settings } = useSettings();
   const chartH = useChartHeight(190, 300);
   const [forecastData, setForecastData] = useState<ForecastItem[]>([]);
+  const [outlook27, setOutlook27] = useState<DayOutlook[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [, setLastUpdated] = useState<Date>(new Date());
@@ -32,12 +47,13 @@ const Forecast = () => {
   const [historyRaw, setHistoryRaw] = useState<{ time_tag: string; Kp: number }[]>([]);
   const [nights, setNights] = useState<NightForecast[]>([]);
   const [outlook, setOutlook] = useState<SpaceWeatherOutlook | null>(null);
+  const [expandedDay, setExpandedDay] = useState<string | null>(null);
+  const [showLongRange, setShowLongRange] = useState(false);
 
   const fetchForecast = useCallback(async () => {
     setError(false);
     try {
       const kpData = await getKpForecast();
-
       const formattedData = (kpData ?? []).map((item) => {
         const date = new Date(item.time_tag);
         return {
@@ -47,7 +63,6 @@ const Forecast = () => {
           date: date,
         };
       });
-
       if (formattedData.length === 0) throw new Error('empty');
       setForecastData(formattedData);
       setLastUpdated(new Date());
@@ -63,53 +78,73 @@ const Forecast = () => {
 
   useEffect(() => {
     getSpaceWeatherOutlook().then(data => { if (data) setOutlook(data); }).catch(() => {});
+    get27DayOutlook().then(data => { if (data && data.length > 0) setOutlook27(data); }).catch(() => {});
   }, []);
-
-  const getMaxKp = () => {
-    if (forecastData.length === 0) return 0;
-    return Math.max(...forecastData.map(d => d.kp));
-  };
-
-  const getAverageKp = () => {
-    if (forecastData.length === 0) return 0;
-    const sum = forecastData.reduce((acc, d) => acc + d.kp, 0);
-    return sum / forecastData.length;
-  };
-
-  const getDaysWithStorms = () => {
-    return forecastData.filter(d => d.kp >= 5).length;
-  };
-
-  const groupByDay = () => {
-    const grouped: { [key: string]: ForecastItem[] } = {};
-    forecastData.forEach((item) => {
-      const dayKey = item.date.toLocaleDateString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric'
-      });
-      if (!grouped[dayKey]) {
-        grouped[dayKey] = [];
-      }
-      grouped[dayKey].push(item);
-    });
-    return grouped;
-  };
 
   useEffect(() => {
     if (!showYesterday || historyRaw.length > 0) return;
     getKpHistory3Day().then(data => { if (data) setHistoryRaw(data); }).catch(() => {});
   }, [showYesterday, historyRaw.length]);
 
-  // Build Aurora Calendar: 3 nights with max Kp + optional cloud cover
+  // Build unified day-by-day view: detailed for first 3, outlook for the rest
+  const sevenDays: DayForecast[] = useMemo(() => {
+    if (forecastData.length === 0) return [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const result: DayForecast[] = [];
+    for (let i = 0; i < 7; i++) {
+      const dayDate = new Date(today);
+      dayDate.setDate(today.getDate() + i);
+      const ds = dayDate.toDateString();
+      const hourly = forecastData.filter(f => {
+        const d = new Date(f.date);
+        d.setHours(0, 0, 0, 0);
+        return d.toDateString() === ds;
+      });
+      if (hourly.length >= 4) {
+        result.push({
+          date: dayDate,
+          maxKp: Math.max(...hourly.map(h => h.kp)),
+          hourly,
+          source: 'detailed',
+        });
+      } else {
+        const ol = outlook27.find(o => {
+          const od = new Date(o.date);
+          od.setHours(0, 0, 0, 0);
+          return od.toDateString() === ds;
+        });
+        if (ol) {
+          result.push({
+            date: dayDate,
+            maxKp: ol.largestKp,
+            hourly: null,
+            source: 'outlook',
+            apIndex: ol.apIndex,
+          });
+        }
+      }
+    }
+    return result;
+  }, [forecastData, outlook27]);
+
+  const longRangeDays: DayOutlook[] = useMemo(() => {
+    if (outlook27.length === 0) return [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return outlook27.filter(o => {
+      const d = new Date(o.date);
+      d.setHours(0, 0, 0, 0);
+      return d.getTime() >= today.getTime();
+    });
+  }, [outlook27]);
+
+  // Aurora Calendar — 3 nights
   useEffect(() => {
     if (forecastData.length === 0) return;
-
     const buildNights = async () => {
-      const NIGHT_START = 20, NIGHT_END = 6; // local hours considered "night"
+      const NIGHT_START = 20, NIGHT_END = 6;
       const labels: NightForecast['label'][] = ['tonight', 'tomorrow', 'nightAfter'];
-
-      // Group forecast by date-key, pick nighttime hours (20–23 today, 0–6 tomorrow)
       const kpByDateNight: { date: Date; maxKp: number }[] = [];
       const today = new Date();
       for (let d = 0; d < 3; d++) {
@@ -119,7 +154,6 @@ const Forecast = () => {
         const nextDate = new Date(target);
         nextDate.setDate(target.getDate() + 1);
         const nextDateStr = nextDate.toDateString();
-
         const nightItems = forecastData.filter(item => {
           const h = item.date.getHours();
           return (item.date.toDateString() === targetDate && h >= NIGHT_START) ||
@@ -128,27 +162,18 @@ const Forecast = () => {
         const maxKp = nightItems.length > 0 ? Math.max(...nightItems.map(i => i.kp)) : 0;
         kpByDateNight.push({ date: target, maxKp });
       }
-
-      // Fetch cloud cover if location is set
       let cloudNights: { date: Date; cloudCoverAvg: number }[] = [];
       const { preferredLat: lat, preferredLon: lon } = settings;
       if (lat !== null && lon !== null) {
-        try { cloudNights = await getNightsCloudCover(lat, lon); } catch { /* keep empty */ }
+        try { cloudNights = await getNightsCloudCover(lat, lon); } catch { /* ignore */ }
       }
-
-      // Combine
       const combined: NightForecast[] = kpByDateNight.map((n, i) => {
         const cloud = cloudNights[i];
         return {
-          label: labels[i],
-          date: n.date,
-          maxKp: n.maxKp,
-          cloudCoverAvg: cloud ? cloud.cloudCoverAvg : null,
-          isBest: false,
+          label: labels[i], date: n.date, maxKp: n.maxKp,
+          cloudCoverAvg: cloud ? cloud.cloudCoverAvg : null, isBest: false,
         };
       });
-
-      // Mark best night: highest kp score (60%) + lowest cloud (40%)
       const scored = combined.map(n => ({
         ...n,
         score: (n.maxKp / 9) * 60 + (n.cloudCoverAvg !== null ? (100 - n.cloudCoverAvg) / 100 * 40 : (n.maxKp / 9) * 40),
@@ -157,7 +182,6 @@ const Forecast = () => {
       combined[bestIdx].isBest = true;
       setNights(combined);
     };
-
     buildNights();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [forecastData, settings.preferredLat, settings.preferredLon]);
@@ -177,14 +201,19 @@ const Forecast = () => {
       .sort((a, b) => a.time - b.time);
   }, [showYesterday, historyRaw]);
 
-  // Continuous 3-hour forecast curve. Sorting defends against any
-  // upstream re-ordering — lightweight-charts requires ascending time.
   const forecastChartData: TsPoint[] = [...forecastData]
     .sort((a, b) => a.date.getTime() - b.date.getTime())
     .map(item => ({
       time: Math.floor(item.date.getTime() / 1000) as TsPoint['time'],
       value: parseFloat(item.kp.toFixed(2)),
     }));
+
+  // Hero stats from 7-day view
+  const peakKp7 = sevenDays.length > 0 ? Math.max(...sevenDays.map(d => d.maxKp)) : 0;
+  const bestDay = sevenDays.length > 0
+    ? sevenDays.reduce((best, d) => d.maxKp > best.maxKp ? d : best, sevenDays[0])
+    : null;
+  const stormDaysCount = sevenDays.filter(d => d.maxKp >= 5).length;
 
   if (!loading && error) {
     return (
@@ -216,111 +245,104 @@ const Forecast = () => {
             ))}
           </div>
           <SkeletonChart className="mb-6" />
-          <div className="glass-surface rounded-2xl border border-white/5 overflow-hidden">
-            <div className="p-6 border-b border-white/5">
-              <Skeleton className="h-5 w-40" />
-            </div>
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className="flex items-center gap-4 px-6 py-4 border-b border-white/5 last:border-0">
-                <Skeleton className="h-4 w-20" />
-                <Skeleton className="h-6 w-12 rounded-lg" />
-                <Skeleton className="h-3 w-16" />
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     );
   }
 
-  const maxKp = getMaxKp();
-  const avgKp = getAverageKp();
-  const stormDays = getDaysWithStorms();
-  const groupedData = groupByDay();
-  const peakItem = forecastData.length > 0
-    ? forecastData.reduce((best, d) => d.kp > best.kp ? d : best, forecastData[0])
-    : null;
+  const formatWeekday = (d: Date) => d.toLocaleDateString(language, { weekday: 'short' });
+  const formatMonthDay = (d: Date) => d.toLocaleDateString(language, { month: 'short', day: 'numeric' });
+  const isToday = (d: Date) => {
+    const t = new Date();
+    return d.toDateString() === t.toDateString();
+  };
+  const isTomorrow = (d: Date) => {
+    const t = new Date();
+    t.setDate(t.getDate() + 1);
+    return d.toDateString() === t.toDateString();
+  };
+
+  const kpBarColor = (kp: number): string => {
+    if (kp >= 7) return '#ef4444';
+    if (kp >= 5) return '#f97316';
+    if (kp >= 4) return '#eab308';
+    if (kp >= 2) return '#10b981';
+    return '#059669';
+  };
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16 relative">
       <PageMeta
         title="Kp Index Forecast — The Storm Watcher"
-        description="3-day Kp index forecast from NOAA. See predicted geomagnetic storm levels and plan your aurora viewing."
+        description="7-day Kp forecast + 27-day long-range outlook from NOAA. Plan your aurora viewing."
         path="/forecast"
       />
       <StarField />
-
       <div className="magnetic-orb" style={{ top: '200px', left: '-200px' }} />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-3 md:mb-12">
-          <h1 className="text-3xl sm:text-5xl font-bold gradient-solar mb-2 sm:mb-3 uppercase tracking-tight">
+
+        {/* Header */}
+        <div className="mb-6 md:mb-10">
+          <h1 className="text-3xl sm:text-5xl font-bold gradient-solar mb-2 sm:mb-3 tracking-tight">
             {t('forecast.title')}
           </h1>
-          <p className="text-[#94a3b8] text-lg">
-            {t('forecast.subtitle')}
-          </p>
+          <p className="text-[#94a3b8] text-base sm:text-lg">{t('forecast.subtitle')}</p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-6 mb-4 md:mb-12">
-          <div className={`glass-surface rounded-2xl p-3 sm:p-8 ${maxKp >= 5 ? 'glow-red' : 'glow-green'} hover:scale-105 transition-transform`}>
-            <div className="flex items-center gap-2 mb-2 sm:mb-4">
-              <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-[#ef4444] to-[#dc2626] rounded-xl flex items-center justify-center">
-                <TrendingUp className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
+        {/* Hero Stats */}
+        <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6 sm:mb-8">
+          <div className={`glass-surface rounded-2xl p-3 sm:p-6 ${peakKp7 >= 5 ? 'glow-red' : 'glow-green'}`}>
+            <div className="flex items-center gap-2 mb-2 sm:mb-3">
+              <div className="w-7 h-7 sm:w-10 sm:h-10 bg-gradient-to-br from-[#ef4444] to-[#dc2626] rounded-lg flex items-center justify-center">
+                <TrendingUp className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-white" />
               </div>
-              <h3 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
-                {t('forecast.maxKp')}
-              </h3>
+              <h3 className="text-[#94a3b8] text-[10px] sm:text-xs font-bold tracking-wide">{t('forecast.peakKpNext7')}</h3>
             </div>
-            <div className="text-[1.4rem] sm:text-6xl font-bold mb-1 sm:mb-2" style={getKpGradientStyle(maxKp)}>{maxKp.toFixed(1)}</div>
-            <div className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider">
-              {t('forecast.next3Days')}
+            <div className="text-2xl sm:text-5xl font-bold mb-0.5 sm:mb-1" style={getKpGradientStyle(peakKp7)}>{peakKp7.toFixed(1)}</div>
+            <div className="text-[#64748b] text-[10px] sm:text-xs">{t(getStormStatus(peakKp7).statusKey)}</div>
+          </div>
+
+          <div className="glass-surface rounded-2xl p-3 sm:p-6">
+            <div className="flex items-center gap-2 mb-2 sm:mb-3">
+              <div className="w-7 h-7 sm:w-10 sm:h-10 bg-gradient-to-br from-[#10b981] to-[#059669] rounded-lg flex items-center justify-center">
+                <Star className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-white" />
+              </div>
+              <h3 className="text-[#94a3b8] text-[10px] sm:text-xs font-bold tracking-wide">{t('forecast.bestDayLabel')}</h3>
+            </div>
+            <div className="text-base sm:text-3xl font-bold text-white mb-0.5 sm:mb-1 leading-tight">
+              {bestDay ? formatWeekday(bestDay.date) : '—'}
+            </div>
+            <div className="text-[#64748b] text-[10px] sm:text-xs">
+              {bestDay ? `${formatMonthDay(bestDay.date)} · Kp ${bestDay.maxKp.toFixed(1)}` : ''}
             </div>
           </div>
 
-          <div className="glass-surface rounded-2xl p-3 sm:p-8 hover:glow-orange transition-all hover:scale-105">
-            <div className="flex items-center gap-2 mb-2 sm:mb-4">
-              <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-[#fbbf24] to-[#f59e0b] rounded-xl flex items-center justify-center">
-                <Calendar className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
+          <div className={`glass-surface rounded-2xl p-3 sm:p-6 ${stormDaysCount > 0 ? 'glow-orange' : ''}`}>
+            <div className="flex items-center gap-2 mb-2 sm:mb-3">
+              <div className="w-7 h-7 sm:w-10 sm:h-10 bg-gradient-to-br from-[#f97316] to-[#ea580c] rounded-lg flex items-center justify-center">
+                <AlertCircle className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-white" />
               </div>
-              <h3 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
-                {t('forecast.avgKp')}
-              </h3>
+              <h3 className="text-[#94a3b8] text-[10px] sm:text-xs font-bold tracking-wide">{t('forecast.stormDaysCount')}</h3>
             </div>
-            <div className="text-[1.4rem] sm:text-6xl font-bold mb-1 sm:mb-2" style={getKpGradientStyle(avgKp)}>{avgKp.toFixed(1)}</div>
-            <div className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider">
-              {t('forecast.avgKp')}
-            </div>
-          </div>
-
-          <div className={`glass-surface rounded-2xl p-3 sm:p-8 ${stormDays > 0 ? 'glow-orange' : 'glow-green'} hover:scale-105 transition-transform`}>
-            <div className="flex items-center gap-2 mb-2 sm:mb-4">
-              <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-[#f97316] to-[#ea580c] rounded-xl flex items-center justify-center">
-                <AlertCircle className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
-              </div>
-              <h3 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
-                {t('forecast.stormPeriods')}
-              </h3>
-            </div>
-            <div className="text-[1.4rem] sm:text-6xl font-bold text-white mb-1 sm:mb-2">{stormDays}</div>
-            <div className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider">
-              {t('forecast.threehourPeriods')}
-            </div>
+            <div className="text-2xl sm:text-5xl font-bold text-white mb-0.5 sm:mb-1">{stormDaysCount}</div>
+            <div className="text-[#64748b] text-[10px] sm:text-xs">{t('forecast.sevenDayTitle').toLowerCase()}</div>
           </div>
         </div>
-        
-        <div className="glass-surface rounded-2xl p-3 sm:p-8 mb-4 sm:mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-            <h3 className="text-lg sm:text-lg sm:text-lg sm:text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
-              <Sun className="w-6 h-6 text-[#f97316]" />
+
+        {/* 3-day Kp Chart */}
+        <div className="glass-surface rounded-2xl p-3 sm:p-6 mb-4 sm:mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+            <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2.5">
+              <Sun className="w-5 h-5 text-[#f97316]" />
               {t('forecast.kpForecast')}
             </h3>
             <button
               onClick={() => setShowYesterday(v => !v)}
-              className={`px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 showYesterday
                   ? 'bg-white/20 text-white border border-white/30'
-                  : 'glass-surface text-[#64748b] hover:text-[#94a3b8]'
+                  : 'glass-surface text-[#94a3b8] hover:text-white'
               }`}
             >
               {t('dashboard.compareYesterday')}
@@ -342,212 +364,210 @@ const Forecast = () => {
               compareLabel={t('dashboard.yesterday')}
             />
           ) : (
-            <div className="h-64 flex items-center justify-center text-[#94a3b8]">
-              {t('dashboard.noData')}
-            </div>
+            <div className="h-64 flex items-center justify-center text-[#94a3b8]">{t('dashboard.noData')}</div>
           )}
         </div>
 
-        <div className="glass-surface rounded-2xl p-3 sm:p-8">
-          <h3 className="text-lg sm:text-lg sm:text-2xl font-bold text-white mb-3 sm:mb-6 uppercase tracking-wide">
-            {t('forecast.dailyForecast')}
-          </h3>
-          {Object.keys(groupedData).length > 0 ? (
-            <div className="space-y-3 sm:space-y-6">
-              {Object.entries(groupedData)
-                // NOAA's 3-day forecast cuts off mid-day on day 3 (often a single
-                // 00:00 UTC point on the trailing day). Hide partial days so the
-                // list isn't padded with a lonely card; the chart still includes
-                // every point.
-                .filter(([, items]) => items.length >= 4)
-                .map(([day, items]) => {
-              const maxDayKp = Math.max(...items.map(i => i.kp));
-              const status = getStormStatus(maxDayKp);
+        {/* 7-Day Forecast */}
+        <div className="glass-surface rounded-2xl p-3 sm:p-6 mb-4 sm:mb-6">
+          <div className="mb-4 sm:mb-5">
+            <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2.5">
+              <Calendar className="w-5 h-5 text-[#10b981]" />
+              {t('forecast.sevenDayTitle')}
+            </h3>
+            <p className="text-[#64748b] text-xs sm:text-sm mt-1">{t('forecast.sevenDaySubtitle')}</p>
+          </div>
+
+          <div className="space-y-2">
+            {sevenDays.map((day) => {
+              const key = day.date.toDateString();
+              const expanded = expandedDay === key;
+              const status = getStormStatus(day.maxKp);
+              const isPeak = bestDay && day.date.toDateString() === bestDay.date.toDateString() && day.maxKp >= 4;
+              const today = isToday(day.date);
+              const tomorrow = isTomorrow(day.date);
+              const dayLabel = today ? t('forecast.todayLabel') : tomorrow ? t('forecast.tomorrowLabel') : formatWeekday(day.date);
+              const bgColor = kpBarColor(day.maxKp);
 
               return (
-                <div key={day} className={`glass-surface rounded-xl p-3 sm:p-6 ${
-                  maxDayKp >= 5 ? 'glow-orange' : ''
-                }`}>
-                  <div className="flex items-center justify-between mb-4">
-                    <h4 className="text-xl font-bold text-white uppercase tracking-wide">{day}</h4>
-                    <div className="flex items-center gap-4">
-                      <div className="text-right">
-                        <div className="text-sm text-[#94a3b8] uppercase tracking-wider mb-1">Max</div>
-                        <div className="text-2xl font-bold" style={getKpGradientStyle(maxDayKp)}>{maxDayKp.toFixed(1)}</div>
-                      </div>
-                      <div className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider ${
-                        maxDayKp >= 7 ? 'bg-gradient-to-r from-[#ef4444] to-[#dc2626] text-white' :
-                        maxDayKp >= 5 ? 'bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white' :
-                        maxDayKp >= 4 ? 'bg-gradient-to-r from-[#eab308] to-[#ca8a04] text-white' :
-                        'bg-gradient-to-r from-[#10b981] to-[#059669] text-white'
-                      }`}>
-                        {t(status.statusKey)}
+                <div
+                  key={key}
+                  className={`rounded-xl border transition-all overflow-hidden ${
+                    isPeak
+                      ? 'border-[#f97316]/40 bg-[#f97316]/5'
+                      : day.maxKp >= 5
+                        ? 'border-orange-500/20 bg-orange-500/5'
+                        : 'border-white/8 bg-white/3'
+                  }`}
+                >
+                  {/* Day row */}
+                  <button
+                    onClick={() => day.hourly && setExpandedDay(expanded ? null : key)}
+                    disabled={!day.hourly}
+                    className={`w-full flex items-center gap-3 p-3 sm:p-4 ${day.hourly ? 'cursor-pointer hover:bg-white/5' : 'cursor-default'} transition-colors`}
+                  >
+                    {/* Day label */}
+                    <div className="w-20 sm:w-24 shrink-0 text-left">
+                      <div className={`text-sm sm:text-base font-bold ${today ? 'text-[#10b981]' : 'text-white'}`}>{dayLabel}</div>
+                      <div className="text-[10px] sm:text-xs text-[#64748b]">{formatMonthDay(day.date)}</div>
+                    </div>
+
+                    {/* Kp visualization bar */}
+                    <div className="flex-1 min-w-0">
+                      <div className="relative h-6 sm:h-7 bg-white/5 rounded-md overflow-hidden">
+                        <div
+                          className="absolute inset-y-0 left-0 transition-all duration-500"
+                          style={{ width: `${Math.min((day.maxKp / 9) * 100, 100)}%`, background: `linear-gradient(90deg, ${bgColor}aa, ${bgColor})` }}
+                        />
+                        {/* G1/G3 markers */}
+                        <div className="absolute inset-y-0 border-l border-yellow-500/40" style={{ left: `${(5/9)*100}%` }} />
+                        <div className="absolute inset-y-0 border-l border-red-500/40" style={{ left: `${(7/9)*100}%` }} />
                       </div>
                     </div>
-                  </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                    {items.map((item, idx) => {
-                      const isPeak = peakItem && item.fullTime === peakItem.fullTime;
-                      return (
-                        <div
-                          key={idx}
-                          className={`glass-surface rounded-lg p-3 hover:scale-105 transition-transform relative ${isPeak ? 'ring-2 ring-[#f97316]/60' : ''}`}
-                        >
-                          {isPeak && (
-                            <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#f97316] text-white whitespace-nowrap">
-                              ★ {t('forecast.bestViewing')}
-                            </span>
-                          )}
-                          <div className="text-xs text-[#94a3b8] mb-1 uppercase tracking-wider">
-                            {item.date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                    {/* Kp number */}
+                    <div className="w-12 sm:w-14 shrink-0 text-right">
+                      <div className="text-lg sm:text-2xl font-bold" style={getKpGradientStyle(day.maxKp)}>{day.maxKp.toFixed(1)}</div>
+                    </div>
+
+                    {/* Status badge */}
+                    <div className="hidden sm:flex w-28 shrink-0 justify-end">
+                      <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold ${status.bgColor} ${status.color}`}>
+                        {t(status.statusKey)}
+                      </span>
+                    </div>
+
+                    {/* Best/Expand */}
+                    <div className="w-7 sm:w-8 shrink-0 flex justify-end">
+                      {isPeak ? (
+                        <Star className="w-4 h-4 text-[#f97316] fill-[#f97316]" />
+                      ) : day.hourly ? (
+                        <ChevronDown className={`w-4 h-4 text-[#64748b] transition-transform ${expanded ? 'rotate-180' : ''}`} />
+                      ) : (
+                        <span className="text-[9px] text-[#475569] font-medium">{t('forecast.outlookSource')}</span>
+                      )}
+                    </div>
+                  </button>
+
+                  {/* Expanded 3-hour breakdown */}
+                  {expanded && day.hourly && (
+                    <div className="px-3 sm:px-4 pb-3 sm:pb-4">
+                      <div className="grid grid-cols-4 sm:grid-cols-8 gap-1.5 sm:gap-2 pt-3 border-t border-white/5">
+                        {day.hourly.map((item, idx) => (
+                          <div key={idx} className="bg-white/4 rounded-md p-2 text-center">
+                            <div className="text-[10px] text-[#94a3b8] mb-1">
+                              {item.date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}
+                            </div>
+                            <div className="text-sm sm:text-base font-bold" style={getKpGradientStyle(item.kp)}>
+                              {item.kp.toFixed(1)}
+                            </div>
                           </div>
-                          <div className="text-2xl font-bold" style={getKpGradientStyle(item.kp)}>
-                            {item.kp.toFixed(1)}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })}
-            </div>
-          ) : (
-            <div className="text-center text-[#94a3b8] py-8">
-              {t('dashboard.noData')}
-            </div>
-          )}
+          </div>
         </div>
 
-        {/* Space Weather Outlook — NOAA 3-day text forecast */}
-        {outlook && (
-          <div className="mt-4 sm:mt-8 glass-surface rounded-2xl p-3 sm:p-8">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
-              <h3 className="text-lg sm:text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
-                <Activity className="w-6 h-6 text-[#f97316]" />
-                {t('forecast.outlook.title')}
-              </h3>
-              <span className="text-xs text-[#475569]">{t('forecast.outlook.issued')}: {outlook.issuedAt}</span>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Geomagnetic */}
-              <div className="glass-surface rounded-xl p-4 border border-white/5">
-                <div className="flex items-center gap-2 mb-3">
-                  <Zap className="w-4 h-4 text-[#f97316]" />
-                  <span className="text-sm font-bold text-white uppercase tracking-wider">{t('forecast.outlook.geomag')}</span>
-                </div>
-                <p className="text-xs text-[#94a3b8] leading-relaxed">{outlook.geomag.rationale || t('forecast.outlook.noData')}</p>
+        {/* 27-Day Long-Range */}
+        {longRangeDays.length > 0 && (
+          <div className="glass-surface rounded-2xl p-3 sm:p-6 mb-4 sm:mb-6">
+            <button
+              onClick={() => setShowLongRange(v => !v)}
+              className="w-full flex items-center justify-between gap-3 group"
+            >
+              <div className="text-left">
+                <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2.5">
+                  <Sparkles className="w-5 h-5 text-[#a855f7]" />
+                  {t('forecast.longRangeTitle')}
+                </h3>
+                <p className="text-[#64748b] text-xs sm:text-sm mt-1">{t('forecast.longRangeSubtitle')}</p>
               </div>
+              <ChevronDown className={`w-5 h-5 text-[#94a3b8] transition-transform shrink-0 ${showLongRange ? 'rotate-180' : ''}`} />
+            </button>
 
-              {/* Solar Radiation */}
-              <div className="glass-surface rounded-xl p-4 border border-white/5">
-                <div className="flex items-center gap-2 mb-3">
-                  <Sun className="w-4 h-4 text-[#fbbf24]" />
-                  <span className="text-sm font-bold text-white uppercase tracking-wider">{t('forecast.outlook.solarRad')}</span>
-                </div>
-                {outlook.days.length > 0 && (
-                  <div className="flex gap-3 mb-3">
-                    {outlook.days.map((day, i) => (
-                      <div key={day} className="flex-1 text-center">
-                        <div className="text-xs text-[#64748b] mb-1 truncate">{day}</div>
-                        <div className={`text-lg font-bold ${outlook.solarRad.s1Pct[i] >= 30 ? 'text-[#fbbf24]' : 'text-[#94a3b8]'}`}>
-                          {outlook.solarRad.s1Pct[i]}%
+            {showLongRange && (
+              <div className="mt-5 space-y-1">
+                {longRangeDays.map((d) => {
+                  const today = isToday(d.date);
+                  return (
+                    <div key={d.date.toISOString()} className="flex items-center gap-3 py-2 px-2 sm:px-3 rounded-md hover:bg-white/3 transition-colors">
+                      <div className="w-16 sm:w-20 shrink-0">
+                        <div className={`text-xs sm:text-sm font-semibold ${today ? 'text-[#10b981]' : 'text-white'}`}>
+                          {formatWeekday(d.date)}
                         </div>
-                        <div className="text-[10px] text-[#475569]">S1+</div>
+                        <div className="text-[10px] text-[#64748b]">{formatMonthDay(d.date)}</div>
                       </div>
-                    ))}
-                  </div>
-                )}
-                <p className="text-xs text-[#94a3b8] leading-relaxed">{outlook.solarRad.rationale || t('forecast.outlook.noData')}</p>
-              </div>
-
-              {/* Radio Blackout */}
-              <div className="glass-surface rounded-xl p-4 border border-white/5">
-                <div className="flex items-center gap-2 mb-3">
-                  <Radio className="w-4 h-4 text-[#a855f7]" />
-                  <span className="text-sm font-bold text-white uppercase tracking-wider">{t('forecast.outlook.radio')}</span>
-                </div>
-                {outlook.days.length > 0 && (
-                  <div className="flex gap-3 mb-3">
-                    {outlook.days.map((day, i) => (
-                      <div key={day} className="flex-1 text-center">
-                        <div className="text-xs text-[#64748b] mb-1 truncate">{day}</div>
-                        <div className={`text-lg font-bold ${outlook.radioBlackout.r1r2Pct[i] >= 30 ? 'text-[#a855f7]' : 'text-[#94a3b8]'}`}>
-                          {outlook.radioBlackout.r1r2Pct[i]}%
-                        </div>
-                        <div className="text-[10px] text-[#475569]">R1-R2</div>
+                      <div className="flex-1 h-4 sm:h-5 bg-white/5 rounded overflow-hidden relative">
+                        <div
+                          className="absolute inset-y-0 left-0 transition-all"
+                          style={{ width: `${Math.min((d.largestKp / 9) * 100, 100)}%`, background: kpBarColor(d.largestKp) }}
+                        />
                       </div>
-                    ))}
-                  </div>
-                )}
-                <p className="text-xs text-[#94a3b8] leading-relaxed">{outlook.radioBlackout.rationale || t('forecast.outlook.noData')}</p>
+                      <div className="w-10 sm:w-12 text-right shrink-0">
+                        <span className="text-xs sm:text-sm font-bold" style={getKpGradientStyle(d.largestKp)}>
+                          {d.largestKp.toFixed(0)}
+                        </span>
+                      </div>
+                      <div className="hidden sm:block w-20 text-right shrink-0">
+                        <span className="text-[10px] text-[#64748b]">Ap {d.apIndex} · F10.7 {d.radioFlux}</span>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-            </div>
+            )}
           </div>
         )}
 
-        {/* Aurora Calendar — 3-night outlook */}
+        {/* Aurora Calendar */}
         {nights.length > 0 && (
-          <div className="mt-4 sm:mt-8 glass-surface rounded-2xl p-3 sm:p-8">
-            <div className="flex items-center justify-between gap-3 mb-6">
-              <div className="flex items-center gap-3">
-                <Sparkles className="w-6 h-6 text-[#10b981]" />
+          <div className="glass-surface rounded-2xl p-3 sm:p-6 mb-4 sm:mb-6">
+            <div className="flex items-center justify-between gap-3 mb-5">
+              <div className="flex items-center gap-2.5">
+                <Sparkles className="w-5 h-5 text-[#10b981]" />
                 <div>
-                  <h3 className="text-lg sm:text-2xl font-bold text-white uppercase tracking-wide">
-                    {t('aurora.calendar.title')}
-                  </h3>
-                  <p className="text-[#64748b] text-sm">{t('aurora.calendar.subtitle')}</p>
+                  <h3 className="text-lg sm:text-xl font-bold text-white">{t('aurora.calendar.title')}</h3>
+                  <p className="text-[#64748b] text-xs sm:text-sm">{t('aurora.calendar.subtitle')}</p>
                 </div>
               </div>
-              <Link
-                to="/calendar"
-                className="flex items-center gap-1 text-xs text-[#10b981] hover:text-white transition-colors whitespace-nowrap"
-              >
+              <Link to="/calendar" className="flex items-center gap-1 text-xs text-[#10b981] hover:text-white transition-colors whitespace-nowrap">
                 <ExternalLink className="w-3.5 h-3.5" />
                 {t('aurora.calendar.fullView') || 'Full view'}
               </Link>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {nights.map(night => {
-                const kp = night.maxKp;
                 const cloud = night.cloudCoverAvg;
                 const cloudLabel = cloud === null ? null : cloud < 30 ? t('aurora.calendar.clear') : cloud < 70 ? t('aurora.calendar.partlyCloudy') : t('aurora.calendar.overcast');
                 const nightLabel =
                   night.label === 'tonight' ? t('aurora.calendar.tonight') :
                   night.label === 'tomorrow' ? t('aurora.calendar.tomorrow') :
                   t('aurora.calendar.nightAfter');
-
                 return (
-                  <div key={night.label} className={`relative rounded-2xl p-5 border transition-all ${
-                    night.isBest
-                      ? 'border-[#10b981]/50 bg-[#10b981]/5'
-                      : 'border-white/10 bg-white/5'
+                  <div key={night.label} className={`relative rounded-xl p-4 border transition-all ${
+                    night.isBest ? 'border-[#10b981]/50 bg-[#10b981]/5' : 'border-white/10 bg-white/4'
                   }`}>
                     {night.isBest && (
-                      <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] font-bold px-3 py-0.5 rounded-full bg-[#10b981] text-white whitespace-nowrap">
+                      <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#10b981] text-white whitespace-nowrap">
                         ★ {t('aurora.calendar.bestNight')}
                       </span>
                     )}
-                    <div className="text-sm font-semibold text-[#94a3b8] uppercase tracking-wider mb-4">
-                      {nightLabel}
+                    <div className="text-xs font-semibold text-[#94a3b8] mb-3">{nightLabel}</div>
+                    <div className="mb-2">
+                      <div className="text-[10px] text-[#64748b] mb-0.5">{t('aurora.calendar.maxKp')}</div>
+                      <div className="text-3xl font-bold" style={getKpGradientStyle(night.maxKp)}>{night.maxKp.toFixed(1)}</div>
                     </div>
-
-                    <div className="mb-3">
-                      <div className="text-xs text-[#64748b] uppercase tracking-wider mb-1">{t('aurora.calendar.maxKp')}</div>
-                      <div className="text-4xl font-bold" style={getKpGradientStyle(kp)}>
-                        {kp.toFixed(1)}
-                      </div>
-                    </div>
-
                     {cloud !== null ? (
                       <div className="flex items-center gap-2 mt-3 pt-3 border-t border-white/5">
                         <Cloud className="w-4 h-4 text-[#64748b]" />
-                        <span className="text-sm text-[#94a3b8]">{cloud}% — {cloudLabel}</span>
+                        <span className="text-xs text-[#94a3b8]">{cloud}% — {cloudLabel}</span>
                       </div>
                     ) : (
-                      <p className="text-xs text-[#475569] mt-3 pt-3 border-t border-white/5">
+                      <p className="text-[10px] text-[#475569] mt-3 pt-3 border-t border-white/5">
                         {t('aurora.calendar.noLocationShort') || 'No cloud data —'}{' '}
                         <Link to="/settings" className="text-[#10b981] hover:underline">{t('nav.settings') || 'set location'}</Link>
                       </p>
@@ -559,17 +579,74 @@ const Forecast = () => {
           </div>
         )}
 
-        <div className="mt-4 sm:mt-8 glass-surface rounded-2xl p-3 sm:p-8">
-          <h3 className="text-lg sm:text-lg sm:text-2xl font-bold text-white mb-2 sm:mb-4 uppercase tracking-wide">
-            {t('forecast.aboutTitle')}
-          </h3>
-          <div className="text-[#94a3b8] space-y-3 leading-relaxed">
-            <p>
-              {t('forecast.aboutText1')}
-            </p>
-            <p>
-              {t('forecast.aboutText2')}
-            </p>
+        {/* NOAA Space Weather Outlook */}
+        {outlook && (
+          <div className="glass-surface rounded-2xl p-3 sm:p-6 mb-4 sm:mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
+              <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2.5">
+                <Activity className="w-5 h-5 text-[#f97316]" />
+                {t('forecast.outlook.title')}
+              </h3>
+              <span className="text-xs text-[#475569]">{t('forecast.outlook.issued')}: {outlook.issuedAt}</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="bg-white/3 border border-white/5 rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <Zap className="w-4 h-4 text-[#f97316]" />
+                  <span className="text-sm font-bold text-white">{t('forecast.outlook.geomag')}</span>
+                </div>
+                <p className="text-xs text-[#94a3b8] leading-relaxed">{outlook.geomag.rationale || t('forecast.outlook.noData')}</p>
+              </div>
+              <div className="bg-white/3 border border-white/5 rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <Sun className="w-4 h-4 text-[#fbbf24]" />
+                  <span className="text-sm font-bold text-white">{t('forecast.outlook.solarRad')}</span>
+                </div>
+                {outlook.days.length > 0 && (
+                  <div className="flex gap-2 mb-3">
+                    {outlook.days.map((day, i) => (
+                      <div key={day} className="flex-1 text-center">
+                        <div className="text-[10px] text-[#64748b] mb-1 truncate">{day}</div>
+                        <div className={`text-base font-bold ${outlook.solarRad.s1Pct[i] >= 30 ? 'text-[#fbbf24]' : 'text-[#94a3b8]'}`}>
+                          {outlook.solarRad.s1Pct[i]}%
+                        </div>
+                        <div className="text-[9px] text-[#475569]">S1+</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <p className="text-xs text-[#94a3b8] leading-relaxed">{outlook.solarRad.rationale || t('forecast.outlook.noData')}</p>
+              </div>
+              <div className="bg-white/3 border border-white/5 rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <Radio className="w-4 h-4 text-[#a855f7]" />
+                  <span className="text-sm font-bold text-white">{t('forecast.outlook.radio')}</span>
+                </div>
+                {outlook.days.length > 0 && (
+                  <div className="flex gap-2 mb-3">
+                    {outlook.days.map((day, i) => (
+                      <div key={day} className="flex-1 text-center">
+                        <div className="text-[10px] text-[#64748b] mb-1 truncate">{day}</div>
+                        <div className={`text-base font-bold ${outlook.radioBlackout.r1r2Pct[i] >= 30 ? 'text-[#a855f7]' : 'text-[#94a3b8]'}`}>
+                          {outlook.radioBlackout.r1r2Pct[i]}%
+                        </div>
+                        <div className="text-[9px] text-[#475569]">R1-R2</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <p className="text-xs text-[#94a3b8] leading-relaxed">{outlook.radioBlackout.rationale || t('forecast.outlook.noData')}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* About */}
+        <div className="glass-surface rounded-2xl p-3 sm:p-6">
+          <h3 className="text-lg sm:text-xl font-bold text-white mb-3">{t('forecast.aboutTitle')}</h3>
+          <div className="text-[#94a3b8] space-y-2 leading-relaxed text-sm">
+            <p>{t('forecast.aboutText1')}</p>
+            <p>{t('forecast.aboutText2')}</p>
           </div>
         </div>
       </div>

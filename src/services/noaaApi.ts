@@ -300,6 +300,50 @@ export const getWeatherData = (lat: number, lon: number): Promise<WeatherData | 
     }
   });
 
+export interface DayOutlook {
+  date: Date;
+  radioFlux: number;
+  apIndex: number;
+  largestKp: number;
+}
+
+const MONTH_MAP: Record<string, number> = {
+  Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+  Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11,
+};
+
+export const get27DayOutlook = (): Promise<DayOutlook[]> =>
+  cached('outlook-27d', TTL_FORECAST, async () => {
+    try {
+      const res = await fetch('https://services.swpc.noaa.gov/text/27-day-outlook.txt', { signal: AbortSignal.timeout(10_000) });
+      if (!res.ok) return [];
+      const text = await res.text();
+      const rows: DayOutlook[] = [];
+      for (const line of text.split('\n')) {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith(':') || trimmed.startsWith('#')) continue;
+        // Format: "2026 May 18     105          21          5"
+        const m = trimmed.match(/^(\d{4})\s+(\w+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)$/);
+        if (!m) continue;
+        const year = parseInt(m[1], 10);
+        const month = MONTH_MAP[m[2]];
+        if (month === undefined) continue;
+        const day = parseInt(m[3], 10);
+        const date = new Date(year, month, day);
+        rows.push({
+          date,
+          radioFlux: parseInt(m[4], 10),
+          apIndex: parseInt(m[5], 10),
+          largestKp: parseInt(m[6], 10),
+        });
+      }
+      return rows;
+    } catch (error) {
+      logError('Error fetching 27-day outlook:', error);
+      return [];
+    }
+  });
+
 export interface SpaceWeatherOutlook {
   issuedAt: string;
   days: string[]; // e.g. ["May 14", "May 15", "May 16"]
