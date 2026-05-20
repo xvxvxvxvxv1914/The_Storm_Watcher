@@ -62,18 +62,21 @@ const Navigation = () => {
     { to: '/forecast', label: t('nav.forecast') },
     { to: '/aurora', label: t('nav.aurora') },
     { to: '/alerts', label: t('nav.alerts') },
-    { to: '/mood', label: t('nav.mood') },
+    { to: '/calendar', label: t('nav.calendar') || 'Aurora Calendar' },
   ];
 
   const moreLinks = [
+    // Aurora extras
+    { to: '/livestream',       label: t('nav.livestream') || 'Livestream' },
+    { to: '/gallery',          label: t('nav.gallery') || 'Gallery' },
+    { to: '/hunt',             label: t('nav.hunt') || 'Aurora Hunt' },
+    { to: '/mood',             label: t('nav.mood') },
+    // Tools
     { to: '/uv',               label: t('nav.uv') },
     { to: '/sun',              label: t('nav.sun') },
     { to: '/sky',              label: t('nav.sky') },
     { to: '/iss',              label: t('nav.iss') },
-    { to: '/gallery',          label: t('nav.gallery') || 'Gallery' },
-    { to: '/hunt',             label: t('nav.hunt') || 'Aurora Hunt' },
-    { to: '/livestream',       label: t('nav.livestream') || 'Livestream' },
-    { to: '/calendar',         label: t('nav.calendar') || 'Aurora Calendar' },
+    // Info
     { to: '/magnetic-effects', label: t('nav.magneticEffects') },
     { to: '/faq',              label: t('nav.faq') },
   ];

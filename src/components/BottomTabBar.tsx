@@ -61,16 +61,20 @@ const BottomTabBar = () => {
   };
 
   const moreLinks = [
+    // Priority (in desktop top menu, no room on mobile bottom bar)
     { to: '/alerts',           icon: AlertTriangle, label: t('nav.alerts'),                          badge: 'bg-red-500' },
+    { to: '/calendar',         icon: CalendarDays,  label: t('nav.calendar') || 'Aurora Calendar',   badge: 'bg-emerald-600' },
+    // Aurora extras
+    { to: '/livestream',       icon: Video,         label: t('nav.livestream') || 'Livestream',      badge: 'bg-pink-600' },
     { to: '/gallery',          icon: Camera,        label: t('nav.gallery') || 'Gallery',            badge: 'bg-violet-500' },
     { to: '/hunt',             icon: Trophy,        label: t('nav.hunt') || 'Aurora Hunt',           badge: 'bg-amber-600' },
-    { to: '/livestream',       icon: Video,         label: t('nav.livestream') || 'Livestream',      badge: 'bg-pink-600' },
-    { to: '/calendar',         icon: CalendarDays,  label: t('nav.calendar') || 'Aurora Calendar',   badge: 'bg-emerald-600' },
     { to: '/mood',             icon: SmilePlus,     label: t('nav.mood'),                            badge: 'bg-purple-500' },
+    // Tools
     { to: '/uv',               icon: Sun,           label: t('nav.uv') || 'UV Index',                badge: 'bg-amber-500' },
     { to: '/sun',              icon: Sun,           label: t('nav.sun') || 'Sun Times',              badge: 'bg-orange-500' },
     { to: '/sky',              icon: Eye,           label: t('nav.sky') || 'Sky Tonight',            badge: 'bg-sky-500' },
     { to: '/iss',              icon: Satellite,     label: t('nav.iss') || 'ISS Tracker',            badge: 'bg-indigo-500' },
+    // Info
     { to: '/magnetic-effects', icon: Magnet,        label: t('nav.magneticEffects') || 'Magnetic',   badge: 'bg-teal-600' },
     { to: '/faq',              icon: HelpCircle,    label: t('nav.faq') || 'FAQ',                    badge: 'bg-slate-500' },
   ];
