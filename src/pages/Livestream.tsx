@@ -1,7 +1,8 @@
-import { useState } from 'react';
 import PageMeta from '../components/PageMeta';
-import { Video, ExternalLink, MonitorPlay, Globe } from 'lucide-react';
+import { Video, ExternalLink, Globe, Youtube, CalendarClock } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+
+type CameraKind = 'youtube' | 'webcam';
 
 interface Camera {
   id: string;
@@ -11,35 +12,76 @@ interface Camera {
   country: string;
   flag: string;
   url: string;
-  embedUrl?: string;
-  live?: boolean;
+  kind: CameraKind;
   description: string;
   tags: string[];
+  seasonal?: string;
 }
 
 const CAMERAS: Camera[] = [
+  // ─── YouTube live channels (open in YouTube, no broken iframes) ───
+  {
+    id: 'auroramax_yt',
+    name: 'AuroraMAX',
+    org: 'Canadian Space Agency',
+    location: 'Yellowknife, NT',
+    country: 'Canada',
+    flag: '🇨🇦',
+    url: 'https://www.youtube.com/@AuroraMAXlive',
+    kind: 'youtube',
+    description: 'Official HD aurora cam from the Canadian Space Agency — broadcasts live during aurora season.',
+    tags: ['HD', 'Official'],
+    seasonal: 'Aug–May',
+  },
+  {
+    id: 'explore_yt',
+    name: 'Explore.org Aurora',
+    org: 'Explore.org',
+    location: 'Churchill / Arviat',
+    country: 'Canada',
+    flag: '🇨🇦',
+    url: 'https://www.youtube.com/@exploreorg/streams',
+    kind: 'youtube',
+    description: 'Multi-camera Arctic feeds from explore.org — Hudson Bay, Manitoba. Polar bears by day, aurora by night.',
+    tags: ['Multi-cam', '24/7'],
+  },
+  {
+    id: 'lol_yt',
+    name: 'Lights Over Lapland',
+    org: 'Lights Over Lapland',
+    location: 'Abisko',
+    country: 'Sweden',
+    flag: '🇸🇪',
+    url: 'https://www.youtube.com/@lightsoverlapland',
+    kind: 'youtube',
+    description: 'Live broadcasts from Abisko National Park, one of the best aurora-viewing spots on Earth.',
+    tags: ['HD', 'Sweden'],
+    seasonal: 'Sep–Mar',
+  },
+
+  // ─── External webcams (open in a new tab) ───
   {
     id: 'explore_arviat',
-    name: 'Northern Lights Live',
+    name: 'Northern Lights Cam — Arviat',
     org: 'Explore.org',
     location: 'Arviat, Nunavut',
     country: 'Canada',
     flag: '🇨🇦',
     url: 'https://explore.org/livecams/arctic-and-northern-lights/northern-lights-camera-arviat',
-    embedUrl: 'https://explore.org/livecams/arctic-and-northern-lights/northern-lights-camera-arviat',
-    live: true,
+    kind: 'webcam',
     description: 'Live camera from the Canadian Arctic, optimized for aurora viewing.',
     tags: ['24/7', 'Sky Camera'],
   },
   {
     id: 'tromso_norway',
-    name: 'Tromsø Sky Cam',
+    name: 'Tromsø Webcams',
     org: 'Visit Tromsø',
     location: 'Tromsø',
     country: 'Norway',
     flag: '🇳🇴',
     url: 'https://www.visittromso.no/en/resources/webcams',
-    description: 'Several webcams from Tromsø, the aurora capital of Norway.',
+    kind: 'webcam',
+    description: 'Network of webcams from Tromsø, the aurora capital of Norway.',
     tags: ['Multiple Cams', 'City + Sky'],
   },
   {
@@ -50,75 +92,99 @@ const CAMERAS: Camera[] = [
     country: 'Iceland',
     flag: '🇮🇸',
     url: 'https://www.vedur.is/vedur/myndir/',
-    description: 'Network of official weather cameras across Iceland including northern regions.',
+    kind: 'webcam',
+    description: 'Official network of weather cameras across Iceland including northern aurora regions.',
     tags: ['Weather Cams', 'National Grid'],
   },
   {
     id: 'svo_finland',
-    name: 'Sodankylä Geophysical',
+    name: 'Sodankylä All-Sky',
     org: 'SGO / Univ. of Oulu',
     location: 'Sodankylä, Lapland',
     country: 'Finland',
     flag: '🇫🇮',
     url: 'https://www.sgo.fi/Data/RealTime/realtime.php',
-    description: 'Real-time all-sky camera from the Sodankylä Geophysical Observatory.',
+    kind: 'webcam',
+    description: 'Real-time all-sky camera from the Sodankylä Geophysical Observatory. Refreshing JPG image.',
     tags: ['All-Sky', 'Scientific'],
-  },
-  {
-    id: 'auroramax',
-    name: 'AuroraMAX',
-    org: 'Canadian Space Agency',
-    location: 'Yellowknife, NT',
-    country: 'Canada',
-    flag: '🇨🇦',
-    url: 'https://www.asc-csa.gc.ca/eng/astronomy/auroramax/',
-    description: 'High-definition aurora camera operated by the Canadian Space Agency.',
-    tags: ['HD', 'All-Sky', 'Official'],
-  },
-  {
-    id: 'kevo_finland',
-    name: 'Kevo Subarctic Research',
-    org: 'Univ. of Turku',
-    location: 'Utsjoki, Lapland',
-    country: 'Finland',
-    flag: '🇫🇮',
-    url: 'https://www.utu.fi/en/university/faculties/faculty-of-science/departments/department-of-biology/units/kevo-subarctic-research-institute',
-    description: 'Research station above the Arctic Circle with sky observation equipment.',
-    tags: ['Research', 'Arctic'],
-  },
-  {
-    id: 'alta_norway',
-    name: 'Alta Museum Cam',
-    org: 'Alta Museum',
-    location: 'Alta, Finnmark',
-    country: 'Norway',
-    flag: '🇳🇴',
-    url: 'https://www.alta.no/en/experience/northern-lights-in-alta',
-    description: 'Camera from Alta, one of the best aurora-viewing spots in northern Norway.',
-    tags: ['Tourism', 'Aurora Zone'],
-  },
-  {
-    id: 'swpc_noaa',
-    name: 'NOAA POES Aurora',
-    org: 'NOAA SWPC',
-    location: 'Real-time Satellite',
-    country: 'USA',
-    flag: '🇺🇸',
-    url: 'https://www.swpc.noaa.gov/products/aurora-3-day-forecast',
-    description: 'NOAA real-time aurora oval model — the gold standard for aurora forecasting.',
-    tags: ['Scientific', 'Real-time'],
   },
 ];
 
+const KindBadge = ({ kind }: { kind: CameraKind }) => {
+  if (kind === 'youtube') {
+    return (
+      <span className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400">
+        <Youtube className="w-3 h-3" />
+        YouTube
+      </span>
+    );
+  }
+  return (
+    <span className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-300">
+      <Globe className="w-3 h-3" />
+      Webcam
+    </span>
+  );
+};
+
+const CameraCard = ({ cam, t }: { cam: Camera; t: (k: string) => string }) => {
+  const isYouTube = cam.kind === 'youtube';
+  return (
+    <div className="glass-surface rounded-2xl p-5 border border-white/10 hover:border-white/20 transition-all flex flex-col">
+      <div className="flex items-start justify-between mb-3 gap-2">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl">{cam.flag}</span>
+          <KindBadge kind={cam.kind} />
+        </div>
+        <div className="flex gap-1 flex-wrap justify-end">
+          {cam.tags.map(tag => (
+            <span key={tag} className="text-[10px] px-2 py-0.5 rounded-full bg-white/5 text-[#64748b] border border-white/5">{tag}</span>
+          ))}
+        </div>
+      </div>
+
+      <p className="text-white font-semibold text-sm mb-0.5 leading-tight">{cam.name}</p>
+      <p className="text-[#64748b] text-xs mb-1">{cam.org}</p>
+      <p className="text-[#94a3b8] text-xs mb-2 flex items-center gap-1">
+        <Globe className="w-3 h-3 flex-shrink-0" />
+        {cam.location}, {cam.country}
+      </p>
+      <p className="text-[#475569] text-xs leading-relaxed flex-1">{cam.description}</p>
+
+      {cam.seasonal && (
+        <div className="mt-3 flex items-center gap-1.5 text-[10px] text-amber-300/80">
+          <CalendarClock className="w-3 h-3" />
+          {t('livestream.seasonal')}: {cam.seasonal}
+        </div>
+      )}
+
+      <a
+        href={cam.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`mt-4 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+          isYouTube
+            ? 'bg-gradient-to-r from-red-600 to-red-500 text-white hover:shadow-lg hover:shadow-red-500/30'
+            : 'bg-white/5 border border-white/10 text-[#94a3b8] hover:text-white hover:bg-white/10'
+        }`}
+      >
+        {isYouTube ? <Youtube className="w-3.5 h-3.5" /> : <ExternalLink className="w-3.5 h-3.5" />}
+        {isYouTube ? t('livestream.watchYouTube') : t('livestream.openSite')}
+      </a>
+    </div>
+  );
+};
+
 export default function Livestream() {
   const { t } = useLanguage();
-  const [featured, setFeatured] = useState<Camera | null>(null);
+  const youtubeCams = CAMERAS.filter(c => c.kind === 'youtube');
+  const webcams = CAMERAS.filter(c => c.kind === 'webcam');
 
   return (
     <div className="min-h-screen px-4 py-20 max-w-6xl mx-auto">
       <PageMeta
         title="Aurora Livestream — The Storm Watcher"
-        description="Live aurora cameras from Norway, Iceland, Finland and Canada. Watch the northern lights in real time."
+        description="Live aurora cameras from Norway, Iceland, Finland, Sweden and Canada. Watch the northern lights in real time."
         path="/livestream"
       />
 
@@ -133,126 +199,39 @@ export default function Livestream() {
       </div>
 
       <p className="text-[#64748b] text-sm mb-8">
-        {t('livestream.disclaimer') || 'Streams are provided by third-party organizations. Availability may vary. Click any camera to open it in a new tab.'}
+        {t('livestream.disclaimerHonest')}
       </p>
 
-      {/* Featured player */}
-      {featured && (
-        <div className="glass-surface rounded-2xl border border-white/10 overflow-hidden mb-8">
-          <div className="flex items-center justify-between px-5 py-3 border-b border-white/10">
-            <div className="flex items-center gap-3">
-              <span className="text-xl">{featured.flag}</span>
-              <div>
-                <p className="text-white font-semibold text-sm">{featured.name}</p>
-                <p className="text-[#64748b] text-xs">{featured.org} · {featured.location}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <a
-                href={featured.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-[#94a3b8] text-xs hover:text-white transition-colors px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5"
-              >
-                <ExternalLink className="w-3.5 h-3.5" />
-                {t('livestream.openExternal') || 'Open site'}
-              </a>
-              <button
-                onClick={() => setFeatured(null)}
-                className="text-[#64748b] hover:text-white transition-colors px-2 py-1.5 text-xs"
-              >
-                ✕
-              </button>
-            </div>
+      {/* YouTube Live section */}
+      {youtubeCams.length > 0 && (
+        <section className="mb-10">
+          <div className="flex items-center gap-2 mb-4">
+            <Youtube className="w-5 h-5 text-red-400" />
+            <h2 className="text-lg font-bold text-white">{t('livestream.sectionYouTube')}</h2>
           </div>
-          <div className="bg-black aspect-video flex items-center justify-center">
-            {featured.embedUrl ? (
-              <iframe
-                src={featured.embedUrl}
-                className="w-full h-full"
-                allowFullScreen
-                allow="autoplay; fullscreen"
-                title={featured.name}
-              />
-            ) : (
-              <div className="text-center px-8">
-                <MonitorPlay className="w-16 h-16 text-[#334155] mx-auto mb-4" />
-                <p className="text-[#64748b] text-sm mb-4">{t('livestream.noEmbed') || 'This source does not support direct embedding.'}</p>
-                <a
-                  href={featured.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#ec4899] to-[#be185d] text-white font-semibold text-sm hover:opacity-90 transition-opacity"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  {t('livestream.openSite') || 'Open in new tab'}
-                </a>
-              </div>
-            )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {youtubeCams.map(cam => <CameraCard key={cam.id} cam={cam} t={t} />)}
           </div>
-        </div>
+        </section>
       )}
 
-      {/* Camera grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {CAMERAS.map(cam => (
-          <div
-            key={cam.id}
-            className="glass-surface rounded-2xl p-5 border border-white/10 hover:border-white/20 transition-all group flex flex-col"
-          >
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <span className="text-2xl">{cam.flag}</span>
-                {cam.live ? (
-                  <span className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400">
-                    <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse inline-block" />
-                    LIVE
-                  </span>
-                ) : (
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-[#475569]">External</span>
-                )}
-              </div>
-              <div className="flex gap-1 flex-wrap justify-end">
-                {cam.tags.map(tag => (
-                  <span key={tag} className="text-[10px] px-2 py-0.5 rounded-full bg-white/5 text-[#64748b] border border-white/5">{tag}</span>
-                ))}
-              </div>
-            </div>
-
-            <p className="text-white font-semibold text-sm mb-0.5 leading-tight">{cam.name}</p>
-            <p className="text-[#64748b] text-xs mb-1">{cam.org}</p>
-            <p className="text-[#94a3b8] text-xs mb-1 flex items-center gap-1">
-              <Globe className="w-3 h-3 flex-shrink-0" />
-              {cam.location}, {cam.country}
-            </p>
-            <p className="text-[#475569] text-xs leading-relaxed flex-1">{cam.description}</p>
-
-            <div className="mt-4 flex gap-2">
-              <button
-                onClick={() => setFeatured(cam)}
-                className="flex-1 py-2 rounded-xl bg-[#ec4899]/10 border border-[#ec4899]/20 text-[#f472b6] text-xs font-semibold hover:bg-[#ec4899]/20 transition-colors"
-              >
-                <MonitorPlay className="w-3.5 h-3.5 inline mr-1" />
-                {t('livestream.preview') || 'Preview'}
-              </button>
-              <a
-                href={cam.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 py-2 rounded-xl border border-white/10 text-[#94a3b8] text-xs font-semibold hover:text-white hover:bg-white/5 transition-colors text-center"
-              >
-                <ExternalLink className="w-3.5 h-3.5 inline mr-1" />
-                {t('livestream.open') || 'Open'}
-              </a>
-            </div>
+      {/* Webcams section */}
+      {webcams.length > 0 && (
+        <section className="mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <Globe className="w-5 h-5 text-blue-300" />
+            <h2 className="text-lg font-bold text-white">{t('livestream.sectionWebcams')}</h2>
           </div>
-        ))}
-      </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {webcams.map(cam => <CameraCard key={cam.id} cam={cam} t={t} />)}
+          </div>
+        </section>
+      )}
 
-      <div className="mt-8 glass-surface rounded-2xl p-5 border border-white/10 text-center">
+      <div className="glass-surface rounded-2xl p-5 border border-white/10 text-center">
         <p className="text-[#64748b] text-sm">
-          {t('livestream.tipTitle') || 'Tip:'}{' '}
-          {t('livestream.tip') || 'Best aurora visibility occurs between 10 PM and 2 AM local time on clear, dark nights. Check the Dashboard for the current Kp index before heading out.'}
+          <span className="font-semibold text-[#94a3b8]">{t('livestream.tipTitle') || 'Tip:'}</span>{' '}
+          {t('livestream.tip')}
         </p>
       </div>
     </div>
