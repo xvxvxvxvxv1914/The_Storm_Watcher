@@ -82,7 +82,41 @@ const Navigation = () => {
   const isMoreActive = moreLinks.some(link => isActive(link.to));
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass-surface" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+    <nav className="fixed top-0 left-0 right-0 z-50" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+
+      {/* Mobile: floating pill matching bottom tab bar */}
+      <div className="lg:hidden flex items-center justify-between mx-3 mt-2 px-4 py-2.5 rounded-full" style={{
+        background: theme === 'light' ? 'rgba(242,242,247,0.82)' : 'rgba(18,18,30,0.82)',
+        backdropFilter: 'blur(10px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(10px) saturate(180%)',
+        border: theme === 'light' ? '1px solid rgba(0,0,0,0.10)' : '1px solid rgba(255,255,255,0.10)',
+        boxShadow: theme === 'light'
+          ? '0 4px 20px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06)'
+          : '0 4px 20px rgba(0,0,0,0.45), 0 1px 4px rgba(0,0,0,0.3)',
+      }}>
+        <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2.5">
+          <div className="relative">
+            <Sun className="w-7 h-7 text-[#f97316]" />
+            <div className="absolute inset-0 rounded-full bg-[#f97316] opacity-20 blur-lg" />
+          </div>
+          <span className="text-sm font-bold gradient-solar">The Storm Watcher</span>
+        </Link>
+        <div className="flex items-center gap-2">
+          {user ? (
+            <PushNotificationBell />
+          ) : (
+            <Link
+              to="/auth"
+              className="px-3 py-1 rounded-full bg-gradient-to-r from-[#f97316] to-[#fbbf24] text-white font-semibold text-xs"
+            >
+              {t('auth.signIn')}
+            </Link>
+          )}
+        </div>
+      </div>
+
+      {/* Desktop: full-width glass bar */}
+      <div className="hidden lg:block glass-surface">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 md:h-16">
 
@@ -264,19 +298,8 @@ const Navigation = () => {
             )}
           </div>
 
-          {/* Mobile right side — only sign-in button */}
-          <div className="lg:hidden flex items-center">
-            {!user && (
-              <Link
-                to="/auth"
-                className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#f97316] to-[#fbbf24] text-white font-medium text-xs"
-              >
-                {t('auth.signIn')}
-              </Link>
-            )}
-          </div>
-
         </div>
+      </div>
       </div>
 
       {isStorm && (
