@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://thestormwatcher.com/sitemap.xml
+Sitemap: https://www.thestormwatcher.com/sitemap.xml
