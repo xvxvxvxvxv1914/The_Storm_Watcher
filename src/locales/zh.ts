@@ -752,6 +752,14 @@ const zh: Record<string, string> = {
   'install.button': '安装',
   'aurora.calendar.exportICal': '添加到日历',
   'mood.exportCSV': '导出心情历史 CSV',
+  'dashboard.stormWatch': '风暴观察',
+  'dashboard.stormWatchPeriod': '过去72小时',
+  'dashboard.peakKp': '峰值Kp',
+  'gallery.filter.all': '全部时间',
+  'gallery.filter.week': '过去一周',
+  'gallery.filter.month': '过去一个月',
+  'gallery.filter.year': '过去一年',
+  'gallery.noInRange': '此范围内没有照片',
 };
 
 export default zh;

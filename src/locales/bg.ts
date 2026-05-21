@@ -775,6 +775,14 @@ const bg: Record<string, string> = {
   'install.button': 'Инсталирай',
   'aurora.calendar.exportICal': 'Добави в календара',
   'mood.exportCSV': 'Експорт на история на настроенията (CSV)',
+  'dashboard.stormWatch': 'Наблюдение на бури',
+  'dashboard.stormWatchPeriod': 'Последни 72ч',
+  'dashboard.peakKp': 'Пик Kp',
+  'gallery.filter.all': 'Всичко',
+  'gallery.filter.week': 'Изминала седмица',
+  'gallery.filter.month': 'Изминал месец',
+  'gallery.filter.year': 'Изминала година',
+  'gallery.noInRange': 'Няма снимки в този период',
 };
 
 export default bg;

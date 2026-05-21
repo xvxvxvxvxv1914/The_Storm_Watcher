@@ -755,6 +755,14 @@ const de: Record<string, string> = {
   'install.button': 'Installieren',
   'aurora.calendar.exportICal': 'Zum Kalender hinzufügen',
   'mood.exportCSV': 'Stimmungsverlauf als CSV exportieren',
+  'dashboard.stormWatch': 'Sturm-Beobachtung',
+  'dashboard.stormWatchPeriod': 'Letzte 72h',
+  'dashboard.peakKp': 'Spitzen-Kp',
+  'gallery.filter.all': 'Gesamt',
+  'gallery.filter.week': 'Letzte Woche',
+  'gallery.filter.month': 'Letzter Monat',
+  'gallery.filter.year': 'Letztes Jahr',
+  'gallery.noInRange': 'Keine Fotos in diesem Zeitraum',
 };
 
 export default de;

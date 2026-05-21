@@ -782,6 +782,14 @@ const ko: Record<string, string> = {
   'install.button': '설치',
   'aurora.calendar.exportICal': '캘린더에 추가',
   'mood.exportCSV': '기분 기록 CSV 내보내기',
+  'dashboard.stormWatch': '폭풍 감시',
+  'dashboard.stormWatchPeriod': '지난 72시간',
+  'dashboard.peakKp': '최고 Kp',
+  'gallery.filter.all': '전체 기간',
+  'gallery.filter.week': '지난 주',
+  'gallery.filter.month': '지난 달',
+  'gallery.filter.year': '지난 해',
+  'gallery.noInRange': '이 범위에 사진이 없습니다',
 };
 
 export default ko;

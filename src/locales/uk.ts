@@ -744,6 +744,14 @@ const uk: Record<string, string> = {
   'install.button': 'Встановити',
   'aurora.calendar.exportICal': 'Додати до календаря',
   'mood.exportCSV': 'Експорт історії настрою CSV',
+  'dashboard.stormWatch': 'Спостереження бур',
+  'dashboard.stormWatchPeriod': 'Останні 72г',
+  'dashboard.peakKp': 'Пік Kp',
+  'gallery.filter.all': 'Весь час',
+  'gallery.filter.week': 'Минулий тиждень',
+  'gallery.filter.month': 'Минулий місяць',
+  'gallery.filter.year': 'Минулий рік',
+  'gallery.noInRange': 'Немає фото в цьому діапазоні',
 };
 
 export default uk;

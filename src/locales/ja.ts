@@ -752,6 +752,14 @@ const ja: Record<string, string> = {
   'install.button': 'インストール',
   'aurora.calendar.exportICal': 'カレンダーに追加',
   'mood.exportCSV': '気分履歴を CSV でエクスポート',
+  'dashboard.stormWatch': '嵐ウォッチ',
+  'dashboard.stormWatchPeriod': '過去72時間',
+  'dashboard.peakKp': 'ピークKp',
+  'gallery.filter.all': '全期間',
+  'gallery.filter.week': '先週',
+  'gallery.filter.month': '先月',
+  'gallery.filter.year': '昨年',
+  'gallery.noInRange': 'この範囲に写真はありません',
 };
 
 export default ja;

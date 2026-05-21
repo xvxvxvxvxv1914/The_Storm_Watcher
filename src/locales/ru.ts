@@ -752,6 +752,14 @@ const ru: Record<string, string> = {
   'install.button': 'Установить',
   'aurora.calendar.exportICal': 'Добавить в календарь',
   'mood.exportCSV': 'Экспорт истории настроения CSV',
+  'dashboard.stormWatch': 'Наблюдение за бурями',
+  'dashboard.stormWatchPeriod': 'Последние 72ч',
+  'dashboard.peakKp': 'Пик Kp',
+  'gallery.filter.all': 'Всё время',
+  'gallery.filter.week': 'Прошлая неделя',
+  'gallery.filter.month': 'Прошлый месяц',
+  'gallery.filter.year': 'Прошлый год',
+  'gallery.noInRange': 'Нет фото в этом диапазоне',
 };
 
 export default ru;

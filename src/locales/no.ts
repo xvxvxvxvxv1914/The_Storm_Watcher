@@ -744,6 +744,14 @@ const no: Record<string, string> = {
   'install.button': 'Installer',
   'aurora.calendar.exportICal': 'Legg til i kalender',
   'mood.exportCSV': 'Eksporter humørhistorikk CSV',
+  'dashboard.stormWatch': 'Storm-overvåkning',
+  'dashboard.stormWatchPeriod': 'Siste 72t',
+  'dashboard.peakKp': 'Topp Kp',
+  'gallery.filter.all': 'All tid',
+  'gallery.filter.week': 'Forrige uke',
+  'gallery.filter.month': 'Forrige måned',
+  'gallery.filter.year': 'Forrige år',
+  'gallery.noInRange': 'Ingen bilder i dette området',
 };
 
 export default no;

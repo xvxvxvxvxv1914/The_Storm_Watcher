@@ -744,6 +744,14 @@ const sv: Record<string, string> = {
   'install.button': 'Installera',
   'aurora.calendar.exportICal': 'Lägg till i kalendern',
   'mood.exportCSV': 'Exportera humörhistorik CSV',
+  'dashboard.stormWatch': 'Stormbevakning',
+  'dashboard.stormWatchPeriod': 'Senaste 72h',
+  'dashboard.peakKp': 'Topp Kp',
+  'gallery.filter.all': 'All tid',
+  'gallery.filter.week': 'Senaste veckan',
+  'gallery.filter.month': 'Senaste månaden',
+  'gallery.filter.year': 'Senaste året',
+  'gallery.noInRange': 'Inga foton i detta intervall',
 };
 
 export default sv;

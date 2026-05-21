@@ -744,6 +744,14 @@ const is_: Record<string, string> = {
   'install.button': 'Setja upp',
   'aurora.calendar.exportICal': 'Bæta við dagatal',
   'mood.exportCSV': 'Flytja út skapsögu CSV',
+  'dashboard.stormWatch': 'Stormvakt',
+  'dashboard.stormWatchPeriod': 'Síðustu 72k',
+  'dashboard.peakKp': 'Hámark Kp',
+  'gallery.filter.all': 'Allur tími',
+  'gallery.filter.week': 'Síðustu viku',
+  'gallery.filter.month': 'Síðustu mánuði',
+  'gallery.filter.year': 'Síðustu ári',
+  'gallery.noInRange': 'Engar myndir á þessu bili',
 };
 
 export default is_;

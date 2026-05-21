@@ -744,6 +744,14 @@ const fi: Record<string, string> = {
   'install.button': 'Asenna',
   'aurora.calendar.exportICal': 'Lisää kalenteriin',
   'mood.exportCSV': 'Vie mielialahistoria CSV',
+  'dashboard.stormWatch': 'Myrskytarkkailu',
+  'dashboard.stormWatchPeriod': 'Viimeiset 72t',
+  'dashboard.peakKp': 'Huippu Kp',
+  'gallery.filter.all': 'Koko aika',
+  'gallery.filter.week': 'Viime viikko',
+  'gallery.filter.month': 'Viime kuukausi',
+  'gallery.filter.year': 'Viime vuosi',
+  'gallery.noInRange': 'Ei kuvia tällä aikavälillä',
 };
 
 export default fi;

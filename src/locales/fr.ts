@@ -752,6 +752,14 @@ const fr: Record<string, string> = {
   'install.button': 'Installer',
   'aurora.calendar.exportICal': 'Ajouter au calendrier',
   'mood.exportCSV': 'Exporter l historique humeur en CSV',
+  'dashboard.stormWatch': 'Veille de tempête',
+  'dashboard.stormWatchPeriod': '72 dernières h',
+  'dashboard.peakKp': 'Kp maximal',
+  'gallery.filter.all': 'Tout',
+  'gallery.filter.week': 'Semaine dernière',
+  'gallery.filter.month': 'Mois dernier',
+  'gallery.filter.year': 'Année dernière',
+  'gallery.noInRange': 'Aucune photo dans cette plage',
 };
 
 export default fr;
