@@ -281,9 +281,6 @@ const Navigation = () => {
                     <Link to="/settings" onClick={() => setIsUserMenuOpen(false)} className={`w-full text-left px-4 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${theme === 'dark' ? 'text-[#94a3b8] hover:text-white hover:bg-white/5' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'}`}>
                       <SlidersHorizontal className="w-4 h-4" />{t('nav.settings')}
                     </Link>
-                    <Link to="/settings/language" onClick={() => setIsUserMenuOpen(false)} className={`w-full text-left px-4 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${theme === 'dark' ? 'text-[#94a3b8] hover:text-white hover:bg-white/5' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'}`}>
-                      <Globe className="w-4 h-4" />{t('nav.language') || 'Language'}
-                    </Link>
                     <button onClick={handleLogout} className={`w-full text-left px-4 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${theme === 'dark' ? 'text-[#94a3b8] hover:text-white hover:bg-white/5' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'}`}>
                       <LogOut className="w-4 h-4" />{t('auth.logout')}
                     </button>
