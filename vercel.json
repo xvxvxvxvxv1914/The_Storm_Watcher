@@ -43,6 +43,14 @@
       ]
     }
   ],
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "thestormwatcher.com" }],
+      "destination": "https://www.thestormwatcher.com/:path*",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/donki/:path*",

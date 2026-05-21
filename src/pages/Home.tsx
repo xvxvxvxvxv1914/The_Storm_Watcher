@@ -177,7 +177,7 @@ const Home = () => {
             ? `⚠️ Solar Storm Alert: Kp ${kpValue.toFixed(1)} | Real-Time Space Weather`
             : `Live Kp: ${kpValue?.toFixed(1) ?? '0.0'} | Real-Time Aurora & Space Weather`}
         </title>
-        <link rel="canonical" href="https://thestormwatcher.com/" />
+        <link rel="canonical" href="https://www.thestormwatcher.com/" />
         <meta 
           name="description" 
           content={kpValue !== null 

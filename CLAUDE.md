@@ -91,3 +91,16 @@ Manual chunks in `vite.config.ts` keep the initial bundle small:
 ## Ideas / Future Plans
 
 _(Add ideas and future feature plans here as they come up)_
+
+## TODO / Pending Work
+
+### Mobile App Payments (преди пускане в App Store / Play Store)
+Stripe плащанията работят само за уеб. За мобилното приложение `VITE_PAYMENTS_ENABLED=false` и **няма имплементиран native IAP код**. Задължително преди пускане в магазините:
+
+- **iOS** — имплементирай Apple StoreKit 2 (in-app purchases); дефинирай SKU-та в App Store Connect
+- **Android** — имплементирай Google Play Billing Library; дефинирай продукти в Play Console
+- Добави Capacitor IAP плъгин (`@capacitor-community/in-app-purchase` или `@capacitor-community/stripe`)
+- Добави platform detection (web → Stripe, iOS/Android → native IAP)
+- Добави deep-link handling за връщане в приложението след плащане (`stormwatcher://pricing?payment=success`)
+- Supabase Edge Function за верификация на покупки от App Store / Play Store receipt-и и sync обратно към `profiles.plan`
+- Без тези промени Apple/Google ще отхвърлят приложението при ревю (политика: дигитален контент само през техните системи)
