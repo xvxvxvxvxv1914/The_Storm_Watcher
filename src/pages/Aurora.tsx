@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useCallback, lazy, Suspense, useMemo, Component, type ReactNode } from 'react';
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
 import PageMeta from '../components/PageMeta';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { MapPin, Eye, Sparkles, AlertTriangle, Check, Zap, Share2 } from 'lucide-react';
 import { getKpIndex, getAuroraModel, getMagField, getSolarWind, getWeatherData, getKpGradientStyle, type AuroraOvationPoint, type WeatherData } from '../services/noaaApi';
 import { calcAuroraVisibility } from '../utils/auroraVisibility';
@@ -223,6 +224,7 @@ const Aurora = () => {
           "description": "Live aurora borealis forecast with 3D OVATION model and real-time Kp index"
         })}</script>
       </PageMeta>
+      <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Aurora', path: '/aurora' }]} />
       <div className="star-field">
         {stars.map((s) => (
           <div

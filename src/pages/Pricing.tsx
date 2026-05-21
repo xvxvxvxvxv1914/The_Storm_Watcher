@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import PageMeta from '../components/PageMeta';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { useNavigate } from 'react-router-dom';
 import { Check, Zap, Star, CreditCard } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import { supabase } from '../lib/supabase';
 
 type Billing = 'monthly' | 'yearly';
@@ -18,25 +20,26 @@ const PRICES = {
   },
 };
 
-const PRO_FEATURES = [
-  'Detailed geomagnetic forecasts',
-  'Aurora visibility predictions',
-  'Push notifications & alerts',
-  'Ad-free experience',
-  'All basic features',
+const PRO_FEATURE_KEYS = [
+  'pricing.pro.feat.forecasts',
+  'pricing.pro.feat.visibility',
+  'pricing.pro.feat.alerts',
+  'pricing.pro.feat.adfree',
+  'pricing.pro.feat.basics',
 ];
 
-const PREMIUM_FEATURES = [
-  'Everything in Pro',
-  'Historical data & charts',
-  'Priority alerts',
-  'ISS tracking (advanced)',
-  'Export data',
-  'Early access to new features',
+const PREMIUM_FEATURE_KEYS = [
+  'pricing.premium.feat.everything',
+  'pricing.premium.feat.history',
+  'pricing.premium.feat.priority',
+  'pricing.premium.feat.iss',
+  'pricing.premium.feat.export',
+  'pricing.premium.feat.earlyAccess',
 ];
 
 export default function Pricing() {
   const { user, profile, session } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [billing, setBilling] = useState<Billing>('monthly');
   const [loading, setLoading] = useState<'pro' | 'premium' | 'portal' | null>(null);
@@ -106,8 +109,8 @@ export default function Pricing() {
       style={{ background: 'radial-gradient(ellipse at top, #0d1b2a 0%, #0a0a1a 60%)' }}
     >
       <PageMeta
-        title="Pricing — The Storm Watcher"
-        description="Choose your plan. Free space weather monitoring or Pro/Premium with advanced alerts and aurora forecasting."
+        title={`${t('pricing.title') || 'Pricing'} — The Storm Watcher`}
+        description={t('pricing.metaDescription') || 'Choose your plan. Free space weather monitoring or Pro/Premium with advanced alerts and aurora forecasting.'}
         path="/pricing"
       >
         <script type="application/ld+json">{JSON.stringify({
@@ -118,16 +121,17 @@ export default function Pricing() {
           "offers": { "@type": "Offer", "priceCurrency": "EUR", "availability": "https://schema.org/InStock" }
         })}</script>
       </PageMeta>
+      <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Pricing', path: '/pricing' }]} />
       <div className="max-w-4xl w-full">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-white mb-3">Choose your plan</h1>
-          <p className="text-[#64748b] text-lg">Unlock the full power of Storm Watcher</p>
+          <h1 className="text-4xl font-bold text-white mb-3">{t('pricing.heroTitle') || 'Choose your plan'}</h1>
+          <p className="text-[#64748b] text-lg">{t('pricing.heroSubtitle') || 'Unlock the full power of Storm Watcher'}</p>
         </div>
 
         {/* Billing toggle */}
         <div className="flex items-center justify-center gap-4 mb-10">
-          <span className={`text-sm font-medium ${billing === 'monthly' ? 'text-white' : 'text-[#64748b]'}`}>Monthly</span>
+          <span className={`text-sm font-medium ${billing === 'monthly' ? 'text-white' : 'text-[#64748b]'}`}>{t('pricing.monthly') || 'Monthly'}</span>
           <button
             onClick={() => setBilling(b => b === 'monthly' ? 'yearly' : 'monthly')}
             className="relative w-12 h-6 rounded-full transition-colors"
@@ -139,9 +143,9 @@ export default function Pricing() {
             />
           </button>
           <div className="flex items-center gap-2">
-            <span className={`text-sm font-medium ${billing === 'yearly' ? 'text-white' : 'text-[#64748b]'}`}>Yearly</span>
+            <span className={`text-sm font-medium ${billing === 'yearly' ? 'text-white' : 'text-[#64748b]'}`}>{t('pricing.yearly') || 'Yearly'}</span>
             <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: '#15803d22', color: '#4ade80' }}>
-              Save 25%
+              {t('pricing.save25') || 'Save 25%'}
             </span>
           </div>
         </div>
@@ -156,7 +160,7 @@ export default function Pricing() {
             {currentPlan === 'pro' && (
               <span className="absolute top-4 right-4 text-xs font-bold px-2 py-1 rounded-full"
                 style={{ background: '#f9731622', color: '#f97316' }}>
-                Current plan
+                {t('pricing.currentPlan') || 'Current plan'}
               </span>
             )}
             <div className="flex items-center gap-3 mb-6">
@@ -166,23 +170,23 @@ export default function Pricing() {
               </div>
               <div>
                 <div className="text-white font-bold text-lg">Pro</div>
-                <div className="text-[#64748b] text-sm">For enthusiasts</div>
+                <div className="text-[#64748b] text-sm">{t('pricing.pro.tagline') || 'For enthusiasts'}</div>
               </div>
             </div>
 
             <div className="mb-6">
               <span className="text-3xl font-bold text-white">{PRICES.pro[billing].amount}</span>
-              <span className="text-[#64748b] text-sm ml-1">/ {billing === 'monthly' ? 'month' : 'year'}</span>
+              <span className="text-[#64748b] text-sm ml-1">/ {billing === 'monthly' ? (t('pricing.perMonth') || 'month') : (t('pricing.perYear') || 'year')}</span>
               {billing === 'yearly' && (
-                <div className="text-[#64748b] text-xs mt-1">€3.00 / month billed annually</div>
+                <div className="text-[#64748b] text-xs mt-1">€3.00 / {t('pricing.perMonthBilledYearly') || 'month billed annually'}</div>
               )}
             </div>
 
             <ul className="space-y-3 mb-8">
-              {PRO_FEATURES.map(f => (
-                <li key={f} className="flex items-center gap-3 text-sm text-[#94a3b8]">
+              {PRO_FEATURE_KEYS.map(key => (
+                <li key={key} className="flex items-center gap-3 text-sm text-[#94a3b8]">
                   <Check className="w-4 h-4 flex-shrink-0" style={{ color: '#f97316' }} />
-                  {f}
+                  {t(key)}
                 </li>
               ))}
             </ul>
@@ -195,7 +199,7 @@ export default function Pricing() {
                 style={{ background: 'linear-gradient(to right, #f97316, #fbbf24)' }}
               >
                 <CreditCard className="w-4 h-4" />
-                {loading === 'portal' ? 'Loading…' : 'Manage subscription'}
+                {loading === 'portal' ? (t('pricing.loading') || 'Loading…') : (t('pricing.manageSubscription') || 'Manage subscription')}
               </button>
             ) : (
               <button
@@ -204,7 +208,7 @@ export default function Pricing() {
                 className="w-full py-3 rounded-xl font-bold text-white transition-all hover:scale-105 hover:shadow-lg disabled:opacity-50"
                 style={{ background: 'linear-gradient(to right, #f97316, #fbbf24)' }}
               >
-                {loading === 'pro' ? 'Loading…' : 'Get Pro'}
+                {loading === 'pro' ? (t('pricing.loading') || 'Loading…') : (t('pricing.getPro') || 'Get Pro')}
               </button>
             )}
           </div>
@@ -217,14 +221,14 @@ export default function Pricing() {
             <div className="absolute -top-3 left-1/2 -translate-x-1/2">
               <span className="text-xs font-bold px-3 py-1 rounded-full text-white"
                 style={{ background: 'linear-gradient(to right, #7c3aed, #6d28d9)' }}>
-                Most popular
+                {t('pricing.mostPopular') || 'Most popular'}
               </span>
             </div>
 
             {currentPlan === 'premium' && (
               <span className="absolute top-4 right-4 text-xs font-bold px-2 py-1 rounded-full"
                 style={{ background: '#7c3aed22', color: '#a78bfa' }}>
-                Current plan
+                {t('pricing.currentPlan') || 'Current plan'}
               </span>
             )}
 
@@ -235,23 +239,23 @@ export default function Pricing() {
               </div>
               <div>
                 <div className="text-white font-bold text-lg">Premium</div>
-                <div className="text-[#64748b] text-sm">For power users</div>
+                <div className="text-[#64748b] text-sm">{t('pricing.premium.tagline') || 'For power users'}</div>
               </div>
             </div>
 
             <div className="mb-6">
               <span className="text-3xl font-bold text-white">{PRICES.premium[billing].amount}</span>
-              <span className="text-[#64748b] text-sm ml-1">/ {billing === 'monthly' ? 'month' : 'year'}</span>
+              <span className="text-[#64748b] text-sm ml-1">/ {billing === 'monthly' ? (t('pricing.perMonth') || 'month') : (t('pricing.perYear') || 'year')}</span>
               {billing === 'yearly' && (
-                <div className="text-[#64748b] text-xs mt-1">€6.00 / month billed annually</div>
+                <div className="text-[#64748b] text-xs mt-1">€6.00 / {t('pricing.perMonthBilledYearly') || 'month billed annually'}</div>
               )}
             </div>
 
             <ul className="space-y-3 mb-8">
-              {PREMIUM_FEATURES.map(f => (
-                <li key={f} className="flex items-center gap-3 text-sm text-[#94a3b8]">
+              {PREMIUM_FEATURE_KEYS.map(key => (
+                <li key={key} className="flex items-center gap-3 text-sm text-[#94a3b8]">
                   <Check className="w-4 h-4 flex-shrink-0" style={{ color: '#7c3aed' }} />
-                  {f}
+                  {t(key)}
                 </li>
               ))}
             </ul>
@@ -264,7 +268,7 @@ export default function Pricing() {
                 style={{ background: 'linear-gradient(to right, #7c3aed, #6d28d9)' }}
               >
                 <CreditCard className="w-4 h-4" />
-                {loading === 'portal' ? 'Loading…' : 'Manage subscription'}
+                {loading === 'portal' ? (t('pricing.loading') || 'Loading…') : (t('pricing.manageSubscription') || 'Manage subscription')}
               </button>
             ) : (
               <button
@@ -273,7 +277,7 @@ export default function Pricing() {
                 className="w-full py-3 rounded-xl font-bold text-white transition-all hover:scale-105 hover:shadow-lg disabled:opacity-50"
                 style={{ background: 'linear-gradient(to right, #7c3aed, #6d28d9)' }}
               >
-                {loading === 'premium' ? 'Loading…' : 'Get Premium'}
+                {loading === 'premium' ? (t('pricing.loading') || 'Loading…') : (t('pricing.getPremium') || 'Get Premium')}
               </button>
             )}
           </div>
@@ -284,7 +288,7 @@ export default function Pricing() {
         )}
 
         <p className="text-center text-[#475569] text-xs mt-6">
-          Cancel anytime · Secure payments via Stripe · VAT may apply
+          {t('pricing.footer') || 'Cancel anytime · Secure payments via Stripe · VAT may apply'}
         </p>
       </div>
     </div>
