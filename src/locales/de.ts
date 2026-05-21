@@ -750,6 +750,11 @@ const de: Record<string, string> = {
   'forecast.avgAp': 'Ø Ap',
   'forecast.avgFlux': 'Ø F10.7',
   'forecast.peakKp27': 'Spitzen-Kp · 27T',
+  'install.title': 'Storm Watcher installieren',
+  'install.subtitle': 'Erhalte sofortige Polarlicht-Warnungen',
+  'install.button': 'Installieren',
+  'aurora.calendar.exportICal': 'Zum Kalender hinzufügen',
+  'mood.exportCSV': 'Stimmungsverlauf als CSV exportieren',
 };
 
 export default de;

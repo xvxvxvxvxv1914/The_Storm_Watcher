@@ -747,6 +747,11 @@ const es: Record<string, string> = {
   'forecast.avgAp': 'Ap medio',
   'forecast.avgFlux': 'F10.7 medio',
   'forecast.peakKp27': 'Kp máx · 27d',
+  'install.title': 'Instalar Storm Watcher',
+  'install.subtitle': 'Recibe alertas instantáneas de auroras',
+  'install.button': 'Instalar',
+  'aurora.calendar.exportICal': 'Añadir al calendario',
+  'mood.exportCSV': 'Exportar historial de ánimo CSV',
 };
 
 export default es;

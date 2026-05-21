@@ -739,6 +739,11 @@ const sv: Record<string, string> = {
   'forecast.avgAp': 'Genomsn. Ap',
   'forecast.avgFlux': 'Genomsn. F10.7',
   'forecast.peakKp27': 'Topp Kp · 27d',
+  'install.title': 'Installera Storm Watcher',
+  'install.subtitle': 'Få omedelbara norrskens-varningar',
+  'install.button': 'Installera',
+  'aurora.calendar.exportICal': 'Lägg till i kalendern',
+  'mood.exportCSV': 'Exportera humörhistorik CSV',
 };
 
 export default sv;

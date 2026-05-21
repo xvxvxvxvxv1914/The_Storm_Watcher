@@ -747,6 +747,11 @@ const zh: Record<string, string> = {
   'forecast.avgAp': '平均 Ap',
   'forecast.avgFlux': '平均 F10.7',
   'forecast.peakKp27': '峰值 Kp · 27天',
+  'install.title': '安装 Storm Watcher',
+  'install.subtitle': '获取即时极光警报',
+  'install.button': '安装',
+  'aurora.calendar.exportICal': '添加到日历',
+  'mood.exportCSV': '导出心情历史 CSV',
 };
 
 export default zh;

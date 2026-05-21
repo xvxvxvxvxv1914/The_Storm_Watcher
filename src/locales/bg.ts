@@ -770,6 +770,11 @@ const bg: Record<string, string> = {
   'forecast.avgAp': 'Средно Ap',
   'forecast.avgFlux': 'Средно F10.7',
   'forecast.peakKp27': 'Пик Kp · 27 дни',
+  'install.title': 'Инсталирай Storm Watcher',
+  'install.subtitle': 'Получавай мигновени аврора-предупреждения',
+  'install.button': 'Инсталирай',
+  'aurora.calendar.exportICal': 'Добави в календара',
+  'mood.exportCSV': 'Експорт на история на настроенията (CSV)',
 };
 
 export default bg;

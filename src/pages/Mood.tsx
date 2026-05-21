@@ -4,7 +4,7 @@ import { logError } from '../utils/logger';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import {
-  CheckCircle, AlertCircle, BookOpen, Flame, Sparkles,
+  CheckCircle, AlertCircle, BookOpen, Flame, Sparkles, Download,
   Brain, RefreshCcw, Waves, Moon, BatteryLow, Crosshair, HeartPulse,
 } from 'lucide-react';
 import SvgDonut from '../components/charts/SvgDonut';
@@ -413,6 +413,31 @@ const Mood = () => {
 
   const getMoodInfo = (moodType: string) => MOODS.find(m => m.type === moodType);
 
+  const exportPersonalCSV = () => {
+    const rows = [
+      ['date', 'mood', 'mood_score', 'kp_index'],
+      ...personalEntries
+        .slice()
+        .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+        .map(e => [
+          new Date(e.created_at).toISOString(),
+          e.mood_type,
+          String(MOOD_SCORE[e.mood_type] ?? ''),
+          e.kp_index != null ? String(e.kp_index) : '',
+        ]),
+    ];
+    const csv = rows.map(r => r.map(cell => /[,"\n]/.test(cell) ? `"${cell.replace(/"/g, '""')}"` : cell).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `mood-history-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
   const getBetterThanPercent = (moodType: string): number => {
     const myScore = MOOD_SCORE[moodType] ?? 3;
     const total = stats.reduce((acc, s) => acc + s.count, 0);
@@ -515,7 +540,19 @@ const Mood = () => {
                   <div className={`text-[10px] uppercase tracking-wider ${textMuted}`}>{t('mood.streakLabel') || 'Current streak'}</div>
                 </div>
               </div>
-              <div className={`text-[10px] uppercase tracking-wider ${textMuted}`}>{t('mood.last7Days') || 'Last 7 days'}</div>
+              <div className="flex items-center gap-2">
+                <span className={`text-[10px] uppercase tracking-wider ${textMuted}`}>{t('mood.last7Days') || 'Last 7 days'}</span>
+                {personalEntries.length >= 2 && (
+                  <button
+                    onClick={exportPersonalCSV}
+                    aria-label={t('mood.exportCSV') || 'Export mood history as CSV'}
+                    className={`flex items-center gap-1 text-[10px] font-semibold px-2 py-1 rounded-md ${isDark ? 'bg-white/8 text-white/70 hover:bg-white/12' : 'bg-black/4 text-slate-600 hover:bg-black/8'}`}
+                  >
+                    <Download className="w-3 h-3" />
+                    CSV
+                  </button>
+                )}
+              </div>
             </div>
             <div className={isDark ? 'text-white/70' : 'text-slate-700'}>
               <PersonalStreakChart entries={personalEntries} />

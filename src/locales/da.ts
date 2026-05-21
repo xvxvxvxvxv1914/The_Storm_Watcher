@@ -739,6 +739,11 @@ const da: Record<string, string> = {
   'forecast.avgAp': 'Gns. Ap',
   'forecast.avgFlux': 'Gns. F10.7',
   'forecast.peakKp27': 'Top Kp · 27d',
+  'install.title': 'Installer Storm Watcher',
+  'install.subtitle': 'Få øjeblikkelige nordlys-advarsler',
+  'install.button': 'Installer',
+  'aurora.calendar.exportICal': 'Tilføj til kalender',
+  'mood.exportCSV': 'Eksportér humørhistorik CSV',
 };
 
 export default da;

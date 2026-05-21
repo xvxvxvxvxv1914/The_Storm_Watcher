@@ -739,6 +739,11 @@ const is_: Record<string, string> = {
   'forecast.avgAp': 'Meðal Ap',
   'forecast.avgFlux': 'Meðal F10.7',
   'forecast.peakKp27': 'Hámark Kp · 27d',
+  'install.title': 'Setja upp Storm Watcher',
+  'install.subtitle': 'Fáðu samstundis norðurljósaviðvaranir',
+  'install.button': 'Setja upp',
+  'aurora.calendar.exportICal': 'Bæta við dagatal',
+  'mood.exportCSV': 'Flytja út skapsögu CSV',
 };
 
 export default is_;

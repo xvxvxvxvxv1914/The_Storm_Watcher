@@ -739,6 +739,11 @@ const fi: Record<string, string> = {
   'forecast.avgAp': 'Keskim. Ap',
   'forecast.avgFlux': 'Keskim. F10.7',
   'forecast.peakKp27': 'Huippu Kp · 27pv',
+  'install.title': 'Asenna Storm Watcher',
+  'install.subtitle': 'Saa välittömät revontuli-ilmoitukset',
+  'install.button': 'Asenna',
+  'aurora.calendar.exportICal': 'Lisää kalenteriin',
+  'mood.exportCSV': 'Vie mielialahistoria CSV',
 };
 
 export default fi;

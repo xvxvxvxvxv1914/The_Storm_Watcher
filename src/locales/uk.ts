@@ -739,6 +739,11 @@ const uk: Record<string, string> = {
   'forecast.avgAp': 'Сер. Ap',
   'forecast.avgFlux': 'Сер. F10.7',
   'forecast.peakKp27': 'Пік Kp · 27д',
+  'install.title': 'Встановити Storm Watcher',
+  'install.subtitle': 'Отримуйте миттєві сповіщення',
+  'install.button': 'Встановити',
+  'aurora.calendar.exportICal': 'Додати до календаря',
+  'mood.exportCSV': 'Експорт історії настрою CSV',
 };
 
 export default uk;

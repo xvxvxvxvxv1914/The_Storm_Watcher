@@ -747,6 +747,11 @@ const ja: Record<string, string> = {
   'forecast.avgAp': '平均 Ap',
   'forecast.avgFlux': '平均 F10.7',
   'forecast.peakKp27': 'ピーク Kp · 27日',
+  'install.title': 'Storm Watcher をインストール',
+  'install.subtitle': '即時のオーロラアラートを取得',
+  'install.button': 'インストール',
+  'aurora.calendar.exportICal': 'カレンダーに追加',
+  'mood.exportCSV': '気分履歴を CSV でエクスポート',
 };
 
 export default ja;

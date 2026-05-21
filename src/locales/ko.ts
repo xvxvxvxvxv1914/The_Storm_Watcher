@@ -777,6 +777,11 @@ const ko: Record<string, string> = {
   'forecast.avgAp': '평균 Ap',
   'forecast.avgFlux': '평균 F10.7',
   'forecast.peakKp27': '최고 Kp · 27일',
+  'install.title': 'Storm Watcher 설치',
+  'install.subtitle': '즉시 오로라 알림 받기',
+  'install.button': '설치',
+  'aurora.calendar.exportICal': '캘린더에 추가',
+  'mood.exportCSV': '기분 기록 CSV 내보내기',
 };
 
 export default ko;

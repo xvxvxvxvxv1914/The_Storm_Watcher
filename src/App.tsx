@@ -19,6 +19,7 @@ import HreflangTags from './components/HreflangTags';
 import OnboardingTour from './components/OnboardingTour';
 import ScrollToTop from './components/ScrollToTop';
 import CookieConsent from './components/CookieConsent';
+import InstallPrompt from './components/InstallPrompt';
 import SplashAnimation from './components/SplashAnimation';
 import LocationPrompt, { useLocationPromptVisible } from './components/LocationPrompt';
 
@@ -98,6 +99,7 @@ function AppRoutes() {
       <ScrollToTop />
       <BottomTabBar />
       <CookieConsent />
+      <InstallPrompt />
       <OnboardingTour />
       <SplashAnimation />
       {shouldShowLocationPrompt && !locationPromptDone && splashDone && (
