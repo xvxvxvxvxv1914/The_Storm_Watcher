@@ -36,7 +36,7 @@ const STORM_EMOJIS: Record<number, string> = {
 function buildTweet(kp: number, level: number): string {
   const label = STORM_LABELS[level];
   const emoji = STORM_EMOJIS[level];
-  const appUrl = process.env.APP_URL ?? 'stormwatcher.app';
+  const appUrl = process.env.APP_URL ?? 'www.thestormwatcher.com';
 
   const auroraLine = kp >= 7
     ? '\n🌌 Aurora may be visible at latitudes above 50°N tonight.'
@@ -52,7 +52,11 @@ Track live → ${appUrl}
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.query.secret !== process.env.CRON_SECRET) {
+  // Vercel Cron sets Authorization: Bearer {CRON_SECRET} automatically.
+  // Manual test calls can still use ?secret= query param.
+  const bearerToken = req.headers.authorization?.replace('Bearer ', '');
+  const querySecret = req.query.secret as string | undefined;
+  if (bearerToken !== process.env.CRON_SECRET && querySecret !== process.env.CRON_SECRET) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 

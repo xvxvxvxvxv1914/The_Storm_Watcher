@@ -51,6 +51,12 @@
       "permanent": true
     }
   ],
+  "crons": [
+    {
+      "path": "/api/cron/storm-alert",
+      "schedule": "*/15 * * * *"
+    }
+  ],
   "rewrites": [
     {
       "source": "/donki/:path*",
