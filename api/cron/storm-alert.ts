@@ -48,6 +48,17 @@ Track live → ${appUrl}
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // Temporary diagnostics — remove after debugging
+  if (req.query.debug === 'envcheck') {
+    return res.status(200).json({
+      CRON_SECRET_set: !!process.env.CRON_SECRET,
+      CRON_SECRET_length: process.env.CRON_SECRET?.length ?? 0,
+      SUPABASE_URL_set: !!process.env.VITE_SUPABASE_URL,
+      SUPABASE_KEY_set: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+      X_API_KEY_set: !!process.env.X_API_KEY,
+    });
+  }
+
   // Vercel Cron sets Authorization: Bearer {CRON_SECRET} automatically.
   // Manual test calls can still use ?secret= query param.
   const bearerToken = req.headers.authorization?.replace('Bearer ', '');
