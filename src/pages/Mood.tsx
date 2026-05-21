@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { logError } from '../utils/logger';
 import PageMeta from '../components/PageMeta';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import {
   CheckCircle, AlertCircle, BookOpen, Flame, Sparkles,
   Brain, RefreshCcw, Waves, Moon, BatteryLow, Crosshair, HeartPulse,
@@ -466,6 +467,7 @@ const Mood = () => {
         description="Track how geomagnetic storms affect your mood and wellbeing. See community mood patterns correlated with Kp index."
         path="/mood"
       />
+      <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Mood', path: '/mood' }]} />
 
       {/* Background ambient gradient */}
       <div className="absolute inset-0 pointer-events-none -z-10"

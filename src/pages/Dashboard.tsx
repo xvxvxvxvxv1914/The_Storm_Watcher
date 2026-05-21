@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { logError } from '../utils/logger';
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
 import PageMeta from '../components/PageMeta';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
 import SvgBarChart from '../components/charts/SvgBarChart';
 import { Activity, Wind, Compass, Sun, Radio, MapPin } from 'lucide-react';
@@ -297,6 +298,7 @@ const Dashboard = () => {
         description="Live space weather dashboard: Kp index, solar wind, magnetic field and X-ray flux charts updated every minute."
         path="/dashboard"
       />
+      <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Dashboard', path: '/dashboard' }]} />
       <StarField />
 
       <div className="solar-orb" style={{ top: '100px', right: '-300px' }} />

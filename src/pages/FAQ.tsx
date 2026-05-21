@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import PageMeta from '../components/PageMeta';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { ChevronDown, Zap, Sun, Eye, Sparkles, Wind, Moon, MapPin } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { faqContent } from '../content/faqContent';
@@ -76,6 +77,7 @@ const FAQ = () => {
       >
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </PageMeta>
+      <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'FAQ', path: '/faq' }]} />
 
       <div className="text-center mb-6 md:mb-12">
         <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4 uppercase tracking-wide">

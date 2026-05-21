@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
 import PageMeta from '../components/PageMeta';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
 import {
   Calendar, TrendingUp, AlertCircle, Sun, Sparkles, Cloud, Radio, Zap, Activity,
@@ -277,6 +278,7 @@ const Forecast = () => {
         description="7-day Kp forecast + 27-day long-range outlook from NOAA. Plan your aurora viewing."
         path="/forecast"
       />
+      <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Forecast', path: '/forecast' }]} />
       <StarField />
       <div className="magnetic-orb" style={{ top: '200px', left: '-200px' }} />
 

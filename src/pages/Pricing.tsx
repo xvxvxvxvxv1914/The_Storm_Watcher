@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import PageMeta from '../components/PageMeta';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { useNavigate } from 'react-router-dom';
 import { Check, Zap, Star, CreditCard } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -120,6 +121,7 @@ export default function Pricing() {
           "offers": { "@type": "Offer", "priceCurrency": "EUR", "availability": "https://schema.org/InStock" }
         })}</script>
       </PageMeta>
+      <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Pricing', path: '/pricing' }]} />
       <div className="max-w-4xl w-full">
         {/* Header */}
         <div className="text-center mb-12">
