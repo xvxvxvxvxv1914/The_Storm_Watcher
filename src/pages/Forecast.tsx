@@ -490,35 +490,63 @@ const Forecast = () => {
             </button>
 
             {showLongRange && (
-              <div className="mt-5 space-y-1">
-                {longRangeDays.map((d) => {
-                  const today = isToday(d.date);
-                  return (
-                    <div key={d.date.toISOString()} className="flex items-center gap-3 py-2 px-2 sm:px-3 rounded-md hover:bg-white/3 transition-colors">
-                      <div className="w-16 sm:w-20 shrink-0">
-                        <div className={`text-xs sm:text-sm font-semibold ${today ? 'text-[#10b981]' : 'text-white'}`}>
-                          {formatWeekday(d.date)}
-                        </div>
-                        <div className="text-[10px] text-[#64748b]">{formatMonthDay(d.date)}</div>
-                      </div>
-                      <div className="flex-1 h-4 sm:h-5 bg-white/5 rounded overflow-hidden relative">
-                        <div
-                          className="absolute inset-y-0 left-0 transition-all"
-                          style={{ width: `${Math.min((d.largestKp / 9) * 100, 100)}%`, background: kpBarColor(d.largestKp) }}
-                        />
-                      </div>
-                      <div className="w-10 sm:w-12 text-right shrink-0">
-                        <span className="text-xs sm:text-sm font-bold" style={getKpGradientStyle(d.largestKp)}>
-                          {d.largestKp.toFixed(0)}
-                        </span>
-                      </div>
-                      <div className="hidden sm:block w-20 text-right shrink-0">
-                        <span className="text-[10px] text-[#64748b]">Ap {d.apIndex} · F10.7 {d.radioFlux}</span>
-                      </div>
+              <>
+                {/* Summary stats: avg Ap, avg F10.7, peak Kp */}
+                <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
+                  <div className="rounded-lg bg-white/4 border border-white/8 px-3 py-2.5">
+                    <div className="text-[9px] uppercase tracking-wider text-[#64748b] font-semibold">{t('forecast.avgAp') || 'Avg Ap'}</div>
+                    <div className="text-base sm:text-lg font-bold text-white mt-0.5">
+                      {Math.round(longRangeDays.reduce((s, d) => s + d.apIndex, 0) / longRangeDays.length)}
                     </div>
-                  );
-                })}
-              </div>
+                  </div>
+                  <div className="rounded-lg bg-white/4 border border-white/8 px-3 py-2.5">
+                    <div className="text-[9px] uppercase tracking-wider text-[#64748b] font-semibold">{t('forecast.avgFlux') || 'Avg F10.7'}</div>
+                    <div className="text-base sm:text-lg font-bold text-white mt-0.5">
+                      {Math.round(longRangeDays.reduce((s, d) => s + d.radioFlux, 0) / longRangeDays.length)}
+                    </div>
+                  </div>
+                  <div className="rounded-lg bg-white/4 border border-white/8 px-3 py-2.5">
+                    <div className="text-[9px] uppercase tracking-wider text-[#64748b] font-semibold">{t('forecast.peakKp27') || 'Peak Kp · 27d'}</div>
+                    <div className="text-base sm:text-lg font-bold mt-0.5" style={getKpGradientStyle(Math.max(...longRangeDays.map(d => d.largestKp)))}>
+                      {Math.max(...longRangeDays.map(d => d.largestKp)).toFixed(0)}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 space-y-1">
+                  {longRangeDays.map((d) => {
+                    const today = isToday(d.date);
+                    return (
+                      <div key={d.date.toISOString()} className="flex items-center gap-2 sm:gap-3 py-2 px-2 sm:px-3 rounded-md hover:bg-white/3 transition-colors">
+                        <div className="w-14 sm:w-20 shrink-0">
+                          <div className={`text-xs sm:text-sm font-semibold ${today ? 'text-[#10b981]' : 'text-white'}`}>
+                            {formatWeekday(d.date)}
+                          </div>
+                          <div className="text-[10px] text-[#64748b]">{formatMonthDay(d.date)}</div>
+                        </div>
+                        <div className="flex-1 h-4 sm:h-5 bg-white/5 rounded overflow-hidden relative">
+                          <div
+                            className="absolute inset-y-0 left-0 transition-all"
+                            style={{ width: `${Math.min((d.largestKp / 9) * 100, 100)}%`, background: kpBarColor(d.largestKp) }}
+                          />
+                        </div>
+                        <div className="w-7 sm:w-12 text-right shrink-0">
+                          <span className="text-xs sm:text-sm font-bold" style={getKpGradientStyle(d.largestKp)}>
+                            {d.largestKp.toFixed(0)}
+                          </span>
+                        </div>
+                        <div className="w-16 sm:w-24 text-right shrink-0">
+                          <div className="text-[9px] sm:text-[10px] text-[#64748b] leading-tight">
+                            <span className="inline-block">Ap {d.apIndex}</span>
+                            <span className="hidden sm:inline"> · </span>
+                            <span className="block sm:inline">F {d.radioFlux}</span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
             )}
           </div>
         )}
