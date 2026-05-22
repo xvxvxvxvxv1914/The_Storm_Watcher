@@ -23,6 +23,7 @@ import CookieConsent from './components/CookieConsent';
 import InstallPrompt from './components/InstallPrompt';
 import SplashAnimation from './components/SplashAnimation';
 import LocationPrompt, { useLocationPromptVisible } from './components/LocationPrompt';
+import KpAlertPrompt from './components/KpAlertPrompt';
 
 const LoadingFallback = () => {
   const { t } = useLanguage();
@@ -106,6 +107,7 @@ function AppRoutes() {
       {shouldShowLocationPrompt && !locationPromptDone && splashDone && (
         <LocationPrompt onDone={() => setLocationPromptDone(true)} />
       )}
+      <KpAlertPrompt />
     </div>
   );
 }
