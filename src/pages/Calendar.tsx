@@ -9,6 +9,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import LocationPicker from '../components/LocationPicker';
 import { Skeleton } from '../components/Skeleton';
+import { reverseGeocode } from '../utils/reverseGeocode';
 
 interface ForecastItem {
   kp: number;
@@ -117,10 +118,11 @@ export default function Calendar() {
   }, []);
 
   const handleRequestGPS = useCallback(() => {
-    navigator.geolocation?.getCurrentPosition(pos => {
-      setLat(pos.coords.latitude);
-      setLon(pos.coords.longitude);
-      setLocationName(`${pos.coords.latitude.toFixed(2)}, ${pos.coords.longitude.toFixed(2)}`);
+    navigator.geolocation?.getCurrentPosition(async pos => {
+      const { latitude, longitude } = pos.coords;
+      setLat(latitude);
+      setLon(longitude);
+      setLocationName(await reverseGeocode(latitude, longitude));
     });
   }, []);
 

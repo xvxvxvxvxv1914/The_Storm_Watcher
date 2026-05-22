@@ -7,6 +7,7 @@ import { getAuroraModel, AuroraOvationPoint } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { reverseGeocode } from '../utils/reverseGeocode';
 
 const ISS = () => {
   const { t } = useLanguage();
@@ -73,16 +74,8 @@ const ISS = () => {
       } finally {
         if (mounted) setLoadingPasses(false);
       }
-      try {
-        const geo = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
-        ).then(r => r.json());
-        const city = geo.address?.city || geo.address?.town || geo.address?.village || '';
-        const country = geo.address?.country || '';
-        if (mounted) setLocationName([city, country].filter(Boolean).join(', '));
-      } catch {
-        // silent
-      }
+      const geoName = await reverseGeocode(lat, lon);
+      if (mounted) setLocationName(geoName);
     };
 
     if (settings.preferredLat !== null && settings.preferredLon !== null) {

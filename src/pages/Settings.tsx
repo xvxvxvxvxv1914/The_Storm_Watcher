@@ -6,6 +6,7 @@ import { useSettings } from '../contexts/SettingsContext';
 import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useOnboarding } from '../hooks/useOnboarding';
 import LocationPicker from '../components/LocationPicker';
+import { reverseGeocode } from '../utils/reverseGeocode';
 
 export default function Settings() {
   const { settings, updateSettings } = useSettings();
@@ -42,15 +43,7 @@ export default function Settings() {
       async (pos) => {
         const lat = parseFloat(pos.coords.latitude.toFixed(4));
         const lon = parseFloat(pos.coords.longitude.toFixed(4));
-        let name = `${lat}, ${lon}`;
-        try {
-          const geo = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
-          ).then(r => r.json());
-          const city = geo.address?.city || geo.address?.town || geo.address?.village || '';
-          const country = geo.address?.country || '';
-          if (city || country) name = [city, country].filter(Boolean).join(', ');
-        } catch { /* keep lat,lon fallback */ }
+        const name = await reverseGeocode(lat, lon);
         updateSettings({ preferredLat: lat, preferredLon: lon, preferredLocationName: name });
         setLocating(false);
       },
