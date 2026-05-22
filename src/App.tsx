@@ -9,6 +9,7 @@ import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import { useLanguage } from './contexts/LanguageContext';
 import { SettingsProvider } from './contexts/SettingsContext';
 import { useSwipeNavigation } from './hooks/useSwipeNavigation';
+import { useKpAlert } from './hooks/useKpAlert';
 import { AnimatedRoutes } from './components/AnimatedRoutes';
 import Navigation from './components/Navigation';
 import BottomTabBar from './components/BottomTabBar';
@@ -44,8 +45,8 @@ function AppRoutes() {
     const t = setTimeout(() => setSplashDone(true), 2600);
     return () => clearTimeout(t);
   }, []);
-  // Активиране на слайдването
   useSwipeNavigation();
+  useKpAlert();
 
   // After email confirmation Supabase lands the user back on the site with
   // #access_token=...&type=signup in the hash. Redirect them to /dashboard
