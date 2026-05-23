@@ -621,14 +621,13 @@ const Home = () => {
             <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.map.desc')}</p>
           </div>
 
-          <div className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group relative opacity-60">
-            <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#fbbf24]/20 text-[#fbbf24] border border-[#fbbf24]/30">{t('home.comingSoon')}</span>
+          <Link to="/alerts" className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group block">
             <div className="w-14 h-14 bg-[#F97316]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Bell className="w-7 h-7 text-[#F97316]" />
             </div>
             <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.alerts.title')}</h3>
             <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.alerts.desc')}</p>
-          </div>
+          </Link>
 
           <Link to="/gallery" className="glass-surface rounded-2xl p-7 hover:glow-green transition-all group block">
             <div className="w-14 h-14 bg-[#2DD4BF]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
