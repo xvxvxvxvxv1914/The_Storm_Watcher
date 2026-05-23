@@ -321,6 +321,7 @@ const Dashboard = () => {
         title="Dashboard — The Storm Watcher"
         description="Live space weather dashboard: Kp index, solar wind, magnetic field and X-ray flux charts updated every minute."
         path="/dashboard"
+        ogKp={kpValue}
       />
       <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Dashboard', path: '/dashboard' }]} />
       <StarField />

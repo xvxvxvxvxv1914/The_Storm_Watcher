@@ -215,6 +215,7 @@ const Aurora = () => {
         title="Can I see the Aurora tonight? Live Forecast & Checklist | The Storm Watcher"
         description="Check your local aurora visibility in seconds. Interactive 3D OVATION model, real-time cloud cover, moon phase, and Kp index checklist for perfect aurora hunting."
         path="/aurora"
+        ogKp={kpValue}
       >
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",

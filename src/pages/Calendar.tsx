@@ -137,6 +137,7 @@ export default function Calendar() {
         title="Aurora Calendar — The Storm Watcher"
         description="3-night aurora viewing outlook with Kp forecast and cloud cover. Find your best night to watch the northern lights."
         path="/calendar"
+        ogKp={nights.length > 0 ? Math.max(...nights.map(n => n.maxKp)) : undefined}
       />
 
       {/* Header */}

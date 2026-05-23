@@ -277,6 +277,7 @@ const Forecast = () => {
         title="Kp Index Forecast — The Storm Watcher"
         description="7-day Kp forecast + 27-day long-range outlook from NOAA. Plan your aurora viewing."
         path="/forecast"
+        ogKp={peakKp7}
       />
       <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Forecast', path: '/forecast' }]} />
       <StarField />

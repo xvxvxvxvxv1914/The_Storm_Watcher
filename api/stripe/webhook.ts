@@ -66,7 +66,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         plan,
         subscription_id: sub.id,
         subscription_status: sub.status,
-        subscription_period_end: new Date(sub.current_period_end * 1000).toISOString(),
+        subscription_period_end: new Date(((sub as unknown as Record<string, number>)['current_period_end'] ?? 0) * 1000).toISOString(),
       }).eq('id', userId);
       break;
     }
@@ -82,7 +82,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       await supabase.from('profiles').update({
         plan,
         subscription_status: sub.status,
-        subscription_period_end: new Date(sub.current_period_end * 1000).toISOString(),
+        subscription_period_end: new Date(((sub as unknown as Record<string, number>)['current_period_end'] ?? 0) * 1000).toISOString(),
       }).eq('id', userId);
       break;
     }

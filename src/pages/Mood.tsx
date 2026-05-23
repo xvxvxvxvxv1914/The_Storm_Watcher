@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { logError } from '../utils/logger';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
@@ -138,6 +138,7 @@ const dayKey = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padSt
 const CosmicOrb = ({ kp, size = 200 }: { kp: number; size?: number }) => {
   const color = getKpColor(kp);
   const intensity = Math.min(kp / 9, 1);
+  const reducedMotion = useReducedMotion();
   return (
     <div className="relative" style={{ width: size, height: size }}>
       {/* Outer pulsing rings */}
@@ -148,8 +149,9 @@ const CosmicOrb = ({ kp, size = 200 }: { kp: number; size?: number }) => {
           style={{
             border: `1px solid ${color}`,
             opacity: 0.3 - i * 0.1,
+            willChange: reducedMotion ? 'auto' : 'transform, opacity',
           }}
-          animate={{
+          animate={reducedMotion ? undefined : {
             scale: [1, 1.4 + i * 0.15, 1],
             opacity: [0.3 - i * 0.1, 0, 0.3 - i * 0.1],
           }}
@@ -167,8 +169,9 @@ const CosmicOrb = ({ kp, size = 200 }: { kp: number; size?: number }) => {
         style={{
           background: `radial-gradient(circle at 30% 30%, ${color}ee 0%, ${color}88 40%, ${color}22 70%, transparent 100%)`,
           filter: 'blur(0.5px)',
+          willChange: reducedMotion ? 'auto' : 'transform',
         }}
-        animate={{ scale: [1, 1.05, 1] }}
+        animate={reducedMotion ? undefined : { scale: [1, 1.05, 1] }}
         transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
       />
       {/* Inner bright dot */}
