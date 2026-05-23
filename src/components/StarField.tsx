@@ -14,8 +14,7 @@ interface Particle {
   duration: number;
 }
 
-const NUM_STARS = 100;
-const NUM_PARTICLES = 20;
+const isMobile = () => window.innerWidth < 768 || navigator.maxTouchPoints > 1;
 
 export default function StarField() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -23,6 +22,11 @@ export default function StarField() {
 
   useEffect(() => {
     if (theme === 'light') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const mobile = isMobile();
+    const NUM_STARS = mobile ? 40 : 100;
+    const NUM_PARTICLES = mobile ? 8 : 20;
 
     const canvas = canvasRef.current;
     if (!canvas) return;

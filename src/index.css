@@ -73,6 +73,15 @@ html.light {
     background: var(--tsw-surface-bg);
     border: 1px solid var(--tsw-surface-border);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transform: translateZ(0);
+  }
+
+  @media (max-width: 767px) {
+    .glass-surface {
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
   }
 
   .glow-orange {
