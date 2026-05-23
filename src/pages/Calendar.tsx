@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import PageMeta from '../components/PageMeta';
-import { CalendarDays, Cloud, Sparkles } from 'lucide-react';
+import { CalendarDays, Cloud, Sparkles, Download } from 'lucide-react';
+import { buildAuroraICS, downloadICS } from '../utils/icalExport';
 import { Link } from 'react-router-dom';
 import { getKpForecast, getKpGradientStyle } from '../services/noaaApi';
 import { getNightsCloudCover, type NightForecast } from '../services/skyApi';
@@ -8,6 +9,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import LocationPicker from '../components/LocationPicker';
 import { Skeleton } from '../components/Skeleton';
+import { reverseGeocode } from '../utils/reverseGeocode';
 
 interface ForecastItem {
   kp: number;
@@ -116,10 +118,11 @@ export default function Calendar() {
   }, []);
 
   const handleRequestGPS = useCallback(() => {
-    navigator.geolocation?.getCurrentPosition(pos => {
-      setLat(pos.coords.latitude);
-      setLon(pos.coords.longitude);
-      setLocationName(`${pos.coords.latitude.toFixed(2)}, ${pos.coords.longitude.toFixed(2)}`);
+    navigator.geolocation?.getCurrentPosition(async pos => {
+      const { latitude, longitude } = pos.coords;
+      setLat(latitude);
+      setLon(longitude);
+      setLocationName(await reverseGeocode(latitude, longitude));
     });
   }, []);
 
@@ -141,10 +144,23 @@ export default function Calendar() {
         <div className="w-14 h-14 bg-gradient-to-br from-[#10b981] to-[#059669] rounded-2xl flex items-center justify-center flex-shrink-0">
           <CalendarDays className="w-7 h-7 text-white" />
         </div>
-        <div>
+        <div className="flex-1">
           <h1 className="text-3xl font-bold text-white">{t('aurora.calendar.title')}</h1>
           <p className="text-[#94a3b8] mt-0.5">{t('aurora.calendar.subtitle')}</p>
         </div>
+        {nights.some(n => n.maxKp >= 3) && (
+          <button
+            onClick={() => {
+              const ics = buildAuroraICS(nights, locationName);
+              downloadICS(ics, `aurora-calendar-${new Date().toISOString().slice(0, 10)}.ics`);
+            }}
+            className="hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 border border-white/10 text-white transition-colors"
+            aria-label={t('aurora.calendar.exportICal') || 'Export to calendar'}
+          >
+            <Download className="w-3.5 h-3.5" />
+            {t('aurora.calendar.exportICal') || 'Add to Calendar'}
+          </button>
+        )}
       </div>
 
       {/* Location picker */}
@@ -267,6 +283,20 @@ export default function Calendar() {
             );
           })}
         </div>
+      )}
+
+      {/* Mobile export */}
+      {nights.some(n => n.maxKp >= 3) && (
+        <button
+          onClick={() => {
+            const ics = buildAuroraICS(nights, locationName);
+            downloadICS(ics, `aurora-calendar-${new Date().toISOString().slice(0, 10)}.ics`);
+          }}
+          className="sm:hidden mt-6 w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold bg-white/5 border border-white/10 text-white"
+        >
+          <Download className="w-4 h-4" />
+          {t('aurora.calendar.exportICal') || 'Add to Calendar'}
+        </button>
       )}
 
       {/* Tips */}

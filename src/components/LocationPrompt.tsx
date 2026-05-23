@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { MapPin, X } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { reverseGeocode } from '../utils/reverseGeocode';
 
 const ASKED_KEY = 'tsw_location_asked';
 
@@ -24,15 +25,7 @@ const LocationPrompt = ({ onDone }: { onDone: () => void }) => {
       async (pos) => {
         const lat = pos.coords.latitude;
         const lon = pos.coords.longitude;
-        let name = `${lat.toFixed(2)}, ${lon.toFixed(2)}`;
-        try {
-          const geo = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
-          ).then(r => r.json());
-          const city = geo.address?.city || geo.address?.town || geo.address?.village || '';
-          const country = geo.address?.country || '';
-          if (city || country) name = [city, country].filter(Boolean).join(', ');
-        } catch { /* keep coords as name */ }
+        const name = await reverseGeocode(lat, lon);
         updateSettings({ preferredLat: lat, preferredLon: lon, preferredLocationName: name });
         localStorage.setItem(ASKED_KEY, '1');
         setLoading(false);

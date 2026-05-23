@@ -7,6 +7,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import LocationPicker from '../components/LocationPicker';
 import ErrorCard from '../components/ErrorCard';
+import { reverseGeocode } from '../utils/reverseGeocode';
 
 const UV = () => {
   const { t } = useLanguage();
@@ -26,20 +27,7 @@ const UV = () => {
       setUvData(data);
       setCurrentLat(lat);
       setCurrentLon(lon);
-      if (name) {
-        setLocationName(name);
-      } else {
-        try {
-          const geo = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
-          ).then(r => r.json());
-          const city = geo.address?.city || geo.address?.town || geo.address?.village || '';
-          const country = geo.address?.country || '';
-          setLocationName([city, country].filter(Boolean).join(', '));
-        } catch {
-          setLocationName(`${lat.toFixed(2)}, ${lon.toFixed(2)}`);
-        }
-      }
+      setLocationName(name ?? await reverseGeocode(lat, lon));
     } catch {
       setLocationError(true);
     } finally {

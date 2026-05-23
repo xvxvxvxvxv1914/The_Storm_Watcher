@@ -25,14 +25,41 @@ interface LeaderEntry {
   sightings_count: number;
 }
 
-const BADGES = [
-  { id: 'first_light', emoji: '🌟', name: 'First Light', desc: 'Report your first aurora', req: (s: Sighting[]) => s.length >= 1 },
-  { id: 'storm_chaser', emoji: '⚡', name: 'Storm Chaser', desc: 'Spot aurora during Kp ≥ 5', req: (s: Sighting[]) => s.some(r => (r.kp_at_sighting ?? 0) >= 5) },
-  { id: 'night_owl', emoji: '🦉', name: 'Night Owl', desc: 'Report 5 sightings', req: (s: Sighting[]) => s.length >= 5 },
-  { id: 'g3_witness', emoji: '💫', name: 'G3 Witness', desc: 'Spot aurora during Kp ≥ 7', req: (s: Sighting[]) => s.some(r => (r.kp_at_sighting ?? 0) >= 7) },
-  { id: 'dedicated', emoji: '🎯', name: 'Dedicated Hunter', desc: 'Report 10 sightings', req: (s: Sighting[]) => s.length >= 10 },
-  { id: 'veteran', emoji: '🏆', name: 'Aurora Veteran', desc: 'Report 20 sightings', req: (s: Sighting[]) => s.length >= 20 },
+type BadgeTier = 'common' | 'rare' | 'epic' | 'legendary';
+
+interface BadgeDef {
+  id: string;
+  emoji: string;
+  name: string;
+  desc: string;
+  tier: BadgeTier;
+  req: (s: Sighting[]) => boolean;
+  progress: (s: Sighting[]) => { current: number; target: number } | null;
+}
+
+const BADGES: BadgeDef[] = [
+  { id: 'first_light',  emoji: '🌟', name: 'First Light',      desc: 'Report your first aurora',  tier: 'common',
+    req: s => s.length >= 1, progress: s => ({ current: Math.min(s.length, 1), target: 1 }) },
+  { id: 'storm_chaser', emoji: '⚡', name: 'Storm Chaser',     desc: 'Spot aurora during Kp ≥ 5', tier: 'rare',
+    req: s => s.some(r => (r.kp_at_sighting ?? 0) >= 5),
+    progress: s => ({ current: s.some(r => (r.kp_at_sighting ?? 0) >= 5) ? 1 : 0, target: 1 }) },
+  { id: 'night_owl',    emoji: '🦉', name: 'Night Owl',        desc: 'Report 5 sightings',        tier: 'common',
+    req: s => s.length >= 5, progress: s => ({ current: Math.min(s.length, 5), target: 5 }) },
+  { id: 'g3_witness',   emoji: '💫', name: 'G3 Witness',       desc: 'Spot aurora during Kp ≥ 7', tier: 'legendary',
+    req: s => s.some(r => (r.kp_at_sighting ?? 0) >= 7),
+    progress: s => ({ current: s.some(r => (r.kp_at_sighting ?? 0) >= 7) ? 1 : 0, target: 1 }) },
+  { id: 'dedicated',    emoji: '🎯', name: 'Dedicated Hunter', desc: 'Report 10 sightings',       tier: 'rare',
+    req: s => s.length >= 10, progress: s => ({ current: Math.min(s.length, 10), target: 10 }) },
+  { id: 'veteran',      emoji: '🏆', name: 'Aurora Veteran',   desc: 'Report 20 sightings',       tier: 'epic',
+    req: s => s.length >= 20, progress: s => ({ current: Math.min(s.length, 20), target: 20 }) },
 ];
+
+const TIER_STYLES: Record<BadgeTier, { glow: string; border: string; bg: string; shimmer: string }> = {
+  common:    { glow: 'rgba(16,185,129,0.45)',  border: '#10b981', bg: 'linear-gradient(135deg, rgba(16,185,129,0.18) 0%, rgba(16,185,129,0.06) 100%)',  shimmer: '#34d399' },
+  rare:      { glow: 'rgba(59,130,246,0.5)',   border: '#3b82f6', bg: 'linear-gradient(135deg, rgba(59,130,246,0.20) 0%, rgba(59,130,246,0.06) 100%)',  shimmer: '#60a5fa' },
+  epic:      { glow: 'rgba(168,85,247,0.55)',  border: '#a855f7', bg: 'linear-gradient(135deg, rgba(168,85,247,0.22) 0%, rgba(168,85,247,0.06) 100%)',  shimmer: '#c084fc' },
+  legendary: { glow: 'rgba(251,191,36,0.65)',  border: '#fbbf24', bg: 'linear-gradient(135deg, rgba(251,191,36,0.25) 0%, rgba(236,72,153,0.10) 100%)',  shimmer: '#fcd34d' },
+};
 
 function calcPoints(sightings: Sighting[]): number {
   return sightings.reduce((sum, s) => sum + 10 + Math.round((s.kp_at_sighting ?? 0) * 2), 0);
@@ -300,21 +327,66 @@ export default function Hunt() {
           </div>
 
           {/* Badges */}
-          <div className="flex gap-3 flex-wrap">
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-3">
             {BADGES.map(badge => {
               const earned = badge.req(mySightings);
+              const tier = TIER_STYLES[badge.tier];
+              const p = badge.progress(mySightings);
+              const pct = p && p.target > 0 ? Math.round((p.current / p.target) * 100) : 0;
               return (
                 <div
                   key={badge.id}
                   title={badge.desc}
-                  className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl border text-center transition-all ${earned ? 'border-[#f59e0b]/40 bg-[#f59e0b]/10' : 'border-white/5 bg-white/3 opacity-40'}`}
+                  className={`badge-card relative flex flex-col items-center gap-1.5 px-2 py-3 rounded-xl border text-center transition-all ${earned ? 'badge-earned' : 'opacity-60 grayscale-[40%]'}`}
+                  style={{
+                    background: earned ? tier.bg : 'rgba(255,255,255,0.03)',
+                    borderColor: earned ? `${tier.border}66` : 'rgba(255,255,255,0.06)',
+                    boxShadow: earned ? `0 0 18px -4px ${tier.glow}, inset 0 0 0 1px ${tier.border}33` : 'none',
+                  }}
                 >
-                  <span className="text-2xl">{badge.emoji}</span>
-                  <span className="text-[10px] font-semibold text-white leading-tight max-w-[64px]">{badge.name}</span>
+                  {earned && (
+                    <span
+                      className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-black text-white"
+                      style={{ background: tier.border, boxShadow: `0 0 8px ${tier.glow}` }}
+                    >
+                      ✓
+                    </span>
+                  )}
+                  <span className={`text-2xl ${earned ? 'drop-shadow-md' : ''}`} style={earned ? { filter: `drop-shadow(0 0 6px ${tier.glow})` } : undefined}>
+                    {badge.emoji}
+                  </span>
+                  <span className={`text-[9px] font-bold leading-tight ${earned ? 'text-white' : 'text-white/50'}`}>
+                    {badge.name}
+                  </span>
+                  {!earned && p && p.target > 1 && (
+                    <div className="w-full h-0.5 rounded-full overflow-hidden bg-white/10 mt-0.5">
+                      <div className="h-full rounded-full" style={{ width: `${pct}%`, background: tier.border }} />
+                    </div>
+                  )}
+                  {!earned && p && p.target > 1 && (
+                    <span className="text-[8px] font-mono text-white/40">{p.current}/{p.target}</span>
+                  )}
                 </div>
               );
             })}
           </div>
+          <style>{`
+            .badge-card.badge-earned::after {
+              content: '';
+              position: absolute;
+              inset: 0;
+              border-radius: 12px;
+              background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+              background-size: 200% 100%;
+              background-position: 200% 0;
+              pointer-events: none;
+              animation: shimmer 3s ease-in-out infinite;
+            }
+            @keyframes shimmer {
+              0% { background-position: 200% 0; }
+              50%, 100% { background-position: -200% 0; }
+            }
+          `}</style>
 
           {/* My sightings toggle */}
           <button

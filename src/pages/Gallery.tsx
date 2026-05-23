@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import PageMeta from '../components/PageMeta';
-import { Camera, Upload, X, MapPin, Image } from 'lucide-react';
+import { Camera, Upload, X, MapPin, Image, Filter } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { supabase } from '../lib/supabase';
@@ -64,6 +64,16 @@ export default function Gallery() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] = useState<GalleryPhoto | null>(null);
+  const [dateFilter, setDateFilter] = useState<'all' | 'week' | 'month' | 'year'>('all');
+
+  const filteredPhotos = useMemo(() => {
+    if (dateFilter === 'all') return photos;
+    const now = Date.now();
+    const cutoff = dateFilter === 'week' ? now - 7 * 86400000
+      : dateFilter === 'month' ? now - 30 * 86400000
+      : now - 365 * 86400000;
+    return photos.filter(p => new Date(p.created_at).getTime() >= cutoff);
+  }, [photos, dateFilter]);
 
   const fetchPhotos = useCallback(async (start: number, append: boolean) => {
     if (append) setLoadingMore(true);
@@ -267,6 +277,39 @@ export default function Gallery() {
         </div>
       )}
 
+      {/* Date filter chips */}
+      {!loading && photos.length > 0 && (
+        <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-1">
+          <Filter className="w-3.5 h-3.5 text-[#64748b] shrink-0" />
+          {([
+            ['all',   t('gallery.filter.all')   || 'All time'],
+            ['week',  t('gallery.filter.week')  || 'Past week'],
+            ['month', t('gallery.filter.month') || 'Past month'],
+            ['year',  t('gallery.filter.year')  || 'Past year'],
+          ] as const).map(([key, label]) => {
+            const active = dateFilter === key;
+            return (
+              <button
+                key={key}
+                onClick={() => setDateFilter(key)}
+                className={`text-xs font-semibold px-3 py-1.5 rounded-full whitespace-nowrap transition-colors ${
+                  active
+                    ? 'bg-[#06b6d4] text-white'
+                    : 'bg-white/5 border border-white/10 text-[#94a3b8] hover:bg-white/10'
+                }`}
+              >
+                {label}
+              </button>
+            );
+          })}
+          {dateFilter !== 'all' && (
+            <span className="text-[10px] text-[#64748b] ml-1">
+              ({filteredPhotos.length}/{photos.length})
+            </span>
+          )}
+        </div>
+      )}
+
       {loading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {Array.from({ length: 8 }).map((_, i) => (
@@ -297,8 +340,19 @@ export default function Gallery() {
         </div>
       ) : (
         <>
+          {filteredPhotos.length === 0 && photos.length > 0 && (
+            <div className="text-center py-10 mb-4">
+              <p className="text-[#64748b] text-sm">{t('gallery.noInRange') || 'No photos in this range'}</p>
+              <button
+                onClick={() => setDateFilter('all')}
+                className="text-[#06b6d4] text-xs mt-2 hover:underline"
+              >
+                {t('gallery.filter.all') || 'All time'}
+              </button>
+            </div>
+          )}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {photos.map(photo => (
+            {filteredPhotos.map(photo => (
               <div key={photo.id} className="group relative aspect-square rounded-2xl overflow-hidden bg-white/5">
                 <img
                   src={photo.thumbnail_url ?? photo.image_url}

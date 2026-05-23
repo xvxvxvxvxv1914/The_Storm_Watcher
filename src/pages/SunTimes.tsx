@@ -5,6 +5,7 @@ import { getSunData, SunDay } from '../services/uvApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import LocationPicker from '../components/LocationPicker';
+import { reverseGeocode } from '../utils/reverseGeocode';
 
 const formatDaylight = (seconds: number) => {
   const h = Math.floor(seconds / 3600);
@@ -95,20 +96,7 @@ const SunTimes = () => {
     setCurrentLat(lat);
     setCurrentLon(lon);
     setLoading(false);
-    if (name) {
-      setLocationName(name);
-    } else {
-      try {
-        const geo = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
-        ).then(r => r.json());
-        const city = geo.address?.city || geo.address?.town || geo.address?.village || '';
-        const country = geo.address?.country || '';
-        setLocationName([city, country].filter(Boolean).join(', '));
-      } catch {
-        setLocationName(`${lat.toFixed(2)}, ${lon.toFixed(2)}`);
-      }
-    }
+    setLocationName(name ?? await reverseGeocode(lat, lon));
   }, []);
 
   const requestGPS = useCallback(() => {

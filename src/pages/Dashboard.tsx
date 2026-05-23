@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { logError } from '../utils/logger';
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
 import PageMeta from '../components/PageMeta';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
 import SvgBarChart from '../components/charts/SvgBarChart';
 import { Activity, Wind, Compass, Sun, Radio, MapPin } from 'lucide-react';
@@ -258,6 +259,30 @@ const Dashboard = () => {
       }));
   }, [kpHistoryRaw]);
 
+  // Aggregate consecutive Kp ≥ 5 periods into storm events
+  const stormEvents = useMemo(() => {
+    if (kpHistoryRaw.length === 0) return [];
+    const sorted = [...kpHistoryRaw].sort((a, b) => a.time_tag.localeCompare(b.time_tag));
+    const events: { start: Date; end: Date; peakKp: number }[] = [];
+    let curr: { start: Date; end: Date; peakKp: number } | null = null;
+    for (const { time_tag, Kp } of sorted) {
+      const t = new Date(time_tag.replace(' ', 'T') + 'Z');
+      if (Kp >= 5) {
+        if (!curr) {
+          curr = { start: t, end: t, peakKp: Kp };
+        } else {
+          curr.end = t;
+          curr.peakKp = Math.max(curr.peakKp, Kp);
+        }
+      } else if (curr) {
+        events.push(curr);
+        curr = null;
+      }
+    }
+    if (curr) events.push(curr);
+    return events.reverse().slice(0, 4);
+  }, [kpHistoryRaw]);
+
   if (!loading && error && kpChartData.length === 0) {
     return (
       <div className="min-h-screen pt-24 md:pt-20 pb-16 relative">
@@ -297,6 +322,7 @@ const Dashboard = () => {
         description="Live space weather dashboard: Kp index, solar wind, magnetic field and X-ray flux charts updated every minute."
         path="/dashboard"
       />
+      <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Dashboard', path: '/dashboard' }]} />
       <StarField />
 
       <div className="solar-orb" style={{ top: '100px', right: '-300px' }} />
@@ -507,6 +533,48 @@ const Dashboard = () => {
             </div>
           )}
         </div>}
+
+        {/* Storm Watch — recent storm events (Kp ≥ 5) */}
+        {stormEvents.length > 0 && (
+          <div className="glass-surface rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-base sm:text-lg font-bold text-white uppercase tracking-wide flex items-center gap-2.5">
+                <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-red-400" />
+                {t('dashboard.stormWatch') || 'Storm Watch'}
+              </h3>
+              <span className="text-[10px] uppercase tracking-wider text-[#64748b]">
+                {t('dashboard.stormWatchPeriod') || 'Last 72h'}
+              </span>
+            </div>
+            <div className="space-y-2">
+              {stormEvents.map((ev, i) => {
+                const durationH = Math.round((ev.end.getTime() - ev.start.getTime()) / 3_600_000);
+                const g = ev.peakKp >= 9 ? 'G5' : ev.peakKp >= 8 ? 'G4' : ev.peakKp >= 7 ? 'G3' : ev.peakKp >= 6 ? 'G2' : 'G1';
+                const color = ev.peakKp >= 7 ? '#ef4444' : ev.peakKp >= 6 ? '#f97316' : '#eab308';
+                return (
+                  <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white/3 border border-white/5">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 font-black text-sm text-white"
+                      style={{ background: `${color}22`, border: `1.5px solid ${color}66`, color }}>
+                      {g}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-bold text-white">
+                        {ev.start.toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                      </div>
+                      <div className="text-xs text-[#64748b]">
+                        {t('dashboard.peakKp') || 'Peak Kp'} <span className="text-white font-semibold">{ev.peakKp.toFixed(1)}</span>
+                        {durationH > 0 && ` · ${durationH}h`}
+                      </div>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <div className="text-2xl font-black" style={{ color }}>{ev.peakKp.toFixed(0)}</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {dailyKp.length > 0 && (
           <div className="glass-surface rounded-2xl p-4 sm:p-8 mb-4 sm:mb-8">

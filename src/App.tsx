@@ -9,6 +9,7 @@ import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import { useLanguage } from './contexts/LanguageContext';
 import { SettingsProvider } from './contexts/SettingsContext';
 import { useSwipeNavigation } from './hooks/useSwipeNavigation';
+import { useKpAlert } from './hooks/useKpAlert';
 import { AnimatedRoutes } from './components/AnimatedRoutes';
 import Navigation from './components/Navigation';
 import BottomTabBar from './components/BottomTabBar';
@@ -19,8 +20,10 @@ import HreflangTags from './components/HreflangTags';
 import OnboardingTour from './components/OnboardingTour';
 import ScrollToTop from './components/ScrollToTop';
 import CookieConsent from './components/CookieConsent';
+import InstallPrompt from './components/InstallPrompt';
 import SplashAnimation from './components/SplashAnimation';
 import LocationPrompt, { useLocationPromptVisible } from './components/LocationPrompt';
+import KpAlertPrompt from './components/KpAlertPrompt';
 
 const LoadingFallback = () => {
   const { t } = useLanguage();
@@ -43,8 +46,8 @@ function AppRoutes() {
     const t = setTimeout(() => setSplashDone(true), 2600);
     return () => clearTimeout(t);
   }, []);
-  // Активиране на слайдването
   useSwipeNavigation();
+  useKpAlert();
 
   // After email confirmation Supabase lands the user back on the site with
   // #access_token=...&type=signup in the hash. Redirect them to /dashboard
@@ -98,11 +101,13 @@ function AppRoutes() {
       <ScrollToTop />
       <BottomTabBar />
       <CookieConsent />
+      <InstallPrompt />
       <OnboardingTour />
       <SplashAnimation />
       {shouldShowLocationPrompt && !locationPromptDone && splashDone && (
         <LocationPrompt onDone={() => setLocationPromptDone(true)} />
       )}
+      <KpAlertPrompt />
     </div>
   );
 }
