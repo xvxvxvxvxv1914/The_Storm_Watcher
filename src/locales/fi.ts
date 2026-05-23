@@ -458,6 +458,11 @@ const fi: Record<string, string> = {
   'planguard.signInUpgrade': 'Kirjaudu sisään päivittääksesi',
   'planguard.upgradePro': 'Päivitä Pro tai Premium',
 
+    'push.prompt.title': 'Geomagneettinen aktiivisuus kasvaa',
+  'push.prompt.body': 'Kp on {kp} — haluatko hälytyksen myrskyn sattuessa?',
+  'push.prompt.bodyGeneric': 'Haluatko ilmoituksen geomagneettisesta myrskystä?',
+  'push.prompt.enable': 'Ilmoita minulle',
+  'push.grantedTitle': '🌌 Myrskyhälytykset käytössä',
   'push.noSupport': 'Selaimesi ei tue ilmoituksia.',
   'push.grantedMsg': 'Saat ilmoituksia voimakkaista geomagneettisista myrskyistä!',
   'push.enabled': 'Ilmoitukset ovat käytössä',

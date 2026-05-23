@@ -458,6 +458,11 @@ const pl: Record<string, string> = {
   'planguard.signInUpgrade': 'Zaloguj się, aby uaktualnić',
   'planguard.upgradePro': 'Uaktualnij do Pro lub Premium',
 
+    'push.prompt.title': 'Aktywność geomagnetyczna rośnie',
+  'push.prompt.body': 'Kp wynosi {kp} — chcesz alert przy burzy?',
+  'push.prompt.bodyGeneric': 'Chcesz powiadomienie o burzy geomagnetycznej?',
+  'push.prompt.enable': 'Powiadom mnie',
+  'push.grantedTitle': '🌌 Alerty burzowe aktywowane',
   'push.noSupport': 'Twoja przeglądarka nie obsługuje powiadomień.',
   'push.grantedMsg': 'Będziesz otrzymywać powiadomienia o silnych burzach geomagnetycznych!',
   'push.enabled': 'Powiadomienia są włączone',

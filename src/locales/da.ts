@@ -458,6 +458,11 @@ const da: Record<string, string> = {
   'planguard.signInUpgrade': 'Log ind for at opgradere',
   'planguard.upgradePro': 'Opgrader til Pro eller Premium',
 
+    'push.prompt.title': 'Geomagnetisk aktivitet stiger',
+  'push.prompt.body': 'Kp er {kp} — vil du have en alarm ved en storm?',
+  'push.prompt.bodyGeneric': 'Vil du have besked ved en geomagnetisk storm?',
+  'push.prompt.enable': 'Giv mig besked',
+  'push.grantedTitle': '🌌 Storadvarsler aktiveret',
   'push.noSupport': 'Din browser understøtter ikke notifikationer.',
   'push.grantedMsg': 'Du modtager notifikationer om kraftige geomagnetiske storme!',
   'push.enabled': 'Notifikationer er aktiveret',

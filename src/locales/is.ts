@@ -458,6 +458,11 @@ const is_: Record<string, string> = {
   'planguard.signInUpgrade': 'Skráðu þig inn til að uppfæra',
   'planguard.upgradePro': 'Uppfæra í Pro eða Premium',
 
+    'push.prompt.title': 'Geomagnetísk virkni eykst',
+  'push.prompt.body': 'Kp er {kp} — viltu fá viðvörun við storm?',
+  'push.prompt.bodyGeneric': 'Viltu fá tilkynningu um geomagnetískt stormveður?',
+  'push.prompt.enable': 'Tilkynna mér',
+  'push.grantedTitle': '🌌 Stormviðvaranir virkjaðar',
   'push.noSupport': 'Vafrinn þinn styður ekki tilkynningar.',
   'push.grantedMsg': 'Þú munt fá tilkynningar um mikla jarðsegulstorma!',
   'push.enabled': 'Tilkynningar eru virkar',

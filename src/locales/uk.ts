@@ -458,6 +458,11 @@ const uk: Record<string, string> = {
   'planguard.signInUpgrade': 'Увійдіть, щоб оновити',
   'planguard.upgradePro': 'Оновіть до Pro або Premium',
 
+    'push.prompt.title': 'Геомагнітна активність зростає',
+  'push.prompt.body': 'Kp = {kp} — хочете сповіщення про бурю?',
+  'push.prompt.bodyGeneric': 'Хочете сповіщення про геомагнітну бурю?',
+  'push.prompt.enable': 'Повідомити мене',
+  'push.grantedTitle': '🌌 Сповіщення про бурі увімкнено',
   'push.noSupport': 'Ваш браузер не підтримує сповіщення.',
   'push.grantedMsg': 'Ви отримуватимете сповіщення про сильні геомагнітні бурі!',
   'push.enabled': 'Сповіщення увімкнені',
