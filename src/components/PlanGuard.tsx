@@ -71,6 +71,17 @@ const PlanGuard = ({ requiredPlan, children }: PlanGuardProps) => {
             >
               {t('planguard.signInUpgrade')}
             </Link>
+          ) : requiredPlan === 'pro' ? (
+            <>
+              <Link
+                to="/pricing"
+                className="block w-full py-3 rounded-lg font-bold text-white transition-all hover:scale-105 hover:shadow-lg"
+                style={{ background: `linear-gradient(to right, ${gradientFrom}, ${gradientTo})` }}
+              >
+                {t('pricing.tryProFree') || 'Try Pro free for 14 days'}
+              </Link>
+              <p className="text-[#475569] text-xs mt-2">{t('home.noCC') || '— no credit card required'}</p>
+            </>
           ) : (
             <Link
               to="/pricing"
