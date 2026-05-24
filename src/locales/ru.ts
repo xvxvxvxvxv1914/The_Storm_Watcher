@@ -791,6 +791,7 @@ const ru: Record<string, string> = {
   'payment.subscriptionActive': 'Вы теперь на Pro!',
   'payment.subscriptionDesc': 'Полный Pro доступ разблокирован. Наслаждайтесь!',
   'payment.dismiss': 'Закрыть',
+  'payment.exploreAurora': 'Исследовать Aurora →',
   'payment.cancelled': 'Платёж отменён — плата не взималась. Выберите план, чтобы продолжить.',
   'home.noCC': '— без кредитной карты',
 };

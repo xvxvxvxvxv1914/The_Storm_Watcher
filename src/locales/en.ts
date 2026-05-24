@@ -821,6 +821,7 @@ const en: Record<string, string> = {
   'payment.subscriptionActive': "You're now on Pro!",
   'payment.subscriptionDesc': 'Full Pro access is now unlocked. Enjoy!',
   'payment.dismiss': 'Dismiss',
+  'payment.exploreAurora': 'Explore Aurora →',
   'payment.cancelled': 'Payment cancelled — no charge was made. Choose a plan to continue.',
   'home.noCC': '— no credit card required',
 };

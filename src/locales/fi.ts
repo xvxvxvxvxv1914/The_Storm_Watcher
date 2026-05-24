@@ -783,6 +783,7 @@ const fi: Record<string, string> = {
   'payment.subscriptionActive': 'Olet nyt Pro!',
   'payment.subscriptionDesc': 'Täysi Pro-pääsy on nyt avattu. Nauti!',
   'payment.dismiss': 'Sulje',
+  'payment.exploreAurora': 'Tutustu Auroraan →',
   'payment.cancelled': 'Maksu peruutettu — ei maksuja veloitettu. Valitse paketti jatkaaksesi.',
   'home.noCC': '— ei luottokorttia tarvita',
 };

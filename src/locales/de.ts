@@ -794,6 +794,7 @@ const de: Record<string, string> = {
   'payment.subscriptionActive': 'Du bist jetzt Pro!',
   'payment.subscriptionDesc': 'Voller Pro-Zugang ist jetzt freigeschaltet. Viel Spaß!',
   'payment.dismiss': 'Schließen',
+  'payment.exploreAurora': 'Aurora erkunden →',
   'payment.cancelled': 'Zahlung abgebrochen — keine Gebühr wurde erhoben. Wählen Sie einen Plan, um fortzufahren.',
   'home.noCC': '— keine Kreditkarte erforderlich',
 };

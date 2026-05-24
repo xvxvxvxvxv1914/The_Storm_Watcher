@@ -791,6 +791,7 @@ const ja: Record<string, string> = {
   'payment.subscriptionActive': 'Proになりました！',
   'payment.subscriptionDesc': 'Proアクセスが解放されました。お楽しみください！',
   'payment.dismiss': '閉じる',
+  'payment.exploreAurora': 'Auroraを探索 →',
   'payment.cancelled': 'お支払いがキャンセルされました — 料金は発生しません。続けるにはプランを選択してください。',
   'home.noCC': '— クレジットカード不要',
 };

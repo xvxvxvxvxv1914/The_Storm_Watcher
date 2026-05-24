@@ -791,6 +791,7 @@ const es: Record<string, string> = {
   'payment.subscriptionActive': '¡Ya eres Pro!',
   'payment.subscriptionDesc': 'El acceso Pro completo está desbloqueado. ¡Disfruta!',
   'payment.dismiss': 'Cerrar',
+  'payment.exploreAurora': 'Explorar Aurora →',
   'payment.cancelled': 'Pago cancelado — no se realizó ningún cargo. Elige un plan para continuar.',
   'home.noCC': '— sin tarjeta de crédito',
 };

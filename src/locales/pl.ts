@@ -783,6 +783,7 @@ const pl: Record<string, string> = {
   'payment.subscriptionActive': 'Jesteś teraz na Pro!',
   'payment.subscriptionDesc': 'Pełny dostęp Pro jest odblokowany. Ciesz się!',
   'payment.dismiss': 'Zamknij',
+  'payment.exploreAurora': 'Odkryj Aurorę →',
   'payment.cancelled': 'Płatność anulowana — nie pobrano żadnych opłat. Wybierz plan, aby kontynuować.',
   'home.noCC': '— bez karty kredytowej',
 };

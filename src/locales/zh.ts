@@ -791,6 +791,7 @@ const zh: Record<string, string> = {
   'payment.subscriptionActive': '您现在是Pro用户！',
   'payment.subscriptionDesc': '完整Pro访问已解锁。尽情享受！',
   'payment.dismiss': '关闭',
+  'payment.exploreAurora': '探索极光 →',
   'payment.cancelled': '付款已取消 — 未产生任何费用。选择一个计划以继续。',
   'home.noCC': '— 无需信用卡',
 };

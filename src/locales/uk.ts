@@ -783,6 +783,7 @@ const uk: Record<string, string> = {
   'payment.subscriptionActive': 'Ви тепер на Pro!',
   'payment.subscriptionDesc': 'Повний Pro доступ розблоковано. Насолоджуйтесь!',
   'payment.dismiss': 'Закрити',
+  'payment.exploreAurora': 'Дослідити Аврору →',
   'payment.cancelled': 'Оплату скасовано — плата не знімалась. Оберіть план, щоб продовжити.',
   'home.noCC': '— кредитна карта не потрібна',
 };

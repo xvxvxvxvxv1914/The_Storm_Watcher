@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { logError } from '../utils/logger';
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
@@ -355,17 +355,27 @@ const Dashboard = () => {
                 ? (t('payment.trialStarted') || 'Your 14-day Pro trial has started!')
                 : (t('payment.subscriptionActive') || 'You\'re now on Pro!')}
             </div>
-            <div className="text-[#94a3b8] text-sm mb-3">
+            <div className="text-[#94a3b8] text-sm mb-4">
               {profile?.subscription_status === 'trialing'
                 ? (t('payment.trialDesc') || 'Enjoy full Pro access — no charge for 14 days.')
                 : (t('payment.subscriptionDesc') || 'Full Pro access is now unlocked. Enjoy!')}
             </div>
-            <button
-              onClick={() => setShowPaymentSuccess(false)}
-              className="text-xs text-[#475569] hover:text-white transition-colors"
-            >
-              {t('payment.dismiss') || 'Dismiss'}
-            </button>
+            <div className="flex items-center justify-center gap-3">
+              <Link
+                to="/aurora"
+                onClick={() => setShowPaymentSuccess(false)}
+                className="text-xs font-bold px-4 py-2 rounded-full text-white transition-all hover:opacity-90"
+                style={{ background: 'linear-gradient(to right, #f97316, #fbbf24)' }}
+              >
+                {t('payment.exploreAurora') || 'Explore Aurora →'}
+              </Link>
+              <button
+                onClick={() => setShowPaymentSuccess(false)}
+                className="text-xs text-[#475569] hover:text-white transition-colors"
+              >
+                {t('payment.dismiss') || 'Dismiss'}
+              </button>
+            </div>
           </div>
         </div>
       )}

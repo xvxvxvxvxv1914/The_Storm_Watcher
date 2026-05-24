@@ -814,6 +814,7 @@ const bg: Record<string, string> = {
   'payment.subscriptionActive': 'Вече си на Pro!',
   'payment.subscriptionDesc': 'Пълен Pro достъп е отключен. Наслади се!',
   'payment.dismiss': 'Затвори',
+  'payment.exploreAurora': 'Разгледай Aurora →',
   'payment.cancelled': 'Плащането е отказано — не е направена такса. Изберете план за да продължите.',
   'home.noCC': '— не се изисква кредитна карта',
 };

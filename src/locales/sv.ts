@@ -783,6 +783,7 @@ const sv: Record<string, string> = {
   'payment.subscriptionActive': 'Du är nu Pro!',
   'payment.subscriptionDesc': 'Fullständig Pro-åtkomst är nu upplåst. Njut!',
   'payment.dismiss': 'Stäng',
+  'payment.exploreAurora': 'Utforska Aurora →',
   'payment.cancelled': 'Betalning avbruten — inga avgifter togs ut. Välj ett paket för att fortsätta.',
   'home.noCC': '— inget kreditkort krävs',
 };

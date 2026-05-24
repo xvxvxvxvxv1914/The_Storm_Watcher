@@ -783,6 +783,7 @@ const is_: Record<string, string> = {
   'payment.subscriptionActive': 'Þú ert núna Pro!',
   'payment.subscriptionDesc': 'Fullur Pro-aðgangur er nú opnaður. Njóttu!',
   'payment.dismiss': 'Loka',
+  'payment.exploreAurora': 'Skoða norðurljós →',
   'payment.cancelled': 'Greiðsla afturkölluð — engin gjöld gert. Veldu pakka til að halda áfram.',
   'home.noCC': '— ekkert kreditkort þarf',
 };
