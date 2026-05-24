@@ -436,7 +436,7 @@ const Alerts = () => {
         <CheckCircle2 className="w-12 h-12 text-green-400" strokeWidth={1.5} />
       </div>
       <h1 className={`text-3xl font-bold mb-3 ${theme === 'light' ? 'text-slate-900' : 'text-white'}`}>{t('alerts.allClear')}</h1>
-      <p className="text-gray-400 text-base max-w-xs leading-relaxed">{t('alerts.noActiveAlerts')}<br />Space weather is calm tonight.</p>
+      <p className="text-gray-400 text-base max-w-xs leading-relaxed">{t('alerts.noActiveAlerts')}<br />{t('alerts.calmTonight') || 'Space weather is calm tonight.'}</p>
       <div className="flex items-center gap-1.5 mt-6">
         <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
         <span className="text-xs text-gray-500">Updated {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
@@ -448,9 +448,9 @@ const Alerts = () => {
   filteredFeed.forEach(f => groups[groupLabel(f.dateStr)].push(f));
 
   const groupTitles: Record<string, string> = {
-    now:   'Active Now',
-    today: 'Today',
-    week:  'Earlier This Week',
+    now:   t('alerts.groupNow') || 'Active Now',
+    today: t('alerts.groupToday') || 'Today',
+    week:  t('alerts.groupWeek') || 'Earlier This Week',
   };
 
   return (
