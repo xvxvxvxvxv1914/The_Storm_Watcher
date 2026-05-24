@@ -1,3 +1,53 @@
+# Session Handoff — 2026-05-23/24
+
+> Последна сесия: 2026-05-23/24. Предишна сесия: 2026-05-21 (виж архив по-долу).
+
+---
+
+## ✅ Какво беше направено в сесия 2026-05-23/24
+
+### Vercel Deploy — fix (блокиран от cron)
+- `vercel.json` cron schedule `*/15 * * * *` → `0 0 * * *` (Hobby план блокираше всички CLI и hook deploys)
+- Реалните 15-мин alerts се управляват от cron-job.org (не от Vercel cron)
+- Създаден **deploy hook** за `staging` branch чрез Vercel API (не може от UI без работещ GitHub integration)
+- Deploy pipeline: `git push origin staging` → извикай `POST https://api.vercel.com/v1/integrations/deploy/prj_punB6ZlhOejkRrJS2MxviywQzALA/HKBJsGXkGy`
+
+### api/og.tsx — fix (dynamic OG images)
+- JSX компилация грешка → rewrite с `React.createElement` (без нужда от `--jsx` flag)
+- `runtime: 'edge'` премахнат → Node.js serverless (edge runtime отхвърляше `@vercel/og` като unsupported module)
+- `api/tsconfig.json` добавен с `"jsx": "react-jsx"` за api/ функциите
+- **OG images вече работят:** `https://www.thestormwatcher.com/api/og?page=aurora&kp=6.3`
+
+### api/stripe/webhook.ts — fix
+- Stripe SDK v22 премахна `current_period_end` от типа `Subscription` → safe cast fix
+
+### Мобилна производителност (по-стари телефони)
+- **StarField**: 100 stars + 20 particles → 40 + 8 на мобилен (< 768px или touch); спира RAF при `prefers-reduced-motion`
+- **CosmicOrb (Mood)**: `useReducedMotion()` от Framer Motion → 4 infinite animations се изключват при OS настройка
+- **glass-surface CSS**: `-webkit-backdrop-filter` за iOS Safari; blur 10px → 6px на мобилен; `translateZ(0)` за GPU layer promotion
+
+### Supabase Security Advisor — 5 → 1 issue (4 оправени)
+| Issue | Fix |
+|-------|-----|
+| `hunter_leaderboard` SECURITY DEFINER view | `security_invoker = true` — view вече спазва RLS |
+| `storm_posts` — no policy | Explicit deny за anon/authenticated (service_role only) |
+| `stripe_processed_events` — no policy | Explicit deny за anon/authenticated (service_role only) |
+| `aurora-gallery` — broad listing | SELECT policy премахната (public CDN не се нуждае от нея) |
+| `avatars` — broad listing | Заменена с user-scoped `(storage.foldername(name))[1] = auth.uid()` |
+| Leaked password protection | ❌ Изисква Supabase Pro план — пропуснато |
+
+### Migration файлове (добавени в supabase/migrations/)
+- `20260523000000_fix_hunter_leaderboard_security_invoker.sql`
+- `20260523000001_fix_security_advisor_rls_and_storage.sql`
+
+### Git state след сесията
+| Branch | HEAD | Статус |
+|--------|------|--------|
+| `main` | `7077586` | ✅ Production — всичко merge-нато |
+| `staging` | `212ada6` | ✅ In sync с main |
+
+---
+
 # Session Handoff — 2026-05-21
 
 **Цел на този файл:** Briefing за следващия Claude agent (на друг компютър) — какво беше направено в сесията 2026-05-21, какво е статуса, и какво остава.
