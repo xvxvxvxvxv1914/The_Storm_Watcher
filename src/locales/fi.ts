@@ -764,6 +764,8 @@ const fi: Record<string, string> = {
   'trial.upgradeNow': 'Päivitä nyt',
   'trial.ended': 'Pro-kokeilujakso on päättynyt.',
   'trial.reactivate': 'Aktivoi Pro uudelleen',
+  'trial.paymentFailed': 'Maksu epäonnistui — päivitä maksutietosi.',
+  'trial.updateBilling': 'Päivitä maksu',
   'aurora.heatmap.title': 'Maailmanlaajuinen revontulten näkyvyyskartta',
   'aurora.heatmap.desc': 'Revontulten näkyvyys reaaliajassa · Kp {kp}',
   'aurora.heatmap.legend': 'Näkyvyys:',

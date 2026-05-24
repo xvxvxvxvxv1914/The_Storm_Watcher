@@ -772,6 +772,8 @@ const ru: Record<string, string> = {
   'trial.upgradeNow': 'Обновить сейчас',
   'trial.ended': 'Ваш Pro-пробный период закончился.',
   'trial.reactivate': 'Восстановить Pro',
+  'trial.paymentFailed': 'Платёж не прошёл — обновите данные оплаты.',
+  'trial.updateBilling': 'Обновить платёж',
   'aurora.heatmap.title': 'Глобальная карта видимости авроры',
   'aurora.heatmap.desc': 'Видимость авроры в реальном времени · Kp {kp}',
   'aurora.heatmap.legend': 'Видимость:',

@@ -764,6 +764,8 @@ const no: Record<string, string> = {
   'trial.upgradeNow': 'Oppgrader nå',
   'trial.ended': 'Pro-prøveperioden din er avsluttet.',
   'trial.reactivate': 'Gjenaktiver Pro',
+  'trial.paymentFailed': 'Betaling mislyktes — oppdater betalingsinformasjonen.',
+  'trial.updateBilling': 'Oppdater betaling',
   'aurora.heatmap.title': 'Globalt nordlyskart',
   'aurora.heatmap.desc': 'Nordlyssiktbarhet i sanntid · Kp {kp}',
   'aurora.heatmap.legend': 'Siktbarhet:',

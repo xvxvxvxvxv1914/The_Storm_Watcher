@@ -764,6 +764,8 @@ const sv: Record<string, string> = {
   'trial.upgradeNow': 'Uppgradera nu',
   'trial.ended': 'Din Pro-provperiod har upphört.',
   'trial.reactivate': 'Återaktivera Pro',
+  'trial.paymentFailed': 'Betalning misslyckades — uppdatera dina betalningsuppgifter.',
+  'trial.updateBilling': 'Uppdatera betalning',
   'aurora.heatmap.title': 'Global karta för norrskenssynlighet',
   'aurora.heatmap.desc': 'Norrskenssynlighet i realtid · Kp {kp}',
   'aurora.heatmap.legend': 'Synlighet:',

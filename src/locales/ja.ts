@@ -772,6 +772,8 @@ const ja: Record<string, string> = {
   'trial.upgradeNow': '今すぐアップグレード',
   'trial.ended': 'Proトライアルが終了しました。',
   'trial.reactivate': 'Proを再開',
+  'trial.paymentFailed': '支払い失敗 — お支払い情報を更新してください。',
+  'trial.updateBilling': '支払い更新',
   'aurora.heatmap.title': 'グローバルオーロラ視認性マップ',
   'aurora.heatmap.desc': 'リアルタイムオーロラ視認性 · Kp {kp}',
   'aurora.heatmap.legend': '視認性：',

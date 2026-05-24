@@ -764,6 +764,8 @@ const pl: Record<string, string> = {
   'trial.upgradeNow': 'Ulepsz teraz',
   'trial.ended': 'Twój okres próbny Pro dobiegł końca.',
   'trial.reactivate': 'Reaktywuj Pro',
+  'trial.paymentFailed': 'Płatność nieudana — zaktualizuj dane rozliczeniowe.',
+  'trial.updateBilling': 'Aktualizuj płatność',
   'aurora.heatmap.title': 'Globalna mapa widoczności zorzy polarnej',
   'aurora.heatmap.desc': 'Widoczność zorzy w czasie rzeczywistym · Kp {kp}',
   'aurora.heatmap.legend': 'Widoczność:',

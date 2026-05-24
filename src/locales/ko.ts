@@ -802,6 +802,8 @@ const ko: Record<string, string> = {
   'trial.upgradeNow': '지금 업그레이드',
   'trial.ended': 'Pro 체험 기간이 종료되었습니다.',
   'trial.reactivate': 'Pro 재활성화',
+  'trial.paymentFailed': '결제 실패 — 결제 정보를 업데이트하세요.',
+  'trial.updateBilling': '결제 업데이트',
   'aurora.heatmap.title': '전 세계 오로라 가시성 지도',
   'aurora.heatmap.desc': '실시간 오로라 가시성 · Kp {kp}',
   'aurora.heatmap.legend': '가시성:',

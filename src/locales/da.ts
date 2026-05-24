@@ -764,6 +764,8 @@ const da: Record<string, string> = {
   'trial.upgradeNow': 'Opgrader nu',
   'trial.ended': 'Dit Pro-prøveabonnement er udløbet.',
   'trial.reactivate': 'Genaktiver Pro',
+  'trial.paymentFailed': 'Betaling mislykkedes — opdater dine betalingsoplysninger.',
+  'trial.updateBilling': 'Opdater betaling',
   'aurora.heatmap.title': 'Global aurora-synlighedskort',
   'aurora.heatmap.desc': 'Realtids aurora-synlighed · Kp {kp}',
   'aurora.heatmap.legend': 'Synlighed:',

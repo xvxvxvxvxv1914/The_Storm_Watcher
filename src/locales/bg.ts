@@ -795,6 +795,8 @@ const bg: Record<string, string> = {
   'trial.upgradeNow': 'Надгради сега',
   'trial.ended': 'Твоят Pro пробен период е изтекъл.',
   'trial.reactivate': 'Активирай Pro отново',
+  'trial.paymentFailed': 'Неуспешно плащане — обнови платежните данни.',
+  'trial.updateBilling': 'Обнови плащане',
   'aurora.heatmap.title': 'Глобална карта на видимост на аврора',
   'aurora.heatmap.desc': 'Видимост в реално време · Kp {kp}',
   'aurora.heatmap.legend': 'Видимост:',

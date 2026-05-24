@@ -764,6 +764,8 @@ const uk: Record<string, string> = {
   'trial.upgradeNow': 'Оновити зараз',
   'trial.ended': 'Ваш Pro-пробний період закінчився.',
   'trial.reactivate': 'Відновити Pro',
+  'trial.paymentFailed': 'Платіж не пройшов — оновіть платіжні дані.',
+  'trial.updateBilling': 'Оновити оплату',
   'aurora.heatmap.title': 'Глобальна карта видимості аврори',
   'aurora.heatmap.desc': 'Видимість аврори в реальному часі · Kp {kp}',
   'aurora.heatmap.legend': 'Видимість:',

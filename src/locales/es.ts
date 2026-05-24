@@ -772,6 +772,8 @@ const es: Record<string, string> = {
   'trial.upgradeNow': 'Actualizar ahora',
   'trial.ended': 'Tu prueba Pro ha terminado.',
   'trial.reactivate': 'Reactivar Pro',
+  'trial.paymentFailed': 'Pago fallido — actualiza tus datos de facturación.',
+  'trial.updateBilling': 'Actualizar pago',
   'aurora.heatmap.title': 'Mapa global de visibilidad de auroras',
   'aurora.heatmap.desc': 'Visibilidad de auroras en tiempo real · Kp {kp}',
   'aurora.heatmap.legend': 'Visibilidad:',

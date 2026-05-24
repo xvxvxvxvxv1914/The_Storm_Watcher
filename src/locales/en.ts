@@ -802,6 +802,8 @@ const en: Record<string, string> = {
   'trial.upgradeNow': 'Upgrade now',
   'trial.ended': 'Your Pro trial has ended.',
   'trial.reactivate': 'Reactivate Pro',
+  'trial.paymentFailed': 'Payment failed — update your billing details.',
+  'trial.updateBilling': 'Update billing',
   'aurora.heatmap.title': 'Global Aurora Visibility Map',
   'aurora.heatmap.desc': 'Real-time aurora visibility · Kp {kp}',
   'aurora.heatmap.legend': 'Visibility:',

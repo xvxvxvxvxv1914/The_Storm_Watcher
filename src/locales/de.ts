@@ -775,6 +775,8 @@ const de: Record<string, string> = {
   'trial.upgradeNow': 'Jetzt upgraden',
   'trial.ended': 'Deine Pro-Testphase ist beendet.',
   'trial.reactivate': 'Pro reaktivieren',
+  'trial.paymentFailed': 'Zahlung fehlgeschlagen — Zahlungsdaten aktualisieren.',
+  'trial.updateBilling': 'Zahlung aktualisieren',
   'aurora.heatmap.title': 'Globale Aurora-Sichtbarkeitskarte',
   'aurora.heatmap.desc': 'Echtzeit-Aurora-Sichtbarkeit · Kp {kp}',
   'aurora.heatmap.legend': 'Sichtbarkeit:',
