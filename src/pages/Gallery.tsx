@@ -3,6 +3,7 @@ import PageMeta from '../components/PageMeta';
 import { Camera, Upload, X, MapPin, Image, Filter } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useKpLive } from '../hooks/useKpLive';
 import { supabase } from '../lib/supabase';
 import { Link } from 'react-router-dom';
 
@@ -47,6 +48,7 @@ const PAGE_SIZE = 12;
 export default function Gallery() {
   const { user, profile } = useAuth();
   const { t } = useLanguage();
+  const kp = useKpLive();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [photos, setPhotos] = useState<GalleryPhoto[]>([]);
@@ -155,6 +157,7 @@ export default function Gallery() {
         thumbnail_url: thumbnailUrl,
         description: description.trim() || null,
         location_name: locationName.trim() || null,
+        kp_at_capture: kp ?? null,
       });
 
       if (insertError) throw insertError;
