@@ -53,6 +53,7 @@ export default function Profile() {
   const isPro = plan === 'pro';
   const isPremium = plan === 'premium';
   const isPaid = isPro || isPremium;
+  const isTrialing = profile?.subscription_status === 'trialing';
 
   const planColor = isPremium ? '#a855f7' : isPro ? '#f97316' : '#10b981';
   const PlanIcon = isPremium ? Star : isPro ? Zap : null;
@@ -61,8 +62,15 @@ export default function Profile() {
     ? new Date(profile.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
     : null;
 
-  const subscriptionEnd = profile?.subscription_period_end
-    ? new Date(profile.subscription_period_end * 1000).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
+  const periodEndRaw = profile?.subscription_period_end;
+  const periodEndDate = periodEndRaw
+    ? new Date(periodEndRaw as unknown as string)
+    : null;
+  const subscriptionEnd = periodEndDate && !isNaN(periodEndDate.getTime())
+    ? periodEndDate.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
+    : null;
+  const trialDaysLeft = isTrialing && periodEndDate
+    ? Math.max(0, Math.ceil((periodEndDate.getTime() - Date.now()) / 86_400_000))
     : null;
 
   const openPortal = async () => {
@@ -237,14 +245,25 @@ export default function Profile() {
             <p className="text-white font-bold text-lg capitalize flex items-center gap-2">
               {PlanIcon && <PlanIcon className="w-4 h-4" style={{ color: planColor }} />}
               Storm Watcher {plan.charAt(0).toUpperCase() + plan.slice(1)}
+              {isTrialing && (
+                <span className="text-xs font-bold px-2 py-0.5 rounded-full"
+                  style={{ background: '#f9731622', color: '#f97316' }}>
+                  {t('trial.active') || 'Trial active'}
+                </span>
+              )}
             </p>
-            {isPaid && subscriptionEnd && (
+            {isTrialing && trialDaysLeft !== null && (
+              <p className="text-[#f97316] text-xs mt-1 font-medium">
+                {(t('trial.banner') || 'Your Pro trial ends in {days} days').replace('{days}', String(trialDaysLeft))}
+              </p>
+            )}
+            {!isTrialing && isPaid && subscriptionEnd && (
               <p className="text-[#475569] text-xs mt-1">
                 {t('profile.subscriptionEnds') || 'Subscription ends'} {subscriptionEnd}
               </p>
             )}
           </div>
-          {isPaid ? (
+          {(isPaid || isTrialing) ? (
             <button
               onClick={openPortal}
               disabled={portalLoading}
