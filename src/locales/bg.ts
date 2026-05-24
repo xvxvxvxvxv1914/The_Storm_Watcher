@@ -328,6 +328,7 @@ const bg: Record<string, string> = {
   'sun.daylight': 'Светла част от деня',
   'sun.goldenMorning': 'Златен час до',
   'sun.goldenEvening': 'Златен час от',
+  'sun.goldenHour': 'Златен час',
 
   // Sky Visibility
   'sky.title': 'Небе',
@@ -342,6 +343,14 @@ const bg: Record<string, string> = {
   'sky.mostlyCloudy': ' Предимно облачно',
   'sky.overcast': ' Облачно',
   'sky.clearest': 'Най-ясен прозорец',
+  'sky.verdict.excellent': 'Отлично',
+  'sky.verdict.good': 'Добро',
+  'sky.verdict.fair': 'Задоволително',
+  'sky.verdict.poor': 'Лошо',
+  'sky.verdict.excellent.desc': 'Перфектна нощ за наблюдение на звезди и аврора.',
+  'sky.verdict.good.desc': 'Предимно ясно. Струва си да излезеш.',
+  'sky.verdict.fair.desc': 'Частично облачно. Може да се появят ясни прозорци.',
+  'sky.verdict.poor.desc': 'Облачно или дъждовно. По-добре остани вкъщи.',
 
   // Other
   'storm.quiet': 'СПОКОЙНО',

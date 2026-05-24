@@ -301,6 +301,7 @@ const ko: Record<string, string> = {
   'sun.daylight': '낮 시간',
   'sun.goldenMorning': '골든 아워 종료',
   'sun.goldenEvening': '골든 아워 시작',
+  'sun.goldenHour': '황금 시간대',
 
   // Sky Visibility
   'sky.title': '하늘',
@@ -315,6 +316,14 @@ const ko: Record<string, string> = {
   'sky.mostlyCloudy': ' 대부분 흐림',
   'sky.overcast': ' 흐림',
   'sky.clearest': '가장 맑은 시간대',
+  'sky.verdict.excellent': '훌륭함',
+  'sky.verdict.good': '좋음',
+  'sky.verdict.fair': '보통',
+  'sky.verdict.poor': '나쁨',
+  'sky.verdict.excellent.desc': '별 관측과 오로라 사냥에 완벽한 밤입니다.',
+  'sky.verdict.good.desc': '대체로 맑습니다. 오늘 밤 외출할 가치가 있습니다.',
+  'sky.verdict.fair.desc': '부분적으로 흐립니다. 맑은 창문이 열릴 수 있습니다.',
+  'sky.verdict.poor.desc': '흐리거나 비가 옵니다. 집에 있는 것이 좋습니다.',
 
   // Other
   'storm.quiet': '조용',

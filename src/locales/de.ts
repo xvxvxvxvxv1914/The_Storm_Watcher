@@ -321,6 +321,7 @@ const de: Record<string, string> = {
   'sun.daylight': 'Tageslicht',
   'sun.goldenMorning': 'Goldene Stunde bis',
   'sun.goldenEvening': 'Goldene Stunde ab',
+  'sun.goldenHour': 'Goldene Stunde',
 
   // Sky Visibility
   'sky.title': 'Himmel',
@@ -335,6 +336,14 @@ const de: Record<string, string> = {
   'sky.mostlyCloudy': ' Überwiegend bewölkt',
   'sky.overcast': ' Bedeckt',
   'sky.clearest': 'Klarster Zeitraum',
+  'sky.verdict.excellent': 'Ausgezeichnet',
+  'sky.verdict.good': 'Gut',
+  'sky.verdict.fair': 'Mäßig',
+  'sky.verdict.poor': 'Schlecht',
+  'sky.verdict.excellent.desc': 'Perfekte Nacht für Sternenbeobachtung und Aurora-Jagd.',
+  'sky.verdict.good.desc': 'Meist klarer Himmel. Lohnt sich heute Abend.',
+  'sky.verdict.fair.desc': 'Teils bewölkt. Es können Lücken entstehen.',
+  'sky.verdict.poor.desc': 'Bewölkt oder regnerisch. Besser zu Hause bleiben.',
 
   // Other
   'storm.quiet': 'RUHIG',

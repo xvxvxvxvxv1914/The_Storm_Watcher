@@ -436,6 +436,7 @@ const da: Record<string, string> = {
   'sun.daylight': 'Dagslys',
   'sun.goldenMorning': 'Gylden time til',
   'sun.goldenEvening': 'Gylden time fra',
+  'sun.goldenHour': 'Gyldne time',
 
   'sky.title': 'Himmel',
   'sky.tonight': 'I aften',
@@ -449,6 +450,14 @@ const da: Record<string, string> = {
   'sky.mostlyCloudy': ' Mest skyet',
   'sky.overcast': ' Overskyet',
   'sky.clearest': 'Klareste vindue',
+  'sky.verdict.excellent': 'Fremragende',
+  'sky.verdict.good': 'God',
+  'sky.verdict.fair': 'Rimelig',
+  'sky.verdict.poor': 'Dårlig',
+  'sky.verdict.excellent.desc': 'Perfekt nat til stjernekigning og aurora-jagt.',
+  'sky.verdict.good.desc': 'Mest klar himmel. Det er værd at gå ud i aften.',
+  'sky.verdict.fair.desc': 'Delvist skyet. Der kan åbne sig vinduer.',
+  'sky.verdict.poor.desc': 'Skyet eller regnfuldt. Bedst at blive hjemme.',
 
   'storm.quiet': 'ROLIGT',
   'storm.unsettled': 'UROLIGT',

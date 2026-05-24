@@ -436,6 +436,7 @@ const pl: Record<string, string> = {
   'sun.daylight': 'Światło dzienne',
   'sun.goldenMorning': 'Złota godzina do',
   'sun.goldenEvening': 'Złota godzina od',
+  'sun.goldenHour': 'Złota godzina',
 
   'sky.title': 'Niebo',
   'sky.tonight': 'Dziś wieczór',
@@ -449,6 +450,14 @@ const pl: Record<string, string> = {
   'sky.mostlyCloudy': ' Przeważnie pochmurno',
   'sky.overcast': ' Pochmurno',
   'sky.clearest': 'Najczystsze okno',
+  'sky.verdict.excellent': 'Doskonała',
+  'sky.verdict.good': 'Dobra',
+  'sky.verdict.fair': 'Umiarkowana',
+  'sky.verdict.poor': 'Zła',
+  'sky.verdict.excellent.desc': 'Idealna noc do obserwacji gwiazd i polowania na zorze.',
+  'sky.verdict.good.desc': 'W większości bezchmurnie. Warto wyjść dziś wieczorem.',
+  'sky.verdict.fair.desc': 'Częściowo zachmurzone. Mogą pojawić się okna pogody.',
+  'sky.verdict.poor.desc': 'Pochmurno lub deszczowo. Lepiej zostać w domu.',
 
   'storm.quiet': 'SPOKOJNIE',
   'storm.unsettled': 'NIESPOKOJNIE',

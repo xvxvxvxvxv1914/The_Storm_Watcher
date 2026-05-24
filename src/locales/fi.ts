@@ -436,6 +436,7 @@ const fi: Record<string, string> = {
   'sun.daylight': 'Päivänvalo',
   'sun.goldenMorning': 'Kultainen hetki asti',
   'sun.goldenEvening': 'Kultainen hetki alkaen',
+  'sun.goldenHour': 'Kultainen tunti',
 
   'sky.title': 'Taivas',
   'sky.tonight': 'Tänä yönä',
@@ -449,6 +450,14 @@ const fi: Record<string, string> = {
   'sky.mostlyCloudy': ' Enimmäkseen pilvinen',
   'sky.overcast': ' Pilvistä',
   'sky.clearest': 'Kirkkain ikkuna',
+  'sky.verdict.excellent': 'Erinomainen',
+  'sky.verdict.good': 'Hyvä',
+  'sky.verdict.fair': 'Kohtalainen',
+  'sky.verdict.poor': 'Huono',
+  'sky.verdict.excellent.desc': 'Täydellinen yö tähtikatsomiseen ja revontulijahdin.',
+  'sky.verdict.good.desc': 'Pääosin selkeää. Kannattaa mennä ulos tänä iltana.',
+  'sky.verdict.fair.desc': 'Osittain pilvistä. Voi aueta selkeitä ikkunoita.',
+  'sky.verdict.poor.desc': 'Pilvistä tai sateista. Parempi jäädä kotiin.',
 
   'storm.quiet': 'RAUHALLINEN',
   'storm.unsettled': 'EPÄRAUHALLINEN',

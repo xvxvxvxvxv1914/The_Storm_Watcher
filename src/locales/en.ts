@@ -329,6 +329,7 @@ const en: Record<string, string> = {
   'sun.daylight': 'Daylight',
   'sun.goldenMorning': 'Golden hour until',
   'sun.goldenEvening': 'Golden hour from',
+  'sun.goldenHour': 'Golden hour',
 
   // Sky Visibility
   'sky.title': 'Sky',
@@ -343,6 +344,14 @@ const en: Record<string, string> = {
   'sky.mostlyCloudy': ' Mostly cloudy',
   'sky.overcast': ' Overcast',
   'sky.clearest': 'Clearest window',
+  'sky.verdict.excellent': 'Excellent',
+  'sky.verdict.good': 'Good',
+  'sky.verdict.fair': 'Fair',
+  'sky.verdict.poor': 'Poor',
+  'sky.verdict.excellent.desc': 'Perfect night for stargazing & aurora hunting.',
+  'sky.verdict.good.desc': 'Mostly clear skies. Worth going out tonight.',
+  'sky.verdict.fair.desc': 'Partly cloudy. Some windows may open up.',
+  'sky.verdict.poor.desc': 'Cloudy or rainy. Stay home tonight.',
 
   // Other
   'storm.quiet': 'QUIET',

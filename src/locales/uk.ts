@@ -436,6 +436,7 @@ const uk: Record<string, string> = {
   'sun.daylight': 'Тривалість дня',
   'sun.goldenMorning': 'Золота година до',
   'sun.goldenEvening': 'Золота година від',
+  'sun.goldenHour': 'Золота година',
 
   'sky.title': 'Небо',
   'sky.tonight': 'Сьогодні ввечері',
@@ -449,6 +450,14 @@ const uk: Record<string, string> = {
   'sky.mostlyCloudy': ' Переважно хмарно',
   'sky.overcast': ' Похмуро',
   'sky.clearest': 'Найясніше вікно',
+  'sky.verdict.excellent': 'Відмінно',
+  'sky.verdict.good': 'Добре',
+  'sky.verdict.fair': 'Задовільно',
+  'sky.verdict.poor': 'Погано',
+  'sky.verdict.excellent.desc': 'Ідеальна ніч для спостереження зірок і авроральних полювань.',
+  'sky.verdict.good.desc': 'Переважно ясно. Варто вийти сьогодні ввечері.',
+  'sky.verdict.fair.desc': 'Мінливо хмарно. Можуть бути просвіти.',
+  'sky.verdict.poor.desc': 'Хмарно або дощово. Краще залишитися вдома.',
 
   'storm.quiet': 'ТИХО',
   'storm.unsettled': 'НЕСПОКІЙНО',

@@ -321,6 +321,7 @@ const zh: Record<string, string> = {
   'sun.daylight': '白昼',
   'sun.goldenMorning': '黄金时刻至',
   'sun.goldenEvening': '黄金时刻始于',
+  'sun.goldenHour': '黄金时段',
 
   // Sky Visibility
   'sky.title': '天空',
@@ -335,6 +336,14 @@ const zh: Record<string, string> = {
   'sky.mostlyCloudy': ' 大部多云',
   'sky.overcast': ' 阴天',
   'sky.clearest': '最晴朗时段',
+  'sky.verdict.excellent': '优秀',
+  'sky.verdict.good': '良好',
+  'sky.verdict.fair': '一般',
+  'sky.verdict.poor': '差',
+  'sky.verdict.excellent.desc': '星空观测和极光狩猎的完美夜晚。',
+  'sky.verdict.good.desc': '天空大部晴朗，今晚值得出门。',
+  'sky.verdict.fair.desc': '部分多云，可能会有晴天窗口。',
+  'sky.verdict.poor.desc': '多云或有雨，最好待在家里。',
 
   // Other
   'storm.quiet': '平静',

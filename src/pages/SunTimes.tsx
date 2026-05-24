@@ -210,7 +210,7 @@ const SunTimes = () => {
                   <span className="text-white font-bold">{formatDaylight(day.daylightSeconds)}</span>
                 </div>
                 <div className="text-xs text-[#64748b] pt-1">
-                  Golden hour: {day.goldenMorningEnd} · {day.goldenEveningStart}
+                  {t('sun.goldenHour')}: {day.goldenMorningEnd} · {day.goldenEveningStart}
                 </div>
               </div>
             </div>

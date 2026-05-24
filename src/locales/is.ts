@@ -436,6 +436,7 @@ const is_: Record<string, string> = {
   'sun.daylight': 'Dagsljós',
   'sun.goldenMorning': 'Gullna stund til',
   'sun.goldenEvening': 'Gullna stund frá',
+  'sun.goldenHour': 'Gyllta stund',
 
   'sky.title': 'Himinn',
   'sky.tonight': 'Í kvöld',
@@ -449,6 +450,14 @@ const is_: Record<string, string> = {
   'sky.mostlyCloudy': ' Mestmegnis skýjað',
   'sky.overcast': ' Þakið skýjum',
   'sky.clearest': 'Skýlægasta gluggi',
+  'sky.verdict.excellent': 'Frábær',
+  'sky.verdict.good': 'Góð',
+  'sky.verdict.fair': 'Sæmileg',
+  'sky.verdict.poor': 'Léleg',
+  'sky.verdict.excellent.desc': 'Fullkomin nótt til stjörnuathugunar og norðurljósaveiða.',
+  'sky.verdict.good.desc': 'Að mestu leyti skýlaust. Þess virði að fara út í kvöld.',
+  'sky.verdict.fair.desc': 'Að hluta skýjað. Gluggarnir geta opnast.',
+  'sky.verdict.poor.desc': 'Skýjað eða rigning. Betra að vera heima.',
 
   'storm.quiet': 'RÓLEGT',
   'storm.unsettled': 'ÓRÓTT',

@@ -321,6 +321,7 @@ const ja: Record<string, string> = {
   'sun.daylight': '日照時間',
   'sun.goldenMorning': 'ゴールデンアワー (朝) まで',
   'sun.goldenEvening': 'ゴールデンアワー (夕) から',
+  'sun.goldenHour': 'ゴールデンアワー',
 
   // Sky Visibility
   'sky.title': '空',
@@ -335,6 +336,14 @@ const ja: Record<string, string> = {
   'sky.mostlyCloudy': ' 概ね曇り',
   'sky.overcast': ' 本曇り',
   'sky.clearest': '最も晴れた時間帯',
+  'sky.verdict.excellent': '優秀',
+  'sky.verdict.good': '良好',
+  'sky.verdict.fair': '普通',
+  'sky.verdict.poor': '不良',
+  'sky.verdict.excellent.desc': '星空観測とオーロラ狩りに最適な夜です。',
+  'sky.verdict.good.desc': 'ほぼ晴れています。今夜は外出する価値があります。',
+  'sky.verdict.fair.desc': '一部曇り。晴れ間が出るかもしれません。',
+  'sky.verdict.poor.desc': '曇りまたは雨。今夜は家にいた方が良いでしょう。',
 
   // Other
   'storm.quiet': '静穏',

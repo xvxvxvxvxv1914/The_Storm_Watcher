@@ -321,6 +321,7 @@ const ru: Record<string, string> = {
   'sun.daylight': 'Световой день',
   'sun.goldenMorning': 'Золотой час до',
   'sun.goldenEvening': 'Золотой час с',
+  'sun.goldenHour': 'Золотой час',
 
   // Sky Visibility
   'sky.title': 'Небо',
@@ -335,6 +336,14 @@ const ru: Record<string, string> = {
   'sky.mostlyCloudy': ' В основном облачно',
   'sky.overcast': ' Пасмурно',
   'sky.clearest': 'Наиболее ясный период',
+  'sky.verdict.excellent': 'Отлично',
+  'sky.verdict.good': 'Хорошо',
+  'sky.verdict.fair': 'Удовлетворительно',
+  'sky.verdict.poor': 'Плохо',
+  'sky.verdict.excellent.desc': 'Идеальная ночь для наблюдения звёзд и авроры.',
+  'sky.verdict.good.desc': 'Преимущественно ясно. Стоит выйти сегодня вечером.',
+  'sky.verdict.fair.desc': 'Переменная облачность. Возможны просветы.',
+  'sky.verdict.poor.desc': 'Облачно или дождливо. Лучше остаться дома.',
 
   // Other
   'storm.quiet': 'СПОКОЙНО',

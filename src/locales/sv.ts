@@ -436,6 +436,7 @@ const sv: Record<string, string> = {
   'sun.daylight': 'Dagsljus',
   'sun.goldenMorning': 'Gyllene timme till',
   'sun.goldenEvening': 'Gyllene timme från',
+  'sun.goldenHour': 'Gyllene timmen',
 
   'sky.title': 'Himmel',
   'sky.tonight': 'I kväll',
@@ -449,6 +450,14 @@ const sv: Record<string, string> = {
   'sky.mostlyCloudy': ' Mest molnigt',
   'sky.overcast': ' Mulet',
   'sky.clearest': 'Klaraste fönster',
+  'sky.verdict.excellent': 'Utmärkt',
+  'sky.verdict.good': 'Bra',
+  'sky.verdict.fair': 'Rimlig',
+  'sky.verdict.poor': 'Dålig',
+  'sky.verdict.excellent.desc': 'Perfekt natt för stjärnskådning och norrskensjakt.',
+  'sky.verdict.good.desc': 'Mestadels klart. Värt att gå ut ikväll.',
+  'sky.verdict.fair.desc': 'Delvis molnigt. Det kan öppna sig fönster.',
+  'sky.verdict.poor.desc': 'Molnigt eller regnigt. Bäst att stanna hemma.',
 
   'storm.quiet': 'LUGNT',
   'storm.unsettled': 'OROLIGT',

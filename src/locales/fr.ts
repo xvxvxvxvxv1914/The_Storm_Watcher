@@ -321,6 +321,7 @@ const fr: Record<string, string> = {
   'sun.daylight': 'Lumière du jour',
   'sun.goldenMorning': "Heure dorée jusqu'à",
   'sun.goldenEvening': 'Heure dorée à partir de',
+  'sun.goldenHour': 'Heure dorée',
 
   // Sky Visibility
   'sky.title': 'Ciel',
@@ -335,6 +336,14 @@ const fr: Record<string, string> = {
   'sky.mostlyCloudy': ' Plutôt nuageux',
   'sky.overcast': ' Couvert',
   'sky.clearest': 'Fenêtre la plus dégagée',
+  'sky.verdict.excellent': 'Excellent',
+  'sky.verdict.good': 'Bon',
+  'sky.verdict.fair': 'Passable',
+  'sky.verdict.poor': 'Mauvais',
+  'sky.verdict.excellent.desc': 'Nuit parfaite pour observer les étoiles et les aurores.',
+  'sky.verdict.good.desc': "Ciel principalement dégagé. Ça vaut le coup de sortir.",
+  'sky.verdict.fair.desc': "Partiellement nuageux. Des fenêtres peuvent s'ouvrir.",
+  'sky.verdict.poor.desc': 'Nuageux ou pluvieux. Mieux vaut rester chez soi.',
 
   // Other
   'storm.quiet': 'CALME',
