@@ -415,6 +415,7 @@ const fi: Record<string, string> = {
   'iss.speed': 'Nopeus',
   'iss.passesSubtitle': 'Seuraavat 7 päivää · vähintään 10° kohoamiskulma',
   'iss.noPasses': 'Ei näkyviä ohituksia seuraavan 7 päivän aikana.',
+  'iss.noPassesDesc': 'ISS:n rata ei aina vastaa sijaintiasi yöllä. Kokeile uudelleen muutaman päivän kuluttua tai päivitä sijaintisi Asetuksissa.',
   'iss.excellent': ' Erinomainen (60+)',
   'iss.good': ' Hyvä (30°+)',
   'iss.low': ' Matala (10°+)',

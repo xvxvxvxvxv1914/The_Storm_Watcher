@@ -306,6 +306,7 @@ const ja: Record<string, string> = {
   'iss.speed': '速度',
   'iss.passesSubtitle': '今後7日間 · 最小仰角 10°',
   'iss.noPasses': '今後7日間に目視可能な通過はありません。',
+  'iss.noPassesDesc': 'ISSの軌道が夜間にあなたの場所に一致しないことがあります。数日後に再確認するか、設定で場所を更新してください。',
   'iss.excellent': ' 良好 (60°+)',
   'iss.good': ' 普通 (30°+)',
   'iss.low': ' 低い (10°+)',

@@ -306,6 +306,7 @@ const de: Record<string, string> = {
   'iss.speed': 'Geschwindigkeit',
   'iss.passesSubtitle': 'Nächste 7 Tage · mind. 10° Höhe',
   'iss.noPasses': 'Keine sichtbaren Überflüge in den nächsten 7 Tagen.',
+  'iss.noPassesDesc': 'Die ISS-Umlaufbahn stimmt nicht immer mit Ihrem Standort nachts überein. Versuche es in ein paar Tagen erneut oder aktualisiere deinen Standort in den Einstellungen.',
   'iss.excellent': ' Hervorragend (60°+)',
   'iss.good': ' Gut (30°+)',
   'iss.low': ' Gering (10°+)',

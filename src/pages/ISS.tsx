@@ -59,6 +59,8 @@ const ISS = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const defaultLocationLabel = t('uv.defaultLocation') || 'Sofia, Bulgaria (default)';
+
   // Pass predictions + reverse geocode — run once on mount only.
   useEffect(() => {
     let mounted = true;
@@ -84,12 +86,12 @@ const ISS = () => {
     } else {
       navigator.geolocation?.getCurrentPosition(
         (pos) => load(pos.coords.latitude, pos.coords.longitude),
-        () => { load(42.7, 23.3); if (mounted) setLocationName('Sofia, Bulgaria (default)'); },
+        () => { load(42.7, 23.3); if (mounted) setLocationName(defaultLocationLabel); },
       );
     }
 
     return () => { mounted = false; };
-  }, [settings.preferredLat, settings.preferredLon, settings.preferredLocationName]);
+  }, [settings.preferredLat, settings.preferredLon, settings.preferredLocationName, defaultLocationLabel]);
 
   const getElevationColor = (el: number) => {
     if (el >= 60) return '#10b981';
@@ -202,7 +204,7 @@ const ISS = () => {
               <Satellite className="w-10 h-10 text-[#334155] mx-auto mb-3" />
               <p className="text-[#94a3b8] text-sm font-semibold mb-1">{t('iss.noPasses') || 'No visible passes in the next 7 days'}</p>
               <p className="text-[#475569] text-xs max-w-xs mx-auto leading-relaxed">
-                The ISS orbit doesn't always align with your location at night. Try checking again in a few days, or update your location in Settings.
+                {t('iss.noPassesDesc') || "The ISS orbit doesn't always align with your location at night. Try checking again in a few days, or update your location in Settings."}
               </p>
             </div>
           ) : (

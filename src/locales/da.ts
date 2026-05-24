@@ -415,6 +415,7 @@ const da: Record<string, string> = {
   'iss.speed': 'Hastighed',
   'iss.passesSubtitle': 'Næste 7 dage · minimum elevation 10°',
   'iss.noPasses': 'Ingen synlige passager de næste 7 dage.',
+  'iss.noPassesDesc': 'ISS-banen stemmer ikke altid overens med din placering om natten. Prøv igen om et par dage, eller opdater din placering i Indstillinger.',
   'iss.excellent': ' Fremragende (60+)',
   'iss.good': ' Godt (30°+)',
   'iss.low': ' Lav (10°+)',

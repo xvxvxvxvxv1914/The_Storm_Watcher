@@ -415,6 +415,7 @@ const pl: Record<string, string> = {
   'iss.speed': 'Prędkość',
   'iss.passesSubtitle': 'Następne 7 dni · minimalna elewacja 10°',
   'iss.noPasses': 'Brak widocznych przelotów w ciągu 7 dni.',
+  'iss.noPassesDesc': 'Orbita ISS nie zawsze pokrywa się z twoją lokalizacją w nocy. Spróbuj ponownie za kilka dni lub zaktualizuj swoją lokalizację w Ustawieniach.',
   'iss.excellent': ' Doskonały (60+)',
   'iss.good': ' Dobry (30°+)',
   'iss.low': ' Niski (10°+)',

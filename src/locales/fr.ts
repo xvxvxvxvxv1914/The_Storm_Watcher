@@ -306,6 +306,7 @@ const fr: Record<string, string> = {
   'iss.speed': 'Vitesse',
   'iss.passesSubtitle': 'Prochains 7 jours · élévation min. 10°',
   'iss.noPasses': 'Aucun passage visible dans les 7 prochains jours.',
+  'iss.noPassesDesc': 'L\'orbite de l\'ISS ne s\'aligne pas toujours avec votre position la nuit. Réessayez dans quelques jours ou mettez à jour votre emplacement dans Paramètres.',
   'iss.excellent': ' Excellent (60°+)',
   'iss.good': ' Bon (30°+)',
   'iss.low': ' Faible (10°+)',

@@ -306,6 +306,7 @@ const zh: Record<string, string> = {
   'iss.speed': '速度',
   'iss.passesSubtitle': '未来7天 · 最低高度角 10°',
   'iss.noPasses': '未来7天无可见过境。',
+  'iss.noPassesDesc': '国际空间站的轨道并不总与您夜间位置对齐。几天后再次检查，或在设置中更新您的位置。',
   'iss.excellent': ' 极佳 (60°+)',
   'iss.good': ' 良好 (30°+)',
   'iss.low': ' 较低 (10°+)',

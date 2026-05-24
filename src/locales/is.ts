@@ -415,6 +415,7 @@ const is_: Record<string, string> = {
   'iss.speed': 'Hraði',
   'iss.passesSubtitle': 'Næstu 7 dagar · lágmarks hæðarhorn 10°',
   'iss.noPasses': 'Engar sýnilegar yfirflugnar næstu 7 daga.',
+  'iss.noPassesDesc': 'Braut ISS samræmist ekki alltaf staðsetningu þinni á nóttunni. Prófaðu aftur eftir nokkra daga eða uppfærðu staðsetningu þína í Stillingar.',
   'iss.excellent': ' Framúrskarandi (60+)',
   'iss.good': ' Góð (30°+)',
   'iss.low': ' Lítil (10°+)',

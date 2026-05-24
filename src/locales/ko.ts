@@ -283,6 +283,7 @@ const ko: Record<string, string> = {
   'iss.speed': '속도',
   'iss.passesSubtitle': '다음 7일 · 최소 고도 10°',
   'iss.noPasses': '다음 7일 동안 가시 통과 없음.',
+  'iss.noPassesDesc': 'ISS 궤도는 항상 밤에 당신의 위치와 일치하지 않습니다. 며칠 후 다시 확인하거나 설정에서 위치를 업데이트하세요.',
   'iss.excellent': ' 탁월 (60°+)',
   'iss.good': ' 좋음 (30°+)',
   'iss.low': ' 낮음 (10°+)',

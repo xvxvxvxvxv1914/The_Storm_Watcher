@@ -311,6 +311,7 @@ const en: Record<string, string> = {
   'iss.speed': 'Speed',
   'iss.passesSubtitle': 'Next 7 days · minimum elevation 10°',
   'iss.noPasses': 'No visible passes in the next 7 days.',
+  'iss.noPassesDesc': 'The ISS orbit doesn\'t always align with your location at night. Try checking again in a few days, or update your location in Settings.',
   'iss.excellent': ' Excellent (60+)',
   'iss.good': ' Good (30°+)',
   'iss.low': ' Low (10°+)',

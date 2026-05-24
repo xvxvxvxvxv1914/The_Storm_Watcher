@@ -415,6 +415,7 @@ const no: Record<string, string> = {
   'iss.speed': 'Hastighet',
   'iss.passesSubtitle': 'Neste 7 dager · minimum elevasjon 10°',
   'iss.noPasses': 'Ingen synlige passeringer de neste 7 dagene.',
+  'iss.noPassesDesc': 'ISS-banen stemmer ikke alltid med din plassering om natten. Prøv igjen om noen dager, eller oppdater din plassering i Innstillinger.',
   'iss.excellent': ' Utmerket (60+)',
   'iss.good': ' Bra (30°+)',
   'iss.low': ' Lav (10°+)',
