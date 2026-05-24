@@ -136,6 +136,31 @@ for (const route of routes) {
       /<meta name="description" content="[^"]*"/,
       `<meta name="description" content="${escapedDesc}"`
     )
+    // Replace OG title
+    .replace(
+      /<meta property="og:title" content="[^"]*"/,
+      `<meta property="og:title" content="${escapedTitle}"`
+    )
+    // Replace OG description
+    .replace(
+      /<meta property="og:description" content="[^"]*"/,
+      `<meta property="og:description" content="${escapedDesc}"`
+    )
+    // Replace OG URL
+    .replace(
+      /<meta property="og:url" content="[^"]*"/,
+      `<meta property="og:url" content="${canonical}"`
+    )
+    // Replace Twitter title
+    .replace(
+      /<meta name="twitter:title" content="[^"]*"/,
+      `<meta name="twitter:title" content="${escapedTitle}"`
+    )
+    // Replace Twitter description
+    .replace(
+      /<meta name="twitter:description" content="[^"]*"/,
+      `<meta name="twitter:description" content="${escapedDesc}"`
+    )
     // Replace or insert canonical (index.html already has one for /)
     .replace(
       /<link rel="canonical" href="[^"]*"/,
