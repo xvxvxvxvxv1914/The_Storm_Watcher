@@ -765,6 +765,11 @@ const zh: Record<string, string> = {
   'gallery.filter.month': '过去一个月',
   'gallery.filter.year': '过去一年',
   'gallery.noInRange': '此范围内没有照片',
+  'pricing.tryProFree': '免费试用Pro 14天',
+  'pricing.trialBadge': '14天免费试用',
+  'trial.active': '试用中',
+  'trial.banner': '您的Pro试用将在{days}天后到期',
+  'trial.upgradeNow': '立即升级',
 };
 
 export default zh;

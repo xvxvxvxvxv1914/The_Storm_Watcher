@@ -765,6 +765,11 @@ const ja: Record<string, string> = {
   'gallery.filter.month': '先月',
   'gallery.filter.year': '昨年',
   'gallery.noInRange': 'この範囲に写真はありません',
+  'pricing.tryProFree': '14日間無料でProを試す',
+  'pricing.trialBadge': '14日間無料トライアル',
+  'trial.active': 'トライアル中',
+  'trial.banner': 'Proトライアルはあと{days}日で終了します',
+  'trial.upgradeNow': '今すぐアップグレード',
 };
 
 export default ja;

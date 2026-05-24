@@ -795,6 +795,11 @@ const en: Record<string, string> = {
   'gallery.filter.month': 'Past month',
   'gallery.filter.year': 'Past year',
   'gallery.noInRange': 'No photos in this range',
+  'pricing.tryProFree': 'Try Pro free for 14 days',
+  'pricing.trialBadge': '14-day free trial',
+  'trial.active': 'Trial active',
+  'trial.banner': 'Your Pro trial ends in {days} days',
+  'trial.upgradeNow': 'Upgrade now',
 };
 
 export default en;

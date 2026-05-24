@@ -795,6 +795,11 @@ const ko: Record<string, string> = {
   'gallery.filter.month': '지난 달',
   'gallery.filter.year': '지난 해',
   'gallery.noInRange': '이 범위에 사진이 없습니다',
+  'pricing.tryProFree': '14일 무료 Pro 체험',
+  'pricing.trialBadge': '14일 무료 체험',
+  'trial.active': '체험 중',
+  'trial.banner': 'Pro 체험이 {days}일 후 종료됩니다',
+  'trial.upgradeNow': '지금 업그레이드',
 };
 
 export default ko;

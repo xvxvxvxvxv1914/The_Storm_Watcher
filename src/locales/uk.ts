@@ -757,6 +757,11 @@ const uk: Record<string, string> = {
   'gallery.filter.month': 'Минулий місяць',
   'gallery.filter.year': 'Минулий рік',
   'gallery.noInRange': 'Немає фото в цьому діапазоні',
+  'pricing.tryProFree': 'Спробуйте Pro безкоштовно 14 днів',
+  'pricing.trialBadge': '14-денний безкоштовний пробний період',
+  'trial.active': 'Пробний період активний',
+  'trial.banner': 'Ваш пробний період Pro закінчується через {days} днів',
+  'trial.upgradeNow': 'Оновити зараз',
 };
 
 export default uk;

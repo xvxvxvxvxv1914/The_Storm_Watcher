@@ -18,7 +18,10 @@ const PlanGuard = ({ requiredPlan, children }: PlanGuardProps) => {
 
   const paymentsEnabled = import.meta.env.VITE_PAYMENTS_ENABLED === 'true';
   const userPlan: Plan = profile?.plan ?? 'free';
-  const hasAccess = !paymentsEnabled || PLAN_RANK[userPlan] >= PLAN_RANK[requiredPlan];
+  // Trialing users get Pro access even if plan field wasn't updated yet
+  const isTrialing = profile?.subscription_status === 'trialing';
+  const effectivePlan: Plan = (isTrialing && PLAN_RANK[userPlan] < PLAN_RANK['pro']) ? 'pro' : userPlan;
+  const hasAccess = !paymentsEnabled || PLAN_RANK[effectivePlan] >= PLAN_RANK[requiredPlan];
 
   if (hasAccess) return <>{children}</>;
 

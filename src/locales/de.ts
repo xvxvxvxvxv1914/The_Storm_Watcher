@@ -768,6 +768,11 @@ const de: Record<string, string> = {
   'gallery.filter.month': 'Letzter Monat',
   'gallery.filter.year': 'Letztes Jahr',
   'gallery.noInRange': 'Keine Fotos in diesem Zeitraum',
+  'pricing.tryProFree': 'Pro 14 Tage kostenlos testen',
+  'pricing.trialBadge': '14-Tage-Gratistest',
+  'trial.active': 'Testphase aktiv',
+  'trial.banner': 'Deine Pro-Testphase endet in {days} Tagen',
+  'trial.upgradeNow': 'Jetzt upgraden',
 };
 
 export default de;

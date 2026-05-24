@@ -24,6 +24,7 @@ import InstallPrompt from './components/InstallPrompt';
 import SplashAnimation from './components/SplashAnimation';
 import LocationPrompt, { useLocationPromptVisible } from './components/LocationPrompt';
 import KpAlertPrompt from './components/KpAlertPrompt';
+import TrialBanner from './components/TrialBanner';
 
 const LoadingFallback = () => {
   const { t } = useLanguage();
@@ -90,6 +91,7 @@ function AppRoutes() {
       </a>
       <HreflangTags />
       <Navigation />
+      <TrialBanner />
       <main id="main" className="pt-[env(safe-area-inset-top)] pb-24 lg:pb-0">
       <ErrorBoundary>
         <Suspense fallback={<LoadingFallback />}>

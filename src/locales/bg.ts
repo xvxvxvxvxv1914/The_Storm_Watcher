@@ -788,6 +788,11 @@ const bg: Record<string, string> = {
   'gallery.filter.month': 'Изминал месец',
   'gallery.filter.year': 'Изминала година',
   'gallery.noInRange': 'Няма снимки в този период',
+  'pricing.tryProFree': 'Изпробвай Pro безплатно за 14 дни',
+  'pricing.trialBadge': '14-дневен безплатен пробен период',
+  'trial.active': 'Активен пробен период',
+  'trial.banner': 'Твоят Pro пробен период изтича след {days} дни',
+  'trial.upgradeNow': 'Надгради сега',
 };
 
 export default bg;

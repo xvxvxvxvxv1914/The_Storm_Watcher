@@ -757,6 +757,11 @@ const is_: Record<string, string> = {
   'gallery.filter.month': 'Síðustu mánuði',
   'gallery.filter.year': 'Síðustu ári',
   'gallery.noInRange': 'Engar myndir á þessu bili',
+  'pricing.tryProFree': 'Prófaðu Pro ókeypis í 14 daga',
+  'pricing.trialBadge': '14 daga ókeypis prufutímabil',
+  'trial.active': 'Prufutímabil virkt',
+  'trial.banner': 'Pro-prufutímabilið þitt rennur út eftir {days} daga',
+  'trial.upgradeNow': 'Uppfæra núna',
 };
 
 export default is_;

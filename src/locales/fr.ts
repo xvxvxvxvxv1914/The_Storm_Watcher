@@ -765,6 +765,11 @@ const fr: Record<string, string> = {
   'gallery.filter.month': 'Mois dernier',
   'gallery.filter.year': 'Année dernière',
   'gallery.noInRange': 'Aucune photo dans cette plage',
+  'pricing.tryProFree': 'Essayez Pro gratuitement pendant 14 jours',
+  'pricing.trialBadge': 'Essai gratuit de 14 jours',
+  'trial.active': 'Essai actif',
+  'trial.banner': 'Votre essai Pro se termine dans {days} jours',
+  'trial.upgradeNow': 'Mettre à niveau',
 };
 
 export default fr;

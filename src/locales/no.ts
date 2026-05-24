@@ -757,6 +757,11 @@ const no: Record<string, string> = {
   'gallery.filter.month': 'Forrige måned',
   'gallery.filter.year': 'Forrige år',
   'gallery.noInRange': 'Ingen bilder i dette området',
+  'pricing.tryProFree': 'Prøv Pro gratis i 14 dager',
+  'pricing.trialBadge': '14-dagers gratis prøveperiode',
+  'trial.active': 'Prøveperiode aktiv',
+  'trial.banner': 'Pro-prøveperioden din utløper om {days} dager',
+  'trial.upgradeNow': 'Oppgrader nå',
 };
 
 export default no;

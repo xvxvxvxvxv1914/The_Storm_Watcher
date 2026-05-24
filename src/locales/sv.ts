@@ -757,6 +757,11 @@ const sv: Record<string, string> = {
   'gallery.filter.month': 'Senaste månaden',
   'gallery.filter.year': 'Senaste året',
   'gallery.noInRange': 'Inga foton i detta intervall',
+  'pricing.tryProFree': 'Prova Pro gratis i 14 dagar',
+  'pricing.trialBadge': '14-dagars gratis provperiod',
+  'trial.active': 'Provperiod aktiv',
+  'trial.banner': 'Din Pro-provperiod löper ut om {days} dagar',
+  'trial.upgradeNow': 'Uppgradera nu',
 };
 
 export default sv;

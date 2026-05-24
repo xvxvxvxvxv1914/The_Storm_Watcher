@@ -765,6 +765,11 @@ const ru: Record<string, string> = {
   'gallery.filter.month': 'Прошлый месяц',
   'gallery.filter.year': 'Прошлый год',
   'gallery.noInRange': 'Нет фото в этом диапазоне',
+  'pricing.tryProFree': 'Попробуйте Pro бесплатно 14 дней',
+  'pricing.trialBadge': '14-дневный бесплатный пробный период',
+  'trial.active': 'Пробный период активен',
+  'trial.banner': 'Ваш пробный период Pro истекает через {days} дней',
+  'trial.upgradeNow': 'Обновить сейчас',
 };
 
 export default ru;

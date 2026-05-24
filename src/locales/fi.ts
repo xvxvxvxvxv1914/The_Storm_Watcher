@@ -757,6 +757,11 @@ const fi: Record<string, string> = {
   'gallery.filter.month': 'Viime kuukausi',
   'gallery.filter.year': 'Viime vuosi',
   'gallery.noInRange': 'Ei kuvia tällä aikavälillä',
+  'pricing.tryProFree': 'Kokeile Prota ilmaiseksi 14 päivää',
+  'pricing.trialBadge': '14 päivän ilmainen kokeilujakso',
+  'trial.active': 'Kokeilujakso aktiivinen',
+  'trial.banner': 'Pro-kokeilujaksosi päättyy {days} päivässä',
+  'trial.upgradeNow': 'Päivitä nyt',
 };
 
 export default fi;
