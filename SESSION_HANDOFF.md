@@ -1,3 +1,58 @@
+# Session Handoff — 2026-05-24 (сесия 2)
+
+> Последна сесия: 2026-05-24 (продължение). Предишна сесия: 2026-05-23/24 (виж архив по-долу).
+
+---
+
+## ✅ Какво беше направено в сесия 2026-05-24 (продължение)
+
+### Free Trial UI (14-day Pro)
+- **`api/stripe/webhook.ts`** — Бъг fix: `status=trialing` вече дава `plan: 'pro'` (преди даваше `'free'`)
+- **`api/stripe/create-checkout-session.ts`** — `trial_period_days: 14` за Pro цени (Monthly + Yearly)
+- **`src/components/PlanGuard.tsx`** — Safety fallback: trialing → Pro достъп дори ако plan полето е грешно
+- **`src/components/TrialBanner.tsx`** — Нов: тънък банер показва дни оставащи от trial
+- **`src/pages/Pricing.tsx`** — "Try Pro free for 14 days" CTA + "14-day free trial" badge на Pro карта
+- **`src/App.tsx`** — TrialBanner добавен под Navigation
+- **16 локала** — Нови ключове: `pricing.tryProFree`, `pricing.trialBadge`, `trial.*`
+
+### Aurora Visibility Heatmap
+- **`src/components/AuroraHeatmap.tsx`** — Нов: Leaflet MapContainer с canvas ImageOverlay
+  показващ глобална aurora видимост по текущ Kp (emerald → yellow → near-white)
+- **`src/pages/Aurora.tsx`** — Heatmap секция с легенда между city list и Visibility Checklist
+- **16 локала** — `aurora.heatmap.*` ключове
+
+### Payment Success Toast (Dashboard)
+- **`src/pages/Dashboard.tsx`** — Toast при `?payment=success` от Stripe checkout
+  Показва "Trial started!" или "You're now on Pro!" в зависимост от subscription_status
+- **16 локала** — `payment.*` ключове
+
+### Profile — Trial Info
+- **`src/pages/Profile.tsx`** — "Trial active" badge + дни оставащи
+- Fix: `subscription_period_end` беше `ISO string * 1000` = NaN → `new Date(isoString)` директно
+- Trialing потребители виждат "Manage subscription" бутон
+
+### SEO Prerender — 21 маршрута (беше 10)
+- **`scripts/prerender-meta.mjs`** — Добавени 11 нови: `/aurora`, `/dashboard`, `/forecast`,
+  `/alerts`, `/pricing`, `/calendar`, `/gallery`, `/iss`, `/mood`, `/livestream`
+- Всеки с оптимизиран title + description за Google
+
+### Payment Cancelled UX
+- **`src/pages/Pricing.tsx`** — Banner при `?payment=cancelled` от Stripe
+- **16 локала** — `payment.cancelled`
+
+### Home Page — Trial CTA
+- Hero секция: "Try Pro free for 14 days — no credit card required" link → /pricing
+- "Global Map + Aurora Oval" карта вече линкира към `/aurora` (преди беше мъртъв div)
+- **16 локала** — `home.noCC`
+
+### Git state след сесия 2026-05-24
+| Branch | HEAD | Статус |
+|--------|------|--------|
+| `main` | `7077586` | ⚠️ НЕ Е ОБНОВЕН — потребителят тества staging първо |
+| `staging` | `5841aaf` | ✅ Актуален — всички промени от двете сесии |
+
+---
+
 # Session Handoff — 2026-05-23/24
 
 > Последна сесия: 2026-05-23/24. Предишна сесия: 2026-05-21 (виж архив по-долу).
