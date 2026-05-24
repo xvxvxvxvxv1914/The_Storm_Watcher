@@ -783,6 +783,7 @@ const zh: Record<string, string> = {
   'payment.subscriptionDesc': '完整Pro访问已解锁。尽情享受！',
   'payment.dismiss': '关闭',
   'payment.cancelled': '付款已取消 — 未产生任何费用。选择一个计划以继续。',
+  'home.noCC': '— 无需信用卡',
 };
 
 export default zh;

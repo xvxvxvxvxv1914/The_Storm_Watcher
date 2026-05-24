@@ -806,6 +806,7 @@ const bg: Record<string, string> = {
   'payment.subscriptionDesc': 'Пълен Pro достъп е отключен. Наслади се!',
   'payment.dismiss': 'Затвори',
   'payment.cancelled': 'Плащането е отказано — не е направена такса. Изберете план за да продължите.',
+  'home.noCC': '— не се изисква кредитна карта',
 };
 
 export default bg;

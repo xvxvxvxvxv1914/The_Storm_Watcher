@@ -783,6 +783,7 @@ const fr: Record<string, string> = {
   'payment.subscriptionDesc': "L'accès Pro complet est déverrouillé. Profitez-en !",
   'payment.dismiss': 'Fermer',
   'payment.cancelled': 'Paiement annulé — aucun frais facturé. Choisissez un plan pour continuer.',
+  'home.noCC': '— sans carte de crédit',
 };
 
 export default fr;

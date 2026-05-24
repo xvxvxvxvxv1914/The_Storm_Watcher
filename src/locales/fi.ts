@@ -775,6 +775,7 @@ const fi: Record<string, string> = {
   'payment.subscriptionDesc': 'Täysi Pro-pääsy on nyt avattu. Nauti!',
   'payment.dismiss': 'Sulje',
   'payment.cancelled': 'Maksu peruutettu — ei maksuja veloitettu. Valitse paketti jatkaaksesi.',
+  'home.noCC': '— ei luottokorttia tarvita',
 };
 
 export default fi;

@@ -775,6 +775,7 @@ const uk: Record<string, string> = {
   'payment.subscriptionDesc': 'Повний Pro доступ розблоковано. Насолоджуйтесь!',
   'payment.dismiss': 'Закрити',
   'payment.cancelled': 'Оплату скасовано — плата не знімалась. Оберіть план, щоб продовжити.',
+  'home.noCC': '— кредитна карта не потрібна',
 };
 
 export default uk;

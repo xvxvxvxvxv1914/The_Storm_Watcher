@@ -783,6 +783,7 @@ const ru: Record<string, string> = {
   'payment.subscriptionDesc': 'Полный Pro доступ разблокирован. Наслаждайтесь!',
   'payment.dismiss': 'Закрыть',
   'payment.cancelled': 'Платёж отменён — плата не взималась. Выберите план, чтобы продолжить.',
+  'home.noCC': '— без кредитной карты',
 };
 
 export default ru;

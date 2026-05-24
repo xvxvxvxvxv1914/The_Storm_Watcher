@@ -775,6 +775,7 @@ const sv: Record<string, string> = {
   'payment.subscriptionDesc': 'Fullständig Pro-åtkomst är nu upplåst. Njut!',
   'payment.dismiss': 'Stäng',
   'payment.cancelled': 'Betalning avbruten — inga avgifter togs ut. Välj ett paket för att fortsätta.',
+  'home.noCC': '— inget kreditkort krävs',
 };
 
 export default sv;

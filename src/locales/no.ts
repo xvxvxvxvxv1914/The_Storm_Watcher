@@ -775,6 +775,7 @@ const no: Record<string, string> = {
   'payment.subscriptionDesc': 'Full Pro-tilgang er nå låst opp. Nyt det!',
   'payment.dismiss': 'Lukk',
   'payment.cancelled': 'Betaling kansellert — ingen betaling belastet. Velg en plan for å fortsette.',
+  'home.noCC': '— ingen kredittkort nødvendig',
 };
 
 export default no;

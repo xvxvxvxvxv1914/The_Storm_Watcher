@@ -360,7 +360,7 @@ const Home = () => {
               {t('home.hero.desc')}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
               <Link
                 to="/auth"
                 className="px-8 py-4 bg-gradient-to-r from-[#f97316] to-[#ef4444] text-white rounded-lg font-bold uppercase tracking-wider hover:scale-105 transition-transform glow-orange"
@@ -372,6 +372,16 @@ const Home = () => {
                 className="px-8 py-4 glass-surface text-white rounded-lg font-bold uppercase tracking-wider hover:glow-orange transition-all border border-white/10"
               >
                 {t('home.hero.viewMap')}
+              </Link>
+            </div>
+            <div className="flex justify-center mb-8">
+              <Link
+                to="/pricing"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-[#f97316] hover:text-[#fbbf24] transition-colors group"
+              >
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#f97316] group-hover:scale-125 transition-transform" />
+                {t('pricing.tryProFree') || 'Try Pro free for 14 days'}
+                <span className="text-[#64748b] font-normal">{t('home.noCC') || '— no credit card required'}</span>
               </Link>
             </div>
 

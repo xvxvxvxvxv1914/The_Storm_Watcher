@@ -783,6 +783,7 @@ const ja: Record<string, string> = {
   'payment.subscriptionDesc': 'Proアクセスが解放されました。お楽しみください！',
   'payment.dismiss': '閉じる',
   'payment.cancelled': 'お支払いがキャンセルされました — 料金は発生しません。続けるにはプランを選択してください。',
+  'home.noCC': '— クレジットカード不要',
 };
 
 export default ja;
