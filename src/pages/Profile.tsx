@@ -54,6 +54,7 @@ export default function Profile() {
   const isPremium = plan === 'premium';
   const isPaid = isPro || isPremium;
   const isTrialing = profile?.subscription_status === 'trialing';
+  const isPastDue = profile?.subscription_status === 'past_due';
 
   const planColor = isPremium ? '#a855f7' : isPro ? '#f97316' : '#10b981';
   const PlanIcon = isPremium ? Star : isPro ? Zap : null;
@@ -251,6 +252,12 @@ export default function Profile() {
                   {t('trial.active') || 'Trial active'}
                 </span>
               )}
+              {isPastDue && (
+                <span className="text-xs font-bold px-2 py-0.5 rounded-full"
+                  style={{ background: '#ef444422', color: '#ef4444' }}>
+                  {t('trial.paymentFailed') || 'Payment failed'}
+                </span>
+              )}
             </p>
             {isTrialing && trialDaysLeft !== null && (
               <p className="text-[#f97316] text-xs mt-1 font-medium">
@@ -263,7 +270,7 @@ export default function Profile() {
               </p>
             )}
           </div>
-          {(isPaid || isTrialing) ? (
+          {(isPaid || isTrialing || isPastDue) ? (
             <button
               onClick={openPortal}
               disabled={portalLoading}
