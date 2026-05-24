@@ -800,6 +800,8 @@ const en: Record<string, string> = {
   'trial.active': 'Trial active',
   'trial.banner': 'Your Pro trial ends in {days} days',
   'trial.upgradeNow': 'Upgrade now',
+  'trial.ended': 'Your Pro trial has ended.',
+  'trial.reactivate': 'Reactivate Pro',
   'aurora.heatmap.title': 'Global Aurora Visibility Map',
   'aurora.heatmap.desc': 'Real-time aurora visibility · Kp {kp}',
   'aurora.heatmap.legend': 'Visibility:',

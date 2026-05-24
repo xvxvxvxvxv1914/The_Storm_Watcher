@@ -762,6 +762,8 @@ const is_: Record<string, string> = {
   'trial.active': 'Prufutímabil virkt',
   'trial.banner': 'Pro-prufutímabilið þitt rennur út eftir {days} daga',
   'trial.upgradeNow': 'Uppfæra núna',
+  'trial.ended': 'Pro prufutímabilið þitt er lokið.',
+  'trial.reactivate': 'Endurvirkja Pro',
   'aurora.heatmap.title': 'Hnattrænt norðurljósasýnileikakort',
   'aurora.heatmap.desc': 'Norðurljósasýnileiki í rauntíma · Kp {kp}',
   'aurora.heatmap.legend': 'Sýnileiki:',

@@ -800,6 +800,8 @@ const ko: Record<string, string> = {
   'trial.active': '체험 중',
   'trial.banner': 'Pro 체험이 {days}일 후 종료됩니다',
   'trial.upgradeNow': '지금 업그레이드',
+  'trial.ended': 'Pro 체험 기간이 종료되었습니다.',
+  'trial.reactivate': 'Pro 재활성화',
   'aurora.heatmap.title': '전 세계 오로라 가시성 지도',
   'aurora.heatmap.desc': '실시간 오로라 가시성 · Kp {kp}',
   'aurora.heatmap.legend': '가시성:',

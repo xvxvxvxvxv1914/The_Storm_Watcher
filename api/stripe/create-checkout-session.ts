@@ -64,6 +64,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       .eq('id', user.id);
   }
 
+  const isProTrial = PRO_PRICES.has(priceId);
+
   const session = await stripe.checkout.sessions.create({
     customer: customerId,
     mode: 'subscription',
@@ -72,9 +74,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     success_url: `${APP_URL}/dashboard?payment=success`,
     cancel_url: `${APP_URL}/pricing?payment=cancelled`,
     metadata: { supabase_user_id: user.id },
+    // No card required upfront for Pro trials — charged only after 14 days
+    ...(isProTrial ? { payment_method_collection: 'if_required' } : {}),
     subscription_data: {
       metadata: { supabase_user_id: user.id },
-      ...(PRO_PRICES.has(priceId) ? { trial_period_days: 14 } : {}),
+      ...(isProTrial ? {
+        trial_period_days: 14,
+        trial_settings: { end_behavior: { missing_payment_method: 'cancel' } },
+      } : {}),
     },
   }, {
     idempotencyKey: `checkout-${user.id}-${priceId}-${Math.floor(Date.now() / 60_000)}`,

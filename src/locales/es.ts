@@ -770,6 +770,8 @@ const es: Record<string, string> = {
   'trial.active': 'Prueba activa',
   'trial.banner': 'Tu prueba de Pro termina en {days} días',
   'trial.upgradeNow': 'Actualizar ahora',
+  'trial.ended': 'Tu prueba Pro ha terminado.',
+  'trial.reactivate': 'Reactivar Pro',
   'aurora.heatmap.title': 'Mapa global de visibilidad de auroras',
   'aurora.heatmap.desc': 'Visibilidad de auroras en tiempo real · Kp {kp}',
   'aurora.heatmap.legend': 'Visibilidad:',

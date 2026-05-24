@@ -770,6 +770,8 @@ const ru: Record<string, string> = {
   'trial.active': 'Пробный период активен',
   'trial.banner': 'Ваш пробный период Pro истекает через {days} дней',
   'trial.upgradeNow': 'Обновить сейчас',
+  'trial.ended': 'Ваш Pro-пробный период закончился.',
+  'trial.reactivate': 'Восстановить Pro',
   'aurora.heatmap.title': 'Глобальная карта видимости авроры',
   'aurora.heatmap.desc': 'Видимость авроры в реальном времени · Kp {kp}',
   'aurora.heatmap.legend': 'Видимость:',

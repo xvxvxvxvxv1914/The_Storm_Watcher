@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import PageMeta from '../components/PageMeta';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { track } from '@vercel/analytics';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -38,6 +38,8 @@ export default function Auth() {
   const [confirmationSent, setConfirmationSent] = useState(false);
   const [resetSent, setResetSent] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const redirectTo = (location.state as { from?: string } | null)?.from ?? '/dashboard';
   const { signIn, signUp, signOut, resetPassword } = useAuth();
   const { t } = useLanguage();
 
@@ -65,7 +67,7 @@ export default function Auth() {
       } else {
         const { error } = await signIn(email, password);
         if (error) setError(error.message);
-        else { track('login_success', { method: 'email' }); navigate('/dashboard'); }
+        else { track('login_success', { method: 'email' }); navigate(redirectTo, { replace: true }); }
       }
     } catch {
       setError(t('auth.error'));

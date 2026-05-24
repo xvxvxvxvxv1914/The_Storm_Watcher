@@ -770,6 +770,8 @@ const zh: Record<string, string> = {
   'trial.active': '试用中',
   'trial.banner': '您的Pro试用将在{days}天后到期',
   'trial.upgradeNow': '立即升级',
+  'trial.ended': '您的Pro试用已结束。',
+  'trial.reactivate': '重新激活Pro',
   'aurora.heatmap.title': '全球极光可见性地图',
   'aurora.heatmap.desc': '实时极光可见性 · Kp {kp}',
   'aurora.heatmap.legend': '可见性：',

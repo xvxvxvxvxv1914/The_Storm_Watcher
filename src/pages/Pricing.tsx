@@ -61,7 +61,7 @@ export default function Pricing() {
   const isTrialing = subscriptionStatus === 'trialing';
 
   async function subscribe(plan: 'pro' | 'premium') {
-    if (!user) { navigate('/auth'); return; }
+    if (!user) { navigate('/auth', { state: { from: '/pricing' } }); return; }
     setError('');
     setLoading(plan);
     try {

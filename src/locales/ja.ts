@@ -770,6 +770,8 @@ const ja: Record<string, string> = {
   'trial.active': 'トライアル中',
   'trial.banner': 'Proトライアルはあと{days}日で終了します',
   'trial.upgradeNow': '今すぐアップグレード',
+  'trial.ended': 'Proトライアルが終了しました。',
+  'trial.reactivate': 'Proを再開',
   'aurora.heatmap.title': 'グローバルオーロラ視認性マップ',
   'aurora.heatmap.desc': 'リアルタイムオーロラ視認性 · Kp {kp}',
   'aurora.heatmap.legend': '視認性：',

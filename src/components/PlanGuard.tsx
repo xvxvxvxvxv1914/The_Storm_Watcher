@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Lock, Sparkles } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -15,6 +15,7 @@ const PLAN_RANK: Record<Plan, number> = { free: 0, pro: 1, premium: 2 };
 const PlanGuard = ({ requiredPlan, children }: PlanGuardProps) => {
   const { user, profile } = useAuth();
   const { t } = useLanguage();
+  const location = useLocation();
 
   const paymentsEnabled = import.meta.env.VITE_PAYMENTS_ENABLED === 'true';
   const userPlan: Plan = profile?.plan ?? 'free';
@@ -66,6 +67,7 @@ const PlanGuard = ({ requiredPlan, children }: PlanGuardProps) => {
           {!user ? (
             <Link
               to="/auth"
+              state={{ from: location.pathname }}
               className="block w-full py-3 rounded-lg font-bold text-white transition-all hover:scale-105 hover:shadow-lg"
               style={{ background: `linear-gradient(to right, ${gradientFrom}, ${gradientTo})`, boxShadow: `0 0 0 0 ${gradientFrom}` }}
             >

@@ -793,6 +793,8 @@ const bg: Record<string, string> = {
   'trial.active': 'Активен пробен период',
   'trial.banner': 'Твоят Pro пробен период изтича след {days} дни',
   'trial.upgradeNow': 'Надгради сега',
+  'trial.ended': 'Твоят Pro пробен период е изтекъл.',
+  'trial.reactivate': 'Активирай Pro отново',
   'aurora.heatmap.title': 'Глобална карта на видимост на аврора',
   'aurora.heatmap.desc': 'Видимост в реално време · Kp {kp}',
   'aurora.heatmap.legend': 'Видимост:',

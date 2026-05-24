@@ -762,6 +762,8 @@ const no: Record<string, string> = {
   'trial.active': 'Prøveperiode aktiv',
   'trial.banner': 'Pro-prøveperioden din utløper om {days} dager',
   'trial.upgradeNow': 'Oppgrader nå',
+  'trial.ended': 'Pro-prøveperioden din er avsluttet.',
+  'trial.reactivate': 'Gjenaktiver Pro',
   'aurora.heatmap.title': 'Globalt nordlyskart',
   'aurora.heatmap.desc': 'Nordlyssiktbarhet i sanntid · Kp {kp}',
   'aurora.heatmap.legend': 'Siktbarhet:',

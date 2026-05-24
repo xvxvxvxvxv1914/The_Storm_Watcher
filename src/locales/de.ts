@@ -773,6 +773,8 @@ const de: Record<string, string> = {
   'trial.active': 'Testphase aktiv',
   'trial.banner': 'Deine Pro-Testphase endet in {days} Tagen',
   'trial.upgradeNow': 'Jetzt upgraden',
+  'trial.ended': 'Deine Pro-Testphase ist beendet.',
+  'trial.reactivate': 'Pro reaktivieren',
   'aurora.heatmap.title': 'Globale Aurora-Sichtbarkeitskarte',
   'aurora.heatmap.desc': 'Echtzeit-Aurora-Sichtbarkeit · Kp {kp}',
   'aurora.heatmap.legend': 'Sichtbarkeit:',

@@ -762,6 +762,8 @@ const da: Record<string, string> = {
   'trial.active': 'Prøveperiode aktiv',
   'trial.banner': 'Din Pro-prøveperiode udløber om {days} dage',
   'trial.upgradeNow': 'Opgrader nu',
+  'trial.ended': 'Dit Pro-prøveabonnement er udløbet.',
+  'trial.reactivate': 'Genaktiver Pro',
   'aurora.heatmap.title': 'Global aurora-synlighedskort',
   'aurora.heatmap.desc': 'Realtids aurora-synlighed · Kp {kp}',
   'aurora.heatmap.legend': 'Synlighed:',
