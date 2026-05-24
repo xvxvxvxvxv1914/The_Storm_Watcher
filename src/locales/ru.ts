@@ -770,6 +770,18 @@ const ru: Record<string, string> = {
   'trial.active': 'Пробный период активен',
   'trial.banner': 'Ваш пробный период Pro истекает через {days} дней',
   'trial.upgradeNow': 'Обновить сейчас',
+  'aurora.heatmap.title': 'Глобальная карта видимости авроры',
+  'aurora.heatmap.desc': 'Видимость авроры в реальном времени · Kp {kp}',
+  'aurora.heatmap.legend': 'Видимость:',
+  'aurora.heatmap.low': 'Низкая (<25%)',
+  'aurora.heatmap.moderate': 'Умеренная',
+  'aurora.heatmap.high': 'Высокая (>55%)',
+  'aurora.heatmap.excellent': 'Отличная (>80%)',
+  'payment.trialStarted': 'Ваш 14-дневный пробный период Pro начался!',
+  'payment.trialDesc': 'Полный Pro доступ — без оплаты 14 дней.',
+  'payment.subscriptionActive': 'Вы теперь на Pro!',
+  'payment.subscriptionDesc': 'Полный Pro доступ разблокирован. Наслаждайтесь!',
+  'payment.dismiss': 'Закрыть',
 };
 
 export default ru;

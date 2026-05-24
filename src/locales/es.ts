@@ -770,6 +770,18 @@ const es: Record<string, string> = {
   'trial.active': 'Prueba activa',
   'trial.banner': 'Tu prueba de Pro termina en {days} días',
   'trial.upgradeNow': 'Actualizar ahora',
+  'aurora.heatmap.title': 'Mapa global de visibilidad de auroras',
+  'aurora.heatmap.desc': 'Visibilidad de auroras en tiempo real · Kp {kp}',
+  'aurora.heatmap.legend': 'Visibilidad:',
+  'aurora.heatmap.low': 'Baja (<25%)',
+  'aurora.heatmap.moderate': 'Moderada',
+  'aurora.heatmap.high': 'Alta (>55%)',
+  'aurora.heatmap.excellent': 'Excelente (>80%)',
+  'payment.trialStarted': '¡Tu prueba Pro de 14 días ha comenzado!',
+  'payment.trialDesc': 'Acceso Pro completo — sin cargos durante 14 días.',
+  'payment.subscriptionActive': '¡Ya eres Pro!',
+  'payment.subscriptionDesc': 'El acceso Pro completo está desbloqueado. ¡Disfruta!',
+  'payment.dismiss': 'Cerrar',
 };
 
 export default es;

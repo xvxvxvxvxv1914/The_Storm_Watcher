@@ -762,6 +762,18 @@ const uk: Record<string, string> = {
   'trial.active': 'Пробний період активний',
   'trial.banner': 'Ваш пробний період Pro закінчується через {days} днів',
   'trial.upgradeNow': 'Оновити зараз',
+  'aurora.heatmap.title': 'Глобальна карта видимості аврори',
+  'aurora.heatmap.desc': 'Видимість аврори в реальному часі · Kp {kp}',
+  'aurora.heatmap.legend': 'Видимість:',
+  'aurora.heatmap.low': 'Низька (<25%)',
+  'aurora.heatmap.moderate': 'Помірна',
+  'aurora.heatmap.high': 'Висока (>55%)',
+  'aurora.heatmap.excellent': 'Відмінна (>80%)',
+  'payment.trialStarted': 'Ваш 14-денний пробний період Pro почався!',
+  'payment.trialDesc': 'Повний Pro доступ — без оплати 14 днів.',
+  'payment.subscriptionActive': 'Ви тепер на Pro!',
+  'payment.subscriptionDesc': 'Повний Pro доступ розблоковано. Насолоджуйтесь!',
+  'payment.dismiss': 'Закрити',
 };
 
 export default uk;

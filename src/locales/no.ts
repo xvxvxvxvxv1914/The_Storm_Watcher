@@ -762,6 +762,18 @@ const no: Record<string, string> = {
   'trial.active': 'Prøveperiode aktiv',
   'trial.banner': 'Pro-prøveperioden din utløper om {days} dager',
   'trial.upgradeNow': 'Oppgrader nå',
+  'aurora.heatmap.title': 'Globalt nordlyskart',
+  'aurora.heatmap.desc': 'Nordlyssiktbarhet i sanntid · Kp {kp}',
+  'aurora.heatmap.legend': 'Siktbarhet:',
+  'aurora.heatmap.low': 'Lav (<25%)',
+  'aurora.heatmap.moderate': 'Moderat',
+  'aurora.heatmap.high': 'Høy (>55%)',
+  'aurora.heatmap.excellent': 'Fremragende (>80%)',
+  'payment.trialStarted': 'Din 14-dagers Pro-prøveperiode har startet!',
+  'payment.trialDesc': 'Full Pro-tilgang — ingen betaling i 14 dager.',
+  'payment.subscriptionActive': 'Du er nå Pro!',
+  'payment.subscriptionDesc': 'Full Pro-tilgang er nå låst opp. Nyt det!',
+  'payment.dismiss': 'Lukk',
 };
 
 export default no;

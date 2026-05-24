@@ -762,6 +762,18 @@ const sv: Record<string, string> = {
   'trial.active': 'Provperiod aktiv',
   'trial.banner': 'Din Pro-provperiod löper ut om {days} dagar',
   'trial.upgradeNow': 'Uppgradera nu',
+  'aurora.heatmap.title': 'Global karta för norrskenssynlighet',
+  'aurora.heatmap.desc': 'Norrskenssynlighet i realtid · Kp {kp}',
+  'aurora.heatmap.legend': 'Synlighet:',
+  'aurora.heatmap.low': 'Låg (<25%)',
+  'aurora.heatmap.moderate': 'Måttlig',
+  'aurora.heatmap.high': 'Hög (>55%)',
+  'aurora.heatmap.excellent': 'Utmärkt (>80%)',
+  'payment.trialStarted': 'Din 14-dagars Pro-provperiod har börjat!',
+  'payment.trialDesc': 'Fullständig Pro-åtkomst — ingen avgift i 14 dagar.',
+  'payment.subscriptionActive': 'Du är nu Pro!',
+  'payment.subscriptionDesc': 'Fullständig Pro-åtkomst är nu upplåst. Njut!',
+  'payment.dismiss': 'Stäng',
 };
 
 export default sv;

@@ -762,6 +762,18 @@ const da: Record<string, string> = {
   'trial.active': 'Prøveperiode aktiv',
   'trial.banner': 'Din Pro-prøveperiode udløber om {days} dage',
   'trial.upgradeNow': 'Opgrader nu',
+  'aurora.heatmap.title': 'Global aurora-synlighedskort',
+  'aurora.heatmap.desc': 'Realtids aurora-synlighed · Kp {kp}',
+  'aurora.heatmap.legend': 'Synlighed:',
+  'aurora.heatmap.low': 'Lav (<25%)',
+  'aurora.heatmap.moderate': 'Moderat',
+  'aurora.heatmap.high': 'Høj (>55%)',
+  'aurora.heatmap.excellent': 'Fremragende (>80%)',
+  'payment.trialStarted': 'Din 14-dages Pro-prøveperiode er startet!',
+  'payment.trialDesc': 'Fuld Pro-adgang — ingen betaling i 14 dage.',
+  'payment.subscriptionActive': 'Du er nu Pro!',
+  'payment.subscriptionDesc': 'Fuld Pro-adgang er nu låst op. Nyd det!',
+  'payment.dismiss': 'Luk',
 };
 
 export default da;

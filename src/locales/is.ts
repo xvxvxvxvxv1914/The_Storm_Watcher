@@ -762,6 +762,18 @@ const is_: Record<string, string> = {
   'trial.active': 'Prufutímabil virkt',
   'trial.banner': 'Pro-prufutímabilið þitt rennur út eftir {days} daga',
   'trial.upgradeNow': 'Uppfæra núna',
+  'aurora.heatmap.title': 'Hnattrænt norðurljósasýnileikakort',
+  'aurora.heatmap.desc': 'Norðurljósasýnileiki í rauntíma · Kp {kp}',
+  'aurora.heatmap.legend': 'Sýnileiki:',
+  'aurora.heatmap.low': 'Lágur (<25%)',
+  'aurora.heatmap.moderate': 'Miðlungs',
+  'aurora.heatmap.high': 'Hár (>55%)',
+  'aurora.heatmap.excellent': 'Frábær (>80%)',
+  'payment.trialStarted': '14 daga Pro-prufutímabilið þitt hefur hafist!',
+  'payment.trialDesc': 'Fullur Pro-aðgangur — engin gjöld í 14 daga.',
+  'payment.subscriptionActive': 'Þú ert núna Pro!',
+  'payment.subscriptionDesc': 'Fullur Pro-aðgangur er nú opnaður. Njóttu!',
+  'payment.dismiss': 'Loka',
 };
 
 export default is_;

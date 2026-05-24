@@ -762,6 +762,18 @@ const pl: Record<string, string> = {
   'trial.active': 'Okres próbny aktywny',
   'trial.banner': 'Twój okres próbny Pro kończy się za {days} dni',
   'trial.upgradeNow': 'Ulepsz teraz',
+  'aurora.heatmap.title': 'Globalna mapa widoczności zorzy polarnej',
+  'aurora.heatmap.desc': 'Widoczność zorzy w czasie rzeczywistym · Kp {kp}',
+  'aurora.heatmap.legend': 'Widoczność:',
+  'aurora.heatmap.low': 'Niska (<25%)',
+  'aurora.heatmap.moderate': 'Umiarkowana',
+  'aurora.heatmap.high': 'Wysoka (>55%)',
+  'aurora.heatmap.excellent': 'Doskonała (>80%)',
+  'payment.trialStarted': 'Twój 14-dniowy okres próbny Pro rozpoczął się!',
+  'payment.trialDesc': 'Pełny dostęp Pro — bez opłat przez 14 dni.',
+  'payment.subscriptionActive': 'Jesteś teraz na Pro!',
+  'payment.subscriptionDesc': 'Pełny dostęp Pro jest odblokowany. Ciesz się!',
+  'payment.dismiss': 'Zamknij',
 };
 
 export default pl;

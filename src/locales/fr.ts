@@ -770,6 +770,18 @@ const fr: Record<string, string> = {
   'trial.active': 'Essai actif',
   'trial.banner': 'Votre essai Pro se termine dans {days} jours',
   'trial.upgradeNow': 'Mettre à niveau',
+  'aurora.heatmap.title': 'Carte mondiale de visibilité des aurores',
+  'aurora.heatmap.desc': 'Visibilité des aurores en temps réel · Kp {kp}',
+  'aurora.heatmap.legend': 'Visibilité :',
+  'aurora.heatmap.low': 'Faible (<25%)',
+  'aurora.heatmap.moderate': 'Modérée',
+  'aurora.heatmap.high': 'Élevée (>55%)',
+  'aurora.heatmap.excellent': 'Excellente (>80%)',
+  'payment.trialStarted': 'Votre essai Pro de 14 jours a commencé !',
+  'payment.trialDesc': 'Accès Pro complet — sans frais pendant 14 jours.',
+  'payment.subscriptionActive': 'Vous êtes maintenant Pro !',
+  'payment.subscriptionDesc': "L'accès Pro complet est déverrouillé. Profitez-en !",
+  'payment.dismiss': 'Fermer',
 };
 
 export default fr;

@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, useCallback, lazy, Suspense, useMemo, Component, type ReactNode } from 'react';
+import AuroraHeatmap from '../components/AuroraHeatmap';
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
@@ -365,6 +366,31 @@ const Aurora = () => {
             })}
           </div>
           <p className="text-[#475569] text-xs mt-4">* {t('aurora.approxChance')} {kpValue.toFixed(1)}</p>
+        </div>
+
+        {/* Aurora Visibility World Map */}
+        <div className="glass-surface rounded-2xl p-4 sm:p-6 mb-6 md:mb-8 border border-white/5">
+          <h3 className="text-xl font-bold text-white mb-1 uppercase tracking-wide">
+            {t('aurora.heatmap.title') || 'Global Aurora Visibility Map'}
+          </h3>
+          <p className="text-[#64748b] text-xs mb-4">
+            {(t('aurora.heatmap.desc') || 'Real-time aurora visibility · Kp {kp}').replace('{kp}', kpValue.toFixed(1))}
+          </p>
+          <AuroraHeatmap kp={kpValue} />
+          <div className="flex items-center gap-4 mt-3 flex-wrap">
+            <span className="text-[#475569] text-xs">{t('aurora.heatmap.legend') || 'Visibility:'}</span>
+            {[
+              { color: '#10b981', label: t('aurora.heatmap.low') || 'Low (<25%)' },
+              { color: '#64dc50', label: t('aurora.heatmap.moderate') || 'Moderate' },
+              { color: '#dcff32', label: t('aurora.heatmap.high') || 'High (>55%)' },
+              { color: '#ffffc8', label: t('aurora.heatmap.excellent') || 'Excellent (>80%)' },
+            ].map(({ color, label }) => (
+              <div key={color} className="flex items-center gap-1.5">
+                <div className="w-3 h-3 rounded-sm flex-shrink-0" style={{ background: color, opacity: 0.85 }} />
+                <span className="text-[#64748b] text-xs">{label}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Visibility Checklist */}

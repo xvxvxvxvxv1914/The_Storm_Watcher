@@ -773,6 +773,18 @@ const de: Record<string, string> = {
   'trial.active': 'Testphase aktiv',
   'trial.banner': 'Deine Pro-Testphase endet in {days} Tagen',
   'trial.upgradeNow': 'Jetzt upgraden',
+  'aurora.heatmap.title': 'Globale Aurora-Sichtbarkeitskarte',
+  'aurora.heatmap.desc': 'Echtzeit-Aurora-Sichtbarkeit · Kp {kp}',
+  'aurora.heatmap.legend': 'Sichtbarkeit:',
+  'aurora.heatmap.low': 'Gering (<25%)',
+  'aurora.heatmap.moderate': 'Mittel',
+  'aurora.heatmap.high': 'Hoch (>55%)',
+  'aurora.heatmap.excellent': 'Ausgezeichnet (>80%)',
+  'payment.trialStarted': 'Deine 14-tägige Pro-Testphase hat begonnen!',
+  'payment.trialDesc': 'Voller Pro-Zugang — 14 Tage kostenlos.',
+  'payment.subscriptionActive': 'Du bist jetzt Pro!',
+  'payment.subscriptionDesc': 'Voller Pro-Zugang ist jetzt freigeschaltet. Viel Spaß!',
+  'payment.dismiss': 'Schließen',
 };
 
 export default de;

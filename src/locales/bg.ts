@@ -793,6 +793,18 @@ const bg: Record<string, string> = {
   'trial.active': 'Активен пробен период',
   'trial.banner': 'Твоят Pro пробен период изтича след {days} дни',
   'trial.upgradeNow': 'Надгради сега',
+  'aurora.heatmap.title': 'Глобална карта на видимост на аврора',
+  'aurora.heatmap.desc': 'Видимост в реално време · Kp {kp}',
+  'aurora.heatmap.legend': 'Видимост:',
+  'aurora.heatmap.low': 'Ниска (<25%)',
+  'aurora.heatmap.moderate': 'Умерена',
+  'aurora.heatmap.high': 'Висока (>55%)',
+  'aurora.heatmap.excellent': 'Отлична (>80%)',
+  'payment.trialStarted': 'Твоят 14-дневен Pro пробен период стартира!',
+  'payment.trialDesc': 'Пълен Pro достъп — без такси 14 дни.',
+  'payment.subscriptionActive': 'Вече си на Pro!',
+  'payment.subscriptionDesc': 'Пълен Pro достъп е отключен. Наслади се!',
+  'payment.dismiss': 'Затвори',
 };
 
 export default bg;

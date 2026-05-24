@@ -800,6 +800,18 @@ const ko: Record<string, string> = {
   'trial.active': '체험 중',
   'trial.banner': 'Pro 체험이 {days}일 후 종료됩니다',
   'trial.upgradeNow': '지금 업그레이드',
+  'aurora.heatmap.title': '전 세계 오로라 가시성 지도',
+  'aurora.heatmap.desc': '실시간 오로라 가시성 · Kp {kp}',
+  'aurora.heatmap.legend': '가시성:',
+  'aurora.heatmap.low': '낮음 (<25%)',
+  'aurora.heatmap.moderate': '보통',
+  'aurora.heatmap.high': '높음 (>55%)',
+  'aurora.heatmap.excellent': '최고 (>80%)',
+  'payment.trialStarted': '14일 Pro 체험이 시작되었습니다!',
+  'payment.trialDesc': '14일 동안 무료로 Pro 전체 접근을 즐기세요.',
+  'payment.subscriptionActive': '이제 Pro 사용자입니다!',
+  'payment.subscriptionDesc': 'Pro 전체 접근이 해제되었습니다. 즐기세요!',
+  'payment.dismiss': '닫기',
 };
 
 export default ko;

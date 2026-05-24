@@ -800,6 +800,18 @@ const en: Record<string, string> = {
   'trial.active': 'Trial active',
   'trial.banner': 'Your Pro trial ends in {days} days',
   'trial.upgradeNow': 'Upgrade now',
+  'aurora.heatmap.title': 'Global Aurora Visibility Map',
+  'aurora.heatmap.desc': 'Real-time aurora visibility · Kp {kp}',
+  'aurora.heatmap.legend': 'Visibility:',
+  'aurora.heatmap.low': 'Low (<25%)',
+  'aurora.heatmap.moderate': 'Moderate',
+  'aurora.heatmap.high': 'High (>55%)',
+  'aurora.heatmap.excellent': 'Excellent (>80%)',
+  'payment.trialStarted': 'Your 14-day Pro trial has started!',
+  'payment.trialDesc': 'Enjoy full Pro access — no charge for 14 days.',
+  'payment.subscriptionActive': "You're now on Pro!",
+  'payment.subscriptionDesc': 'Full Pro access is now unlocked. Enjoy!',
+  'payment.dismiss': 'Dismiss',
 };
 
 export default en;

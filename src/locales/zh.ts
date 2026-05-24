@@ -770,6 +770,18 @@ const zh: Record<string, string> = {
   'trial.active': '试用中',
   'trial.banner': '您的Pro试用将在{days}天后到期',
   'trial.upgradeNow': '立即升级',
+  'aurora.heatmap.title': '全球极光可见性地图',
+  'aurora.heatmap.desc': '实时极光可见性 · Kp {kp}',
+  'aurora.heatmap.legend': '可见性：',
+  'aurora.heatmap.low': '低（<25%）',
+  'aurora.heatmap.moderate': '中等',
+  'aurora.heatmap.high': '高（>55%）',
+  'aurora.heatmap.excellent': '极佳（>80%）',
+  'payment.trialStarted': '您的14天Pro试用已开始！',
+  'payment.trialDesc': '14天内免费享受完整Pro访问。',
+  'payment.subscriptionActive': '您现在是Pro用户！',
+  'payment.subscriptionDesc': '完整Pro访问已解锁。尽情享受！',
+  'payment.dismiss': '关闭',
 };
 
 export default zh;

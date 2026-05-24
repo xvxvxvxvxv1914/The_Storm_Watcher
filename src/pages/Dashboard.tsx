@@ -1,4 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import { logError } from '../utils/logger';
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
 import PageMeta from '../components/PageMeta';
@@ -75,7 +77,11 @@ const isInNigggBbox = (lat: number, lon: number) =>
 
 const Dashboard = () => {
   const { t } = useLanguage();
+  const { profile } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
   const { settings } = useSettings();
+  const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
   const [kpValue, setKpValue] = useState<number>(0);
   const [solarWindSpeed, setSolarWindSpeed] = useState<number>(0);
   const [bz, setBz] = useState<number>(0);
@@ -90,6 +96,16 @@ const Dashboard = () => {
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('payment') === 'success') {
+      setShowPaymentSuccess(true);
+      navigate('/dashboard', { replace: true });
+      const t = setTimeout(() => setShowPaymentSuccess(false), 7000);
+      return () => clearTimeout(t);
+    }
+  }, [location.search, navigate]);
 
   useEffect(() => {
     // Fast path: use saved preferred location from settings
@@ -325,6 +341,34 @@ const Dashboard = () => {
       />
       <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Dashboard', path: '/dashboard' }]} />
       <StarField />
+
+      {/* Payment / Trial success toast */}
+      {showPaymentSuccess && (
+        <div className="fixed bottom-24 lg:bottom-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-sm px-4">
+          <div
+            className="glass-surface rounded-2xl p-5 border text-center shadow-2xl animate-fade-in"
+            style={{ borderColor: '#f9731644', boxShadow: '0 0 40px #f9731622' }}
+          >
+            <div className="text-3xl mb-2">🎉</div>
+            <div className="text-white font-bold text-lg mb-1">
+              {profile?.subscription_status === 'trialing'
+                ? (t('payment.trialStarted') || 'Your 14-day Pro trial has started!')
+                : (t('payment.subscriptionActive') || 'You\'re now on Pro!')}
+            </div>
+            <div className="text-[#94a3b8] text-sm mb-3">
+              {profile?.subscription_status === 'trialing'
+                ? (t('payment.trialDesc') || 'Enjoy full Pro access — no charge for 14 days.')
+                : (t('payment.subscriptionDesc') || 'Full Pro access is now unlocked. Enjoy!')}
+            </div>
+            <button
+              onClick={() => setShowPaymentSuccess(false)}
+              className="text-xs text-[#475569] hover:text-white transition-colors"
+            >
+              {t('payment.dismiss') || 'Dismiss'}
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="solar-orb" style={{ top: '100px', right: '-300px' }} />
 

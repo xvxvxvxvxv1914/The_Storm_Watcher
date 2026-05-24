@@ -762,6 +762,18 @@ const fi: Record<string, string> = {
   'trial.active': 'Kokeilujakso aktiivinen',
   'trial.banner': 'Pro-kokeilujaksosi päättyy {days} päivässä',
   'trial.upgradeNow': 'Päivitä nyt',
+  'aurora.heatmap.title': 'Maailmanlaajuinen revontulten näkyvyyskartta',
+  'aurora.heatmap.desc': 'Revontulten näkyvyys reaaliajassa · Kp {kp}',
+  'aurora.heatmap.legend': 'Näkyvyys:',
+  'aurora.heatmap.low': 'Heikko (<25%)',
+  'aurora.heatmap.moderate': 'Kohtalainen',
+  'aurora.heatmap.high': 'Korkea (>55%)',
+  'aurora.heatmap.excellent': 'Erinomainen (>80%)',
+  'payment.trialStarted': '14 päivän Pro-kokeilujaksosi on alkanut!',
+  'payment.trialDesc': 'Täysi Pro-pääsy — ei maksuja 14 päivään.',
+  'payment.subscriptionActive': 'Olet nyt Pro!',
+  'payment.subscriptionDesc': 'Täysi Pro-pääsy on nyt avattu. Nauti!',
+  'payment.dismiss': 'Sulje',
 };
 
 export default fi;

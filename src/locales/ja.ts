@@ -770,6 +770,18 @@ const ja: Record<string, string> = {
   'trial.active': 'トライアル中',
   'trial.banner': 'Proトライアルはあと{days}日で終了します',
   'trial.upgradeNow': '今すぐアップグレード',
+  'aurora.heatmap.title': 'グローバルオーロラ視認性マップ',
+  'aurora.heatmap.desc': 'リアルタイムオーロラ視認性 · Kp {kp}',
+  'aurora.heatmap.legend': '視認性：',
+  'aurora.heatmap.low': '低（<25%）',
+  'aurora.heatmap.moderate': '中程度',
+  'aurora.heatmap.high': '高（>55%）',
+  'aurora.heatmap.excellent': '最高（>80%）',
+  'payment.trialStarted': '14日間のProトライアルが開始しました！',
+  'payment.trialDesc': '14日間無料でProアクセスをお楽しみください。',
+  'payment.subscriptionActive': 'Proになりました！',
+  'payment.subscriptionDesc': 'Proアクセスが解放されました。お楽しみください！',
+  'payment.dismiss': '閉じる',
 };
 
 export default ja;
