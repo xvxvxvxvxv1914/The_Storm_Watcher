@@ -432,7 +432,7 @@ const bg: Record<string, string> = {
   'mood.distribution': 'Разпределение',
   'mood.byHour': 'По часове (последните 12ч)',
   'mood.votes': 'гласа',
-    'push.prompt.title': 'Геомагнитна активност нараства',
+  'push.prompt.title': 'Геомагнитна активност нараства',
   'push.prompt.body': 'Kp е {kp} — искате ли известие при буря?',
   'push.prompt.bodyGeneric': 'Искате ли известие при геомагнитна буря?',
   'push.prompt.enable': 'Уведоми ме',

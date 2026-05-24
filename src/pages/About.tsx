@@ -97,7 +97,7 @@ const About = () => {
                     ))}
                   </ul>
                   <p className="text-[#475569] text-xs mt-4 pt-4 border-t border-white/5">
-                    Source: <span className="text-[#94a3b8]">NOAA Space Weather Prediction Center — swpc.noaa.gov</span>
+                    {t('niggg.source')}: <span className="text-[#94a3b8]">NOAA Space Weather Prediction Center — swpc.noaa.gov</span>
                   </p>
                 </div>
               </div>
