@@ -756,6 +756,7 @@ const is_: Record<string, string> = {
   'mood.exportCSV': 'Flytja út skapsögu CSV',
   'dashboard.stormWatch': 'Stormvakt',
   'dashboard.stormWatchPeriod': 'Síðustu 72k',
+  'dashboard.viewAlerts': 'Skoða viðvaranir →',
   'dashboard.peakKp': 'Hámark Kp',
   'gallery.filter.all': 'Allur tími',
   'gallery.filter.week': 'Síðustu viku',

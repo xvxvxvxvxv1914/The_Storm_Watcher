@@ -756,6 +756,7 @@ const uk: Record<string, string> = {
   'mood.exportCSV': 'Експорт історії настрою CSV',
   'dashboard.stormWatch': 'Спостереження бур',
   'dashboard.stormWatchPeriod': 'Останні 72г',
+  'dashboard.viewAlerts': 'Переглянути сигнали →',
   'dashboard.peakKp': 'Пік Kp',
   'gallery.filter.all': 'Весь час',
   'gallery.filter.week': 'Минулий тиждень',

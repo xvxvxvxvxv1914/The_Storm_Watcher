@@ -597,9 +597,9 @@ const Dashboard = () => {
                 <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-red-400" />
                 {t('dashboard.stormWatch') || 'Storm Watch'}
               </h3>
-              <span className="text-[10px] uppercase tracking-wider text-[#64748b]">
-                {t('dashboard.stormWatchPeriod') || 'Last 72h'}
-              </span>
+              <Link to="/alerts" className="text-[10px] uppercase tracking-wider text-[#f97316] hover:text-[#fbbf24] transition-colors font-bold">
+                {t('dashboard.viewAlerts') || 'View alerts →'}
+              </Link>
             </div>
             <div className="space-y-2">
               {stormEvents.map((ev, i) => {

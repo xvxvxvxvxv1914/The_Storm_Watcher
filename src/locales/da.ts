@@ -756,6 +756,7 @@ const da: Record<string, string> = {
   'mood.exportCSV': 'Eksportér humørhistorik CSV',
   'dashboard.stormWatch': 'Storm-overvågning',
   'dashboard.stormWatchPeriod': 'Sidste 72t',
+  'dashboard.viewAlerts': 'Se advarsler →',
   'dashboard.peakKp': 'Top Kp',
   'gallery.filter.all': 'Hele tiden',
   'gallery.filter.week': 'Sidste uge',

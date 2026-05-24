@@ -794,6 +794,7 @@ const ko: Record<string, string> = {
   'mood.exportCSV': '기분 기록 CSV 내보내기',
   'dashboard.stormWatch': '폭풍 감시',
   'dashboard.stormWatchPeriod': '지난 72시간',
+  'dashboard.viewAlerts': '경보 보기 →',
   'dashboard.peakKp': '최고 Kp',
   'gallery.filter.all': '전체 기간',
   'gallery.filter.week': '지난 주',

@@ -756,6 +756,7 @@ const fi: Record<string, string> = {
   'mood.exportCSV': 'Vie mielialahistoria CSV',
   'dashboard.stormWatch': 'Myrskytarkkailu',
   'dashboard.stormWatchPeriod': 'Viimeiset 72t',
+  'dashboard.viewAlerts': 'Näytä hälytykset →',
   'dashboard.peakKp': 'Huippu Kp',
   'gallery.filter.all': 'Koko aika',
   'gallery.filter.week': 'Viime viikko',

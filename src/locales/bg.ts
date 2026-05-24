@@ -787,6 +787,7 @@ const bg: Record<string, string> = {
   'mood.exportCSV': 'Експорт на история на настроенията (CSV)',
   'dashboard.stormWatch': 'Наблюдение на бури',
   'dashboard.stormWatchPeriod': 'Последни 72ч',
+  'dashboard.viewAlerts': 'Виж сигнали →',
   'dashboard.peakKp': 'Пик Kp',
   'gallery.filter.all': 'Всичко',
   'gallery.filter.week': 'Изминала седмица',

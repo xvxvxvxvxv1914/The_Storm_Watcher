@@ -764,6 +764,7 @@ const ja: Record<string, string> = {
   'mood.exportCSV': '気分履歴を CSV でエクスポート',
   'dashboard.stormWatch': '嵐ウォッチ',
   'dashboard.stormWatchPeriod': '過去72時間',
+  'dashboard.viewAlerts': 'アラートを見る →',
   'dashboard.peakKp': 'ピークKp',
   'gallery.filter.all': '全期間',
   'gallery.filter.week': '先週',

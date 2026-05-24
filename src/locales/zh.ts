@@ -764,6 +764,7 @@ const zh: Record<string, string> = {
   'mood.exportCSV': '导出心情历史 CSV',
   'dashboard.stormWatch': '风暴观察',
   'dashboard.stormWatchPeriod': '过去72小时',
+  'dashboard.viewAlerts': '查看警报 →',
   'dashboard.peakKp': '峰值Kp',
   'gallery.filter.all': '全部时间',
   'gallery.filter.week': '过去一周',
