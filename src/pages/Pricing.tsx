@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Check, Zap, Star, CreditCard } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -41,9 +41,19 @@ export default function Pricing() {
   const { user, profile, session } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const location = useLocation();
   const [billing, setBilling] = useState<Billing>('monthly');
   const [loading, setLoading] = useState<'pro' | 'premium' | 'portal' | null>(null);
   const [error, setError] = useState('');
+  const [cancelledMessage, setCancelledMessage] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('payment') === 'cancelled') {
+      setCancelledMessage(true);
+      navigate('/pricing', { replace: true });
+    }
+  }, [location.search, navigate]);
 
   const currentPlan = profile?.plan ?? 'free';
   const subscriptionStatus = profile?.subscription_status;
@@ -151,6 +161,19 @@ export default function Pricing() {
             </span>
           </div>
         </div>
+
+        {/* Cancelled payment notice */}
+        {cancelledMessage && (
+          <div className="mb-6 flex items-center justify-between gap-4 rounded-xl px-4 py-3 border"
+            style={{ background: '#1e293b66', borderColor: '#f9731644' }}>
+            <span className="text-[#94a3b8] text-sm">
+              {t('payment.cancelled') || 'Payment cancelled — no charge was made. Choose a plan to continue.'}
+            </span>
+            <button onClick={() => setCancelledMessage(false)} className="text-[#475569] hover:text-white text-xs transition-colors flex-shrink-0">
+              ✕
+            </button>
+          </div>
+        )}
 
         {/* Plan cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">

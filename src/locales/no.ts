@@ -774,6 +774,7 @@ const no: Record<string, string> = {
   'payment.subscriptionActive': 'Du er nå Pro!',
   'payment.subscriptionDesc': 'Full Pro-tilgang er nå låst opp. Nyt det!',
   'payment.dismiss': 'Lukk',
+  'payment.cancelled': 'Betaling kansellert — ingen betaling belastet. Velg en plan for å fortsette.',
 };
 
 export default no;

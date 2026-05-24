@@ -66,6 +66,56 @@ const routes = [
     title: 'UV Index — The Storm Watcher',
     description: 'Real-time UV index and sun exposure forecast for your location. Know when to apply sunscreen.',
   },
+  {
+    path: '/aurora',
+    title: 'Aurora Forecast Tonight — Can I See the Northern Lights? | The Storm Watcher',
+    description: 'Check live aurora borealis visibility for your location. Real-time OVATION model, Kp index, cloud cover checklist and 3D aurora globe.',
+  },
+  {
+    path: '/dashboard',
+    title: 'Space Weather Dashboard — Live Kp Index & Solar Wind | The Storm Watcher',
+    description: 'Live space weather data: Kp index, solar wind speed, Bz component, X-ray flux and geomagnetic storm charts updated every minute.',
+  },
+  {
+    path: '/forecast',
+    title: '27-Day Geomagnetic Forecast — Space Weather Predictions | The Storm Watcher',
+    description: 'Extended 27-day geomagnetic forecast with Kp predictions, Ap index, solar flux F10.7 and upcoming storm probability.',
+  },
+  {
+    path: '/alerts',
+    title: 'Solar Storm & CME Alerts — Real-Time Space Weather Events | The Storm Watcher',
+    description: 'Live alerts for geomagnetic storms, solar flares, CMEs and radiation belt events. Stay ahead of space weather with real-time NOAA DONKI notifications.',
+  },
+  {
+    path: '/pricing',
+    title: 'Pricing — The Storm Watcher Pro & Premium Plans',
+    description: 'Choose your Storm Watcher plan. Free aurora monitoring or Pro/Premium with advanced alerts, aurora forecasting and 14-day free trial.',
+  },
+  {
+    path: '/calendar',
+    title: 'Aurora Calendar — Best Nights for Northern Lights | The Storm Watcher',
+    description: 'See which upcoming nights have the best aurora viewing conditions. 3-night geomagnetic outlook with moon phase and cloud cover data.',
+  },
+  {
+    path: '/gallery',
+    title: 'Aurora Photo Gallery — Community Northern Lights Photos | The Storm Watcher',
+    description: 'Browse stunning aurora borealis photos shared by the Storm Watcher community from around the world.',
+  },
+  {
+    path: '/iss',
+    title: 'ISS Tracker — Live International Space Station Position | The Storm Watcher',
+    description: 'Track the International Space Station in real time. Live ISS position, altitude, speed and upcoming passes over your location.',
+  },
+  {
+    path: '/mood',
+    title: 'Cosmic Mood Pulse — How Does Space Weather Affect You? | The Storm Watcher',
+    description: 'Track how solar storms and geomagnetic activity affect your mood and wellbeing. Join the community and share how you feel today.',
+  },
+  {
+    path: '/livestream',
+    title: 'Aurora Livestream — Live Northern Lights Cameras | The Storm Watcher',
+    description: 'Watch live aurora cameras from Norway, Iceland and Finland. Real-time northern lights streams updated 24/7.',
+  },
 ];
 
 const baseHtml = readFileSync(join(distDir, 'index.html'), 'utf-8');

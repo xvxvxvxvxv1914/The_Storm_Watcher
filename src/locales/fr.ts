@@ -782,6 +782,7 @@ const fr: Record<string, string> = {
   'payment.subscriptionActive': 'Vous êtes maintenant Pro !',
   'payment.subscriptionDesc': "L'accès Pro complet est déverrouillé. Profitez-en !",
   'payment.dismiss': 'Fermer',
+  'payment.cancelled': 'Paiement annulé — aucun frais facturé. Choisissez un plan pour continuer.',
 };
 
 export default fr;

@@ -774,6 +774,7 @@ const uk: Record<string, string> = {
   'payment.subscriptionActive': 'Ви тепер на Pro!',
   'payment.subscriptionDesc': 'Повний Pro доступ розблоковано. Насолоджуйтесь!',
   'payment.dismiss': 'Закрити',
+  'payment.cancelled': 'Оплату скасовано — плата не знімалась. Оберіть план, щоб продовжити.',
 };
 
 export default uk;

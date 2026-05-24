@@ -782,6 +782,7 @@ const es: Record<string, string> = {
   'payment.subscriptionActive': '¡Ya eres Pro!',
   'payment.subscriptionDesc': 'El acceso Pro completo está desbloqueado. ¡Disfruta!',
   'payment.dismiss': 'Cerrar',
+  'payment.cancelled': 'Pago cancelado — no se realizó ningún cargo. Elige un plan para continuar.',
 };
 
 export default es;

@@ -774,6 +774,7 @@ const da: Record<string, string> = {
   'payment.subscriptionActive': 'Du er nu Pro!',
   'payment.subscriptionDesc': 'Fuld Pro-adgang er nu låst op. Nyd det!',
   'payment.dismiss': 'Luk',
+  'payment.cancelled': 'Betaling annulleret — ingen betaling opkrævet. Vælg en plan for at fortsætte.',
 };
 
 export default da;

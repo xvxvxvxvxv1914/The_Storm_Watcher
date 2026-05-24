@@ -782,6 +782,7 @@ const ru: Record<string, string> = {
   'payment.subscriptionActive': 'Вы теперь на Pro!',
   'payment.subscriptionDesc': 'Полный Pro доступ разблокирован. Наслаждайтесь!',
   'payment.dismiss': 'Закрыть',
+  'payment.cancelled': 'Платёж отменён — плата не взималась. Выберите план, чтобы продолжить.',
 };
 
 export default ru;

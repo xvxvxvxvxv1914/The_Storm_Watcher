@@ -774,6 +774,7 @@ const is_: Record<string, string> = {
   'payment.subscriptionActive': 'Þú ert núna Pro!',
   'payment.subscriptionDesc': 'Fullur Pro-aðgangur er nú opnaður. Njóttu!',
   'payment.dismiss': 'Loka',
+  'payment.cancelled': 'Greiðsla afturkölluð — engin gjöld gert. Veldu pakka til að halda áfram.',
 };
 
 export default is_;
