@@ -10,6 +10,7 @@ import { getSolarWind, getXrayFlux, getXrayClass, getStormStatus, getKpGradientS
 import { useKpLive } from '../hooks/useKpLive';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
+import { useAuth } from '../contexts/AuthContext';
 import { calcAuroraVisibility } from '../utils/auroraVisibility';
 import StarField from '../components/StarField';
 import { Skeleton } from '../components/Skeleton';
@@ -25,6 +26,7 @@ const getScoreShareStatus = (score: number) => {
 const Home = () => {
   const { t } = useLanguage();
   const { settings } = useSettings();
+  const { user } = useAuth();
   const kpValue = useKpLive();
   const [windSpeed, setWindSpeed] = useState<number | null>(null);
   const [xrayClass, setXrayClass] = useState<string | null>(null);
@@ -362,17 +364,19 @@ const Home = () => {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
               <Link
-                to="/auth"
+                to={user ? '/dashboard' : '/auth'}
                 className="px-8 py-4 bg-gradient-to-r from-[#f97316] to-[#ef4444] text-white rounded-lg font-bold uppercase tracking-wider hover:scale-105 transition-transform glow-orange"
               >
-                {t('home.hero.getStarted')}
+                {user ? t('home.hero.viewMap') : t('home.hero.getStarted')}
               </Link>
-              <Link
-                to="/dashboard"
-                className="px-8 py-4 glass-surface text-white rounded-lg font-bold uppercase tracking-wider hover:glow-orange transition-all border border-white/10"
-              >
-                {t('home.hero.viewMap')}
-              </Link>
+              {!user && (
+                <Link
+                  to="/dashboard"
+                  className="px-8 py-4 glass-surface text-white rounded-lg font-bold uppercase tracking-wider hover:glow-orange transition-all border border-white/10"
+                >
+                  {t('home.hero.viewMap')}
+                </Link>
+              )}
             </div>
             <div className="flex justify-center mb-8">
               <Link
