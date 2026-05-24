@@ -796,6 +796,10 @@ const pl: Record<string, string> = {
   'payment.exploreAurora': 'Odkryj Aurorę →',
   'payment.cancelled': 'Płatność anulowana — nie pobrano żadnych opłat. Wybierz plan, aby kontynuować.',
   'home.noCC': '— bez karty kredytowej',
+  'alerts.justNow': 'Właśnie',
+  'alerts.mAgo': '{m}m temu',
+  'alerts.hAgo': '{h}h temu',
+  'alerts.dAgo': '{d}d temu',
 };
 
 export default pl;

@@ -807,6 +807,10 @@ const de: Record<string, string> = {
   'payment.exploreAurora': 'Aurora erkunden →',
   'payment.cancelled': 'Zahlung abgebrochen — keine Gebühr wurde erhoben. Wählen Sie einen Plan, um fortzufahren.',
   'home.noCC': '— keine Kreditkarte erforderlich',
+  'alerts.justNow': 'Gerade eben',
+  'alerts.mAgo': 'vor {m}m',
+  'alerts.hAgo': 'vor {h}h',
+  'alerts.dAgo': 'vor {d}d',
 };
 
 export default de;

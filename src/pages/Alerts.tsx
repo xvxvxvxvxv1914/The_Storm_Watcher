@@ -11,14 +11,15 @@ import { useTheme } from '../contexts/ThemeContext';
 
 /* ─── time helpers ─────────────────────────────────────────── */
 
-function timeAgo(dateStr: string) {
+function timeAgo(dateStr: string, t: (k: string) => string) {
   const diff = Date.now() - new Date(dateStr).getTime();
   const m = Math.floor(diff / 6e4);
   const h = Math.floor(diff / 36e5);
-  if (m < 2) return 'Just now';
-  if (m < 60) return `${m}m ago`;
-  if (h < 24) return `${h}h ago`;
-  return `${Math.floor(h / 24)}d ago`;
+  const d = Math.floor(h / 24);
+  if (m < 2) return t('alerts.justNow');
+  if (m < 60) return t('alerts.mAgo').replace('{m}', String(m));
+  if (h < 24) return t('alerts.hAgo').replace('{h}', String(h));
+  return t('alerts.dAgo').replace('{d}', String(d));
 }
 
 function timeUntilHours(dateStr: string): number | null {
@@ -502,7 +503,7 @@ const Alerts = () => {
                                 <h3 className={`font-bold text-base leading-snug ${theme === 'light' ? 'text-slate-900' : 'text-white'}`}>{item.title}</h3>
                                 <p className={`text-sm mt-0.5 ${cfg.text} font-medium`}>{item.subtitle}</p>
                               </div>
-                              <span className="text-[#64748b] text-xs shrink-0 mt-0.5">{timeAgo(item.dateStr)}</span>
+                              <span className="text-[#64748b] text-xs shrink-0 mt-0.5">{timeAgo(item.dateStr, t)}</span>
                             </div>
 
                             {/* Scale */}

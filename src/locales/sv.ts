@@ -796,6 +796,10 @@ const sv: Record<string, string> = {
   'payment.exploreAurora': 'Utforska Aurora →',
   'payment.cancelled': 'Betalning avbruten — inga avgifter togs ut. Välj ett paket för att fortsätta.',
   'home.noCC': '— inget kreditkort krävs',
+  'alerts.justNow': 'Just nu',
+  'alerts.mAgo': '{m}m sedan',
+  'alerts.hAgo': '{h}h sedan',
+  'alerts.dAgo': '{d}d sedan',
 };
 
 export default sv;

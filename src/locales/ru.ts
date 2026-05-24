@@ -804,6 +804,10 @@ const ru: Record<string, string> = {
   'payment.exploreAurora': 'Исследовать Aurora →',
   'payment.cancelled': 'Платёж отменён — плата не взималась. Выберите план, чтобы продолжить.',
   'home.noCC': '— без кредитной карты',
+  'alerts.justNow': 'Только что',
+  'alerts.mAgo': '{m}м назад',
+  'alerts.hAgo': '{h}ч назад',
+  'alerts.dAgo': '{d}д назад',
 };
 
 export default ru;

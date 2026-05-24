@@ -804,6 +804,10 @@ const fr: Record<string, string> = {
   'payment.exploreAurora': 'Explorer Aurora →',
   'payment.cancelled': 'Paiement annulé — aucun frais facturé. Choisissez un plan pour continuer.',
   'home.noCC': '— sans carte de crédit',
+  'alerts.justNow': "À l'instant",
+  'alerts.mAgo': 'il y a {m}m',
+  'alerts.hAgo': 'il y a {h}h',
+  'alerts.dAgo': 'il y a {d}j',
 };
 
 export default fr;

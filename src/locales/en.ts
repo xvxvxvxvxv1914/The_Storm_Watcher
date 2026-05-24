@@ -834,6 +834,10 @@ const en: Record<string, string> = {
   'payment.exploreAurora': 'Explore Aurora →',
   'payment.cancelled': 'Payment cancelled — no charge was made. Choose a plan to continue.',
   'home.noCC': '— no credit card required',
+  'alerts.justNow': 'Just now',
+  'alerts.mAgo': '{m}m ago',
+  'alerts.hAgo': '{h}h ago',
+  'alerts.dAgo': '{d}d ago',
 };
 
 export default en;
