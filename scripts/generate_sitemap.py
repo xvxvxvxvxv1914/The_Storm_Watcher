@@ -10,6 +10,8 @@ BASE = 'https://www.thestormwatcher.com'
 
 LANGUAGES = ['en', 'bg', 'da', 'de', 'es', 'fi', 'fr', 'is', 'ja', 'ko', 'no', 'pl', 'ru', 'sv', 'uk', 'zh']
 
+HREFLANG_CODES = {'zh': 'zh-Hans'}
+
 ROUTES = [
     ('/',                 'hourly', '1.0'),
     ('/dashboard',        'hourly', '0.9'),
@@ -36,6 +38,13 @@ ROUTES = [
 LASTMOD = date.today().isoformat()
 
 
+def lang_url(lang: str, path: str) -> str:
+    if lang == 'en':
+        return f'{BASE}{path}'
+    suffix = '' if path == '/' else path
+    return f'{BASE}/{lang}{suffix}'
+
+
 def url_block(path: str, changefreq: str, priority: str) -> str:
     full = f'{BASE}{path}'
     lines = [
@@ -43,11 +52,26 @@ def url_block(path: str, changefreq: str, priority: str) -> str:
         f'    <loc>{full}</loc>',
         f'    <lastmod>{LASTMOD}</lastmod><changefreq>{changefreq}</changefreq><priority>{priority}</priority>',
     ]
-    for lang in LANGUAGES:
-        href = full if lang == 'en' else f'{full}?lang={lang}' if path != '/' else f'{BASE}/?lang={lang}'
-        lines.append(f'    <xhtml:link rel="alternate" hreflang="{lang}" href="{href}"/>')
     lines.append(f'    <xhtml:link rel="alternate" hreflang="x-default" href="{full}"/>')
+    for lang in LANGUAGES:
+        hreflang = HREFLANG_CODES.get(lang, lang)
+        href = lang_url(lang, path)
+        lines.append(f'    <xhtml:link rel="alternate" hreflang="{hreflang}" href="{href}"/>')
     lines.append('  </url>')
+    # Language-specific <url> entries for non-English variants
+    for lang in LANGUAGES:
+        if lang == 'en':
+            continue
+        hreflang = HREFLANG_CODES.get(lang, lang)
+        href = lang_url(lang, path)
+        lines += [
+            '  <url>',
+            f'    <loc>{href}</loc>',
+            f'    <lastmod>{LASTMOD}</lastmod><changefreq>{changefreq}</changefreq><priority>{priority}</priority>',
+            f'    <xhtml:link rel="alternate" hreflang="{hreflang}" href="{href}"/>',
+            f'    <xhtml:link rel="alternate" hreflang="x-default" href="{full}"/>',
+            '  </url>',
+        ]
     return '\n'.join(lines)
 
 
