@@ -22,6 +22,7 @@ const fetchJson = async <T,>(url: string, timeoutMs = 10000): Promise<T> => {
 
 export interface SkyHour {
   time: string;
+  isoTime: string;
   hour: number;
   cloudCover: number;
   visibility: number;
@@ -101,6 +102,7 @@ export const getSkyVisibility = async (lat: number, lon: number, kp: number): Pr
         const isNight = date >= sunset && date <= sunrise;
         return {
           time: date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }),
+          isoTime: date.toISOString(),
           hour: date.getHours(),
           cloudCover: hourly.cloud_cover[i],
           visibility: Math.round(hourly.visibility[i] / 1000), // km
