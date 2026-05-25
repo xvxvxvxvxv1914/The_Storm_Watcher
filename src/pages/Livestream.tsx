@@ -1,4 +1,5 @@
 import PageMeta from '../components/PageMeta';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { Video, ExternalLink, Globe, Youtube, CalendarClock } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -187,6 +188,7 @@ export default function Livestream() {
         description="Live aurora cameras from Norway, Iceland, Finland, Sweden and Canada. Watch the northern lights in real time."
         path="/livestream"
       />
+      <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Livestream', path: '/livestream' }]} />
 
       <div className="flex items-center gap-4 mb-3">
         <div className="w-14 h-14 bg-gradient-to-br from-[#ec4899] to-[#be185d] rounded-2xl flex items-center justify-center flex-shrink-0">

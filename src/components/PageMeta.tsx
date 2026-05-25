@@ -16,6 +16,8 @@ const PAGE_SLUGS: Record<string, string> = {
   '/gallery': 'gallery',
   '/hunt': 'hunt',
   '/aurora-map': 'aurora',
+  '/viewing-window': 'viewing-window',
+  '/livestream': 'livestream',
 };
 
 interface Props {

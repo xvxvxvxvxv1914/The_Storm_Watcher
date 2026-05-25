@@ -235,7 +235,7 @@ export default function Calendar() {
                 {/* Hourly Kp mini-bars */}
                 {night.hourlyKp.length > 0 && (
                   <div className="mb-4">
-                    <div className="text-xs text-[#475569] mb-2 uppercase tracking-wider">Hourly Kp</div>
+                    <div className="text-xs text-[#475569] mb-2 uppercase tracking-wider">{t('aurora.calendar.hourlyKp') || 'Hourly Kp'}</div>
                     <div className="flex items-end gap-0.5 h-10">
                       {night.hourlyKp.map((h, idx) => (
                         <div key={idx} className="flex-1 flex flex-col items-center gap-0.5">
@@ -305,9 +305,13 @@ export default function Calendar() {
       {/* Tips */}
       <div className="mt-8 glass-surface rounded-2xl p-5 border border-white/10 text-sm text-[#64748b] leading-relaxed">
         <p>
-          <span className="text-white font-semibold">Kp ≥ 5</span> — visible at mid-latitudes (50°N+). &nbsp;
-          <span className="text-white font-semibold">Kp ≥ 7</span> — visible further south (45°N+). &nbsp;
-          Best viewing: 10 PM – 2 AM local time, clear dark skies, away from city lights.
+          {t('aurora.calendar.tipsKp5') || (
+            <><span className="text-white font-semibold">Kp ≥ 5</span> — visible at mid-latitudes (50°N+). &nbsp;</>
+          )}
+          {t('aurora.calendar.tipsKp7') || (
+            <><span className="text-white font-semibold">Kp ≥ 7</span> — visible further south (45°N+). &nbsp;</>
+          )}
+          {t('aurora.calendar.tipsBestViewing') || 'Best viewing: 10 PM – 2 AM local time, clear dark skies, away from city lights.'}
         </p>
       </div>
     </div>

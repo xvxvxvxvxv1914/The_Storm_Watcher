@@ -375,7 +375,7 @@ export default function Hunt() {
                   <span className={`text-2xl ${earned ? 'drop-shadow-md' : ''}`} style={earned ? { filter: `drop-shadow(0 0 6px ${tier.glow})` } : undefined}>
                     {badge.emoji}
                   </span>
-                  <span className={`text-[9px] font-bold leading-tight ${earned ? 'text-white' : 'text-white/50'}`}>
+                  <span className={`text-[10px] font-bold leading-tight ${earned ? 'text-white' : 'text-white/50'}`}>
                     {badge.name}
                   </span>
                   {!earned && p && p.target > 1 && (
@@ -384,29 +384,12 @@ export default function Hunt() {
                     </div>
                   )}
                   {!earned && p && p.target > 1 && (
-                    <span className="text-[8px] font-mono text-white/40">{p.current}/{p.target}</span>
+                    <span className="text-[10px] font-mono text-white/40">{p.current}/{p.target}</span>
                   )}
                 </div>
               );
             })}
           </div>
-          <style>{`
-            .badge-card.badge-earned::after {
-              content: '';
-              position: absolute;
-              inset: 0;
-              border-radius: 12px;
-              background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
-              background-size: 200% 100%;
-              background-position: 200% 0;
-              pointer-events: none;
-              animation: shimmer 3s ease-in-out infinite;
-            }
-            @keyframes shimmer {
-              0% { background-position: 200% 0; }
-              50%, 100% { background-position: -200% 0; }
-            }
-          `}</style>
 
           {/* My sightings toggle */}
           <button

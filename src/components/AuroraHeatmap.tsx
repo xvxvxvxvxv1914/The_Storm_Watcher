@@ -41,9 +41,10 @@ function buildImageUrl(kp: number): string {
 function HeatOverlay({ kp }: { kp: number }) {
   const map = useMap();
   const overlayRef = useRef<L.ImageOverlay | null>(null);
+  const roundedKp = Math.round(kp * 10) / 10;
 
   useEffect(() => {
-    const url = buildImageUrl(kp);
+    const url = buildImageUrl(roundedKp);
     const bounds: L.LatLngBoundsExpression = [[-90, -180], [90, 180]];
 
     if (overlayRef.current) {
@@ -59,7 +60,7 @@ function HeatOverlay({ kp }: { kp: number }) {
         overlayRef.current = null;
       }
     };
-  }, [map, kp]);
+  }, [map, roundedKp]);
 
   return null;
 }

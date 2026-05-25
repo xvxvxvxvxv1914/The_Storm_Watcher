@@ -103,6 +103,10 @@ export default function Gallery() {
       setUploadError(t('gallery.uploadError') || 'Invalid file type');
       return;
     }
+    if (file.size > 25 * 1024 * 1024) {
+      setUploadError(t('gallery.fileTooLarge') || 'File too large — max 25 MB');
+      return;
+    }
     setSelectedFile(file);
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     setPreviewUrl(URL.createObjectURL(file));
@@ -376,7 +380,7 @@ export default function Gallery() {
               <div key={photo.id} className="group relative aspect-square rounded-2xl overflow-hidden bg-white/5">
                 <img
                   src={photo.thumbnail_url ?? photo.image_url}
-                  alt={photo.description ?? 'Aurora photo'}
+                  alt={photo.description ?? photo.location_name ?? 'Aurora photo'}
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   loading="lazy"
                 />
