@@ -888,6 +888,13 @@ const is_: Record<string, string> = {
   'auth.strength.good': 'Gott',
   'auth.strength.strong': 'Sterkt',
   'calendar.activity.quiet': 'Rólegt',
+  'settings.kp.weak': 'Veikt',
+  'settings.kp.moderate': 'Miðlungs',
+  'settings.kp.storm': 'Stormur',
+  'settings.kp.strongStorm': 'Sterkur stormur',
+  'settings.kp.severeStorm': 'Alvarlegur stormur',
+  'settings.kp.extreme': 'Öfgafullt',
+  'settings.kp.extremePlus': 'Öfgafullt+',
 };
 
 export default is_;

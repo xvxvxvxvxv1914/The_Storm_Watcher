@@ -888,6 +888,13 @@ const uk: Record<string, string> = {
   'auth.strength.good': 'Хороший',
   'auth.strength.strong': 'Сильний',
   'calendar.activity.quiet': 'Спокійно',
+  'settings.kp.weak': 'Слабка',
+  'settings.kp.moderate': 'Помірна',
+  'settings.kp.storm': 'Буря',
+  'settings.kp.strongStorm': 'Сильна буря',
+  'settings.kp.severeStorm': 'Важка буря',
+  'settings.kp.extreme': 'Екстремна',
+  'settings.kp.extremePlus': 'Екстремна+',
 };
 
 export default uk;

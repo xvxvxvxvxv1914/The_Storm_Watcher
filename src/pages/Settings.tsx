@@ -64,13 +64,13 @@ export default function Settings() {
   };
 
   const kpLabels: Record<number, string> = {
-    3: 'Kp 3 — Weak',
-    4: 'Kp 4 — Moderate',
-    5: 'Kp 5 — Storm',
-    6: 'Kp 6 — Strong Storm',
-    7: 'Kp 7 — Severe Storm',
-    8: 'Kp 8 — Extreme',
-    9: 'Kp 9 — Extreme+',
+    3: `Kp 3 — ${t('settings.kp.weak')}`,
+    4: `Kp 4 — ${t('settings.kp.moderate')}`,
+    5: `Kp 5 — ${t('settings.kp.storm')}`,
+    6: `Kp 6 — ${t('settings.kp.strongStorm')}`,
+    7: `Kp 7 — ${t('settings.kp.severeStorm')}`,
+    8: `Kp 8 — ${t('settings.kp.extreme')}`,
+    9: `Kp 9 — ${t('settings.kp.extremePlus')}`,
   };
 
   return (

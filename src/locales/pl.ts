@@ -888,6 +888,13 @@ const pl: Record<string, string> = {
   'auth.strength.good': 'Dobre',
   'auth.strength.strong': 'Silne',
   'calendar.activity.quiet': 'Spokojnie',
+  'settings.kp.weak': 'Słaba',
+  'settings.kp.moderate': 'Umiarkowana',
+  'settings.kp.storm': 'Burza',
+  'settings.kp.strongStorm': 'Silna burza',
+  'settings.kp.severeStorm': 'Silna burza magnetyczna',
+  'settings.kp.extreme': 'Ekstremalna',
+  'settings.kp.extremePlus': 'Ekstremalna+',
 };
 
 export default pl;

@@ -896,6 +896,13 @@ const zh: Record<string, string> = {
   'auth.strength.good': '好',
   'auth.strength.strong': '强',
   'calendar.activity.quiet': '平静',
+  'settings.kp.weak': '弱',
+  'settings.kp.moderate': '中等',
+  'settings.kp.storm': '风暴',
+  'settings.kp.strongStorm': '强风暴',
+  'settings.kp.severeStorm': '严重风暴',
+  'settings.kp.extreme': '极端',
+  'settings.kp.extremePlus': '极端+',
 };
 
 export default zh;

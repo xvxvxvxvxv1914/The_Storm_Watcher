@@ -888,6 +888,13 @@ const da: Record<string, string> = {
   'auth.strength.good': 'God',
   'auth.strength.strong': 'Stærk',
   'calendar.activity.quiet': 'Roligt',
+  'settings.kp.weak': 'Svag',
+  'settings.kp.moderate': 'Moderat',
+  'settings.kp.storm': 'Storm',
+  'settings.kp.strongStorm': 'Stærk storm',
+  'settings.kp.severeStorm': 'Alvorlig storm',
+  'settings.kp.extreme': 'Ekstrem',
+  'settings.kp.extremePlus': 'Ekstrem+',
 };
 
 export default da;

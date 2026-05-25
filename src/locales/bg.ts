@@ -919,6 +919,13 @@ const bg: Record<string, string> = {
   'auth.strength.good': 'Добра',
   'auth.strength.strong': 'Силна',
   'calendar.activity.quiet': 'Спокойно',
+  'settings.kp.weak': 'Слаба',
+  'settings.kp.moderate': 'Умерена',
+  'settings.kp.storm': 'Буря',
+  'settings.kp.strongStorm': 'Силна буря',
+  'settings.kp.severeStorm': 'Тежка буря',
+  'settings.kp.extreme': 'Екстремна',
+  'settings.kp.extremePlus': 'Екстремна+',
 };
 
 export default bg;

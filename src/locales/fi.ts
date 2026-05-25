@@ -888,6 +888,13 @@ const fi: Record<string, string> = {
   'auth.strength.good': 'Hyvä',
   'auth.strength.strong': 'Vahva',
   'calendar.activity.quiet': 'Rauhallinen',
+  'settings.kp.weak': 'Heikko',
+  'settings.kp.moderate': 'Kohtalainen',
+  'settings.kp.storm': 'Myrsky',
+  'settings.kp.strongStorm': 'Voimakas myrsky',
+  'settings.kp.severeStorm': 'Ankara myrsky',
+  'settings.kp.extreme': 'Äärimmäinen',
+  'settings.kp.extremePlus': 'Äärimmäinen+',
 };
 
 export default fi;

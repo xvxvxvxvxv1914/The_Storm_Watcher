@@ -888,6 +888,13 @@ const no: Record<string, string> = {
   'auth.strength.good': 'Godt',
   'auth.strength.strong': 'Sterkt',
   'calendar.activity.quiet': 'Rolig',
+  'settings.kp.weak': 'Svak',
+  'settings.kp.moderate': 'Moderat',
+  'settings.kp.storm': 'Storm',
+  'settings.kp.strongStorm': 'Sterk storm',
+  'settings.kp.severeStorm': 'Alvorlig storm',
+  'settings.kp.extreme': 'Ekstrem',
+  'settings.kp.extremePlus': 'Ekstrem+',
 };
 
 export default no;

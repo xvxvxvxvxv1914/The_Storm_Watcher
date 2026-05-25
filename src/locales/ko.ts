@@ -926,6 +926,13 @@ const ko: Record<string, string> = {
   'auth.strength.good': '좋음',
   'auth.strength.strong': '강함',
   'calendar.activity.quiet': '조용함',
+  'settings.kp.weak': '약함',
+  'settings.kp.moderate': '보통',
+  'settings.kp.storm': '폭풍',
+  'settings.kp.strongStorm': '강한 폭풍',
+  'settings.kp.severeStorm': '심한 폭풍',
+  'settings.kp.extreme': '극단적',
+  'settings.kp.extremePlus': '극단적+',
 };
 
 export default ko;

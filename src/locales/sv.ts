@@ -888,6 +888,13 @@ const sv: Record<string, string> = {
   'auth.strength.good': 'Bra',
   'auth.strength.strong': 'Starkt',
   'calendar.activity.quiet': 'Lugnt',
+  'settings.kp.weak': 'Svag',
+  'settings.kp.moderate': 'Måttlig',
+  'settings.kp.storm': 'Storm',
+  'settings.kp.strongStorm': 'Stark storm',
+  'settings.kp.severeStorm': 'Svår storm',
+  'settings.kp.extreme': 'Extrem',
+  'settings.kp.extremePlus': 'Extrem+',
 };
 
 export default sv;

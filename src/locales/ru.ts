@@ -896,6 +896,13 @@ const ru: Record<string, string> = {
   'auth.strength.good': 'Хороший',
   'auth.strength.strong': 'Сильный',
   'calendar.activity.quiet': 'Спокойно',
+  'settings.kp.weak': 'Слабая',
+  'settings.kp.moderate': 'Умеренная',
+  'settings.kp.storm': 'Буря',
+  'settings.kp.strongStorm': 'Сильная буря',
+  'settings.kp.severeStorm': 'Тяжёлая буря',
+  'settings.kp.extreme': 'Экстремальная',
+  'settings.kp.extremePlus': 'Экстремальная+',
 };
 
 export default ru;

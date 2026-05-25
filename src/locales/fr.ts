@@ -896,6 +896,13 @@ const fr: Record<string, string> = {
   'auth.strength.good': 'Bonne',
   'auth.strength.strong': 'Forte',
   'calendar.activity.quiet': 'Calme',
+  'settings.kp.weak': 'Faible',
+  'settings.kp.moderate': 'Modérée',
+  'settings.kp.storm': 'Tempête',
+  'settings.kp.strongStorm': 'Forte tempête',
+  'settings.kp.severeStorm': 'Tempête sévère',
+  'settings.kp.extreme': 'Extrême',
+  'settings.kp.extremePlus': 'Extrême+',
 };
 
 export default fr;

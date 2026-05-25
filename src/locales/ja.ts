@@ -896,6 +896,13 @@ const ja: Record<string, string> = {
   'auth.strength.good': '良い',
   'auth.strength.strong': '強い',
   'calendar.activity.quiet': '静穏',
+  'settings.kp.weak': '弱い',
+  'settings.kp.moderate': '中程度',
+  'settings.kp.storm': '嵐',
+  'settings.kp.strongStorm': '強い嵐',
+  'settings.kp.severeStorm': '激しい嵐',
+  'settings.kp.extreme': '極端',
+  'settings.kp.extremePlus': '極端+',
 };
 
 export default ja;
