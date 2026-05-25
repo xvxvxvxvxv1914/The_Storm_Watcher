@@ -89,10 +89,10 @@ function buildNoaaItem(alert: AlertType, t: (k: string) => string): FeedItem {
         ? `G${g} — ${scaleLabels(g)}`
         : severity === 4 ? t('alerts.status.warning') : severity === 3 ? t('alerts.status.watch') : t('alerts.status.summary'),
       impact: g >= 4
-        ? 'Aurora visible from southern Europe and much of North America. Power grid and GPS disruptions possible.'
+        ? t('alerts.impact.geoStorm.high')
         : g >= 2
-          ? 'Aurora possible at high latitudes (Scandinavia, Canada, Alaska). Minor GPS and radio effects.'
-          : 'Aurora at polar regions only. Negligible impact on daily life.',
+          ? t('alerts.impact.geoStorm.moderate')
+          : t('alerts.impact.geoStorm.low'),
       severity,
       scale: g ? { letter: 'G', current: g } : undefined,
       dateStr: alert.issue_datetime,
@@ -108,10 +108,10 @@ function buildNoaaItem(alert: AlertType, t: (k: string) => string): FeedItem {
       title: t('alerts.type.radioBlackout'),
       subtitle: r ? `R${r} — ${scaleLabels(r)}` : t('alerts.sub.hfAffected'),
       impact: r >= 4
-        ? 'Widespread HF radio blackouts on sunlit side. Aviation and maritime communications disrupted.'
+        ? t('alerts.impact.radio.high')
         : r >= 2
-          ? 'HF radio disruptions on sunlit side of Earth. Some amateur radio and aviation frequencies affected.'
-          : 'Weak radio disruptions at high latitudes. Minimal real-world impact.',
+          ? t('alerts.impact.radio.moderate')
+          : t('alerts.impact.radio.low'),
       severity,
       scale: r ? { letter: 'R', current: r } : undefined,
       dateStr: alert.issue_datetime,
@@ -126,7 +126,7 @@ function buildNoaaItem(alert: AlertType, t: (k: string) => string): FeedItem {
       type: 'radiation',
       title: t('alerts.type.radStorm'),
       subtitle: s ? `S${s} — ${scaleLabels(s)}` : t('alerts.sub.elevatedRad'),
-      impact: 'Elevated radiation at flight altitudes. Polar routes may be rerouted. Satellite operators alerted.',
+      impact: t('alerts.impact.radiation'),
       severity,
       scale: s ? { letter: 'S', current: s } : undefined,
       dateStr: alert.issue_datetime,
@@ -139,7 +139,7 @@ function buildNoaaItem(alert: AlertType, t: (k: string) => string): FeedItem {
     type: 'summary',
     title: t('alerts.type.update'),
     subtitle: t('alerts.sub.routine'),
-    impact: 'No immediate action needed. Space weather conditions are being monitored.',
+    impact: t('alerts.impact.summary'),
     severity: 1,
     dateStr: alert.issue_datetime,
     raw: alert.message,
@@ -170,11 +170,11 @@ function buildCmeItem(cme: CmeEvent, t: (k: string) => string): FeedItem {
           : t('alerts.cme.away')),
     impact: isEarth
       ? (kp && kp >= 7
-          ? 'Strong geomagnetic storm expected. Aurora visible from central Europe and northern USA.'
+          ? t('alerts.impact.cme.high')
           : kp && kp >= 5
-            ? 'Moderate storm expected. Aurora at high latitudes (Scandinavia, Canada, Alaska).'
-            : 'Minor disturbance expected. Aurora at polar regions only.')
-      : 'This solar ejection is not directed at Earth. No impact expected.',
+            ? t('alerts.impact.cme.moderate')
+            : t('alerts.impact.cme.low'))
+      : t('alerts.impact.cme.away'),
     severity,
     eta,
     arrived,
@@ -201,12 +201,12 @@ function buildFlareItem(flare: FlareEvent, t: (k: string) => string): FeedItem {
     title: t('alerts.type.solarFlare'),
     subtitle: `Class ${flare.classType} — ${flareLabel}`,
     impact: letter === 'X'
-      ? 'Powerful flare. Radio blackouts likely on sunlit side. Aurora possible at mid-latitudes if Earth-directed.'
+      ? t('alerts.impact.flare.x')
       : letter === 'M'
-        ? 'Moderate flare. Brief radio disruptions possible on sunlit side of Earth.'
+        ? t('alerts.impact.flare.m')
         : letter === 'C'
-          ? 'Small flare. No significant effects on Earth expected.'
-          : 'Very weak flare. No noticeable effects.',
+          ? t('alerts.impact.flare.c')
+          : t('alerts.impact.flare.weak'),
     severity,
     scale: { letter: 'F', current: scaleMap[letter] ?? 1 },
     dateStr: flare.beginTime,

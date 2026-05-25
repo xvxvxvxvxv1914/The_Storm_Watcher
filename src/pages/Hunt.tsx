@@ -428,7 +428,7 @@ export default function Hunt() {
         ) : leaderboard.length === 0 ? (
           <div className="text-center py-4">
             <p className="text-[#94a3b8] text-sm font-semibold mb-1">{t('hunt.noSightings') || 'No sightings yet'}</p>
-            <p className="text-[#475569] text-xs">Report the first aurora sighting and claim the top spot!</p>
+            <p className="text-[#475569] text-xs">{t('hunt.leaderboardEmpty')}</p>
           </div>
         ) : (
           <div className="space-y-2">
@@ -459,8 +459,8 @@ export default function Hunt() {
           </div>
         ) : recentSightings.length === 0 ? (
           <div className="text-center py-4">
-            <p className="text-[#94a3b8] text-sm font-semibold mb-1">No community sightings yet</p>
-            <p className="text-[#475569] text-xs">Use the form above to log your first aurora sighting.</p>
+            <p className="text-[#94a3b8] text-sm font-semibold mb-1">{t('hunt.noRecentSightings')}</p>
+            <p className="text-[#475569] text-xs">{t('hunt.noRecentSightingsDesc')}</p>
           </div>
         ) : (
           <div className="space-y-3">
