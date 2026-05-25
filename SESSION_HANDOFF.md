@@ -1,10 +1,54 @@
-# Session Handoff — 2026-05-25
+# Session Handoff — 2026-05-25 (Continuation)
 
-> Последна сесия: 2026-05-25. Предишна сесия: 2026-05-24 (виж архив по-долу).
+> Последна сесия: 2026-05-25 (продължение). Предишна работа: по-долу.
 
 ---
 
-## ✅ Какво беше направено в сесия 2026-05-25
+## ✅ Какво беше направено в сесия 2026-05-25 (продължение)
+
+### BreadcrumbSchema SEO за всички content pages (commit `546778b`)
+- JSON-LD breadcrumb structured data добавено към 10 pages: Alerts, Gallery, Hunt, ISS, Calendar, SkyVisibility, SunTimes, UV, About, MagneticEffects
+- Подобрява rich-result eligibility в Google
+
+### i18n — Aurora quality labels, Auth strength, Calendar quiet (commit `1003682`)
+- **Aurora.tsx**: `qualityLabel` и `qualityDesc` вече използват `t()` (бяха hardcoded EN)
+  - Keys: `aurora.quality.{excellent,good,moderate,low}` + `aurora.quality.desc.*`
+- **Auth.tsx / AuthReset.tsx**: password strength meter labels вече използват `t()`
+  - Keys: `auth.strength.{tooWeak,weak,fair,good,strong}`
+- **Calendar.tsx**: `getGLevel()` quiet state → `t('calendar.activity.quiet')`
+- Всичко в 16 езика
+
+### Footer — пълна i18n, премахнат isBg pattern (commit `eee89c9`)
+- Footer.tsx използваше `isBg ? 'BG' : 'EN'` за 10+ места → заменен с `t()` ключове
+- Нови ключове: `footer.section.{spaceWeather,skyObservation,healthInfo,more}`, `footer.terms`, `footer.privacyPolicy`, `footer.termsOfService`, `nav.about`, `nav.magneticEffectsShort`
+- Всичките 15 non-EN езика обновени
+
+### Kp threshold labels в Settings (commit `38bc6be`)
+- Dropdown labels бяха hardcoded: `'Kp 5 — Storm'` etc. → `Kp 5 — ${t('settings.kp.storm')}`
+- Keys: `settings.kp.{weak,moderate,storm,strongStorm,severeStorm,extreme,extremePlus}`
+
+### Locale completeness test → 100% threshold (commit `333e293`)
+- Тестът беше ≥80% → вдигнат на 100% (всичките 15 non-EN езика са на 100%)
+- По-добър error message: показва кои ключове липсват
+- Добавени нови critical keys в теста
+
+### LanguageSettings i18n (commit `f69bc92`)
+- 3 hardcoded EN strings → `t()` ключове
+- Keys: `settings.lang.loadError`, `settings.lang.saveError`, `settings.lang.signInPrompt`
+
+### Profile avatar + sitemap (commit `7d312e4`)
+- `<img>` за avatar: добавени `loading="lazy" decoding="async"`
+- `public/sitemap.xml`: `lastmod` → `2026-05-25`
+
+### Git state след сесия 2026-05-25 (продължение)
+| Branch | HEAD | Статус |
+|--------|------|--------|
+| `main` | `7077586` | ⚠️ НЕ Е ОБНОВЕН — изчаква тест + одобрение от потребителя |
+| `staging` | `7d312e4` | ✅ Актуален — всички промени от всичките сесии |
+
+---
+
+## ✅ Какво беше направено в сесия 2026-05-25 (начало)
 
 ### Пълна i18n на Alerts страницата (commits `2d7e122`, `12ac8bd`, `fe092d1`)
 
