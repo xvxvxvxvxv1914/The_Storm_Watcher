@@ -16,6 +16,7 @@ ROUTES = [
     ('/',                 'hourly', '1.0'),
     ('/dashboard',        'hourly', '0.9'),
     ('/aurora',           'daily',  '0.9'),
+    ('/aurora-map',       'hourly', '0.8'),
     ('/forecast',         'hourly', '0.9'),
     ('/alerts',           'hourly', '0.8'),
     ('/calendar',         'daily',  '0.8'),

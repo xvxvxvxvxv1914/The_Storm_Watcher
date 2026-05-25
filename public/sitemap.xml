@@ -335,6 +335,117 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/aurora"/>
   </url>
   <url>
+    <loc>https://www.thestormwatcher.com/aurora-map</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>hourly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.thestormwatcher.com/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="bg" href="https://www.thestormwatcher.com/bg/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="da" href="https://www.thestormwatcher.com/da/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.thestormwatcher.com/de/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.thestormwatcher.com/es/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://www.thestormwatcher.com/fi/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.thestormwatcher.com/fr/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="is" href="https://www.thestormwatcher.com/is/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://www.thestormwatcher.com/ja/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.thestormwatcher.com/ko/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="no" href="https://www.thestormwatcher.com/no/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://www.thestormwatcher.com/pl/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://www.thestormwatcher.com/ru/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://www.thestormwatcher.com/sv/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://www.thestormwatcher.com/uk/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.thestormwatcher.com/zh/aurora-map"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/bg/aurora-map</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>hourly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="bg" href="https://www.thestormwatcher.com/bg/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/aurora-map"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/da/aurora-map</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>hourly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="da" href="https://www.thestormwatcher.com/da/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/aurora-map"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/de/aurora-map</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>hourly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.thestormwatcher.com/de/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/aurora-map"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/es/aurora-map</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>hourly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.thestormwatcher.com/es/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/aurora-map"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/fi/aurora-map</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>hourly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://www.thestormwatcher.com/fi/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/aurora-map"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/fr/aurora-map</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>hourly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.thestormwatcher.com/fr/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/aurora-map"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/is/aurora-map</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>hourly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="is" href="https://www.thestormwatcher.com/is/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/aurora-map"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/ja/aurora-map</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>hourly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://www.thestormwatcher.com/ja/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/aurora-map"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/ko/aurora-map</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>hourly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.thestormwatcher.com/ko/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/aurora-map"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/no/aurora-map</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>hourly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="no" href="https://www.thestormwatcher.com/no/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/aurora-map"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/pl/aurora-map</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>hourly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://www.thestormwatcher.com/pl/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/aurora-map"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/ru/aurora-map</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>hourly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://www.thestormwatcher.com/ru/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/aurora-map"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/sv/aurora-map</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>hourly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://www.thestormwatcher.com/sv/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/aurora-map"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/uk/aurora-map</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>hourly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://www.thestormwatcher.com/uk/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/aurora-map"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/zh/aurora-map</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>hourly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.thestormwatcher.com/zh/aurora-map"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/aurora-map"/>
+  </url>
+  <url>
     <loc>https://www.thestormwatcher.com/forecast</loc>
     <lastmod>2026-05-25</lastmod><changefreq>hourly</changefreq><priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/forecast"/>
