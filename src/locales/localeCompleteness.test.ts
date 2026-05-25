@@ -22,15 +22,14 @@ const LOCALES: Record<string, Record<string, string>> = {
 
 const enKeys = Object.keys(en);
 
-// Every locale must cover ≥80% of en.ts keys.
+// Every locale must cover 100% of en.ts keys (all 15 non-English locales are kept in sync via batch injection scripts).
 describe('locale completeness — all 16 locales vs en', () => {
   for (const [lang, locale] of Object.entries(LOCALES)) {
     const localeKeys = new Set(Object.keys(locale));
 
-    it(`${lang}: at least 80% of en keys present`, () => {
-      const covered = enKeys.filter(k => localeKeys.has(k)).length;
-      const ratio = covered / enKeys.length;
-      expect(ratio, `${lang} coverage ${Math.round(ratio * 100)}% < 80%`).toBeGreaterThanOrEqual(0.8);
+    it(`${lang}: 100% of en keys present`, () => {
+      const missing = enKeys.filter(k => !localeKeys.has(k));
+      expect(missing, `${lang} missing keys: ${missing.join(', ')}`).toHaveLength(0);
     });
 
     it(`${lang}: no empty string values`, () => {
@@ -48,6 +47,12 @@ describe('locale completeness — all 16 locales vs en', () => {
       'storm.quiet', 'storm.g1', 'storm.g2', 'storm.g3plus',
       'alerts.type.geoStorm', 'alerts.type.solarFlare',
       'alerts.hero.calm', 'alerts.filter.all',
+      'aurora.quality.excellent', 'aurora.quality.desc.low',
+      'auth.strength.tooWeak', 'auth.strength.strong',
+      'footer.section.spaceWeather', 'footer.section.more',
+      'calendar.activity.quiet',
+      'settings.kp.storm', 'settings.kp.extreme',
+      'nav.about', 'nav.magneticEffectsShort',
     ];
     for (const [lang, locale] of Object.entries(LOCALES)) {
       const localeKeys = new Set(Object.keys(locale));
