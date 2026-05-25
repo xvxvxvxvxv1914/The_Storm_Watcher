@@ -11,7 +11,7 @@ const G_LEVEL = (kp: number) =>
 const h = React.createElement;
 
 export default async function handler(req: Request) {
-  const { searchParams } = new URL(req.url);
+  const { searchParams } = new URL(req.url, 'https://www.thestormwatcher.com');
   const page = searchParams.get('page') ?? 'home';
   const kpRaw = parseFloat(searchParams.get('kp') ?? '0');
   const kp = isNaN(kpRaw) ? 0 : Math.min(9, Math.max(0, kpRaw));
