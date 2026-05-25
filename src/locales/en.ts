@@ -14,6 +14,22 @@ const en: Record<string, string> = {
   'nav.more': 'More',
   'nav.magneticEffects': 'Magnetic Storms & Health',
   'nav.faq': 'Aurora FAQ',
+  'nav.auroraMap': 'Aurora Map',
+
+  // Aurora Map page
+  'auroraMap.meta.title': 'Aurora Visibility Map — The Storm Watcher',
+  'auroraMap.meta.description': 'Live world map showing aurora visibility zones based on the current Kp index.',
+  'auroraMap.title': 'Aurora Visibility Map',
+  'auroraMap.subtitle': 'Live aurora zones based on current Kp index. Updated every 3 minutes.',
+  'auroraMap.loading': 'Loading map…',
+  'auroraMap.note': 'Visibility calculated using dipole geomagnetic model. Actual aurora depends on cloud cover, light pollution, and local horizon.',
+  'auroraMap.legend.high': 'High (>75%)',
+  'auroraMap.legend.moderate': 'Moderate (55–75%)',
+  'auroraMap.legend.low': 'Low (25–55%)',
+  'auroraMap.legend.minimal': 'Minimal (<25%)',
+  'auroraMap.proCta.title': 'Want the full 3D Aurora Globe?',
+  'auroraMap.proCta.desc': 'Pro includes real-time OVATION aurora model on an interactive 3D globe, email alerts and more.',
+  'auroraMap.proCta.cta': 'Upgrade to Pro',
 
   // Mood Page
   'mood.title': 'How are you feeling today?',

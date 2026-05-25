@@ -67,6 +67,7 @@ const Navigation = () => {
 
   const moreLinks = [
     // Aurora extras
+    { to: '/aurora-map',       label: t('nav.auroraMap') || 'Aurora Map' },
     { to: '/livestream',       label: t('nav.livestream') || 'Livestream' },
     { to: '/gallery',          label: t('nav.gallery') || 'Gallery' },
     { to: '/hunt',             label: t('nav.hunt') || 'Aurora Hunt' },

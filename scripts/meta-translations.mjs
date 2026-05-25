@@ -31,6 +31,7 @@ export const ROUTES = [
   { path: '/hunt',              slug: 'hunt' },
   { path: '/livestream',        slug: 'livestream' },
   { path: '/calendar',          slug: 'calendar' },
+  { path: '/aurora-map',        slug: 'auroraMap' },
 ];
 
 export const META = {
@@ -393,5 +394,23 @@ export const META = {
     pl: { title: 'Kalendarz Zorzy — Najlepsze Noce na Zorzę Polarną | The Storm Watcher', description: '3-dniowa prognoza zorzy z Kp i zachmurzeniem. Znajdź najlepszą noc do obserwacji zorzy.' },
     sv: { title: 'Aurora Kalender — Bästa Nätter för Norrsken | The Storm Watcher', description: '3-nätters norrskensöversikt med Kp-prognos och molntäcke. Hitta din bästa natt för norrsken.' },
     uk: { title: 'Календар Авроральної Активності — Найкращі Ночі | The Storm Watcher', description: '3-нічний прогноз авроральної активності з Kp та хмарністю. Знайдіть найкращу ніч для спостережень.' },
+  },
+  auroraMap: {
+    en: { title: 'Aurora Visibility Map — Where Can You See the Northern Lights? | The Storm Watcher', description: 'Live world map showing aurora visibility zones based on the current Kp index. See where the northern lights are visible right now.' },
+    bg: { title: 'Карта на видимостта на аврората — The Storm Watcher', description: 'Карта на света на живо с зони на видимост на аврората въз основа на текущия Kp индекс.' },
+    de: { title: 'Aurora-Sichtbarkeitskarte — Wo Sind Nordlichter Sichtbar? | The Storm Watcher', description: 'Live-Weltkarte mit Aurora-Sichtbarkeitszonen basierend auf dem aktuellen Kp-Index.' },
+    es: { title: 'Mapa de Visibilidad de Auroras — ¿Dónde Ver la Aurora Boreal? | The Storm Watcher', description: 'Mapa mundial en vivo con zonas de visibilidad de auroras según el índice Kp actual.' },
+    fr: { title: "Carte de Visibilité des Aurores — Où Voir les Aurores Boréales ? | The Storm Watcher", description: "Carte mondiale en direct des zones de visibilité des aurores selon l'indice Kp actuel." },
+    ja: { title: 'オーロラ視認性マップ — 北極光はどこで見られる？ | ストームウォッチャー', description: '現在のKp指数に基づくオーロラ視認ゾーンのライブ世界地図。' },
+    ru: { title: 'Карта Видимости Авроры — Где Видно Северное Сияние? | The Storm Watcher', description: 'Карта мира в реальном времени с зонами видимости авроры на основе текущего индекса Kp.' },
+    zh: { title: '极光可见度地图 — 哪里能看到北极光？| The Storm Watcher', description: '根据当前Kp指数显示极光可见区域的实时世界地图。' },
+    da: { title: 'Aurora Synlighedskort — Hvor Kan Du Se Nordlyset? | The Storm Watcher', description: 'Live verdenskort med nordlyssynlighedszoner baseret på det aktuelle Kp-indeks.' },
+    fi: { title: 'Revontulinäkyvyyskartta — Missä Voit Nähdä Revontulia? | The Storm Watcher', description: 'Reaaliaikainen maailmankartta, joka näyttää revontulinäkyvyysvyöhykkeet nykyisen Kp-indeksin perusteella.' },
+    is: { title: 'Norðurljósasýnileikakort — Hvar Sérð Þú Norðurljósin? | The Storm Watcher', description: 'Bein heimskort sem sýnir norðurljósasýnileikabelt á grundvelli gildandi Kp-vísitölu.' },
+    ko: { title: '오로라 가시성 지도 — 북극광은 어디서 볼 수 있나요? | 스톰워처', description: '현재 Kp 지수에 기반한 오로라 가시 구역을 보여주는 실시간 세계 지도.' },
+    no: { title: 'Nordlyssynlighetskart — Hvor Kan Du Se Nordlyset? | The Storm Watcher', description: 'Direkte verdenskart med nordlyssynlighetssoner basert på gjeldende Kp-indeks.' },
+    pl: { title: 'Mapa Widoczności Zorzy — Gdzie Można Zobaczyć Zorzę Polarną? | The Storm Watcher', description: 'Mapa świata na żywo z strefami widoczności zorzy polarnej na podstawie bieżącego indeksu Kp.' },
+    sv: { title: 'Norrskenssynlighetskarta — Var Kan Du Se Norrsken? | The Storm Watcher', description: 'Live världskarta med norrskenssynlighetszoner baserat på aktuellt Kp-index.' },
+    uk: { title: 'Карта Видимості Авроральної Активності — де Видно Полярне Сяйво? | The Storm Watcher', description: 'Карта світу в реальному часі із зонами видимості авроральної активності на основі поточного індексу Kp.' },
   },
 };

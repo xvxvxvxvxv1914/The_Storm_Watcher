@@ -31,6 +31,7 @@ const Hunt = lazy(() => import('../pages/Hunt'));
 const Livestream = lazy(() => import('../pages/Livestream'));
 const Calendar = lazy(() => import('../pages/Calendar'));
 const LanguageSettings = lazy(() => import('../pages/LanguageSettings'));
+const AuroraMap = lazy(() => import('../pages/AuroraMap'));
 
 export const AnimatedRoutes = () => {
   const location = useLocation();
@@ -64,6 +65,7 @@ export const AnimatedRoutes = () => {
         <Route path="/hunt" element={<AnimatedPage><Hunt /></AnimatedPage>} />
         <Route path="/livestream" element={<AnimatedPage><Livestream /></AnimatedPage>} />
         <Route path="/calendar" element={<AnimatedPage><Calendar /></AnimatedPage>} />
+        <Route path="/aurora-map" element={<AnimatedPage><AuroraMap /></AnimatedPage>} />
         <Route path="*" element={<AnimatedPage><NotFound /></AnimatedPage>} />
       </Routes>
     </AnimatePresence>
