@@ -190,7 +190,7 @@ export default function Profile() {
             title={t('profile.uploadAvatar') || 'Upload photo'}
           >
             {profile?.avatar_url ? (
-              <img src={profile.avatar_url} alt="avatar" className="w-full h-full object-cover" />
+              <img src={profile.avatar_url} alt="avatar" className="w-full h-full object-cover" loading="lazy" decoding="async" />
             ) : (
               <User className="w-8 h-8" style={{ color: planColor }} />
             )}
