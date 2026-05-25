@@ -37,8 +37,16 @@ Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
   enabled: import.meta.env.PROD && !!import.meta.env.VITE_SENTRY_DSN,
   environment: import.meta.env.MODE,
+  integrations: [
+    Sentry.replayIntegration({
+      maskAllText: false,
+      blockAllMedia: false,
+      maskAllInputs: true,
+    }),
+  ],
   tracesSampleRate: 0.1,
-  replaysOnErrorSampleRate: 0,
+  replaysSessionSampleRate: 0.05,
+  replaysOnErrorSampleRate: 1.0,
   beforeSend(event) {
     if (event.user) {
       delete event.user.email;
