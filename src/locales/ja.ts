@@ -512,6 +512,8 @@ const ja: Record<string, string> = {
   'auroraMap.proCta.title': '完全な3Dオーロラグローブを使いたいですか？',
   'auroraMap.proCta.desc': 'ProはリアルタイムのOVATIONオーロラモデルをインタラクティブな3Dグローブで提供します。',
   'auroraMap.proCta.cta': 'Proにアップグレード',
+  'auroraMap.noLocation': '場所が設定されていません',
+  'auroraMap.setLocation': '場所を設定してローカルの視認性を確認 →',
   'nav.faq': 'オーロラ FAQ',
   'onboarding.welcome.title': 'The Storm Watcherへようこそ',
   'onboarding.welcome.body': 'ダッシュボード、アラート、設定の30秒ツアー。いつでもスキップできます。',

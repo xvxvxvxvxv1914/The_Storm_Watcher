@@ -30,6 +30,8 @@ const en: Record<string, string> = {
   'auroraMap.proCta.title': 'Want the full 3D Aurora Globe?',
   'auroraMap.proCta.desc': 'Pro includes real-time OVATION aurora model on an interactive 3D globe, email alerts and more.',
   'auroraMap.proCta.cta': 'Upgrade to Pro',
+  'auroraMap.noLocation': 'No location set',
+  'auroraMap.setLocation': 'Set your location to see local visibility →',
 
   // Mood Page
   'mood.title': 'How are you feeling today?',

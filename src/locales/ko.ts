@@ -27,6 +27,8 @@ const ko: Record<string, string> = {
   'auroraMap.proCta.title': '전체 3D 오로라 글로브를 원하시나요?',
   'auroraMap.proCta.desc': 'Pro에는 인터랙티브 3D 글로브의 실시간 OVATION 오로라 모델, 이메일 알림 등이 포함됩니다.',
   'auroraMap.proCta.cta': 'Pro로 업그레이드',
+  'auroraMap.noLocation': '위치가 설정되지 않음',
+  'auroraMap.setLocation': '로컬 가시성을 보려면 위치를 설정하세요 →',
   'nav.faq': '오로라 FAQ',
 
   // Mood Page

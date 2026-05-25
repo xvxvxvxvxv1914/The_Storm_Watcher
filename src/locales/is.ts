@@ -26,6 +26,8 @@ const is_: Record<string, string> = {
   'auroraMap.proCta.title': 'Viltu fulla 3D norðurljósahnöttinn?',
   'auroraMap.proCta.desc': 'Pro inniheldur OVATION norðurljósalíkan í rauntíma á gagnvirkum 3D hnetti, tölvupóstvísbendingar og fleira.',
   'auroraMap.proCta.cta': 'Uppfæra í Pro',
+  'auroraMap.noLocation': 'Engin staðsetning stillt',
+  'auroraMap.setLocation': 'Stilltu staðsetningu þína til að sjá staðbundinn sýnileika →',
   'nav.faq': 'Norðurljós FAQ',
   'nav.gallery': 'Myndasafn',
   'nav.hunt': 'Norðurljósaveiðar',

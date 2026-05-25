@@ -512,6 +512,8 @@ const zh: Record<string, string> = {
   'auroraMap.proCta.title': '想要完整的3D极光地球仪？',
   'auroraMap.proCta.desc': 'Pro版包含实时OVATION极光模型的交互式3D地球仪、邮件提醒等功能。',
   'auroraMap.proCta.cta': '升级到Pro',
+  'auroraMap.noLocation': '未设置位置',
+  'auroraMap.setLocation': '设置您的位置以查看本地可见度 →',
   'nav.faq': '极光常见问题',
   'onboarding.welcome.title': '欢迎使用 The Storm Watcher',
   'onboarding.welcome.body': '30秒快速了解仪表板、警报和设置。您可以随时跳过。',

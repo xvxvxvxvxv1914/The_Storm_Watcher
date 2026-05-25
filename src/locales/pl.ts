@@ -26,6 +26,8 @@ const pl: Record<string, string> = {
   'auroraMap.proCta.title': 'Chcesz pełny globus 3D zorzy?',
   'auroraMap.proCta.desc': 'Pro zawiera model OVATION zorzy w czasie rzeczywistym na interaktywnym globusie 3D, alerty e-mail i więcej.',
   'auroraMap.proCta.cta': 'Przejdź na Pro',
+  'auroraMap.noLocation': 'Brak ustawionej lokalizacji',
+  'auroraMap.setLocation': 'Ustaw swoją lokalizację, aby zobaczyć lokalną widoczność →',
   'nav.faq': 'FAQ zorzy polarnej',
   'nav.gallery': 'Galeria',
   'nav.hunt': 'Polowanie na zorzę',

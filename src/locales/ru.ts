@@ -512,6 +512,8 @@ const ru: Record<string, string> = {
   'auroraMap.proCta.title': 'Хотите полный 3D-глобус авроры?',
   'auroraMap.proCta.desc': 'Pro включает модель OVATION в реальном времени на интерактивном 3D-глобусе, email-оповещения и многое другое.',
   'auroraMap.proCta.cta': 'Перейти на Pro',
+  'auroraMap.noLocation': 'Местоположение не задано',
+  'auroraMap.setLocation': 'Задайте местоположение для просмотра местной видимости →',
   'nav.faq': 'FAQ об авроре',
   'onboarding.welcome.title': 'Добро пожаловать в The Storm Watcher',
   'onboarding.welcome.body': '30-секундный обзор панели управления, оповещений и настроек. Можно пропустить в любой момент.',

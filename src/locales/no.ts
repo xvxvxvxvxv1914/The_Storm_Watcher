@@ -26,6 +26,8 @@ const no: Record<string, string> = {
   'auroraMap.proCta.title': 'Vil du ha den fulle 3D aurora-globusen?',
   'auroraMap.proCta.desc': 'Pro inkluderer sanntids OVATION aurora-modell på en interaktiv 3D-globus, e-postvarsler og mer.',
   'auroraMap.proCta.cta': 'Oppgrader til Pro',
+  'auroraMap.noLocation': 'Ingen plassering angitt',
+  'auroraMap.setLocation': 'Angi plasseringen din for å se lokal synlighet →',
   'nav.faq': 'Nordlys FAQ',
   'nav.gallery': 'Galleri',
   'nav.hunt': 'Nordlysjakt',

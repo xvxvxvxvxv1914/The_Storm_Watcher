@@ -26,6 +26,8 @@ const fi: Record<string, string> = {
   'auroraMap.proCta.title': 'Haluatko täyden 3D-revontuligloben?',
   'auroraMap.proCta.desc': 'Pro sisältää reaaliaikaisen OVATION-revontulimallin interaktiivisessa 3D-globissa, sähköposti-ilmoitukset ja paljon muuta.',
   'auroraMap.proCta.cta': 'Päivitä Pro-versioon',
+  'auroraMap.noLocation': 'Sijaintia ei asetettu',
+  'auroraMap.setLocation': 'Aseta sijaintisi nähdäksesi paikallisen näkyvyyden →',
   'nav.faq': 'Revontulet FAQ',
   'nav.gallery': 'Galleria',
   'nav.hunt': 'Revontulijahti',

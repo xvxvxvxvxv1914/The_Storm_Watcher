@@ -78,7 +78,7 @@ export default function AuroraMap() {
               />
             </div>
           )}
-          {userVis !== null && settings.preferredLocationName && (
+          {userVis !== null && settings.preferredLocationName ? (
             <div className="flex items-center gap-3 rounded-xl px-4 py-3 border border-white/10 bg-white/5 flex-1">
               <MapPin className="w-4 h-4 text-[#64748b] flex-shrink-0" />
               <div className="min-w-0">
@@ -86,7 +86,18 @@ export default function AuroraMap() {
                 <div className="font-semibold text-white text-sm">{userVis}% {t('aurora.visibility') || 'Aurora Visibility'}</div>
               </div>
             </div>
-          )}
+          ) : settings.preferredLat === null ? (
+            <Link
+              to="/settings"
+              className="flex items-center gap-3 rounded-xl px-4 py-3 border border-dashed border-white/20 bg-white/3 flex-1 hover:border-white/30 hover:bg-white/5 transition-colors group"
+            >
+              <MapPin className="w-4 h-4 text-[#475569] flex-shrink-0 group-hover:text-[#64748b] transition-colors" />
+              <div>
+                <div className="text-xs text-[#475569] group-hover:text-[#64748b] transition-colors">{t('auroraMap.noLocation') || 'No location set'}</div>
+                <div className="text-xs text-[#334155] group-hover:text-[#475569] transition-colors">{t('auroraMap.setLocation') || 'Set your location to see local visibility →'}</div>
+              </div>
+            </Link>
+          ) : null}
         </div>
 
         {/* Map */}

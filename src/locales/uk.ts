@@ -26,6 +26,8 @@ const uk: Record<string, string> = {
   'auroraMap.proCta.title': 'Хочете повний 3D-глобус авроры?',
   'auroraMap.proCta.desc': 'Pro включає модель OVATION у реальному часі на інтерактивному 3D-глобусі, сповіщення електронною поштою та більше.',
   'auroraMap.proCta.cta': 'Перейти на Pro',
+  'auroraMap.noLocation': 'Місцезнаходження не задано',
+  'auroraMap.setLocation': 'Задайте ваше місцезнаходження для перегляду місцевої видимості →',
   'nav.faq': 'Часті запитання',
   'nav.gallery': 'Галерея',
   'nav.hunt': 'Полювання на сяйво',
