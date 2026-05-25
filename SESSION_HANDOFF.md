@@ -1,6 +1,44 @@
-# Session Handoff — 2026-05-24 (сесия 2)
+# Session Handoff — 2026-05-25
 
-> Последна сесия: 2026-05-24 (продължение). Предишна сесия: 2026-05-23/24 (виж архив по-долу).
+> Последна сесия: 2026-05-25. Предишна сесия: 2026-05-24 (виж архив по-долу).
+
+---
+
+## ✅ Какво беше направено в сесия 2026-05-25
+
+### Пълна i18n на Alerts страницата (commits `2d7e122`, `12ac8bd`, `fe092d1`)
+
+**Alerts.tsx е сега 100% локализиран — нито един hardcoded английски низ не остава:**
+
+| Компонент | Какво |
+|-----------|-------|
+| `buildNoaaItem` | title, subtitle, scale labels → locale ключове |
+| `buildCmeItem` | title, subtitle (arrived/arriving/away) → locale ключове |
+| `buildFlareItem` | title, subtitle (flare class label) → locale ключове |
+| `HeroCard` | headline + sub за 4 статуса → locale ключове; `t` добавен като пропс |
+| `FilterChips` | All/Storms/Flares/CMEs/Reports → locale ключове |
+| `ImpactBlock` | "What this means for you" → locale ключове |
+| `NoaaScale` | scale bar labels (Minor/Moderate/Strong/Extreme) → locale ключове |
+| CME ETA bar | "Arriving in ~{eta}h" + "Solar storm has arrived" → locale ключове |
+| Time helpers | "Just now / {m}m ago / {h}h ago / {d}d ago" → вече бяха |
+| Impact descriptions | 16 дълги описания (Aurora/radio/CME/flare impacts) × 16 езика |
+
+**44 нови ключа + 16 impact описания** в всичките 16 locale файла.
+
+### Hunt и Gallery empty states (commit `12ac8bd`)
+- `hunt.leaderboardEmpty`, `hunt.noRecentSightings`, `hunt.noRecentSightingsDesc` × 16 езика
+- `gallery.noPhotosDesc`, `gallery.uploadPhoto` × 16 езика
+
+### Locale completeness test — разширен до всичките 16 езика (commit `fe092d1`)
+- `localeCompleteness.test.ts` сега тества всичките 15 non-English езика vs en
+- 94 теста (66 стари + 28 нови), всички минават
+- Критичните ключове проверени за всеки от 16-те езика
+
+### Git state след сесия 2026-05-25
+| Branch | HEAD | Статус |
+|--------|------|--------|
+| `main` | `7077586` | ⚠️ НЕ Е ОБНОВЕН — изчаква тест + одобрение от потребителя |
+| `staging` | `fe092d1` | ✅ Актуален — всички промени от всичките сесии |
 
 ---
 

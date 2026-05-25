@@ -1,4 +1,5 @@
 import PageMeta from '../components/PageMeta';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { Heart, Brain, Moon, AlertTriangle, Shield, Activity } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import StarField from '../components/StarField';
@@ -25,6 +26,7 @@ export default function MagneticEffects() {
         description="How geomagnetic activity affects the human body — headaches, sleep, mood — and what you can do about it."
         path="/magnetic-effects"
       />
+      <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Magnetic Effects', path: '/magnetic-effects' }]} />
 
       <div className="min-h-screen pt-24 md:pt-20 pb-16 relative">
         <StarField />

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import PageMeta from '../components/PageMeta';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { Camera, Upload, X, MapPin, Image, Filter } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -187,6 +188,7 @@ export default function Gallery() {
         description="Community aurora photos from around the world. Share your northern lights sightings."
         path="/gallery"
       />
+      <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Gallery', path: '/gallery' }]} />
 
       <div className="flex items-center justify-between flex-wrap gap-4 mb-8">
         <div>

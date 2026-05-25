@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import PageMeta from '../components/PageMeta';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { CalendarDays, Cloud, Sparkles, Download } from 'lucide-react';
 import { buildAuroraICS, downloadICS } from '../utils/icalExport';
 import { Link } from 'react-router-dom';
@@ -139,6 +140,7 @@ export default function Calendar() {
         path="/calendar"
         ogKp={nights.length > 0 ? Math.max(...nights.map(n => n.maxKp)) : undefined}
       />
+      <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Aurora Calendar', path: '/calendar' }]} />
 
       {/* Header */}
       <div className="flex items-center gap-4 mb-3">

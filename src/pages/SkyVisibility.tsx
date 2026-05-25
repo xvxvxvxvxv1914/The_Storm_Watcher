@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import PageMeta from '../components/PageMeta';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { Cloud, Eye, Droplets, Star } from 'lucide-react';
 import { getSkyVisibility, SkyData } from '../services/skyApi';
 import { getKpIndex } from '../services/noaaApi';
@@ -112,6 +113,7 @@ const SkyVisibility = () => {
         description="Tonight's stargazing and aurora viewing conditions. Cloud cover, visibility and precipitation forecast for astronomers."
         path="/sky"
       />
+      <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Sky Tonight', path: '/sky' }]} />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import PageMeta from '../components/PageMeta';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import {
   Flame, Wind, Info, Eye, CheckCircle2,
   AlertOctagon, Zap, Radio, ShieldAlert, ChevronDown, ChevronUp,
@@ -452,6 +453,7 @@ const Alerts = () => {
   if (feed.length === 0) return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 text-center">
       <PageMeta title="Space Weather Alerts — The Storm Watcher" description="Real-time NOAA space weather alerts in plain language." path="/alerts" />
+      <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Alerts', path: '/alerts' }]} />
       <div className="w-24 h-24 rounded-full bg-green-500/15 flex items-center justify-center mb-6">
         <CheckCircle2 className="w-12 h-12 text-green-400" strokeWidth={1.5} />
       </div>

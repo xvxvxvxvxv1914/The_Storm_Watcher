@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import PageMeta from '../components/PageMeta';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { Trophy, MapPin, Star, ChevronDown, ChevronUp, Target } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -178,6 +179,7 @@ export default function Hunt() {
         description="Report aurora sightings, earn badges and compete on the leaderboard with other aurora hunters."
         path="/hunt"
       />
+      <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Aurora Hunt', path: '/hunt' }]} />
 
       {/* Header */}
       <div className="flex items-center gap-4 mb-8">

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback, Suspense } from 'react';
 import PageMeta from '../components/PageMeta';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { MapPin, Clock, Eye, Satellite } from 'lucide-react';
 import ISSGlobe from '../components/ISSGlobe';
 import { getIssPosition, getIssPasses, IssPosition, IssPass } from '../services/issApi';
@@ -112,6 +113,7 @@ const ISS = () => {
         description="Track the International Space Station in real time. See live position, altitude, speed and next pass times over your location."
         path="/iss"
       />
+      <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'ISS Tracker', path: '/iss' }]} />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}
