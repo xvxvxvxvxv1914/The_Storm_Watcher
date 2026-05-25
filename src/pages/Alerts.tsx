@@ -240,11 +240,10 @@ const sevBg: Record<Severity, string> = {
 
 const scaleColors = ['', 'bg-green-400', 'bg-yellow-400', 'bg-orange-400', 'bg-red-500', 'bg-red-700'];
 const scaleTxt    = ['', 'text-green-400', 'text-yellow-400', 'text-orange-400', 'text-red-500', 'text-red-700'];
-const gLabels = ['', 'Minor', 'Moderate', 'Strong', 'Severe', 'Extreme'];
-const fLabels = ['', 'Negligible', 'Weak', 'Moderate', 'Extreme', ''];
-
-function NoaaScale({ letter, current }: { letter: string; current: number }) {
+function NoaaScale({ letter, current, t }: { letter: string; current: number; t: (k: string) => string }) {
   const max = 5;
+  const gLabels = ['', t('alerts.scale.minor'), t('alerts.scale.moderate'), t('alerts.scale.strong'), t('alerts.scale.severe'), t('alerts.scale.extreme')];
+  const fLabels = ['', t('alerts.flare.negligible'), t('alerts.flare.weak'), t('alerts.flare.moderate'), t('alerts.flare.extreme'), ''];
   const labels = letter === 'F' ? fLabels : gLabels;
   return (
     <div className="flex items-center gap-1 mt-2">
@@ -527,7 +526,7 @@ const Alerts = () => {
                             </div>
 
                             {/* Scale */}
-                            {item.scale && <NoaaScale letter={item.scale.letter} current={item.scale.current} />}
+                            {item.scale && <NoaaScale letter={item.scale.letter} current={item.scale.current} t={t} />}
 
                             {/* CME ETA bar */}
                             {item.type === 'cme' && item.eta !== null && item.eta !== undefined && item.eta > 0 && (
