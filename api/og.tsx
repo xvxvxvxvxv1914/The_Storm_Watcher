@@ -2,6 +2,8 @@
 import { ImageResponse } from '@vercel/og';
 import React from 'react';
 
+export const config = { runtime: 'edge' };
+
 const KP_COLOR = (kp: number) =>
   kp >= 7 ? '#ef4444' : kp >= 5 ? '#f97316' : kp >= 3 ? '#eab308' : '#10b981';
 
