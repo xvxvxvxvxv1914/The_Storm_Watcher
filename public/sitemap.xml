@@ -2332,4 +2332,115 @@
     <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.thestormwatcher.com/zh/terms"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/terms"/>
   </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/viewing-window</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>daily</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.thestormwatcher.com/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="bg" href="https://www.thestormwatcher.com/bg/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="da" href="https://www.thestormwatcher.com/da/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.thestormwatcher.com/de/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.thestormwatcher.com/es/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://www.thestormwatcher.com/fi/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.thestormwatcher.com/fr/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="is" href="https://www.thestormwatcher.com/is/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://www.thestormwatcher.com/ja/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.thestormwatcher.com/ko/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="no" href="https://www.thestormwatcher.com/no/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://www.thestormwatcher.com/pl/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://www.thestormwatcher.com/ru/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://www.thestormwatcher.com/sv/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://www.thestormwatcher.com/uk/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.thestormwatcher.com/zh/viewing-window"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/bg/viewing-window</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>daily</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="bg" href="https://www.thestormwatcher.com/bg/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/viewing-window"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/da/viewing-window</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>daily</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="da" href="https://www.thestormwatcher.com/da/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/viewing-window"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/de/viewing-window</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>daily</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.thestormwatcher.com/de/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/viewing-window"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/es/viewing-window</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>daily</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.thestormwatcher.com/es/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/viewing-window"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/fi/viewing-window</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>daily</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://www.thestormwatcher.com/fi/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/viewing-window"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/fr/viewing-window</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>daily</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.thestormwatcher.com/fr/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/viewing-window"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/is/viewing-window</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>daily</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="is" href="https://www.thestormwatcher.com/is/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/viewing-window"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/ja/viewing-window</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>daily</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://www.thestormwatcher.com/ja/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/viewing-window"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/ko/viewing-window</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>daily</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.thestormwatcher.com/ko/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/viewing-window"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/no/viewing-window</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>daily</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="no" href="https://www.thestormwatcher.com/no/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/viewing-window"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/pl/viewing-window</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>daily</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://www.thestormwatcher.com/pl/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/viewing-window"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/ru/viewing-window</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>daily</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://www.thestormwatcher.com/ru/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/viewing-window"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/sv/viewing-window</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>daily</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://www.thestormwatcher.com/sv/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/viewing-window"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/uk/viewing-window</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>daily</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://www.thestormwatcher.com/uk/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/viewing-window"/>
+  </url>
+  <url>
+    <loc>https://www.thestormwatcher.com/zh/viewing-window</loc>
+    <lastmod>2026-05-25</lastmod><changefreq>daily</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.thestormwatcher.com/zh/viewing-window"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/viewing-window"/>
+  </url>
 </urlset>

@@ -129,7 +129,6 @@ export default function Hunt() {
 
   const handleSubmit = async () => {
     if (!user) return;
-    if (cooldownMs > 0) return;
     if (!locationName.trim()) {
       setSubmitError(t('hunt.locationRequired') || 'Please enter your location');
       return;
@@ -137,6 +136,25 @@ export default function Hunt() {
     setSubmitting(true);
     setSubmitError('');
     try {
+      // Server-side cooldown check — prevents localStorage bypass
+      const { data: lastSighting } = await supabase
+        .from('aurora_sightings')
+        .select('created_at')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (lastSighting) {
+        const elapsed = Date.now() - new Date(lastSighting.created_at).getTime();
+        if (elapsed < COOLDOWN_MS) {
+          setCooldownMs(COOLDOWN_MS - elapsed);
+          setSubmitError(t('hunt.cooldownActive') || `Please wait ${fmtCooldown(COOLDOWN_MS - elapsed)} before reporting again`);
+          setSubmitting(false);
+          return;
+        }
+      }
+
       const { error } = await supabase.from('aurora_sightings').insert({
         user_id: user.id,
         display_name: profile?.full_name ?? null,

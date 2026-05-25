@@ -48,11 +48,8 @@ Track live → ${appUrl}
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // Vercel Cron sets Authorization: Bearer {CRON_SECRET} automatically.
-  // Manual test calls can still use ?secret= query param.
   const bearerToken = req.headers.authorization?.replace('Bearer ', '');
-  const querySecret = req.query.secret as string | undefined;
-  if (bearerToken !== process.env.CRON_SECRET && querySecret !== process.env.CRON_SECRET) {
+  if (bearerToken !== process.env.CRON_SECRET) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
@@ -74,7 +71,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       level = 3;
     } else {
       // Fetch real-time 1-minute Kp estimates from NOAA
-      const response = await fetch('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json');
+      const response = await fetch('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json', {
+        signal: AbortSignal.timeout(10000),
+      });
       const entries: { time_tag: string; kp_index: number }[] = await response.json();
 
       const latest = entries[entries.length - 1];

@@ -22,25 +22,20 @@ interface GalleryPhoto {
 }
 
 async function compressImage(file: File, maxWidth: number, quality = 0.85): Promise<Blob> {
+  const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
+  const ratio = Math.min(1, maxWidth / bitmap.width);
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.round(bitmap.width * ratio);
+  canvas.height = Math.round(bitmap.height * ratio);
+  const ctx = canvas.getContext('2d')!;
+  ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  bitmap.close();
   return new Promise((resolve, reject) => {
-    const img = new globalThis.Image();
-    const url = URL.createObjectURL(file);
-    img.onload = () => {
-      URL.revokeObjectURL(url);
-      const ratio = Math.min(1, maxWidth / img.width);
-      const canvas = document.createElement('canvas');
-      canvas.width = Math.round(img.width * ratio);
-      canvas.height = Math.round(img.height * ratio);
-      const ctx = canvas.getContext('2d')!;
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      canvas.toBlob(
-        (blob) => { if (blob) resolve(blob); else reject(new Error('toBlob failed')); },
-        'image/jpeg',
-        quality,
-      );
-    };
-    img.onerror = reject;
-    img.src = url;
+    canvas.toBlob(
+      (blob) => { if (blob) resolve(blob); else reject(new Error('toBlob failed')); },
+      'image/jpeg',
+      quality,
+    );
   });
 }
 
@@ -176,7 +171,27 @@ export default function Gallery() {
 
   const handleDelete = async () => {
     if (!pendingDelete || !user || user.id !== pendingDelete.user_id) return;
-    await supabase.from('aurora_photos').delete().eq('id', pendingDelete.id);
+
+    // Extract storage path from public URL: everything after /aurora-gallery/
+    const extractPath = (url: string) => {
+      const marker = '/aurora-gallery/';
+      const idx = url.indexOf(marker);
+      return idx !== -1 ? url.slice(idx + marker.length) : null;
+    };
+
+    const paths: string[] = [];
+    const mainPath = extractPath(pendingDelete.image_url);
+    if (mainPath) paths.push(mainPath);
+    if (pendingDelete.thumbnail_url) {
+      const thumbPath = extractPath(pendingDelete.thumbnail_url);
+      if (thumbPath) paths.push(thumbPath);
+    }
+
+    await Promise.all([
+      supabase.from('aurora_photos').delete().eq('id', pendingDelete.id),
+      paths.length > 0 ? supabase.storage.from('aurora-gallery').remove(paths) : Promise.resolve(),
+    ]);
+
     setPhotos(prev => prev.filter(p => p.id !== pendingDelete.id));
     setPendingDelete(null);
   };

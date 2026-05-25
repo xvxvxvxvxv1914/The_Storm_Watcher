@@ -62,12 +62,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const priceId = sub.items.data[0]?.price.id ?? '';
       const plan = PRICE_TO_PLAN[priceId] ?? 'free';
 
-      await supabase.from('profiles').update({
+      const { error: updateError } = await supabase.from('profiles').update({
         plan,
         subscription_id: sub.id,
         subscription_status: sub.status,
         subscription_period_end: new Date(((sub as unknown as Record<string, number>)['current_period_end'] ?? 0) * 1000).toISOString(),
       }).eq('id', userId);
+      if (updateError) {
+        console.error('checkout.session.completed profile update failed', updateError, { userId, plan });
+        return res.status(500).json({ error: 'DB update failed' });
+      }
       break;
     }
 
@@ -79,11 +83,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const priceId = sub.items.data[0]?.price.id ?? '';
       const plan = (sub.status === 'active' || sub.status === 'trialing') ? (PRICE_TO_PLAN[priceId] ?? 'free') : 'free';
 
-      await supabase.from('profiles').update({
+      const { error: updateError } = await supabase.from('profiles').update({
         plan,
         subscription_status: sub.status,
         subscription_period_end: new Date(((sub as unknown as Record<string, number>)['current_period_end'] ?? 0) * 1000).toISOString(),
       }).eq('id', userId);
+      if (updateError) {
+        console.error('customer.subscription.updated profile update failed', updateError, { userId, plan });
+        return res.status(500).json({ error: 'DB update failed' });
+      }
       break;
     }
 
@@ -92,12 +100,35 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const userId = sub.metadata?.supabase_user_id;
       if (!userId) break;
 
-      await supabase.from('profiles').update({
+      const { error: updateError } = await supabase.from('profiles').update({
         plan: 'free',
         subscription_id: null,
         subscription_status: 'canceled',
         subscription_period_end: null,
       }).eq('id', userId);
+      if (updateError) {
+        console.error('customer.subscription.deleted profile update failed', updateError, { userId });
+        return res.status(500).json({ error: 'DB update failed' });
+      }
+      break;
+    }
+
+    case 'invoice.payment_failed': {
+      const invoice = event.data.object as Stripe.Invoice;
+      const subId = (invoice as unknown as Record<string, unknown>)['subscription'] as string | null;
+      if (!subId) break;
+
+      const sub = await stripe.subscriptions.retrieve(subId);
+      const userId = sub.metadata?.supabase_user_id;
+      if (!userId) break;
+
+      const { error: updateError } = await supabase.from('profiles').update({
+        subscription_status: sub.status,
+      }).eq('id', userId);
+      if (updateError) {
+        console.error('invoice.payment_failed profile update failed', updateError, { userId });
+        return res.status(500).json({ error: 'DB update failed' });
+      }
       break;
     }
   }
