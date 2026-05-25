@@ -77,7 +77,7 @@ const content: Record<string, LangContent> = {
       },
       {
         title: 'Contact',
-        text: 'For questions about these Terms, please contact us at hello@thestormwatcher.com.',
+        text: 'For questions about these Terms, please contact us at contact@thestormwatcher.com.',
       },
     ],
   },
@@ -147,7 +147,7 @@ const content: Record<string, LangContent> = {
       },
       {
         title: 'Контакт',
-        text: 'За въпроси относно тези Условия, моля свържете се с нас на hello@thestormwatcher.com.',
+        text: 'За въпроси относно тези Условия, моля свържете се с нас на contact@thestormwatcher.com.',
       },
     ],
   },
@@ -217,7 +217,7 @@ const content: Record<string, LangContent> = {
       },
       {
         title: 'Kontakt',
-        text: 'Bei Fragen zu diesen Bedingungen kontaktieren Sie uns bitte unter hello@thestormwatcher.com.',
+        text: 'Bei Fragen zu diesen Bedingungen kontaktieren Sie uns bitte unter contact@thestormwatcher.com.',
       },
     ],
   },
@@ -287,7 +287,7 @@ const content: Record<string, LangContent> = {
       },
       {
         title: 'Contacto',
-        text: 'Para preguntas sobre estos Términos, contáctenos en hello@thestormwatcher.com.',
+        text: 'Para preguntas sobre estos Términos, contáctenos en contact@thestormwatcher.com.',
       },
     ],
   },
@@ -357,7 +357,7 @@ const content: Record<string, LangContent> = {
       },
       {
         title: 'Contact',
-        text: "Pour toute question concernant ces Conditions, veuillez nous contacter à hello@thestormwatcher.com.",
+        text: "Pour toute question concernant ces Conditions, veuillez nous contacter à contact@thestormwatcher.com.",
       },
     ],
   },
@@ -427,7 +427,7 @@ const content: Record<string, LangContent> = {
       },
       {
         title: 'お問い合わせ',
-        text: 'この規約についてのご質問は、hello@thestormwatcher.comまでお問い合わせください。',
+        text: 'この規約についてのご質問は、contact@thestormwatcher.comまでお問い合わせください。',
       },
     ],
   },
@@ -497,7 +497,7 @@ const content: Record<string, LangContent> = {
       },
       {
         title: 'Контакты',
-        text: 'По вопросам, касающимся настоящих Условий, свяжитесь с нами по адресу hello@thestormwatcher.com.',
+        text: 'По вопросам, касающимся настоящих Условий, свяжитесь с нами по адресу contact@thestormwatcher.com.',
       },
     ],
   },
@@ -566,7 +566,7 @@ const content: Record<string, LangContent> = {
       },
       {
         title: '联系我们',
-        text: '如有关于这些条款的问题，请通过hello@thestormwatcher.com联系我们。',
+        text: '如有关于这些条款的问题，请通过contact@thestormwatcher.com联系我们。',
       },
     ],
   },

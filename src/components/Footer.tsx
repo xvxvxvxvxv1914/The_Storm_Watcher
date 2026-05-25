@@ -133,13 +133,22 @@ const Footer = () => {
               <p className="text-[#94a3b8] text-sm leading-relaxed mb-6">
                 {t('footer.description')}
               </p>
-              <a
-                href="mailto:hello@thestormwatcher.com"
-                className="flex items-center gap-2 text-[#94a3b8] text-sm hover:text-white transition-colors"
-              >
-                <Mail className="w-4 h-4" />
-                hello@thestormwatcher.com
-              </a>
+              <div className="space-y-2">
+                <a
+                  href="mailto:contact@thestormwatcher.com"
+                  className="flex items-center gap-2 text-[#94a3b8] text-sm hover:text-white transition-colors"
+                >
+                  <Mail className="w-4 h-4" />
+                  contact@thestormwatcher.com
+                </a>
+                <a
+                  href="mailto:partnerships@thestormwatcher.com"
+                  className="flex items-center gap-2 text-[#94a3b8] text-sm hover:text-white transition-colors"
+                >
+                  <Mail className="w-4 h-4" />
+                  partnerships@thestormwatcher.com
+                </a>
+              </div>
             </div>
 
             {navGroups.map(group => (

@@ -39,7 +39,7 @@ const content: Record<string, LangContent> = {
       { title: 'Your Rights (GDPR)', text: 'If you are in the European Economic Area, you have the right to access, correct, or delete your personal data. You may also request data portability or restrict processing. Contact us at the email below to exercise these rights.' },
       { title: "Children's Privacy", text: 'The Storm Watcher is not directed at children under 13. We do not knowingly collect data from children.' },
       { title: 'Changes to This Policy', text: 'We may update this policy occasionally. We will notify registered users of significant changes via email.' },
-      { title: 'Contact', text: 'For privacy questions, contact us at hello@thestormwatcher.com' },
+      { title: 'Contact', text: 'For privacy questions, contact us at contact@thestormwatcher.com' },
     ],
   },
   bg: {
@@ -71,7 +71,7 @@ const content: Record<string, LangContent> = {
       { title: 'Вашите права (GDPR)', text: 'Ако се намирате в Европейското икономическо пространство, имате право на достъп, коригиране или изтриване на личните си данни. Можете също да поискате преносимост на данни или ограничаване на обработването. Свържете се с нас на посочения по-долу имейл, за да упражните тези права.' },
       { title: 'Поверителност на деца', text: 'The Storm Watcher не е насочен към деца под 13 години. Ние не събираме съзнателно данни от деца.' },
       { title: 'Промени в тази политика', text: 'Може периодично да актуализираме тази политика. Ще уведомяваме регистрираните потребители за значителни промени по имейл.' },
-      { title: 'Контакт', text: 'За въпроси относно поверителността се свържете с нас на hello@thestormwatcher.com' },
+      { title: 'Контакт', text: 'За въпроси относно поверителността се свържете с нас на contact@thestormwatcher.com' },
     ],
   },
   de: {
@@ -103,7 +103,7 @@ const content: Record<string, LangContent> = {
       { title: 'Ihre Rechte (DSGVO)', text: 'Wenn Sie sich im Europäischen Wirtschaftsraum befinden, haben Sie das Recht auf Zugang, Berichtigung oder Löschung Ihrer personenbezogenen Daten. Sie können auch Datenübertragbarkeit oder Einschränkung der Verarbeitung beantragen. Kontaktieren Sie uns unter der unten stehenden E-Mail-Adresse, um diese Rechte auszuüben.' },
       { title: 'Datenschutz für Kinder', text: 'The Storm Watcher richtet sich nicht an Kinder unter 13 Jahren. Wir erheben wissentlich keine Daten von Kindern.' },
       { title: 'Änderungen dieser Richtlinie', text: 'Wir können diese Richtlinie gelegentlich aktualisieren. Registrierte Nutzer werden über wesentliche Änderungen per E-Mail informiert.' },
-      { title: 'Kontakt', text: 'Bei Datenschutzfragen kontaktieren Sie uns unter hello@thestormwatcher.com' },
+      { title: 'Kontakt', text: 'Bei Datenschutzfragen kontaktieren Sie uns unter contact@thestormwatcher.com' },
     ],
   },
   es: {
@@ -135,7 +135,7 @@ const content: Record<string, LangContent> = {
       { title: 'Sus derechos (RGPD)', text: 'Si se encuentra en el Espacio Económico Europeo, tiene derecho a acceder, corregir o eliminar sus datos personales. También puede solicitar la portabilidad de datos o la restricción del procesamiento. Contáctenos en el correo electrónico indicado a continuación para ejercer estos derechos.' },
       { title: 'Privacidad de los niños', text: 'The Storm Watcher no está dirigido a menores de 13 años. No recopilamos datos de niños de forma consciente.' },
       { title: 'Cambios en esta política', text: 'Podemos actualizar esta política ocasionalmente. Notificaremos a los usuarios registrados sobre cambios significativos por correo electrónico.' },
-      { title: 'Contacto', text: 'Para preguntas sobre privacidad, contáctenos en hello@thestormwatcher.com' },
+      { title: 'Contacto', text: 'Para preguntas sobre privacidad, contáctenos en contact@thestormwatcher.com' },
     ],
   },
   fr: {
@@ -167,7 +167,7 @@ const content: Record<string, LangContent> = {
       { title: 'Vos droits (RGPD)', text: "Si vous vous trouvez dans l'Espace économique européen, vous avez le droit d'accéder, de corriger ou de supprimer vos données personnelles. Vous pouvez également demander la portabilité des données ou la limitation du traitement. Contactez-nous à l'adresse e-mail ci-dessous pour exercer ces droits." },
       { title: 'Confidentialité des enfants', text: "The Storm Watcher ne s'adresse pas aux enfants de moins de 13 ans. Nous ne collectons pas sciemment de données auprès d'enfants." },
       { title: 'Modifications de cette politique', text: 'Nous pouvons mettre à jour cette politique occasionnellement. Nous informerons les utilisateurs enregistrés des changements significatifs par e-mail.' },
-      { title: 'Contact', text: 'Pour toute question relative à la confidentialité, contactez-nous à hello@thestormwatcher.com' },
+      { title: 'Contact', text: 'Pour toute question relative à la confidentialité, contactez-nous à contact@thestormwatcher.com' },
     ],
   },
   ja: {
@@ -199,7 +199,7 @@ const content: Record<string, LangContent> = {
       { title: 'お客様の権利（GDPR）', text: '欧州経済領域にお住まいの方は、個人データへのアクセス、修正、削除を求める権利があります。データのポータビリティや処理の制限を請求することもできます。これらの権利を行使するには、以下のメールアドレスまでご連絡ください。' },
       { title: '子どものプライバシー', text: 'The Storm Watcherは13歳未満の子どもを対象としていません。当社は意図的に子どものデータを収集することはありません。' },
       { title: '本ポリシーの変更', text: '本ポリシーは随時更新される場合があります。重大な変更があった場合は、登録ユーザーにメールでお知らせします。' },
-      { title: 'お問い合わせ', text: 'プライバシーに関するご質問は hello@thestormwatcher.com までご連絡ください。' },
+      { title: 'お問い合わせ', text: 'プライバシーに関するご質問は contact@thestormwatcher.com までご連絡ください。' },
     ],
   },
   ru: {
@@ -231,7 +231,7 @@ const content: Record<string, LangContent> = {
       { title: 'Ваши права (GDPR)', text: 'Если вы находитесь в Европейском экономическом пространстве, вы имеете право на доступ, исправление или удаление своих персональных данных. Вы также можете запросить переносимость данных или ограничение обработки. Свяжитесь с нами по электронной почте, указанной ниже, чтобы воспользоваться этими правами.' },
       { title: 'Конфиденциальность детей', text: 'The Storm Watcher не предназначен для детей до 13 лет. Мы не собираем данные от детей намеренно.' },
       { title: 'Изменения в этой политике', text: 'Мы можем периодически обновлять эту политику. Зарегистрированные пользователи будут уведомлены о значительных изменениях по электронной почте.' },
-      { title: 'Контакт', text: 'По вопросам конфиденциальности свяжитесь с нами по адресу hello@thestormwatcher.com' },
+      { title: 'Контакт', text: 'По вопросам конфиденциальности свяжитесь с нами по адресу contact@thestormwatcher.com' },
     ],
   },
   zh: {
@@ -263,7 +263,7 @@ const content: Record<string, LangContent> = {
       { title: '您的权利（GDPR）', text: '如果您位于欧洲经济区，您有权访问、更正或删除您的个人数据。您也可以申请数据可携性或限制处理。请通过以下电子邮件联系我们以行使这些权利。' },
       { title: '儿童隐私', text: 'The Storm Watcher不面向13岁以下的儿童。我们不会故意收集儿童的数据。' },
       { title: '本政策的变更', text: '我们可能会不定期更新本政策。我们将通过电子邮件通知注册用户重大变更。' },
-      { title: '联系我们', text: '如有隐私相关问题，请发送邮件至 hello@thestormwatcher.com 联系我们。' },
+      { title: '联系我们', text: '如有隐私相关问题，请发送邮件至 contact@thestormwatcher.com 联系我们。' },
     ],
   },
 };
