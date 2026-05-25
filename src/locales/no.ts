@@ -865,6 +865,20 @@ const no: Record<string, string> = {
   'alerts.impact.flare.m': 'Moderat flare. Korte radioforstyrrelser mulige på den belyste siden av Jorden.',
   'alerts.impact.flare.c': 'Liten flare. Ingen vesentlige effekter på Jorden forventet.',
   'alerts.impact.flare.weak': 'Meget svak flare. Ingen merkbare effekter.',
+  'aurora.quality.excellent': 'Utmerket',
+  'aurora.quality.good': 'God',
+  'aurora.quality.moderate': 'Moderat',
+  'aurora.quality.low': 'Lav',
+  'aurora.quality.desc.excellent': 'Enestående nordlysshow sannsynlig i kveld',
+  'aurora.quality.desc.good': 'Moderat nordlysaktivitet forventet',
+  'aurora.quality.desc.moderate': 'Svakt nordlys mulig i polare områder',
+  'aurora.quality.desc.low': 'Rolige forhold — nordlys usannsynlig',
+  'auth.strength.tooWeak': 'For svakt',
+  'auth.strength.weak': 'Svakt',
+  'auth.strength.fair': 'Middels',
+  'auth.strength.good': 'Godt',
+  'auth.strength.strong': 'Sterkt',
+  'calendar.activity.quiet': 'Rolig',
 };
 
 export default no;

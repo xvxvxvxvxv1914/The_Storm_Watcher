@@ -873,6 +873,20 @@ const fr: Record<string, string> = {
   'alerts.impact.flare.m': 'Éruption modérée. Brèves perturbations radio possibles du côté éclairé de la Terre.',
   'alerts.impact.flare.c': 'Petite éruption. Aucun effet significatif sur la Terre attendu.',
   'alerts.impact.flare.weak': 'Éruption très faible. Aucun effet notable.',
+  'aurora.quality.excellent': 'Excellente',
+  'aurora.quality.good': 'Bonne',
+  'aurora.quality.moderate': 'Modérée',
+  'aurora.quality.low': 'Faible',
+  'aurora.quality.desc.excellent': 'Spectacle auroral exceptionnel probable cette nuit',
+  'aurora.quality.desc.good': 'Activité aurorale modérée attendue',
+  'aurora.quality.desc.moderate': 'Aurore faible possible dans les régions polaires',
+  'aurora.quality.desc.low': 'Conditions calmes — aurore peu probable',
+  'auth.strength.tooWeak': 'Trop faible',
+  'auth.strength.weak': 'Faible',
+  'auth.strength.fair': 'Correcte',
+  'auth.strength.good': 'Bonne',
+  'auth.strength.strong': 'Forte',
+  'calendar.activity.quiet': 'Calme',
 };
 
 export default fr;

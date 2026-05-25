@@ -865,6 +865,20 @@ const pl: Record<string, string> = {
   'alerts.impact.flare.m': 'Umiarkowany rozbłysk. Krótkie zakłócenia radiowe możliwe po oświetlonej stronie Ziemi.',
   'alerts.impact.flare.c': 'Mały rozbłysk. Nie oczekuje się znaczących efektów na Ziemi.',
   'alerts.impact.flare.weak': 'Bardzo słaby rozbłysk. Brak zauważalnych efektów.',
+  'aurora.quality.excellent': 'Doskonały',
+  'aurora.quality.good': 'Dobry',
+  'aurora.quality.moderate': 'Umiarkowany',
+  'aurora.quality.low': 'Niski',
+  'aurora.quality.desc.excellent': 'Wyjątkowy pokaz zorzy polarnej prawdopodobny tej nocy',
+  'aurora.quality.desc.good': 'Umiarkowana aktywność zorzy polarnej oczekiwana',
+  'aurora.quality.desc.moderate': 'Słaba zorza możliwa w regionach polarnych',
+  'aurora.quality.desc.low': 'Spokojne warunki — zorza polarna mało prawdopodobna',
+  'auth.strength.tooWeak': 'Zbyt słabe',
+  'auth.strength.weak': 'Słabe',
+  'auth.strength.fair': 'Średnie',
+  'auth.strength.good': 'Dobre',
+  'auth.strength.strong': 'Silne',
+  'calendar.activity.quiet': 'Spokojnie',
 };
 
 export default pl;

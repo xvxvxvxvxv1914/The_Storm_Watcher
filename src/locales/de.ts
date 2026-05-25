@@ -876,6 +876,20 @@ const de: Record<string, string> = {
   'alerts.impact.flare.m': 'Moderate Eruption. Kurze Funkstörungen auf der beleuchteten Seite der Erde möglich.',
   'alerts.impact.flare.c': 'Kleine Eruption. Keine wesentlichen Auswirkungen auf die Erde zu erwarten.',
   'alerts.impact.flare.weak': 'Sehr schwache Eruption. Keine nennenswerten Auswirkungen.',
+  'aurora.quality.excellent': 'Ausgezeichnet',
+  'aurora.quality.good': 'Gut',
+  'aurora.quality.moderate': 'Mäßig',
+  'aurora.quality.low': 'Gering',
+  'aurora.quality.desc.excellent': 'Außergewöhnliches Polarlicht heute Nacht wahrscheinlich',
+  'aurora.quality.desc.good': 'Mäßige Polarlichtaktivität erwartet',
+  'aurora.quality.desc.moderate': 'Schwaches Polarlicht in polaren Regionen möglich',
+  'aurora.quality.desc.low': 'Ruhige Bedingungen — Polarlicht unwahrscheinlich',
+  'auth.strength.tooWeak': 'Zu schwach',
+  'auth.strength.weak': 'Schwach',
+  'auth.strength.fair': 'Mittel',
+  'auth.strength.good': 'Gut',
+  'auth.strength.strong': 'Stark',
+  'calendar.activity.quiet': 'Ruhig',
 };
 
 export default de;

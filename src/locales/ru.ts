@@ -873,6 +873,20 @@ const ru: Record<string, string> = {
   'alerts.impact.flare.m': 'Умеренная вспышка. Кратковременные помехи радио возможны на освещённой стороне Земли.',
   'alerts.impact.flare.c': 'Небольшая вспышка. Существенного воздействия на Землю не ожидается.',
   'alerts.impact.flare.weak': 'Очень слабая вспышка. Заметных эффектов нет.',
+  'aurora.quality.excellent': 'Отличное',
+  'aurora.quality.good': 'Хорошее',
+  'aurora.quality.moderate': 'Умеренное',
+  'aurora.quality.low': 'Слабое',
+  'aurora.quality.desc.excellent': 'Исключительное сияние ожидается сегодня ночью',
+  'aurora.quality.desc.good': 'Умеренная активность полярного сияния',
+  'aurora.quality.desc.moderate': 'Слабое сияние возможно в полярных регионах',
+  'aurora.quality.desc.low': 'Спокойные условия — сияние маловероятно',
+  'auth.strength.tooWeak': 'Очень слабый',
+  'auth.strength.weak': 'Слабый',
+  'auth.strength.fair': 'Средний',
+  'auth.strength.good': 'Хороший',
+  'auth.strength.strong': 'Сильный',
+  'calendar.activity.quiet': 'Спокойно',
 };
 
 export default ru;

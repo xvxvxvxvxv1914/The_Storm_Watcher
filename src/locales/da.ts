@@ -865,6 +865,20 @@ const da: Record<string, string> = {
   'alerts.impact.flare.m': 'Moderat optræk. Korte radioforstyrrelser mulige på den belyste side af Jorden.',
   'alerts.impact.flare.c': 'Lille optræk. Ingen væsentlige effekter på Jorden forventet.',
   'alerts.impact.flare.weak': 'Meget svagt optræk. Ingen mærkbare effekter.',
+  'aurora.quality.excellent': 'Fremragende',
+  'aurora.quality.good': 'God',
+  'aurora.quality.moderate': 'Moderat',
+  'aurora.quality.low': 'Lav',
+  'aurora.quality.desc.excellent': 'Enestående nordlysshow sandsynligt i aften',
+  'aurora.quality.desc.good': 'Moderat nordlysaktivitet forventet',
+  'aurora.quality.desc.moderate': 'Svagt nordlys muligt i polarregioner',
+  'aurora.quality.desc.low': 'Rolige forhold — nordlys usandsynligt',
+  'auth.strength.tooWeak': 'For svag',
+  'auth.strength.weak': 'Svag',
+  'auth.strength.fair': 'Middel',
+  'auth.strength.good': 'God',
+  'auth.strength.strong': 'Stærk',
+  'calendar.activity.quiet': 'Roligt',
 };
 
 export default da;

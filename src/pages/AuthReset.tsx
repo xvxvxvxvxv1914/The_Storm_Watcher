@@ -5,23 +5,18 @@ import { Lock } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useLanguage } from '../contexts/LanguageContext';
 
-const scorePassword = (pw: string): { level: 0 | 1 | 2 | 3 | 4; label: string; color: string } => {
-  if (!pw) return { level: 0, label: '', color: '#475569' };
+const STRENGTH_COLORS = ['#ef4444', '#f97316', '#eab308', '#10b981', '#059669'] as const;
+const STRENGTH_KEYS = ['auth.strength.tooWeak', 'auth.strength.weak', 'auth.strength.fair', 'auth.strength.good', 'auth.strength.strong'] as const;
+
+const scoreLevel = (pw: string): 0 | 1 | 2 | 3 | 4 => {
+  if (!pw) return 0;
   let score = 0;
   if (pw.length >= 8) score++;
   if (pw.length >= 12) score++;
   if (/[a-z]/.test(pw) && /[A-Z]/.test(pw)) score++;
   if (/\d/.test(pw)) score++;
   if (/[^A-Za-z0-9]/.test(pw)) score++;
-  const clamped = Math.min(4, score) as 0 | 1 | 2 | 3 | 4;
-  const meta = [
-    { label: 'Too weak', color: '#ef4444' },
-    { label: 'Weak', color: '#f97316' },
-    { label: 'Fair', color: '#eab308' },
-    { label: 'Good', color: '#10b981' },
-    { label: 'Strong', color: '#059669' },
-  ][clamped];
-  return { level: clamped, label: meta.label, color: meta.color };
+  return Math.min(4, score) as 0 | 1 | 2 | 3 | 4;
 };
 
 export default function AuthReset() {
@@ -33,7 +28,12 @@ export default function AuthReset() {
   const navigate = useNavigate();
   const { t } = useLanguage();
 
-  const strength = scorePassword(password);
+  const strengthLevel = scoreLevel(password);
+  const strength = {
+    level: strengthLevel,
+    color: password ? STRENGTH_COLORS[strengthLevel] : '#475569',
+    label: password ? t(STRENGTH_KEYS[strengthLevel]) : '',
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

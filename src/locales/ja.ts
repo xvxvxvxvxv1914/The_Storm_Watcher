@@ -873,6 +873,20 @@ const ja: Record<string, string> = {
   'alerts.impact.flare.m': '中程度のフレア。地球の日照側で短時間の電波障害が発生する可能性があります。',
   'alerts.impact.flare.c': '小規模なフレア。地球への重大な影響は想定されません。',
   'alerts.impact.flare.weak': '非常に弱いフレア。目立った影響はありません。',
+  'aurora.quality.excellent': '優れた',
+  'aurora.quality.good': '良好',
+  'aurora.quality.moderate': '中程度',
+  'aurora.quality.low': '低い',
+  'aurora.quality.desc.excellent': '今夜は素晴らしいオーロラが期待できます',
+  'aurora.quality.desc.good': '中程度のオーロラ活動が予想されます',
+  'aurora.quality.desc.moderate': '極地でわずかなオーロラが見られる可能性があります',
+  'aurora.quality.desc.low': '静かな状況 — オーロラは見られそうにありません',
+  'auth.strength.tooWeak': '弱すぎる',
+  'auth.strength.weak': '弱い',
+  'auth.strength.fair': '普通',
+  'auth.strength.good': '良い',
+  'auth.strength.strong': '強い',
+  'calendar.activity.quiet': '静穏',
 };
 
 export default ja;

@@ -903,6 +903,20 @@ const en: Record<string, string> = {
   'alerts.impact.flare.m': 'Moderate flare. Brief radio disruptions possible on sunlit side of Earth.',
   'alerts.impact.flare.c': 'Small flare. No significant effects on Earth expected.',
   'alerts.impact.flare.weak': 'Very weak flare. No noticeable effects.',
+  'aurora.quality.excellent': 'Excellent',
+  'aurora.quality.good': 'Good',
+  'aurora.quality.moderate': 'Moderate',
+  'aurora.quality.low': 'Low',
+  'aurora.quality.desc.excellent': 'Exceptional aurora display likely tonight',
+  'aurora.quality.desc.good': 'Moderate aurora activity expected',
+  'aurora.quality.desc.moderate': 'Weak aurora possible in polar regions',
+  'aurora.quality.desc.low': 'Quiet conditions — aurora unlikely',
+  'auth.strength.tooWeak': 'Too weak',
+  'auth.strength.weak': 'Weak',
+  'auth.strength.fair': 'Fair',
+  'auth.strength.good': 'Good',
+  'auth.strength.strong': 'Strong',
+  'calendar.activity.quiet': 'Quiet',
 };
 
 export default en;

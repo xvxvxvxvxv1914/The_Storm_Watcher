@@ -865,6 +865,20 @@ const fi: Record<string, string> = {
   'alerts.impact.flare.m': 'Kohtalainen purkaus. Lyhyitä radiohäiriöitä mahdollisesti Maan valaistulle puolelle.',
   'alerts.impact.flare.c': 'Pieni purkaus. Merkittäviä vaikutuksia Maahan ei odoteta.',
   'alerts.impact.flare.weak': 'Erittäin heikko purkaus. Ei huomattavia vaikutuksia.',
+  'aurora.quality.excellent': 'Erinomainen',
+  'aurora.quality.good': 'Hyvä',
+  'aurora.quality.moderate': 'Kohtalainen',
+  'aurora.quality.low': 'Heikko',
+  'aurora.quality.desc.excellent': 'Poikkeuksellinen revontulinäytös todennäköinen tänä yönä',
+  'aurora.quality.desc.good': 'Kohtalainen revontuliaktiivisuus odotettavissa',
+  'aurora.quality.desc.moderate': 'Heikkoja revontulia mahdollisesti napaseuduilla',
+  'aurora.quality.desc.low': 'Rauhallinen tilanne — revontulet epätodennäköisiä',
+  'auth.strength.tooWeak': 'Liian heikko',
+  'auth.strength.weak': 'Heikko',
+  'auth.strength.fair': 'Kohtalainen',
+  'auth.strength.good': 'Hyvä',
+  'auth.strength.strong': 'Vahva',
+  'calendar.activity.quiet': 'Rauhallinen',
 };
 
 export default fi;

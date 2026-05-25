@@ -865,6 +865,20 @@ const sv: Record<string, string> = {
   'alerts.impact.flare.m': 'Måttlig flare. Korta radiostörningar möjliga på den belysta sidan av Jorden.',
   'alerts.impact.flare.c': 'Liten flare. Inga betydande effekter på Jorden förväntas.',
   'alerts.impact.flare.weak': 'Mycket svag flare. Inga märkbara effekter.',
+  'aurora.quality.excellent': 'Utmärkt',
+  'aurora.quality.good': 'Bra',
+  'aurora.quality.moderate': 'Måttlig',
+  'aurora.quality.low': 'Låg',
+  'aurora.quality.desc.excellent': 'Enastående norrskensspektakel troligt i kväll',
+  'aurora.quality.desc.good': 'Måttlig norrskensaktivitet förväntas',
+  'aurora.quality.desc.moderate': 'Svagt norrsken möjligt i polarregioner',
+  'aurora.quality.desc.low': 'Lugna förhållanden — norrsken osannolikt',
+  'auth.strength.tooWeak': 'För svagt',
+  'auth.strength.weak': 'Svagt',
+  'auth.strength.fair': 'Medel',
+  'auth.strength.good': 'Bra',
+  'auth.strength.strong': 'Starkt',
+  'calendar.activity.quiet': 'Lugnt',
 };
 
 export default sv;

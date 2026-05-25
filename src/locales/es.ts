@@ -873,6 +873,20 @@ const es: Record<string, string> = {
   'alerts.impact.flare.m': 'Llamarada moderada. Posibles interrupciones breves de radio en el lado iluminado de la Tierra.',
   'alerts.impact.flare.c': 'Llamarada pequeña. No se esperan efectos significativos en la Tierra.',
   'alerts.impact.flare.weak': 'Llamarada muy débil. No hay efectos notables.',
+  'aurora.quality.excellent': 'Excelente',
+  'aurora.quality.good': 'Buena',
+  'aurora.quality.moderate': 'Moderada',
+  'aurora.quality.low': 'Baja',
+  'aurora.quality.desc.excellent': 'Espectacular exhibición de auroras probable esta noche',
+  'aurora.quality.desc.good': 'Actividad moderada de auroras esperada',
+  'aurora.quality.desc.moderate': 'Aurora débil posible en regiones polares',
+  'aurora.quality.desc.low': 'Condiciones tranquilas — aurora improbable',
+  'auth.strength.tooWeak': 'Muy débil',
+  'auth.strength.weak': 'Débil',
+  'auth.strength.fair': 'Regular',
+  'auth.strength.good': 'Buena',
+  'auth.strength.strong': 'Fuerte',
+  'calendar.activity.quiet': 'Tranquilo',
 };
 
 export default es;

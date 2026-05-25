@@ -896,6 +896,20 @@ const bg: Record<string, string> = {
   'alerts.impact.flare.m': 'Умерено изригване. Кратки радио смущения възможни на осветената страна на Земята.',
   'alerts.impact.flare.c': 'Слабо изригване. Не се очакват значителни ефекти върху Земята.',
   'alerts.impact.flare.weak': 'Много слабо изригване. Няма забележими ефекти.',
+  'aurora.quality.excellent': 'Отлично',
+  'aurora.quality.good': 'Добро',
+  'aurora.quality.moderate': 'Умерено',
+  'aurora.quality.low': 'Слабо',
+  'aurora.quality.desc.excellent': 'Изключително аврорно шоу вероятно тази вечер',
+  'aurora.quality.desc.good': 'Умерена аврорна активност се очаква',
+  'aurora.quality.desc.moderate': 'Слабо сияние е възможно в полярните региони',
+  'aurora.quality.desc.low': 'Спокойни условия — полярното сияние е малко вероятно',
+  'auth.strength.tooWeak': 'Много слаба',
+  'auth.strength.weak': 'Слаба',
+  'auth.strength.fair': 'Средна',
+  'auth.strength.good': 'Добра',
+  'auth.strength.strong': 'Силна',
+  'calendar.activity.quiet': 'Спокойно',
 };
 
 export default bg;

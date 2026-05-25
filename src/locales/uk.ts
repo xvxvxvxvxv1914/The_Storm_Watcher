@@ -865,6 +865,20 @@ const uk: Record<string, string> = {
   'alerts.impact.flare.m': 'Помірний спалах. Короткочасні радіоперешкоди можливі на освітленій стороні Землі.',
   'alerts.impact.flare.c': 'Малий спалах. Значного впливу на Землю не очікується.',
   'alerts.impact.flare.weak': 'Дуже слабкий спалах. Помітних ефектів немає.',
+  'aurora.quality.excellent': 'Відмінна',
+  'aurora.quality.good': 'Хороша',
+  'aurora.quality.moderate': 'Помірна',
+  'aurora.quality.low': 'Слабка',
+  'aurora.quality.desc.excellent': 'Виняткове полярне сяйво очікується сьогодні вночі',
+  'aurora.quality.desc.good': 'Помірна активність полярного сяйва',
+  'aurora.quality.desc.moderate': 'Слабке сяйво можливе у полярних регіонах',
+  'aurora.quality.desc.low': 'Спокійні умови — сяйво малоймовірне',
+  'auth.strength.tooWeak': 'Надто слабкий',
+  'auth.strength.weak': 'Слабкий',
+  'auth.strength.fair': 'Середній',
+  'auth.strength.good': 'Хороший',
+  'auth.strength.strong': 'Сильний',
+  'calendar.activity.quiet': 'Спокійно',
 };
 
 export default uk;

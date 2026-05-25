@@ -865,6 +865,20 @@ const is_: Record<string, string> = {
   'alerts.impact.flare.m': 'Í meðallagi sólkveikja. Stuttar útvarpsbyltingar mögulegar á ljóshliðinni jarðar.',
   'alerts.impact.flare.c': 'Lítil sólkveikja. Engar verulegar afleiðingar á jörð búist við.',
   'alerts.impact.flare.weak': 'Mjög veik sólkveikja. Engar teljandi afleiðingar.',
+  'aurora.quality.excellent': 'Framúrskarandi',
+  'aurora.quality.good': 'Góð',
+  'aurora.quality.moderate': 'Miðlungs',
+  'aurora.quality.low': 'Lítil',
+  'aurora.quality.desc.excellent': 'Ótrúlegt norðurljósasýning líklegt í kvöld',
+  'aurora.quality.desc.good': 'Miðlungs norðurljósavirkni búist við',
+  'aurora.quality.desc.moderate': 'Veikt norðurljós mögulegt á pólsvæðum',
+  'aurora.quality.desc.low': 'Róleg skilyrði — norðurljós ólíklegt',
+  'auth.strength.tooWeak': 'Of veikt',
+  'auth.strength.weak': 'Veikt',
+  'auth.strength.fair': 'Miðlungs',
+  'auth.strength.good': 'Gott',
+  'auth.strength.strong': 'Sterkt',
+  'calendar.activity.quiet': 'Rólegt',
 };
 
 export default is_;

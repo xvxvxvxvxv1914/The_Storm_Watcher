@@ -903,6 +903,20 @@ const ko: Record<string, string> = {
   'alerts.impact.flare.m': '중간 강도 플레어. 지구 일조면에서 짧은 라디오 장애 가능.',
   'alerts.impact.flare.c': '소규모 플레어. 지구에 대한 중요한 영향 없음.',
   'alerts.impact.flare.weak': '매우 약한 플레어. 눈에 띄는 영향 없음.',
+  'aurora.quality.excellent': '우수',
+  'aurora.quality.good': '좋음',
+  'aurora.quality.moderate': '보통',
+  'aurora.quality.low': '낮음',
+  'aurora.quality.desc.excellent': '오늘 밤 뛰어난 오로라 쇼가 예상됩니다',
+  'aurora.quality.desc.good': '중간 수준의 오로라 활동이 예상됩니다',
+  'aurora.quality.desc.moderate': '극지방에서 약한 오로라가 가능합니다',
+  'aurora.quality.desc.low': '조용한 상태 — 오로라 가능성 낮음',
+  'auth.strength.tooWeak': '너무 약함',
+  'auth.strength.weak': '약함',
+  'auth.strength.fair': '보통',
+  'auth.strength.good': '좋음',
+  'auth.strength.strong': '강함',
+  'calendar.activity.quiet': '조용함',
 };
 
 export default ko;

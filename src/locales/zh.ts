@@ -873,6 +873,20 @@ const zh: Record<string, string> = {
   'alerts.impact.flare.m': '中等耀斑。地球受光照一侧可能出现短暂无线电干扰。',
   'alerts.impact.flare.c': '小型耀斑。预计对地球无重大影响。',
   'alerts.impact.flare.weak': '极弱耀斑。无明显影响。',
+  'aurora.quality.excellent': '极佳',
+  'aurora.quality.good': '良好',
+  'aurora.quality.moderate': '中等',
+  'aurora.quality.low': '低',
+  'aurora.quality.desc.excellent': '今晚可能出现壮观极光',
+  'aurora.quality.desc.good': '预计有中等极光活动',
+  'aurora.quality.desc.moderate': '极地地区可能有微弱极光',
+  'aurora.quality.desc.low': '平静状态 — 极光可能性低',
+  'auth.strength.tooWeak': '太弱',
+  'auth.strength.weak': '弱',
+  'auth.strength.fair': '一般',
+  'auth.strength.good': '好',
+  'auth.strength.strong': '强',
+  'calendar.activity.quiet': '平静',
 };
 
 export default zh;
