@@ -515,6 +515,7 @@ const ru: Record<string, string> = {
   'auroraMap.noLocation': 'Местоположение не задано',
   'auroraMap.setLocation': 'Задайте местоположение для просмотра местной видимости →',
   'auroraMap.keyLocations': 'Ключевые места',
+  'forecast.viewAuroraMap': 'Смотреть карту видимости авроры →',
   'nav.faq': 'FAQ об авроре',
   'onboarding.welcome.title': 'Добро пожаловать в The Storm Watcher',
   'onboarding.welcome.body': '30-секундный обзор панели управления, оповещений и настроек. Можно пропустить в любой момент.',

@@ -515,6 +515,7 @@ const zh: Record<string, string> = {
   'auroraMap.noLocation': '未设置位置',
   'auroraMap.setLocation': '设置您的位置以查看本地可见度 →',
   'auroraMap.keyLocations': '关键地点',
+  'forecast.viewAuroraMap': '查看极光可见度地图 →',
   'nav.faq': '极光常见问题',
   'onboarding.welcome.title': '欢迎使用 The Storm Watcher',
   'onboarding.welcome.body': '30秒快速了解仪表板、警报和设置。您可以随时跳过。',

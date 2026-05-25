@@ -29,6 +29,7 @@ const is_: Record<string, string> = {
   'auroraMap.noLocation': 'Engin staðsetning stillt',
   'auroraMap.setLocation': 'Stilltu staðsetningu þína til að sjá staðbundinn sýnileika →',
   'auroraMap.keyLocations': 'Lykilstaðsetningar',
+  'forecast.viewAuroraMap': 'Sjá norðurljósasýnileikakort →',
   'nav.faq': 'Norðurljós FAQ',
   'nav.gallery': 'Myndasafn',
   'nav.hunt': 'Norðurljósaveiðar',

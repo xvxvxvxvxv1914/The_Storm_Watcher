@@ -29,6 +29,7 @@ const sv: Record<string, string> = {
   'auroraMap.noLocation': 'Ingen plats angiven',
   'auroraMap.setLocation': 'Ange din plats för att se lokal synlighet →',
   'auroraMap.keyLocations': 'Nyckellokationer',
+  'forecast.viewAuroraMap': 'Se norrskenssynlighetskarta →',
   'nav.faq': 'Norrsken FAQ',
   'nav.gallery': 'Galleri',
   'nav.hunt': 'Norrskenjakt',

@@ -33,6 +33,7 @@ const en: Record<string, string> = {
   'auroraMap.noLocation': 'No location set',
   'auroraMap.setLocation': 'Set your location to see local visibility →',
   'auroraMap.keyLocations': 'Key Locations',
+  'forecast.viewAuroraMap': 'See aurora visibility map →',
 
   // Mood Page
   'mood.title': 'How are you feeling today?',

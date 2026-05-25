@@ -515,6 +515,7 @@ const fr: Record<string, string> = {
   'auroraMap.noLocation': 'Aucun emplacement défini',
   'auroraMap.setLocation': 'Définissez votre emplacement pour voir la visibilité locale →',
   'auroraMap.keyLocations': 'Emplacements clés',
+  'forecast.viewAuroraMap': 'Voir la carte de visibilité des aurores →',
   'nav.faq': 'FAQ Aurora',
   'onboarding.welcome.title': 'Bienvenue sur The Storm Watcher',
   'onboarding.welcome.body': 'Une visite de 30 secondes du tableau de bord, des alertes et des paramètres. Vous pouvez ignorer à tout moment.',

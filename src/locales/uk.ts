@@ -29,6 +29,7 @@ const uk: Record<string, string> = {
   'auroraMap.noLocation': 'Місцезнаходження не задано',
   'auroraMap.setLocation': 'Задайте ваше місцезнаходження для перегляду місцевої видимості →',
   'auroraMap.keyLocations': 'Ключові місця',
+  'forecast.viewAuroraMap': 'Переглянути карту видимості авроры →',
   'nav.faq': 'Часті запитання',
   'nav.gallery': 'Галерея',
   'nav.hunt': 'Полювання на сяйво',

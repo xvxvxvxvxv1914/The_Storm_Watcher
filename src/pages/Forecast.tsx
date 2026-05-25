@@ -369,6 +369,11 @@ const Forecast = () => {
           ) : (
             <div className="h-64 flex items-center justify-center text-[#94a3b8]">{t('dashboard.noData')}</div>
           )}
+          <div className="mt-3 flex justify-end">
+            <Link to="/aurora-map" className="text-xs text-[#10b981] hover:text-[#34d399] transition-colors font-medium">
+              {t('forecast.viewAuroraMap') || 'See aurora visibility map →'}
+            </Link>
+          </div>
         </div>
 
         {/* 7-Day Forecast */}

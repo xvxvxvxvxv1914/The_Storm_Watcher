@@ -29,6 +29,7 @@ const pl: Record<string, string> = {
   'auroraMap.noLocation': 'Brak ustawionej lokalizacji',
   'auroraMap.setLocation': 'Ustaw swoją lokalizację, aby zobaczyć lokalną widoczność →',
   'auroraMap.keyLocations': 'Kluczowe lokalizacje',
+  'forecast.viewAuroraMap': 'Zobacz mapę widoczności zorzy →',
   'nav.faq': 'FAQ zorzy polarnej',
   'nav.gallery': 'Galeria',
   'nav.hunt': 'Polowanie na zorzę',

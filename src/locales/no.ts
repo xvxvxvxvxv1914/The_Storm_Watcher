@@ -29,6 +29,7 @@ const no: Record<string, string> = {
   'auroraMap.noLocation': 'Ingen plassering angitt',
   'auroraMap.setLocation': 'Angi plasseringen din for å se lokal synlighet →',
   'auroraMap.keyLocations': 'Nøkkelsteder',
+  'forecast.viewAuroraMap': 'Se nordlyssynlighetskart →',
   'nav.faq': 'Nordlys FAQ',
   'nav.gallery': 'Galleri',
   'nav.hunt': 'Nordlysjakt',

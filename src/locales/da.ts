@@ -29,6 +29,7 @@ const da: Record<string, string> = {
   'auroraMap.noLocation': 'Ingen placering sat',
   'auroraMap.setLocation': 'Indstil din placering for at se lokal synlighed →',
   'auroraMap.keyLocations': 'Nøglelokationer',
+  'forecast.viewAuroraMap': 'Se aurora synlighedskort →',
   'nav.faq': 'Nordlys FAQ',
   'nav.gallery': 'Galleri',
   'nav.hunt': 'Nordlysjagt',

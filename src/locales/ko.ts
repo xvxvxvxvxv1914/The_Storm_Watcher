@@ -30,6 +30,7 @@ const ko: Record<string, string> = {
   'auroraMap.noLocation': '위치가 설정되지 않음',
   'auroraMap.setLocation': '로컬 가시성을 보려면 위치를 설정하세요 →',
   'auroraMap.keyLocations': '주요 위치',
+  'forecast.viewAuroraMap': '오로라 가시성 지도 보기 →',
   'nav.faq': '오로라 FAQ',
 
   // Mood Page

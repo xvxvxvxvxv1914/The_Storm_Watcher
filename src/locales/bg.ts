@@ -30,6 +30,7 @@ const bg: Record<string, string> = {
   'auroraMap.noLocation': 'Няма зададена локация',
   'auroraMap.setLocation': 'Задайте вашата локация, за да видите местната видимост →',
   'auroraMap.keyLocations': 'Ключови локации',
+  'forecast.viewAuroraMap': 'Виж карта на видимостта на аврора →',
   'nav.faq': 'Аврора FAQ',
 
   // Mood Page
