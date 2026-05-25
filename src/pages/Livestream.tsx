@@ -182,7 +182,7 @@ export default function Livestream() {
   const webcams = CAMERAS.filter(c => c.kind === 'webcam');
 
   return (
-    <div className="min-h-screen px-4 py-20 max-w-6xl mx-auto">
+    <div className="min-h-screen px-4 pt-20 pb-24 max-w-6xl mx-auto">
       <PageMeta
         title="Aurora Livestream — The Storm Watcher"
         description="Live aurora cameras from Norway, Iceland, Finland, Sweden and Canada. Watch the northern lights in real time."

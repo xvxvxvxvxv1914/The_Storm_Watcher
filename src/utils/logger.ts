@@ -1,6 +1,9 @@
 import * as Sentry from '@sentry/react';
 
 export const logError = (msg: string, err?: unknown) => {
+  // AbortErrors are expected when the user navigates away before a fetch completes — not a real error.
+  if (err instanceof Error && err.name === 'AbortError') return;
+
   if (import.meta.env.DEV) {
     console.error(msg, err);
     return;

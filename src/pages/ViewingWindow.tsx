@@ -133,7 +133,7 @@ export default function ViewingWindow() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f172a] text-white pb-24 pt-16">
+    <div className="min-h-screen bg-[#0f172a] text-white pb-24 pt-20">
       <PageMeta
         title={t('viewingWindow.meta.title')}
         description={t('viewingWindow.meta.description')}

@@ -133,7 +133,7 @@ export default function Calendar() {
     t('aurora.calendar.nightAfter');
 
   return (
-    <div className="min-h-screen px-4 py-20 max-w-5xl mx-auto">
+    <div className="min-h-screen px-4 pt-20 pb-24 max-w-5xl mx-auto">
       <PageMeta
         title="Aurora Calendar — The Storm Watcher"
         description="3-night aurora viewing outlook with Kp forecast and cloud cover. Find your best night to watch the northern lights."

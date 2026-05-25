@@ -155,13 +155,26 @@ export default function Hunt() {
         }
       }
 
+      // Fetch Kp fresh from NOAA at submit time to prevent React-state manipulation
+      let serverKp: number | null = null;
+      try {
+        const r = await fetch('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json', {
+          signal: AbortSignal.timeout(5000),
+        });
+        const entries: { kp_index: number }[] = await r.json();
+        const latest = entries[entries.length - 1];
+        if (latest) serverKp = latest.kp_index;
+      } catch {
+        serverKp = kp; // NOAA unavailable — fall back to displayed value
+      }
+
       const { error } = await supabase.from('aurora_sightings').insert({
         user_id: user.id,
         display_name: profile?.full_name ?? null,
         location_name: locationName.trim(),
         latitude: settings.preferredLat ?? null,
         longitude: settings.preferredLon ?? null,
-        kp_at_sighting: kp,
+        kp_at_sighting: serverKp,
         intensity,
         notes: notes.trim() || null,
       });
@@ -191,7 +204,7 @@ export default function Hunt() {
   const myRank = leaderboard.findIndex(e => e.user_id === user?.id) + 1;
 
   return (
-    <div className="min-h-screen px-4 py-20 max-w-4xl mx-auto">
+    <div className="min-h-screen px-4 pt-20 pb-24 max-w-4xl mx-auto">
       <PageMeta
         title="Aurora Hunt — The Storm Watcher"
         description="Report aurora sightings, earn badges and compete on the leaderboard with other aurora hunters."

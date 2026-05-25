@@ -201,7 +201,7 @@ export default function Gallery() {
   };
 
   return (
-    <div className="min-h-screen px-4 py-20 max-w-6xl mx-auto">
+    <div className="min-h-screen px-4 pt-20 pb-24 max-w-6xl mx-auto">
       <PageMeta
         title="Aurora Gallery — The Storm Watcher"
         description="Community aurora photos from around the world. Share your northern lights sightings."
