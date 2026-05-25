@@ -16,6 +16,7 @@ import StarField from '../components/StarField';
 import { SkeletonCard, SkeletonChart, Skeleton } from '../components/Skeleton';
 import ErrorCard from '../components/ErrorCard';
 import { useChartHeight } from '../hooks/useChartHeight';
+import ProTrialNudge from '../components/ProTrialNudge';
 
 function useCountUp(target: number, duration = 700): number {
   const prevRef = useRef(target);
@@ -383,6 +384,7 @@ const Dashboard = () => {
       <div className="solar-orb" style={{ top: '100px', right: '-300px' }} />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <ProTrialNudge />
         <div className="mb-3 md:mb-12">
           <h1 className="text-3xl sm:text-5xl font-bold gradient-solar mb-2 sm:mb-3 uppercase tracking-tight">
             {t('dashboard.title')}

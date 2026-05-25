@@ -4,6 +4,8 @@ import { Heart, Brain, Moon, AlertTriangle, Shield, Activity } from 'lucide-reac
 import { useLanguage } from '../contexts/LanguageContext';
 import StarField from '../components/StarField';
 import { magneticContent } from '../content/magneticEffectsContent';
+import { useKpLive } from '../hooks/useKpLive';
+import { getStormStatus, getKpGradientStyle } from '../services/noaaApi';
 
 const sectionMeta = [
   { icon: <Activity className="w-6 h-6" />, color: '#f97316' },
@@ -18,6 +20,14 @@ export default function MagneticEffects() {
   const { language, t } = useLanguage();
   const lang = magneticContent[language] ? language : 'en';
   const c = magneticContent[lang];
+  const kp = useKpLive();
+  const storm = kp !== null ? getStormStatus(kp) : null;
+
+  const kpMessage = kp === null ? null
+    : kp >= 7 ? (t('effects.kpSevere') || 'Severe geomagnetic storm — effects may be strongly felt.')
+    : kp >= 5 ? (t('effects.kpStorm') || 'Geomagnetic storm in progress — many people report symptoms.')
+    : kp >= 3 ? (t('effects.kpUnsettled') || 'Unsettled conditions — sensitive individuals may notice effects.')
+    : (t('effects.kpQuiet') || 'Quiet conditions — geomagnetic activity is low today.');
 
   return (
     <>
@@ -40,6 +50,28 @@ export default function MagneticEffects() {
             <h1 className="text-4xl md:text-5xl font-black text-white mb-4 leading-tight">{c.title}</h1>
             <p className="text-lg text-[#94a3b8] leading-relaxed">{c.subtitle}</p>
           </div>
+
+          {/* Live Kp widget */}
+          {kp !== null && storm && (
+            <div
+              className="rounded-2xl p-4 mb-8 flex items-center gap-4 border"
+              style={{ background: storm.bgColor, borderColor: storm.color + '44' }}
+            >
+              <div className="flex-shrink-0 text-center">
+                <div className="text-3xl font-black leading-none" style={getKpGradientStyle(kp)}>
+                  {kp.toFixed(1)}
+                </div>
+                <div className="text-[10px] text-[#64748b] uppercase tracking-widest mt-0.5">Kp</div>
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-xs font-bold uppercase tracking-widest mb-0.5" style={{ color: storm.color }}>
+                  {t('home.liveSpaceWeather') || 'Live space weather'} · {t(storm.statusKey)}
+                </div>
+                <p className="text-[#94a3b8] text-sm leading-snug">{kpMessage}</p>
+              </div>
+              <span className="flex-shrink-0 w-2 h-2 rounded-full animate-pulse" style={{ background: storm.color }} />
+            </div>
+          )}
 
           {/* Sections */}
           <div className="space-y-10">

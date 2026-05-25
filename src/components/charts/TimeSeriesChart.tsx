@@ -187,8 +187,7 @@ export default function TimeSeriesChart({
       chart.remove();
       chartRef.current = null;
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, color, type, height, isDark, compareData]);
+  }, [data, color, type, height, isDark, compareData, refLines, yMin, yMax, compareLabel]);
 
   return <div ref={containerRef} />;
 }
