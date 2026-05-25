@@ -1,3 +1,140 @@
+# Session Handoff — 2026-05-25 (Continuation)
+
+> Последна сесия: 2026-05-25 (продължение). Предишна работа: по-долу.
+
+---
+
+## ✅ Какво беше направено в сесия 2026-05-25 (продължение)
+
+### BreadcrumbSchema SEO за всички content pages (commit `546778b`)
+- JSON-LD breadcrumb structured data добавено към 10 pages: Alerts, Gallery, Hunt, ISS, Calendar, SkyVisibility, SunTimes, UV, About, MagneticEffects
+- Подобрява rich-result eligibility в Google
+
+### i18n — Aurora quality labels, Auth strength, Calendar quiet (commit `1003682`)
+- **Aurora.tsx**: `qualityLabel` и `qualityDesc` вече използват `t()` (бяха hardcoded EN)
+  - Keys: `aurora.quality.{excellent,good,moderate,low}` + `aurora.quality.desc.*`
+- **Auth.tsx / AuthReset.tsx**: password strength meter labels вече използват `t()`
+  - Keys: `auth.strength.{tooWeak,weak,fair,good,strong}`
+- **Calendar.tsx**: `getGLevel()` quiet state → `t('calendar.activity.quiet')`
+- Всичко в 16 езика
+
+### Footer — пълна i18n, премахнат isBg pattern (commit `eee89c9`)
+- Footer.tsx използваше `isBg ? 'BG' : 'EN'` за 10+ места → заменен с `t()` ключове
+- Нови ключове: `footer.section.{spaceWeather,skyObservation,healthInfo,more}`, `footer.terms`, `footer.privacyPolicy`, `footer.termsOfService`, `nav.about`, `nav.magneticEffectsShort`
+- Всичките 15 non-EN езика обновени
+
+### Kp threshold labels в Settings (commit `38bc6be`)
+- Dropdown labels бяха hardcoded: `'Kp 5 — Storm'` etc. → `Kp 5 — ${t('settings.kp.storm')}`
+- Keys: `settings.kp.{weak,moderate,storm,strongStorm,severeStorm,extreme,extremePlus}`
+
+### Locale completeness test → 100% threshold (commit `333e293`)
+- Тестът беше ≥80% → вдигнат на 100% (всичките 15 non-EN езика са на 100%)
+- По-добър error message: показва кои ключове липсват
+- Добавени нови critical keys в теста
+
+### LanguageSettings i18n (commit `f69bc92`)
+- 3 hardcoded EN strings → `t()` ключове
+- Keys: `settings.lang.loadError`, `settings.lang.saveError`, `settings.lang.signInPrompt`
+
+### Profile avatar + sitemap (commit `7d312e4`)
+- `<img>` за avatar: добавени `loading="lazy" decoding="async"`
+- `public/sitemap.xml`: `lastmod` → `2026-05-25`
+
+### Git state след сесия 2026-05-25 (продължение)
+| Branch | HEAD | Статус |
+|--------|------|--------|
+| `main` | `7077586` | ⚠️ НЕ Е ОБНОВЕН — изчаква тест + одобрение от потребителя |
+| `staging` | `7d312e4` | ✅ Актуален — всички промени от всичките сесии |
+
+---
+
+## ✅ Какво беше направено в сесия 2026-05-25 (начало)
+
+### Пълна i18n на Alerts страницата (commits `2d7e122`, `12ac8bd`, `fe092d1`)
+
+**Alerts.tsx е сега 100% локализиран — нито един hardcoded английски низ не остава:**
+
+| Компонент | Какво |
+|-----------|-------|
+| `buildNoaaItem` | title, subtitle, scale labels → locale ключове |
+| `buildCmeItem` | title, subtitle (arrived/arriving/away) → locale ключове |
+| `buildFlareItem` | title, subtitle (flare class label) → locale ключове |
+| `HeroCard` | headline + sub за 4 статуса → locale ключове; `t` добавен като пропс |
+| `FilterChips` | All/Storms/Flares/CMEs/Reports → locale ключове |
+| `ImpactBlock` | "What this means for you" → locale ключове |
+| `NoaaScale` | scale bar labels (Minor/Moderate/Strong/Extreme) → locale ключове |
+| CME ETA bar | "Arriving in ~{eta}h" + "Solar storm has arrived" → locale ключове |
+| Time helpers | "Just now / {m}m ago / {h}h ago / {d}d ago" → вече бяха |
+| Impact descriptions | 16 дълги описания (Aurora/radio/CME/flare impacts) × 16 езика |
+
+**44 нови ключа + 16 impact описания** в всичките 16 locale файла.
+
+### Hunt и Gallery empty states (commit `12ac8bd`)
+- `hunt.leaderboardEmpty`, `hunt.noRecentSightings`, `hunt.noRecentSightingsDesc` × 16 езика
+- `gallery.noPhotosDesc`, `gallery.uploadPhoto` × 16 езика
+
+### Locale completeness test — разширен до всичките 16 езика (commit `fe092d1`)
+- `localeCompleteness.test.ts` сега тества всичките 15 non-English езика vs en
+- 94 теста (66 стари + 28 нови), всички минават
+- Критичните ключове проверени за всеки от 16-те езика
+
+### Git state след сесия 2026-05-25
+| Branch | HEAD | Статус |
+|--------|------|--------|
+| `main` | `7077586` | ⚠️ НЕ Е ОБНОВЕН — изчаква тест + одобрение от потребителя |
+| `staging` | `fe092d1` | ✅ Актуален — всички промени от всичките сесии |
+
+---
+
+## ✅ Какво беше направено в сесия 2026-05-24 (продължение)
+
+### Free Trial UI (14-day Pro)
+- **`api/stripe/webhook.ts`** — Бъг fix: `status=trialing` вече дава `plan: 'pro'` (преди даваше `'free'`)
+- **`api/stripe/create-checkout-session.ts`** — `trial_period_days: 14` за Pro цени (Monthly + Yearly)
+- **`src/components/PlanGuard.tsx`** — Safety fallback: trialing → Pro достъп дори ако plan полето е грешно
+- **`src/components/TrialBanner.tsx`** — Нов: тънък банер показва дни оставащи от trial
+- **`src/pages/Pricing.tsx`** — "Try Pro free for 14 days" CTA + "14-day free trial" badge на Pro карта
+- **`src/App.tsx`** — TrialBanner добавен под Navigation
+- **16 локала** — Нови ключове: `pricing.tryProFree`, `pricing.trialBadge`, `trial.*`
+
+### Aurora Visibility Heatmap
+- **`src/components/AuroraHeatmap.tsx`** — Нов: Leaflet MapContainer с canvas ImageOverlay
+  показващ глобална aurora видимост по текущ Kp (emerald → yellow → near-white)
+- **`src/pages/Aurora.tsx`** — Heatmap секция с легенда между city list и Visibility Checklist
+- **16 локала** — `aurora.heatmap.*` ключове
+
+### Payment Success Toast (Dashboard)
+- **`src/pages/Dashboard.tsx`** — Toast при `?payment=success` от Stripe checkout
+  Показва "Trial started!" или "You're now on Pro!" в зависимост от subscription_status
+- **16 локала** — `payment.*` ключове
+
+### Profile — Trial Info
+- **`src/pages/Profile.tsx`** — "Trial active" badge + дни оставащи
+- Fix: `subscription_period_end` беше `ISO string * 1000` = NaN → `new Date(isoString)` директно
+- Trialing потребители виждат "Manage subscription" бутон
+
+### SEO Prerender — 21 маршрута (беше 10)
+- **`scripts/prerender-meta.mjs`** — Добавени 11 нови: `/aurora`, `/dashboard`, `/forecast`,
+  `/alerts`, `/pricing`, `/calendar`, `/gallery`, `/iss`, `/mood`, `/livestream`
+- Всеки с оптимизиран title + description за Google
+
+### Payment Cancelled UX
+- **`src/pages/Pricing.tsx`** — Banner при `?payment=cancelled` от Stripe
+- **16 локала** — `payment.cancelled`
+
+### Home Page — Trial CTA
+- Hero секция: "Try Pro free for 14 days — no credit card required" link → /pricing
+- "Global Map + Aurora Oval" карта вече линкира към `/aurora` (преди беше мъртъв div)
+- **16 локала** — `home.noCC`
+
+### Git state след сесия 2026-05-24
+| Branch | HEAD | Статус |
+|--------|------|--------|
+| `main` | `7077586` | ⚠️ НЕ Е ОБНОВЕН — потребителят тества staging първо |
+| `staging` | `5841aaf` | ✅ Актуален — всички промени от двете сесии |
+
+---
+
 # Session Handoff — 2026-05-23/24
 
 > Последна сесия: 2026-05-23/24. Предишна сесия: 2026-05-21 (виж архив по-долу).

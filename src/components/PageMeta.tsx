@@ -10,6 +10,11 @@ const PAGE_SLUGS: Record<string, string> = {
   '/calendar': 'calendar',
   '/pricing': 'pricing',
   '/mood': 'mood',
+  '/alerts': 'alerts',
+  '/dashboard': 'dashboard',
+  '/iss': 'iss',
+  '/gallery': 'gallery',
+  '/hunt': 'hunt',
 };
 
 interface Props {

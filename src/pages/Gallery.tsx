@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import PageMeta from '../components/PageMeta';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { Camera, Upload, X, MapPin, Image, Filter } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useKpLive } from '../hooks/useKpLive';
 import { supabase } from '../lib/supabase';
 import { Link } from 'react-router-dom';
 
@@ -47,6 +49,7 @@ const PAGE_SIZE = 12;
 export default function Gallery() {
   const { user, profile } = useAuth();
   const { t } = useLanguage();
+  const kp = useKpLive();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [photos, setPhotos] = useState<GalleryPhoto[]>([]);
@@ -155,6 +158,7 @@ export default function Gallery() {
         thumbnail_url: thumbnailUrl,
         description: description.trim() || null,
         location_name: locationName.trim() || null,
+        kp_at_capture: kp ?? null,
       });
 
       if (insertError) throw insertError;
@@ -184,6 +188,7 @@ export default function Gallery() {
         description="Community aurora photos from around the world. Share your northern lights sightings."
         path="/gallery"
       />
+      <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Gallery', path: '/gallery' }]} />
 
       <div className="flex items-center justify-between flex-wrap gap-4 mb-8">
         <div>
@@ -320,14 +325,14 @@ export default function Gallery() {
         <div className="text-center py-24">
           <Image className="w-16 h-16 text-[#334155] mx-auto mb-4" />
           <p className="text-white font-semibold text-lg mb-1">{t('gallery.noPhotos') || 'No photos yet'}</p>
-          <p className="text-[#64748b] text-sm mb-5">Be the first to share an aurora photo with the community!</p>
+          <p className="text-[#64748b] text-sm mb-5">{t('gallery.noPhotosDesc')}</p>
           {user ? (
             <button
               onClick={() => fileInputRef.current?.click()}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] text-white font-semibold text-sm hover:opacity-90 transition-opacity"
             >
               <Upload className="w-4 h-4" />
-              Upload a Photo
+              {t('gallery.uploadPhoto')}
             </button>
           ) : (
             <Link

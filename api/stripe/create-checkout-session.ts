@@ -37,6 +37,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     'price_1TSJHYLqQEtEOCx43ks9UAAc', // Premium Monthly
     'price_1TSJHtLqQEtEOCx4Q1RuknHo', // Premium Yearly
   ]);
+
+  const PRO_PRICES = new Set([
+    'price_1TSJBmLqQEtEOCx4utzZ07gf', // Pro Monthly
+    'price_1TSJGvLqQEtEOCx4VGsGFSyH', // Pro Yearly
+  ]);
   if (!ALLOWED_PRICES.has(priceId)) return res.status(400).json({ error: 'Invalid price' });
 
   const { data: profile } = await supabase
@@ -59,6 +64,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       .eq('id', user.id);
   }
 
+  const isProTrial = PRO_PRICES.has(priceId);
+
   const session = await stripe.checkout.sessions.create({
     customer: customerId,
     mode: 'subscription',
@@ -67,8 +74,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     success_url: `${APP_URL}/dashboard?payment=success`,
     cancel_url: `${APP_URL}/pricing?payment=cancelled`,
     metadata: { supabase_user_id: user.id },
+    // No card required upfront for Pro trials — charged only after 14 days
+    ...(isProTrial ? { payment_method_collection: 'if_required' } : {}),
     subscription_data: {
       metadata: { supabase_user_id: user.id },
+      ...(isProTrial ? {
+        trial_period_days: 14,
+        trial_settings: { end_behavior: { missing_payment_method: 'cancel' } },
+      } : {}),
     },
   }, {
     idempotencyKey: `checkout-${user.id}-${priceId}-${Math.floor(Date.now() / 60_000)}`,

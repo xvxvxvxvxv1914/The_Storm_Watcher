@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import PageMeta from '../components/PageMeta';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { CalendarDays, Cloud, Sparkles, Download } from 'lucide-react';
 import { buildAuroraICS, downloadICS } from '../utils/icalExport';
 import { Link } from 'react-router-dom';
@@ -27,12 +28,12 @@ const NIGHT_END = 6;
 const getKpColor = (kp: number) =>
   kp >= 7 ? '#ef4444' : kp >= 5 ? '#f97316' : kp >= 4 ? '#eab308' : kp >= 2 ? '#10b981' : '#059669';
 
-const getGLevel = (kp: number) => {
+const getGLevel = (kp: number, t: (k: string) => string) => {
   if (kp >= 9) return { label: 'G5', color: '#dc2626' };
   if (kp >= 7) return { label: 'G3', color: '#f97316' };
   if (kp >= 5) return { label: 'G1', color: '#fbbf24' };
   if (kp >= 3) return { label: 'Kp 3+', color: '#10b981' };
-  return { label: 'Quiet', color: '#64748b' };
+  return { label: t('calendar.activity.quiet'), color: '#64748b' };
 };
 
 export default function Calendar() {
@@ -139,6 +140,7 @@ export default function Calendar() {
         path="/calendar"
         ogKp={nights.length > 0 ? Math.max(...nights.map(n => n.maxKp)) : undefined}
       />
+      <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Aurora Calendar', path: '/calendar' }]} />
 
       {/* Header */}
       <div className="flex items-center gap-4 mb-3">
@@ -189,7 +191,7 @@ export default function Calendar() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
           {nights.map(night => {
-            const g = getGLevel(night.maxKp);
+            const g = getGLevel(night.maxKp, t);
             const cloud = night.cloudCoverAvg;
             const cloudLabel = cloud === null ? null : cloud < 30 ? t('aurora.calendar.clear') : cloud < 70 ? t('aurora.calendar.partlyCloudy') : t('aurora.calendar.overcast');
             const maxBar = Math.max(...night.hourlyKp.map(h => h.kp), 1);

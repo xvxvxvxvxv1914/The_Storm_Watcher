@@ -191,15 +191,15 @@ const Aurora = () => {
     clamp(((windSpeed - 300) / 500) * 100, 0, 100) * 0.2 +
     clamp((windDensity / 20) * 100, 0, 100) * 0.1
   );
-  const qualityLabel = auroraQuality >= 76 ? 'Excellent' : auroraQuality >= 51 ? 'Good' : auroraQuality >= 26 ? 'Moderate' : 'Low';
+  const qualityLabel = auroraQuality >= 76 ? t('aurora.quality.excellent') : auroraQuality >= 51 ? t('aurora.quality.good') : auroraQuality >= 26 ? t('aurora.quality.moderate') : t('aurora.quality.low');
   const qualityColor = auroraQuality >= 76 ? '#10b981' : auroraQuality >= 51 ? '#f97316' : auroraQuality >= 26 ? '#eab308' : '#64748b';
   const qualityDesc = auroraQuality >= 76
-    ? 'Exceptional aurora display likely tonight'
+    ? t('aurora.quality.desc.excellent')
     : auroraQuality >= 51
-    ? 'Moderate aurora activity expected'
+    ? t('aurora.quality.desc.good')
     : auroraQuality >= 26
-    ? 'Weak aurora possible in polar regions'
-    : 'Quiet conditions — aurora unlikely';
+    ? t('aurora.quality.desc.moderate')
+    : t('aurora.quality.desc.low');
 
   const stars = useMemo(() =>
     [...Array(50)].map((_, i) => ({
@@ -366,6 +366,7 @@ const Aurora = () => {
           </div>
           <p className="text-[#475569] text-xs mt-4">* {t('aurora.approxChance')} {kpValue.toFixed(1)}</p>
         </div>
+
 
         {/* Visibility Checklist */}
         <div className="glass-surface rounded-2xl p-6 sm:p-8 mb-8 border border-white/5 overflow-hidden relative">

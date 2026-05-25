@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Lock, Sparkles } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -15,10 +15,14 @@ const PLAN_RANK: Record<Plan, number> = { free: 0, pro: 1, premium: 2 };
 const PlanGuard = ({ requiredPlan, children }: PlanGuardProps) => {
   const { user, profile } = useAuth();
   const { t } = useLanguage();
+  const location = useLocation();
 
   const paymentsEnabled = import.meta.env.VITE_PAYMENTS_ENABLED === 'true';
   const userPlan: Plan = profile?.plan ?? 'free';
-  const hasAccess = !paymentsEnabled || PLAN_RANK[userPlan] >= PLAN_RANK[requiredPlan];
+  // Trialing users get Pro access even if plan field wasn't updated yet
+  const isTrialing = profile?.subscription_status === 'trialing';
+  const effectivePlan: Plan = (isTrialing && PLAN_RANK[userPlan] < PLAN_RANK['pro']) ? 'pro' : userPlan;
+  const hasAccess = !paymentsEnabled || PLAN_RANK[effectivePlan] >= PLAN_RANK[requiredPlan];
 
   if (hasAccess) return <>{children}</>;
 
@@ -63,11 +67,23 @@ const PlanGuard = ({ requiredPlan, children }: PlanGuardProps) => {
           {!user ? (
             <Link
               to="/auth"
+              state={{ from: location.pathname }}
               className="block w-full py-3 rounded-lg font-bold text-white transition-all hover:scale-105 hover:shadow-lg"
               style={{ background: `linear-gradient(to right, ${gradientFrom}, ${gradientTo})`, boxShadow: `0 0 0 0 ${gradientFrom}` }}
             >
               {t('planguard.signInUpgrade')}
             </Link>
+          ) : requiredPlan === 'pro' ? (
+            <>
+              <Link
+                to="/pricing"
+                className="block w-full py-3 rounded-lg font-bold text-white transition-all hover:scale-105 hover:shadow-lg"
+                style={{ background: `linear-gradient(to right, ${gradientFrom}, ${gradientTo})` }}
+              >
+                {t('pricing.tryProFree') || 'Try Pro free for 14 days'}
+              </Link>
+              <p className="text-[#475569] text-xs mt-2">{t('home.noCC') || '— no credit card required'}</p>
+            </>
           ) : (
             <Link
               to="/pricing"

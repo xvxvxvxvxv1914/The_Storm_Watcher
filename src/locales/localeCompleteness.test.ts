@@ -1,40 +1,70 @@
 import { describe, it, expect } from 'vitest';
 import en from './en';
 import bg from './bg';
+import de from './de';
+import es from './es';
+import fr from './fr';
+import ja from './ja';
+import ru from './ru';
+import zh from './zh';
+import da from './da';
+import fi from './fi';
+import is from './is';
+import ko from './ko';
+import no from './no';
+import pl from './pl';
+import sv from './sv';
+import uk from './uk';
 
-// bg.ts must cover every key in en.ts — missing keys fall back to en at runtime,
-// but tracking them here prevents silent omissions from accumulating.
-describe('locale completeness: bg vs en', () => {
-  const enKeys = Object.keys(en);
-  const bgKeys = new Set(Object.keys(bg));
+const LOCALES: Record<string, Record<string, string>> = {
+  bg, de, es, fr, ja, ru, zh, da, fi, is, ko, no, pl, sv, uk,
+};
 
-  it('bg has at least 80% of en keys (regression guard)', () => {
-    const covered = enKeys.filter(k => bgKeys.has(k)).length;
-    const ratio = covered / enKeys.length;
-    expect(ratio).toBeGreaterThanOrEqual(0.8);
-  });
+const enKeys = Object.keys(en);
 
-  it('critical UI keys are translated in bg', () => {
+// Every locale must cover 100% of en.ts keys (all 15 non-English locales are kept in sync via batch injection scripts).
+describe('locale completeness — all 16 locales vs en', () => {
+  for (const [lang, locale] of Object.entries(LOCALES)) {
+    const localeKeys = new Set(Object.keys(locale));
+
+    it(`${lang}: 100% of en keys present`, () => {
+      const missing = enKeys.filter(k => !localeKeys.has(k));
+      expect(missing, `${lang} missing keys: ${missing.join(', ')}`).toHaveLength(0);
+    });
+
+    it(`${lang}: no empty string values`, () => {
+      for (const [key, value] of Object.entries(locale)) {
+        expect(value, `${lang}["${key}"] is empty`).not.toBe('');
+      }
+    });
+  }
+
+  it('critical UI keys translated in all locales', () => {
     const critical = [
-      'nav.aurora', 'nav.dashboard', 'nav.forecast', 'nav.alerts', 'nav.settings',
+      'nav.aurora', 'nav.dashboard', 'nav.forecast', 'nav.alerts',
       'aurora.title', 'dashboard.title',
-      'mood.submit', 'mood.thankYou', 'mood.error',
+      'mood.submit', 'mood.thankYou',
       'storm.quiet', 'storm.g1', 'storm.g2', 'storm.g3plus',
+      'alerts.type.geoStorm', 'alerts.type.solarFlare',
+      'alerts.hero.calm', 'alerts.filter.all',
+      'aurora.quality.excellent', 'aurora.quality.desc.low',
+      'auth.strength.tooWeak', 'auth.strength.strong',
+      'footer.section.spaceWeather', 'footer.section.more',
+      'calendar.activity.quiet',
+      'settings.kp.storm', 'settings.kp.extreme',
+      'nav.about', 'nav.magneticEffectsShort',
     ];
-    for (const key of critical) {
-      expect(bgKeys.has(key), `bg missing critical key: "${key}"`).toBe(true);
+    for (const [lang, locale] of Object.entries(LOCALES)) {
+      const localeKeys = new Set(Object.keys(locale));
+      for (const key of critical) {
+        expect(localeKeys.has(key), `${lang} missing critical key: "${key}"`).toBe(true);
+      }
     }
   });
 
   it('no value in en is an empty string', () => {
     for (const [key, value] of Object.entries(en)) {
       expect(value, `en["${key}"] is empty`).not.toBe('');
-    }
-  });
-
-  it('no value in bg is an empty string', () => {
-    for (const [key, value] of Object.entries(bg)) {
-      expect(value, `bg["${key}"] is empty`).not.toBe('');
     }
   });
 });

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import PageMeta from '../components/PageMeta';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import {
   Flame, Wind, Info, Eye, CheckCircle2,
   AlertOctagon, Zap, Radio, ShieldAlert, ChevronDown, ChevronUp,
@@ -11,14 +12,15 @@ import { useTheme } from '../contexts/ThemeContext';
 
 /* ─── time helpers ─────────────────────────────────────────── */
 
-function timeAgo(dateStr: string) {
+function timeAgo(dateStr: string, t: (k: string) => string) {
   const diff = Date.now() - new Date(dateStr).getTime();
   const m = Math.floor(diff / 6e4);
   const h = Math.floor(diff / 36e5);
-  if (m < 2) return 'Just now';
-  if (m < 60) return `${m}m ago`;
-  if (h < 24) return `${h}h ago`;
-  return `${Math.floor(h / 24)}d ago`;
+  const d = Math.floor(h / 24);
+  if (m < 2) return t('alerts.justNow');
+  if (m < 60) return t('alerts.mAgo').replace('{m}', String(m));
+  if (h < 24) return t('alerts.hAgo').replace('{h}', String(h));
+  return t('alerts.dAgo').replace('{d}', String(d));
 }
 
 function timeUntilHours(dateStr: string): number | null {
@@ -65,7 +67,7 @@ type FeedItem = {
   priority: number;         // 0=highest
 };
 
-function buildNoaaItem(alert: AlertType): FeedItem {
+function buildNoaaItem(alert: AlertType, t: (k: string) => string): FeedItem {
   const product = parseProduct(alert.message);
   const msg = alert.message.toUpperCase();
   let severity: Severity = 1;
@@ -73,18 +75,25 @@ function buildNoaaItem(alert: AlertType): FeedItem {
   else if (msg.includes('WATCH') || msg.includes('ALERT')) severity = 3;
   else if (msg.includes('SUMMARY')) severity = 2;
 
+  const scaleLabels = (n: number) => [
+    '', t('alerts.scale.minor'), t('alerts.scale.moderate'),
+    t('alerts.scale.strong'), t('alerts.scale.severe'), t('alerts.scale.extreme'),
+  ][n] ?? '';
+
   if (product.includes('geomagnetic')) {
     const g = extractScale(msg, 'G');
     return {
       id: `noaa-${alert.issue_datetime}`,
       type: 'storm',
-      title: 'Geomagnetic Storm',
-      subtitle: g ? `G${g} — ${['', 'Minor', 'Moderate', 'Strong', 'Severe', 'Extreme'][g]}` : severity === 4 ? 'Warning issued' : severity === 3 ? 'Watch issued' : 'Summary',
+      title: t('alerts.type.geoStorm'),
+      subtitle: g
+        ? `G${g} — ${scaleLabels(g)}`
+        : severity === 4 ? t('alerts.status.warning') : severity === 3 ? t('alerts.status.watch') : t('alerts.status.summary'),
       impact: g >= 4
-        ? 'Aurora visible from southern Europe and much of North America. Power grid and GPS disruptions possible.'
+        ? t('alerts.impact.geoStorm.high')
         : g >= 2
-          ? 'Aurora possible at high latitudes (Scandinavia, Canada, Alaska). Minor GPS and radio effects.'
-          : 'Aurora at polar regions only. Negligible impact on daily life.',
+          ? t('alerts.impact.geoStorm.moderate')
+          : t('alerts.impact.geoStorm.low'),
       severity,
       scale: g ? { letter: 'G', current: g } : undefined,
       dateStr: alert.issue_datetime,
@@ -97,13 +106,13 @@ function buildNoaaItem(alert: AlertType): FeedItem {
     return {
       id: `noaa-${alert.issue_datetime}`,
       type: 'radio',
-      title: 'Radio Blackout',
-      subtitle: r ? `R${r} — ${['', 'Minor', 'Moderate', 'Strong', 'Severe', 'Extreme'][r]}` : 'HF radio affected',
+      title: t('alerts.type.radioBlackout'),
+      subtitle: r ? `R${r} — ${scaleLabels(r)}` : t('alerts.sub.hfAffected'),
       impact: r >= 4
-        ? 'Widespread HF radio blackouts on sunlit side. Aviation and maritime communications disrupted.'
+        ? t('alerts.impact.radio.high')
         : r >= 2
-          ? 'HF radio disruptions on sunlit side of Earth. Some amateur radio and aviation frequencies affected.'
-          : 'Weak radio disruptions at high latitudes. Minimal real-world impact.',
+          ? t('alerts.impact.radio.moderate')
+          : t('alerts.impact.radio.low'),
       severity,
       scale: r ? { letter: 'R', current: r } : undefined,
       dateStr: alert.issue_datetime,
@@ -116,9 +125,9 @@ function buildNoaaItem(alert: AlertType): FeedItem {
     return {
       id: `noaa-${alert.issue_datetime}`,
       type: 'radiation',
-      title: 'Solar Radiation Storm',
-      subtitle: s ? `S${s} — ${['', 'Minor', 'Moderate', 'Strong', 'Severe', 'Extreme'][s]}` : 'Elevated radiation',
-      impact: 'Elevated radiation at flight altitudes. Polar routes may be rerouted. Satellite operators alerted.',
+      title: t('alerts.type.radStorm'),
+      subtitle: s ? `S${s} — ${scaleLabels(s)}` : t('alerts.sub.elevatedRad'),
+      impact: t('alerts.impact.radiation'),
       severity,
       scale: s ? { letter: 'S', current: s } : undefined,
       dateStr: alert.issue_datetime,
@@ -129,9 +138,9 @@ function buildNoaaItem(alert: AlertType): FeedItem {
   return {
     id: `noaa-${alert.issue_datetime}`,
     type: 'summary',
-    title: 'Space Weather Update',
-    subtitle: 'Routine report from NOAA',
-    impact: 'No immediate action needed. Space weather conditions are being monitored.',
+    title: t('alerts.type.update'),
+    subtitle: t('alerts.sub.routine'),
+    impact: t('alerts.impact.summary'),
     severity: 1,
     dateStr: alert.issue_datetime,
     raw: alert.message,
@@ -139,7 +148,7 @@ function buildNoaaItem(alert: AlertType): FeedItem {
   };
 }
 
-function buildCmeItem(cme: CmeEvent): FeedItem {
+function buildCmeItem(cme: CmeEvent, t: (k: string) => string): FeedItem {
   const analysis = cme.cmeAnalyses?.find(a => a.isMostAccurate) ?? cme.cmeAnalyses?.[0];
   const enlil = analysis?.enlilList?.[0];
   const isEarth = enlil?.isEarthGB ?? false;
@@ -150,17 +159,23 @@ function buildCmeItem(cme: CmeEvent): FeedItem {
   return {
     id: cme.activityID,
     type: 'cme',
-    title: isEarth ? 'Solar Storm Heading to Earth' : 'Solar Ejection — Not Earth-Directed',
+    title: isEarth ? t('alerts.type.cmeEarth') : t('alerts.type.cmeAway'),
     subtitle: isEarth
-      ? (arrived ? 'Arrived' : eta !== null ? `Arriving in ~${eta}h` : 'Arrival calculated')
-      : (analysis?.speed ? `${analysis.speed.toFixed(0)} km/s · away from Earth` : 'Away from Earth'),
+      ? (arrived
+          ? t('alerts.cme.arrived')
+          : eta !== null
+            ? t('alerts.cme.arriving').replace('{eta}', String(eta))
+            : t('alerts.cme.calculated'))
+      : (analysis?.speed
+          ? `${analysis.speed.toFixed(0)} km/s · ${t('alerts.cme.away')}`
+          : t('alerts.cme.away')),
     impact: isEarth
       ? (kp && kp >= 7
-          ? 'Strong geomagnetic storm expected. Aurora visible from central Europe and northern USA.'
+          ? t('alerts.impact.cme.high')
           : kp && kp >= 5
-            ? 'Moderate storm expected. Aurora at high latitudes (Scandinavia, Canada, Alaska).'
-            : 'Minor disturbance expected. Aurora at polar regions only.')
-      : 'This solar ejection is not directed at Earth. No impact expected.',
+            ? t('alerts.impact.cme.moderate')
+            : t('alerts.impact.cme.low'))
+      : t('alerts.impact.cme.away'),
     severity,
     eta,
     arrived,
@@ -170,22 +185,29 @@ function buildCmeItem(cme: CmeEvent): FeedItem {
   };
 }
 
-function buildFlareItem(flare: FlareEvent): FeedItem {
+function buildFlareItem(flare: FlareEvent, t: (k: string) => string): FeedItem {
   const letter = flare.classType[0]?.toUpperCase() ?? 'A';
   const scaleMap: Record<string, number> = { A: 1, B: 1, C: 2, M: 3, X: 4 };
   const severity = (scaleMap[letter] ?? 1) as Severity;
+  const flareLabel = letter === 'X'
+    ? t('alerts.flare.extreme')
+    : letter === 'M'
+      ? t('alerts.flare.moderate')
+      : letter === 'C'
+        ? t('alerts.flare.weak')
+        : t('alerts.flare.negligible');
   return {
     id: flare.flrID,
     type: 'flare',
-    title: 'Solar Flare',
-    subtitle: `Class ${flare.classType} — ${letter === 'X' ? 'Extreme' : letter === 'M' ? 'Moderate' : letter === 'C' ? 'Weak' : 'Negligible'}`,
+    title: t('alerts.type.solarFlare'),
+    subtitle: `Class ${flare.classType} — ${flareLabel}`,
     impact: letter === 'X'
-      ? 'Powerful flare. Radio blackouts likely on sunlit side. Aurora possible at mid-latitudes if Earth-directed.'
+      ? t('alerts.impact.flare.x')
       : letter === 'M'
-        ? 'Moderate flare. Brief radio disruptions possible on sunlit side of Earth.'
+        ? t('alerts.impact.flare.m')
         : letter === 'C'
-          ? 'Small flare. No significant effects on Earth expected.'
-          : 'Very weak flare. No noticeable effects.',
+          ? t('alerts.impact.flare.c')
+          : t('alerts.impact.flare.weak'),
     severity,
     scale: { letter: 'F', current: scaleMap[letter] ?? 1 },
     dateStr: flare.beginTime,
@@ -219,11 +241,10 @@ const sevBg: Record<Severity, string> = {
 
 const scaleColors = ['', 'bg-green-400', 'bg-yellow-400', 'bg-orange-400', 'bg-red-500', 'bg-red-700'];
 const scaleTxt    = ['', 'text-green-400', 'text-yellow-400', 'text-orange-400', 'text-red-500', 'text-red-700'];
-const gLabels = ['', 'Minor', 'Moderate', 'Strong', 'Severe', 'Extreme'];
-const fLabels = ['', 'Negligible', 'Weak', 'Moderate', 'Extreme', ''];
-
-function NoaaScale({ letter, current }: { letter: string; current: number }) {
+function NoaaScale({ letter, current, t }: { letter: string; current: number; t: (k: string) => string }) {
   const max = 5;
+  const gLabels = ['', t('alerts.scale.minor'), t('alerts.scale.moderate'), t('alerts.scale.strong'), t('alerts.scale.severe'), t('alerts.scale.extreme')];
+  const fLabels = ['', t('alerts.flare.negligible'), t('alerts.flare.weak'), t('alerts.flare.moderate'), t('alerts.flare.extreme'), ''];
   const labels = letter === 'F' ? fLabels : gLabels;
   return (
     <div className="flex items-center gap-1 mt-2">
@@ -242,12 +263,12 @@ function NoaaScale({ letter, current }: { letter: string; current: number }) {
   );
 }
 
-function ImpactBlock({ text }: { text: string }) {
+function ImpactBlock({ text, t }: { text: string; t: (k: string) => string }) {
   return (
     <div className="mt-3 flex gap-2.5 bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5">
       <Eye className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
       <div>
-        <p className="text-[10px] text-sky-400 font-semibold uppercase tracking-wide mb-0.5">What this means for you</p>
+        <p className="text-[10px] text-sky-400 font-semibold uppercase tracking-wide mb-0.5">{t('alerts.impact.label')}</p>
         <p className="text-gray-200 text-sm leading-relaxed">{text}</p>
       </div>
     </div>
@@ -258,12 +279,12 @@ function ImpactBlock({ text }: { text: string }) {
 
 type GlobalStatus = 'incoming' | 'active' | 'minor' | 'calm';
 
-function HeroCard({ status, lastUpdated, theme }: { status: GlobalStatus; lastUpdated: Date; theme: string }) {
+function HeroCard({ status, lastUpdated, theme, t }: { status: GlobalStatus; lastUpdated: Date; theme: string; t: (k: string) => string }) {
   const cfg = {
-    incoming: { bg: 'bg-red-500/15',    border: 'border-red-500/35',    icon: AlertOctagon, iconColor: 'text-red-400', iconBg: 'bg-red-500/20',    headline: 'Storm Incoming',  sub: 'A solar storm is heading toward Earth.' },
-    active:   { bg: 'bg-orange-500/12', border: 'border-orange-500/30', icon: Zap,          iconColor: 'text-orange-400', iconBg: 'bg-orange-500/20', headline: 'Active Storm',   sub: 'Geomagnetic activity is elevated right now.' },
-    minor:    { bg: 'bg-yellow-500/8',  border: 'border-yellow-500/25', icon: Info,         iconColor: 'text-yellow-400', iconBg: 'bg-yellow-500/15', headline: 'Minor Activity', sub: 'Low-level space weather activity detected.' },
-    calm:     { bg: 'bg-green-500/8',   border: 'border-green-500/20',  icon: CheckCircle2, iconColor: 'text-green-400', iconBg: 'bg-green-500/15',  headline: 'All Quiet',     sub: 'Space weather is calm. No disruptions expected.' },
+    incoming: { bg: 'bg-red-500/15',    border: 'border-red-500/35',    icon: AlertOctagon, iconColor: 'text-red-400', iconBg: 'bg-red-500/20',    headline: t('alerts.hero.incoming'),  sub: t('alerts.hero.incomingSub') },
+    active:   { bg: 'bg-orange-500/12', border: 'border-orange-500/30', icon: Zap,          iconColor: 'text-orange-400', iconBg: 'bg-orange-500/20', headline: t('alerts.hero.active'),   sub: t('alerts.hero.activeSub') },
+    minor:    { bg: 'bg-yellow-500/8',  border: 'border-yellow-500/25', icon: Info,         iconColor: 'text-yellow-400', iconBg: 'bg-yellow-500/15', headline: t('alerts.hero.minor'), sub: t('alerts.hero.minorSub') },
+    calm:     { bg: 'bg-green-500/8',   border: 'border-green-500/20',  icon: CheckCircle2, iconColor: 'text-green-400', iconBg: 'bg-green-500/15',  headline: t('alerts.hero.calm'),     sub: t('alerts.hero.calmSub') },
   }[status];
 
   const Icon = cfg.icon;
@@ -284,7 +305,7 @@ function HeroCard({ status, lastUpdated, theme }: { status: GlobalStatus; lastUp
       </div>
       <div className="flex items-center gap-1.5 mt-4">
         <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-        <span className="text-xs text-gray-500">Live · updated {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+        <span className="text-xs text-gray-500">{t('alerts.liveUpdated')} {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
       </div>
     </div>
   );
@@ -294,13 +315,13 @@ function HeroCard({ status, lastUpdated, theme }: { status: GlobalStatus; lastUp
 
 type Filter = 'all' | 'storms' | 'flares' | 'cmes' | 'reports';
 
-function FilterChips({ active, onChange, counts, theme }: { active: Filter; onChange: (f: Filter) => void; counts: Record<Filter, number>; theme: string }) {
+function FilterChips({ active, onChange, counts, theme, t }: { active: Filter; onChange: (f: Filter) => void; counts: Record<Filter, number>; theme: string; t: (k: string) => string }) {
   const chips: { key: Filter; label: string }[] = [
-    { key: 'all',     label: 'All' },
-    { key: 'storms',  label: 'Storms' },
-    { key: 'flares',  label: 'Flares' },
-    { key: 'cmes',    label: 'CMEs' },
-    { key: 'reports', label: 'Reports' },
+    { key: 'all',     label: t('alerts.filter.all') },
+    { key: 'storms',  label: t('alerts.filter.storms') },
+    { key: 'flares',  label: t('alerts.filter.flares') },
+    { key: 'cmes',    label: t('alerts.filter.cmes') },
+    { key: 'reports', label: t('alerts.filter.reports') },
   ];
   return (
     <div className="flex gap-2 overflow-x-auto pb-1 mb-5 scrollbar-hide">
@@ -373,12 +394,12 @@ const Alerts = () => {
 
   const feed = useMemo((): FeedItem[] => {
     const items: FeedItem[] = [
-      ...alerts.map(buildNoaaItem),
-      ...cmeEvents.map(buildCmeItem),
-      ...flareEvents.map(buildFlareItem),
+      ...alerts.map(a => buildNoaaItem(a, t)),
+      ...cmeEvents.map(c => buildCmeItem(c, t)),
+      ...flareEvents.map(f => buildFlareItem(f, t)),
     ];
     return items.sort((a, b) => a.priority - b.priority || new Date(b.dateStr).getTime() - new Date(a.dateStr).getTime());
-  }, [alerts, cmeEvents, flareEvents]);
+  }, [alerts, cmeEvents, flareEvents, t]);
 
   const globalStatus = useMemo((): GlobalStatus => {
     const hasIncoming = feed.some(f => f.type === 'cme' && !f.arrived && f.eta !== null && f.eta !== undefined && f.eta > 0 && (f as FeedItem & { type: 'cme' }).severity >= 2);
@@ -432,14 +453,15 @@ const Alerts = () => {
   if (feed.length === 0) return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 text-center">
       <PageMeta title="Space Weather Alerts — The Storm Watcher" description="Real-time NOAA space weather alerts in plain language." path="/alerts" />
+      <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Alerts', path: '/alerts' }]} />
       <div className="w-24 h-24 rounded-full bg-green-500/15 flex items-center justify-center mb-6">
         <CheckCircle2 className="w-12 h-12 text-green-400" strokeWidth={1.5} />
       </div>
       <h1 className={`text-3xl font-bold mb-3 ${theme === 'light' ? 'text-slate-900' : 'text-white'}`}>{t('alerts.allClear')}</h1>
-      <p className="text-gray-400 text-base max-w-xs leading-relaxed">{t('alerts.noActiveAlerts')}<br />Space weather is calm tonight.</p>
+      <p className="text-gray-400 text-base max-w-xs leading-relaxed">{t('alerts.noActiveAlerts')}<br />{t('alerts.calmTonight') || 'Space weather is calm tonight.'}</p>
       <div className="flex items-center gap-1.5 mt-6">
         <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-        <span className="text-xs text-gray-500">Updated {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+        <span className="text-xs text-gray-500">{t('alerts.liveUpdated')} {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
       </div>
     </div>
   );
@@ -448,9 +470,9 @@ const Alerts = () => {
   filteredFeed.forEach(f => groups[groupLabel(f.dateStr)].push(f));
 
   const groupTitles: Record<string, string> = {
-    now:   'Active Now',
-    today: 'Today',
-    week:  'Earlier This Week',
+    now:   t('alerts.groupNow') || 'Active Now',
+    today: t('alerts.groupToday') || 'Today',
+    week:  t('alerts.groupWeek') || 'Earlier This Week',
   };
 
   return (
@@ -464,10 +486,10 @@ const Alerts = () => {
         </div>
 
         {/* Hero */}
-        <HeroCard status={globalStatus} lastUpdated={lastUpdated} theme={theme} />
+        <HeroCard status={globalStatus} lastUpdated={lastUpdated} theme={theme} t={t} />
 
         {/* Filter chips */}
-        <FilterChips active={activeFilter} onChange={setActiveFilter} counts={counts} theme={theme} />
+        <FilterChips active={activeFilter} onChange={setActiveFilter} counts={counts} theme={theme} t={t} />
 
         {/* Feed grouped by time */}
         {(['now', 'today', 'week'] as const).map(group => {
@@ -502,17 +524,17 @@ const Alerts = () => {
                                 <h3 className={`font-bold text-base leading-snug ${theme === 'light' ? 'text-slate-900' : 'text-white'}`}>{item.title}</h3>
                                 <p className={`text-sm mt-0.5 ${cfg.text} font-medium`}>{item.subtitle}</p>
                               </div>
-                              <span className="text-[#64748b] text-xs shrink-0 mt-0.5">{timeAgo(item.dateStr)}</span>
+                              <span className="text-[#64748b] text-xs shrink-0 mt-0.5">{timeAgo(item.dateStr, t)}</span>
                             </div>
 
                             {/* Scale */}
-                            {item.scale && <NoaaScale letter={item.scale.letter} current={item.scale.current} />}
+                            {item.scale && <NoaaScale letter={item.scale.letter} current={item.scale.current} t={t} />}
 
                             {/* CME ETA bar */}
                             {item.type === 'cme' && item.eta !== null && item.eta !== undefined && item.eta > 0 && (
                               <div className="mt-3 bg-orange-500/12 border border-orange-500/25 rounded-xl px-3.5 py-2.5">
                                 <div className="flex items-center justify-between mb-1.5">
-                                  <span className="text-orange-200 text-sm font-semibold">⏱ Arriving in ~{item.eta}h</span>
+                                  <span className="text-orange-200 text-sm font-semibold">⏱ {t('alerts.etaBar').replace('{eta}', String(item.eta))}</span>
                                 </div>
                                 <div className="w-full h-1.5 rounded-full bg-white/10">
                                   <div
@@ -524,12 +546,12 @@ const Alerts = () => {
                             )}
                             {item.type === 'cme' && item.arrived && (
                               <div className="mt-3 bg-red-500/12 border border-red-500/25 rounded-xl px-3.5 py-2.5">
-                                <p className="text-red-200 text-sm font-semibold">🛬 Solar storm has arrived</p>
+                                <p className="text-red-200 text-sm font-semibold">🛬 {t('alerts.arrivedBar')}</p>
                               </div>
                             )}
 
                             {/* Impact block */}
-                            <ImpactBlock text={item.impact} />
+                            <ImpactBlock text={item.impact} t={t} />
                           </div>
                         </div>
                       </div>
@@ -545,7 +567,7 @@ const Alerts = () => {
                                 : 'border-white/8 text-[#64748b] hover:text-white'
                             }`}
                           >
-                            <span>Technical details from NOAA</span>
+                            <span>{t('alerts.technical')}</span>
                             {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                           </button>
                           {isOpen && (

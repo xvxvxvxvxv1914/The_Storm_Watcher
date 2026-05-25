@@ -3,12 +3,11 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Footer = () => {
-  const { t, language } = useLanguage();
-  const isBg = language === 'bg';
+  const { t } = useLanguage();
 
   const navGroups = [
     {
-      heading: isBg ? 'Космическо Време' : 'Space Weather',
+      heading: t('footer.section.spaceWeather'),
       links: [
         { to: '/',          label: t('nav.home') },
         { to: '/dashboard', label: t('nav.dashboard') },
@@ -17,26 +16,26 @@ const Footer = () => {
       ],
     },
     {
-      heading: isBg ? 'Наблюдение' : 'Sky & Observation',
+      heading: t('footer.section.skyObservation'),
       links: [
         { to: '/aurora',    label: t('nav.aurora') },
-        { to: '/iss',       label: 'ISS Tracker' },
-        { to: '/calendar',  label: t('nav.calendar') || 'Aurora Calendar' },
-        { to: '/sky',       label: 'Sky Visibility' },
-        { to: '/sun',       label: 'Sun Times' },
-        { to: '/uv',        label: 'UV Index' },
+        { to: '/iss',       label: t('nav.iss') },
+        { to: '/calendar',  label: t('nav.calendar') },
+        { to: '/sky',       label: t('nav.sky') },
+        { to: '/sun',       label: t('nav.sun') },
+        { to: '/uv',        label: t('nav.uv') },
       ],
     },
     {
-      heading: isBg ? 'Здраве & Информация' : 'Health & Info',
+      heading: t('footer.section.healthInfo'),
       links: [
-        { to: '/gallery',          label: t('nav.gallery') || 'Gallery' },
-        { to: '/hunt',             label: t('hunt.title') || 'Aurora Hunt' },
-        { to: '/livestream',       label: t('nav.livestream') || 'Livestream' },
+        { to: '/gallery',          label: t('nav.gallery') },
+        { to: '/hunt',             label: t('nav.hunt') },
+        { to: '/livestream',       label: t('nav.livestream') },
         { to: '/mood',             label: t('nav.mood') },
-        { to: '/magnetic-effects', label: isBg ? 'Магнитни бури & Здраве' : 'Magnetic & Health' },
-        { to: '/faq',              label: 'Aurora FAQ' },
-        { to: '/about',            label: isBg ? 'За нас' : 'About' },
+        { to: '/magnetic-effects', label: t('nav.magneticEffects') },
+        { to: '/faq',              label: t('nav.faq') },
+        { to: '/about',            label: t('nav.about') },
       ],
     },
   ];
@@ -57,7 +56,7 @@ const Footer = () => {
           <div className="grid grid-cols-2 gap-x-6 gap-y-4 mb-5">
             <div>
               <p className="text-white/30 text-[10px] uppercase tracking-widest mb-2">
-                {isBg ? 'Космическо Време' : 'Space Weather'}
+                {t('footer.section.spaceWeather')}
               </p>
               <ul className="space-y-2">
                 {[
@@ -78,19 +77,19 @@ const Footer = () => {
 
             <div>
               <p className="text-white/30 text-[10px] uppercase tracking-widest mb-2">
-                {isBg ? 'Още' : 'More'}
+                {t('footer.section.more')}
               </p>
               <ul className="space-y-2">
                 {[
-                  { to: '/iss',              label: 'ISS Tracker' },
-                  { to: '/calendar',         label: isBg ? 'Аврора Календар' : 'Aurora Calendar' },
-                  { to: '/sky',              label: isBg ? 'Небе' : 'Sky Tonight' },
-                  { to: '/sun',              label: isBg ? 'Слънце' : 'Sun Times' },
-                  { to: '/uv',               label: 'UV Index' },
+                  { to: '/iss',              label: t('nav.iss') },
+                  { to: '/calendar',         label: t('nav.calendar') },
+                  { to: '/sky',              label: t('nav.sky') },
+                  { to: '/sun',              label: t('nav.sun') },
+                  { to: '/uv',               label: t('nav.uv') },
                   { to: '/mood',             label: t('nav.mood') },
-                  { to: '/magnetic-effects', label: isBg ? 'Магнетизъм' : 'Magnetic' },
-                  { to: '/faq',              label: 'FAQ' },
-                  { to: '/about',            label: isBg ? 'За нас' : 'About' },
+                  { to: '/magnetic-effects', label: t('nav.magneticEffectsShort') },
+                  { to: '/faq',              label: t('nav.faq') },
+                  { to: '/about',            label: t('nav.about') },
                 ].map(l => (
                   <li key={l.to}>
                     <Link to={l.to} className="text-[#64748b] text-xs hover:text-white transition-colors">
@@ -112,9 +111,9 @@ const Footer = () => {
               <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" className="hover:text-[#64748b] underline">Open-Meteo</a>
             </p>
             <p className="text-[#64748b] text-xs flex gap-2">
-              <Link to="/privacy" className="hover:text-white underline">{isBg ? 'Поверителност' : 'Privacy'}</Link>
+              <Link to="/privacy" className="hover:text-white underline">{t('footer.privacy')}</Link>
               <span>·</span>
-              <Link to="/terms" className="hover:text-white underline">{isBg ? 'Условия' : 'Terms'}</Link>
+              <Link to="/terms" className="hover:text-white underline">{t('footer.terms')}</Link>
             </p>
           </div>
         </div>
@@ -169,9 +168,9 @@ const Footer = () => {
               <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" className="hover:text-[#94a3b8] transition-colors underline">Open-Meteo</a>
             </p>
             <p className="text-center text-[#64748b] text-xs flex gap-3">
-              <Link to="/privacy" className="hover:text-white transition-colors underline">{isBg ? 'Поверителност' : 'Privacy Policy'}</Link>
+              <Link to="/privacy" className="hover:text-white transition-colors underline">{t('footer.privacyPolicy')}</Link>
               <span>·</span>
-              <Link to="/terms" className="hover:text-white transition-colors underline">{isBg ? 'Условия за ползване' : 'Terms of Service'}</Link>
+              <Link to="/terms" className="hover:text-white transition-colors underline">{t('footer.termsOfService')}</Link>
             </p>
           </div>
         </div>

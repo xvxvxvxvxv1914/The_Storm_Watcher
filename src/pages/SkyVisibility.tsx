@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import PageMeta from '../components/PageMeta';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { Cloud, Eye, Droplets, Star } from 'lucide-react';
 import { getSkyVisibility, SkyData } from '../services/skyApi';
 import { getKpIndex } from '../services/noaaApi';
@@ -11,29 +12,29 @@ import { reverseGeocode } from '../utils/reverseGeocode';
 
 const verdictConfig = {
   excellent: {
-    label: 'Excellent',
-    sublabel: 'Perfect night for stargazing & aurora hunting.',
+    labelKey: 'sky.verdict.excellent',
+    sublabelKey: 'sky.verdict.excellent.desc',
     color: '#10b981',
     bg: 'from-[#10b981] to-[#059669]',
     emoji: '✨',
   },
   good: {
-    label: 'Good',
-    sublabel: 'Mostly clear skies. Worth going out tonight.',
+    labelKey: 'sky.verdict.good',
+    sublabelKey: 'sky.verdict.good.desc',
     color: '#fbbf24',
     bg: 'from-[#fbbf24] to-[#f59e0b]',
     emoji: '🌙',
   },
   fair: {
-    label: 'Fair',
-    sublabel: 'Partly cloudy. Some windows may open up.',
+    labelKey: 'sky.verdict.fair',
+    sublabelKey: 'sky.verdict.fair.desc',
     color: '#f97316',
     bg: 'from-[#f97316] to-[#ea580c]',
     emoji: '⛅',
   },
   poor: {
-    label: 'Poor',
-    sublabel: 'Cloudy or rainy. Stay home tonight.',
+    labelKey: 'sky.verdict.poor',
+    sublabelKey: 'sky.verdict.poor.desc',
     color: '#ef4444',
     bg: 'from-[#ef4444] to-[#dc2626]',
     emoji: '☁️',
@@ -112,6 +113,7 @@ const SkyVisibility = () => {
         description="Tonight's stargazing and aurora viewing conditions. Cloud cover, visibility and precipitation forecast for astronomers."
         path="/sky"
       />
+      <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Sky Tonight', path: '/sky' }]} />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}
@@ -140,10 +142,10 @@ const SkyVisibility = () => {
           </div>
 
           <div className={`inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r ${cfg.bg} mb-5`}>
-            <span className="text-white font-bold text-xl uppercase tracking-wider">{cfg.label}</span>
+            <span className="text-white font-bold text-xl uppercase tracking-wider">{t(cfg.labelKey)}</span>
           </div>
 
-          <p className="text-[#94a3b8] text-lg max-w-md mx-auto">{cfg.sublabel}</p>
+          <p className="text-[#94a3b8] text-lg max-w-md mx-auto">{t(cfg.sublabelKey)}</p>
 
           <div className="text-[#64748b] text-sm mt-4">
             {sky.sunset} → {sky.sunrise}

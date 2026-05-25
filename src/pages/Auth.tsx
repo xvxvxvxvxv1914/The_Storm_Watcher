@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import PageMeta from '../components/PageMeta';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { track } from '@vercel/analytics';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -8,23 +8,18 @@ import { Mail, Lock, User, ArrowLeft, Zap } from 'lucide-react';
 
 type Mode = 'login' | 'signup' | 'forgot';
 
-const scorePassword = (pw: string): { level: 0 | 1 | 2 | 3 | 4; label: string; color: string } => {
-  if (!pw) return { level: 0, label: '', color: '#475569' };
+const STRENGTH_COLORS = ['#ef4444', '#f97316', '#eab308', '#10b981', '#059669'] as const;
+const STRENGTH_KEYS = ['auth.strength.tooWeak', 'auth.strength.weak', 'auth.strength.fair', 'auth.strength.good', 'auth.strength.strong'] as const;
+
+const scorePassword = (pw: string): { level: 0 | 1 | 2 | 3 | 4 } => {
+  if (!pw) return { level: 0 };
   let score = 0;
   if (pw.length >= 8) score++;
   if (pw.length >= 12) score++;
   if (/[a-z]/.test(pw) && /[A-Z]/.test(pw)) score++;
   if (/\d/.test(pw)) score++;
   if (/[^A-Za-z0-9]/.test(pw)) score++;
-  const clamped = Math.min(4, score) as 0 | 1 | 2 | 3 | 4;
-  const meta = [
-    { label: 'Too weak', color: '#ef4444' },
-    { label: 'Weak', color: '#f97316' },
-    { label: 'Fair', color: '#eab308' },
-    { label: 'Good', color: '#10b981' },
-    { label: 'Strong', color: '#059669' },
-  ][clamped];
-  return { level: clamped, label: meta.label, color: meta.color };
+  return { level: Math.min(4, score) as 0 | 1 | 2 | 3 | 4 };
 };
 
 
@@ -38,10 +33,15 @@ export default function Auth() {
   const [confirmationSent, setConfirmationSent] = useState(false);
   const [resetSent, setResetSent] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const redirectTo = (location.state as { from?: string } | null)?.from ?? '/dashboard';
   const { signIn, signUp, signOut, resetPassword } = useAuth();
   const { t } = useLanguage();
 
-  const strength = useMemo(() => scorePassword(password), [password]);
+  const strength = useMemo(() => {
+    const { level } = scorePassword(password);
+    return { level, color: password ? STRENGTH_COLORS[level] : '#475569', label: password ? t(STRENGTH_KEYS[level]) : '' };
+  }, [password, t]);
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,7 +65,7 @@ export default function Auth() {
       } else {
         const { error } = await signIn(email, password);
         if (error) setError(error.message);
-        else { track('login_success', { method: 'email' }); navigate('/dashboard'); }
+        else { track('login_success', { method: 'email' }); navigate(redirectTo, { replace: true }); }
       }
     } catch {
       setError(t('auth.error'));

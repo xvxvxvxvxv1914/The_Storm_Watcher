@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import PageMeta from '../components/PageMeta';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
 import { Sun, Shield } from 'lucide-react';
 import { getUvIndex, getUvLevel, UvData } from '../services/uvApi';
@@ -86,6 +87,7 @@ const UV = () => {
         description="Real-time UV index and sun exposure forecast for your location. Know when to apply sunscreen."
         path="/uv"
       />
+      <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'UV Index', path: '/uv' }]} />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}

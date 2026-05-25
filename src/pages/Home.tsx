@@ -10,6 +10,7 @@ import { getSolarWind, getXrayFlux, getXrayClass, getStormStatus, getKpGradientS
 import { useKpLive } from '../hooks/useKpLive';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
+import { useAuth } from '../contexts/AuthContext';
 import { calcAuroraVisibility } from '../utils/auroraVisibility';
 import StarField from '../components/StarField';
 import { Skeleton } from '../components/Skeleton';
@@ -25,6 +26,7 @@ const getScoreShareStatus = (score: number) => {
 const Home = () => {
   const { t } = useLanguage();
   const { settings } = useSettings();
+  const { user } = useAuth();
   const kpValue = useKpLive();
   const [windSpeed, setWindSpeed] = useState<number | null>(null);
   const [xrayClass, setXrayClass] = useState<string | null>(null);
@@ -360,18 +362,30 @@ const Home = () => {
               {t('home.hero.desc')}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
               <Link
-                to="/auth"
+                to={user ? '/dashboard' : '/auth'}
                 className="px-8 py-4 bg-gradient-to-r from-[#f97316] to-[#ef4444] text-white rounded-lg font-bold uppercase tracking-wider hover:scale-105 transition-transform glow-orange"
               >
-                {t('home.hero.getStarted')}
+                {user ? t('home.hero.viewMap') : t('home.hero.getStarted')}
               </Link>
+              {!user && (
+                <Link
+                  to="/dashboard"
+                  className="px-8 py-4 glass-surface text-white rounded-lg font-bold uppercase tracking-wider hover:glow-orange transition-all border border-white/10"
+                >
+                  {t('home.hero.viewMap')}
+                </Link>
+              )}
+            </div>
+            <div className="flex justify-center mb-8">
               <Link
-                to="/dashboard"
-                className="px-8 py-4 glass-surface text-white rounded-lg font-bold uppercase tracking-wider hover:glow-orange transition-all border border-white/10"
+                to="/pricing"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-[#f97316] hover:text-[#fbbf24] transition-colors group"
               >
-                {t('home.hero.viewMap')}
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#f97316] group-hover:scale-125 transition-transform" />
+                {t('pricing.tryProFree') || 'Try Pro free for 14 days'}
+                <span className="text-[#64748b] font-normal">{t('home.noCC') || '— no credit card required'}</span>
               </Link>
             </div>
 
@@ -613,13 +627,13 @@ const Home = () => {
             <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.ai.desc')}</p>
           </div>
 
-          <div className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group">
+          <Link to="/aurora" className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group block">
             <div className="w-14 h-14 bg-[#F97316]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Globe className="w-7 h-7 text-[#F97316]" />
             </div>
             <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.map.title')}</h3>
             <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.map.desc')}</p>
-          </div>
+          </Link>
 
           <Link to="/alerts" className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group block">
             <div className="w-14 h-14 bg-[#F97316]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">

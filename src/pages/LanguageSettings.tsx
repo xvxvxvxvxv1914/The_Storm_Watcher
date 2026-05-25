@@ -25,7 +25,7 @@ export default function LanguageSettings() {
       .maybeSingle()
       .then(({ data, error }) => {
         if (error) {
-          setLoadError('Could not load saved preference.');
+          setLoadError(t('settings.lang.loadError'));
           return;
         }
         const saved = (data?.locale_settings as { language?: string } | null)?.language;
@@ -43,7 +43,7 @@ export default function LanguageSettings() {
       .upsert({ id: user.id, locale_settings: { language }, updated_at: new Date().toISOString() });
     setSaving(false);
     if (error) {
-      setSaveError('Failed to save. Please try again.');
+      setSaveError(t('settings.lang.saveError'));
     } else {
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
@@ -130,7 +130,7 @@ export default function LanguageSettings() {
               <Link to="/auth" className="text-[#f97316] hover:underline">
                 {t('auth.signIn') || 'Sign in'}
               </Link>
-              {' '}to save preferences across devices.
+              {' '}{t('settings.lang.signInPrompt')}
             </p>
           )}
         </div>

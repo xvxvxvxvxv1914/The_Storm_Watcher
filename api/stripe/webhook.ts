@@ -77,7 +77,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (!userId) break;
 
       const priceId = sub.items.data[0]?.price.id ?? '';
-      const plan = sub.status === 'active' ? (PRICE_TO_PLAN[priceId] ?? 'free') : 'free';
+      const plan = (sub.status === 'active' || sub.status === 'trialing') ? (PRICE_TO_PLAN[priceId] ?? 'free') : 'free';
 
       await supabase.from('profiles').update({
         plan,

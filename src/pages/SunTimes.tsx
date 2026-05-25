@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import PageMeta from '../components/PageMeta';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { Sunrise, Sunset, Sun, Clock } from 'lucide-react';
 import { getSunData, SunDay } from '../services/uvApi';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -131,6 +132,7 @@ const SunTimes = () => {
         description="Accurate sunrise, sunset and golden hour times for your location. Plan your photography and outdoor activities."
         path="/sun"
       />
+      <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Sun Times', path: '/sun' }]} />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}
@@ -210,7 +212,7 @@ const SunTimes = () => {
                   <span className="text-white font-bold">{formatDaylight(day.daylightSeconds)}</span>
                 </div>
                 <div className="text-xs text-[#64748b] pt-1">
-                  Golden hour: {day.goldenMorningEnd} · {day.goldenEveningStart}
+                  {t('sun.goldenHour')}: {day.goldenMorningEnd} · {day.goldenEveningStart}
                 </div>
               </div>
             </div>

@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import PageMeta from '../components/PageMeta';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { Shield, Database, Users, AlertCircle, Heart, Code } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -29,6 +30,7 @@ const About = () => {
         description="Real-time space weather monitoring and aurora forecast app."
         path="/about"
       />
+      <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'About', path: '/about' }]} />
       <div className="star-field">
         {stars.map((s) => (
           <div
@@ -97,7 +99,7 @@ const About = () => {
                     ))}
                   </ul>
                   <p className="text-[#475569] text-xs mt-4 pt-4 border-t border-white/5">
-                    Source: <span className="text-[#94a3b8]">NOAA Space Weather Prediction Center — swpc.noaa.gov</span>
+                    {t('niggg.source')}: <span className="text-[#94a3b8]">NOAA Space Weather Prediction Center — swpc.noaa.gov</span>
                   </p>
                 </div>
               </div>

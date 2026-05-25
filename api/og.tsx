@@ -17,12 +17,17 @@ export default async function handler(req: Request) {
   const kp = isNaN(kpRaw) ? 0 : Math.min(9, Math.max(0, kpRaw));
 
   const pages: Record<string, { title: string; subtitle: string; accent: string }> = {
-    home:     { title: 'The Storm Watcher', subtitle: 'Real-time space weather & aurora forecasts', accent: '#f97316' },
-    aurora:   { title: 'Aurora Forecast',   subtitle: 'Live OVATION aurora visibility map',         accent: '#10b981' },
-    forecast: { title: 'Solar Forecast',    subtitle: '3-day Kp outlook · solar wind · X-ray flux', accent: '#f97316' },
-    calendar: { title: 'Aurora Calendar',   subtitle: '3-night viewing outlook with cloud cover',    accent: '#10b981' },
-    pricing:  { title: 'Storm Watcher Pro', subtitle: 'Unlock aurora maps, alerts & more',           accent: '#7c3aed' },
-    mood:     { title: 'Cosmic Mood',       subtitle: 'Track how space weather affects you',         accent: '#ec4899' },
+    home:      { title: 'The Storm Watcher',   subtitle: 'Real-time space weather & aurora forecasts',  accent: '#f97316' },
+    aurora:    { title: 'Aurora Forecast',     subtitle: 'Live OVATION aurora visibility map',          accent: '#10b981' },
+    forecast:  { title: 'Solar Forecast',      subtitle: '3-day Kp outlook · solar wind · X-ray flux',  accent: '#f97316' },
+    calendar:  { title: 'Aurora Calendar',     subtitle: '3-night viewing outlook with cloud cover',    accent: '#10b981' },
+    pricing:   { title: 'Storm Watcher Pro',   subtitle: 'Unlock aurora maps, alerts & more',           accent: '#7c3aed' },
+    mood:      { title: 'Cosmic Mood',         subtitle: 'Track how space weather affects you',         accent: '#ec4899' },
+    alerts:    { title: 'Space Weather Alerts',subtitle: 'Real-time CME, solar flare & storm alerts',   accent: '#ef4444' },
+    dashboard: { title: 'Live Dashboard',      subtitle: 'Kp index, solar wind, Bz & X-ray flux',      accent: '#f97316' },
+    iss:       { title: 'ISS Tracker',         subtitle: 'Live position & pass predictions near you',   accent: '#6366f1' },
+    gallery:   { title: 'Aurora Gallery',      subtitle: 'Community aurora photos from around the world',accent: '#06b6d4' },
+    hunt:      { title: 'Aurora Hunt',         subtitle: 'Earn badges & points for spotting auroras',   accent: '#f59e0b' },
   };
 
   const meta = pages[page] ?? pages['home'];
