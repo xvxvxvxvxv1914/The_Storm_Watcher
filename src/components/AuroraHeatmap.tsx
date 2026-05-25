@@ -64,15 +64,47 @@ function HeatOverlay({ kp }: { kp: number }) {
   return null;
 }
 
-interface Props {
-  kp: number;
+function LocationMarker({ lat, lon, vis }: { lat: number; lon: number; vis: number }) {
+  const map = useMap();
+  const markerRef = useRef<L.CircleMarker | null>(null);
+
+  useEffect(() => {
+    if (markerRef.current) map.removeLayer(markerRef.current);
+    const color = vis >= 75 ? '#e5ff50' : vis >= 55 ? '#64dc50' : vis >= 25 ? '#10b981' : '#94a3b8';
+    markerRef.current = L.circleMarker([lat, lon], {
+      radius: 8,
+      color: '#fff',
+      weight: 2,
+      fillColor: color,
+      fillOpacity: 1,
+    })
+      .addTo(map)
+      .bindTooltip(`${vis}% aurora visibility`, { permanent: false, direction: 'top' });
+    return () => { if (markerRef.current) map.removeLayer(markerRef.current); };
+  }, [map, lat, lon, vis]);
+
+  return null;
 }
 
-export default function AuroraHeatmap({ kp }: Props) {
+interface Props {
+  kp: number;
+  userLat?: number;
+  userLon?: number;
+}
+
+export default function AuroraHeatmap({ kp, userLat, userLon }: Props) {
+  const userVis = userLat !== undefined && userLon !== undefined
+    ? calcAuroraVisibility(userLat, userLon, kp)
+    : undefined;
+
+  const center: [number, number] = userLat !== undefined && userLon !== undefined
+    ? [Math.max(20, Math.min(75, userLat)), userLon]
+    : [55, 10];
+
   return (
     <div className="rounded-2xl overflow-hidden border border-white/10" style={{ height: 380 }}>
       <MapContainer
-        center={[55, 10]}
+        center={center}
         zoom={2}
         minZoom={1}
         maxZoom={6}
@@ -87,6 +119,9 @@ export default function AuroraHeatmap({ kp }: Props) {
           maxZoom={19}
         />
         <HeatOverlay kp={kp} />
+        {userLat !== undefined && userLon !== undefined && userVis !== undefined && (
+          <LocationMarker lat={userLat} lon={userLon} vis={userVis} />
+        )}
       </MapContainer>
     </div>
   );

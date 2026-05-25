@@ -1,9 +1,11 @@
 import { lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
-import { Map, Sparkles } from 'lucide-react';
+import { Map, Sparkles, MapPin } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSettings } from '../contexts/SettingsContext';
 import { useKpLive } from '../hooks/useKpLive';
 import { getStormStatus } from '../services/noaaApi';
+import { calcAuroraVisibility } from '../utils/auroraVisibility';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 
@@ -11,9 +13,16 @@ const AuroraHeatmap = lazy(() => import('../components/AuroraHeatmap'));
 
 export default function AuroraMap() {
   const { t } = useLanguage();
+  const { settings } = useSettings();
   const kp = useKpLive();
   const kpVal = kp ?? 0;
   const storm = kp !== null ? getStormStatus(kp) : null;
+
+  const userLat = settings.preferredLat ?? undefined;
+  const userLon = settings.preferredLon ?? undefined;
+  const userVis = userLat !== undefined && userLon !== undefined
+    ? calcAuroraVisibility(userLat, userLon, kpVal)
+    : null;
 
   const legend = [
     { label: t('auroraMap.legend.high') || 'High (>75%)', color: '#e5ff50' },
@@ -50,24 +59,35 @@ export default function AuroraMap() {
           {t('auroraMap.subtitle') || 'Live aurora zones based on current Kp index. Updated every 3 minutes.'}
         </p>
 
-        {/* Kp status bar */}
-        {kp !== null && storm && (
-          <div
-            className="flex items-center justify-between rounded-xl px-4 py-3 mb-5 border"
-            style={{ background: `${storm.bgColor}18`, borderColor: `${storm.color}33` }}
-          >
-            <div className="flex items-center gap-2.5">
-              <span className="font-bold text-xl" style={{ color: storm.color }}>
-                Kp {kpVal.toFixed(1)}
-              </span>
-              <span className="text-sm text-[#94a3b8]">{t(storm.statusKey)}</span>
-            </div>
+        {/* Status bar: Kp + local visibility */}
+        <div className="flex flex-col sm:flex-row gap-3 mb-5">
+          {kp !== null && storm && (
             <div
-              className="w-2.5 h-2.5 rounded-full animate-pulse"
-              style={{ background: storm.color }}
-            />
-          </div>
-        )}
+              className="flex items-center justify-between rounded-xl px-4 py-3 border flex-1"
+              style={{ background: `${storm.bgColor}18`, borderColor: `${storm.color}33` }}
+            >
+              <div className="flex items-center gap-2.5">
+                <span className="font-bold text-xl" style={{ color: storm.color }}>
+                  Kp {kpVal.toFixed(1)}
+                </span>
+                <span className="text-sm text-[#94a3b8]">{t(storm.statusKey)}</span>
+              </div>
+              <div
+                className="w-2.5 h-2.5 rounded-full animate-pulse"
+                style={{ background: storm.color }}
+              />
+            </div>
+          )}
+          {userVis !== null && settings.preferredLocationName && (
+            <div className="flex items-center gap-3 rounded-xl px-4 py-3 border border-white/10 bg-white/5 flex-1">
+              <MapPin className="w-4 h-4 text-[#64748b] flex-shrink-0" />
+              <div className="min-w-0">
+                <div className="text-xs text-[#64748b] truncate">{settings.preferredLocationName}</div>
+                <div className="font-semibold text-white text-sm">{userVis}% {t('aurora.visibility') || 'Aurora Visibility'}</div>
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* Map */}
         <Suspense
@@ -77,7 +97,7 @@ export default function AuroraMap() {
             </div>
           }
         >
-          <AuroraHeatmap kp={kpVal} />
+          <AuroraHeatmap kp={kpVal} userLat={userLat} userLon={userLon} />
         </Suspense>
 
         {/* Legend */}
