@@ -28,6 +28,7 @@ const uk: Record<string, string> = {
   'auroraMap.proCta.cta': 'Перейти на Pro',
   'auroraMap.noLocation': 'Місцезнаходження не задано',
   'auroraMap.setLocation': 'Задайте ваше місцезнаходження для перегляду місцевої видимості →',
+  'auroraMap.keyLocations': 'Ключові місця',
   'nav.faq': 'Часті запитання',
   'nav.gallery': 'Галерея',
   'nav.hunt': 'Полювання на сяйво',

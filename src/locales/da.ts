@@ -28,6 +28,7 @@ const da: Record<string, string> = {
   'auroraMap.proCta.cta': 'Opgrader til Pro',
   'auroraMap.noLocation': 'Ingen placering sat',
   'auroraMap.setLocation': 'Indstil din placering for at se lokal synlighed →',
+  'auroraMap.keyLocations': 'Nøglelokationer',
   'nav.faq': 'Nordlys FAQ',
   'nav.gallery': 'Galleri',
   'nav.hunt': 'Nordlysjagt',

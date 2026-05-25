@@ -24,6 +24,15 @@ export default function AuroraMap() {
     ? calcAuroraVisibility(userLat, userLon, kpVal)
     : null;
 
+  const KEY_CITIES = [
+    { name: 'Tromsø',       lat: 69.7, lon: 18.9,  flag: '🇳🇴' },
+    { name: 'Reykjavík',    lat: 64.1, lon: -21.9, flag: '🇮🇸' },
+    { name: 'Rovaniemi',    lat: 66.5, lon: 25.7,  flag: '🇫🇮' },
+    { name: 'Abisko',       lat: 68.3, lon: 18.8,  flag: '🇸🇪' },
+    { name: 'Fairbanks',    lat: 64.8, lon: -147.7, flag: '🇺🇸' },
+    { name: 'Yellowknife',  lat: 62.5, lon: -114.4, flag: '🇨🇦' },
+  ];
+
   const legend = [
     { label: t('auroraMap.legend.high') || 'High (>75%)', color: '#e5ff50' },
     { label: t('auroraMap.legend.moderate') || 'Moderate (55–75%)', color: '#64dc50' },
@@ -119,6 +128,28 @@ export default function AuroraMap() {
               {label}
             </div>
           ))}
+        </div>
+
+        {/* Key aurora locations */}
+        <div className="mt-6">
+          <h2 className="text-xs uppercase tracking-wider text-[#475569] font-semibold mb-3">
+            {t('auroraMap.keyLocations') || 'Key Locations'}
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {KEY_CITIES.map(city => {
+              const vis = calcAuroraVisibility(city.lat, city.lon, kpVal);
+              const visColor = vis >= 75 ? '#e5ff50' : vis >= 55 ? '#64dc50' : vis >= 25 ? '#10b981' : '#475569';
+              return (
+                <div key={city.name} className="flex items-center justify-between rounded-xl px-3 py-2.5 bg-white/5 border border-white/8">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="text-base leading-none">{city.flag}</span>
+                    <span className="text-sm text-[#94a3b8] truncate">{city.name}</span>
+                  </div>
+                  <span className="font-bold text-sm ml-2 flex-shrink-0" style={{ color: visColor }}>{vis}%</span>
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         {/* Info note */}

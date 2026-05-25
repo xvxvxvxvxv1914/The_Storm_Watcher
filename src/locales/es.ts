@@ -514,6 +514,7 @@ const es: Record<string, string> = {
   'auroraMap.proCta.cta': 'Actualizar a Pro',
   'auroraMap.noLocation': 'Sin ubicación establecida',
   'auroraMap.setLocation': 'Establece tu ubicación para ver la visibilidad local →',
+  'auroraMap.keyLocations': 'Ubicaciones clave',
   'nav.faq': 'Preguntas frecuentes sobre la Aurora',
   'onboarding.welcome.title': 'Bienvenido a The Storm Watcher',
   'onboarding.welcome.body': 'Un recorrido de 30 segundos por el panel, alertas y configuración. Puedes omitirlo en cualquier momento.',

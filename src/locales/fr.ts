@@ -514,6 +514,7 @@ const fr: Record<string, string> = {
   'auroraMap.proCta.cta': 'Passer à Pro',
   'auroraMap.noLocation': 'Aucun emplacement défini',
   'auroraMap.setLocation': 'Définissez votre emplacement pour voir la visibilité locale →',
+  'auroraMap.keyLocations': 'Emplacements clés',
   'nav.faq': 'FAQ Aurora',
   'onboarding.welcome.title': 'Bienvenue sur The Storm Watcher',
   'onboarding.welcome.body': 'Une visite de 30 secondes du tableau de bord, des alertes et des paramètres. Vous pouvez ignorer à tout moment.',

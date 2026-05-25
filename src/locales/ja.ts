@@ -514,6 +514,7 @@ const ja: Record<string, string> = {
   'auroraMap.proCta.cta': 'Proにアップグレード',
   'auroraMap.noLocation': '場所が設定されていません',
   'auroraMap.setLocation': '場所を設定してローカルの視認性を確認 →',
+  'auroraMap.keyLocations': '主要な場所',
   'nav.faq': 'オーロラ FAQ',
   'onboarding.welcome.title': 'The Storm Watcherへようこそ',
   'onboarding.welcome.body': 'ダッシュボード、アラート、設定の30秒ツアー。いつでもスキップできます。',

@@ -29,6 +29,7 @@ const bg: Record<string, string> = {
   'auroraMap.proCta.cta': 'Надградете до Pro',
   'auroraMap.noLocation': 'Няма зададена локация',
   'auroraMap.setLocation': 'Задайте вашата локация, за да видите местната видимост →',
+  'auroraMap.keyLocations': 'Ключови локации',
   'nav.faq': 'Аврора FAQ',
 
   // Mood Page

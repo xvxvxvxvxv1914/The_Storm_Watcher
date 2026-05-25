@@ -28,6 +28,7 @@ const is_: Record<string, string> = {
   'auroraMap.proCta.cta': 'Uppfæra í Pro',
   'auroraMap.noLocation': 'Engin staðsetning stillt',
   'auroraMap.setLocation': 'Stilltu staðsetningu þína til að sjá staðbundinn sýnileika →',
+  'auroraMap.keyLocations': 'Lykilstaðsetningar',
   'nav.faq': 'Norðurljós FAQ',
   'nav.gallery': 'Myndasafn',
   'nav.hunt': 'Norðurljósaveiðar',

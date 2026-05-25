@@ -32,6 +32,7 @@ const en: Record<string, string> = {
   'auroraMap.proCta.cta': 'Upgrade to Pro',
   'auroraMap.noLocation': 'No location set',
   'auroraMap.setLocation': 'Set your location to see local visibility →',
+  'auroraMap.keyLocations': 'Key Locations',
 
   // Mood Page
   'mood.title': 'How are you feeling today?',

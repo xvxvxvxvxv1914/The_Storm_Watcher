@@ -29,6 +29,7 @@ const ko: Record<string, string> = {
   'auroraMap.proCta.cta': 'Pro로 업그레이드',
   'auroraMap.noLocation': '위치가 설정되지 않음',
   'auroraMap.setLocation': '로컬 가시성을 보려면 위치를 설정하세요 →',
+  'auroraMap.keyLocations': '주요 위치',
   'nav.faq': '오로라 FAQ',
 
   // Mood Page

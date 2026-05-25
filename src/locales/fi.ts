@@ -28,6 +28,7 @@ const fi: Record<string, string> = {
   'auroraMap.proCta.cta': 'Päivitä Pro-versioon',
   'auroraMap.noLocation': 'Sijaintia ei asetettu',
   'auroraMap.setLocation': 'Aseta sijaintisi nähdäksesi paikallisen näkyvyyden →',
+  'auroraMap.keyLocations': 'Tärkeät sijainnit',
   'nav.faq': 'Revontulet FAQ',
   'nav.gallery': 'Galleria',
   'nav.hunt': 'Revontulijahti',

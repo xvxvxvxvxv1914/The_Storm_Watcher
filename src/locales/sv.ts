@@ -28,6 +28,7 @@ const sv: Record<string, string> = {
   'auroraMap.proCta.cta': 'Uppgradera till Pro',
   'auroraMap.noLocation': 'Ingen plats angiven',
   'auroraMap.setLocation': 'Ange din plats för att se lokal synlighet →',
+  'auroraMap.keyLocations': 'Nyckellokationer',
   'nav.faq': 'Norrsken FAQ',
   'nav.gallery': 'Galleri',
   'nav.hunt': 'Norrskenjakt',
