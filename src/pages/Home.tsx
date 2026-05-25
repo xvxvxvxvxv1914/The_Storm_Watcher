@@ -637,7 +637,7 @@ const Home = () => {
             <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.ai.desc')}</p>
           </div>
 
-          <Link to="/aurora" className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group block">
+          <Link to="/aurora-map" className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group block">
             <div className="w-14 h-14 bg-[#F97316]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Globe className="w-7 h-7 text-[#F97316]" />
             </div>
