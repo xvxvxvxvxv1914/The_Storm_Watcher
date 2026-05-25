@@ -926,6 +926,9 @@ const bg: Record<string, string> = {
   'settings.kp.severeStorm': 'Тежка буря',
   'settings.kp.extreme': 'Екстремна',
   'settings.kp.extremePlus': 'Екстремна+',
+  'settings.lang.loadError': 'Неуспешно зареждане на запазените предпочитания.',
+  'settings.lang.saveError': 'Неуспешно запазване. Опитайте отново.',
+  'settings.lang.signInPrompt': 'за да запазите предпочитанията на всички устройства.',
 };
 
 export default bg;

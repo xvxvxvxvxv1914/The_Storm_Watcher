@@ -903,6 +903,9 @@ const ja: Record<string, string> = {
   'settings.kp.severeStorm': '激しい嵐',
   'settings.kp.extreme': '極端',
   'settings.kp.extremePlus': '極端+',
+  'settings.lang.loadError': '保存した設定を読み込めませんでした。',
+  'settings.lang.saveError': '保存に失敗しました。もう一度お試しください。',
+  'settings.lang.signInPrompt': 'すべてのデバイスで設定を保存するにはサインインしてください。',
 };
 
 export default ja;

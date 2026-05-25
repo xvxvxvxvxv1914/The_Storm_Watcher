@@ -903,6 +903,9 @@ const es: Record<string, string> = {
   'settings.kp.severeStorm': 'Tormenta severa',
   'settings.kp.extreme': 'Extrema',
   'settings.kp.extremePlus': 'Extrema+',
+  'settings.lang.loadError': 'No se pudo cargar la preferencia guardada.',
+  'settings.lang.saveError': 'Error al guardar. Por favor, inténtelo de nuevo.',
+  'settings.lang.signInPrompt': 'para guardar las preferencias en todos los dispositivos.',
 };
 
 export default es;

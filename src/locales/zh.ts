@@ -903,6 +903,9 @@ const zh: Record<string, string> = {
   'settings.kp.severeStorm': '严重风暴',
   'settings.kp.extreme': '极端',
   'settings.kp.extremePlus': '极端+',
+  'settings.lang.loadError': '无法加载已保存的偏好设置。',
+  'settings.lang.saveError': '保存失败，请重试。',
+  'settings.lang.signInPrompt': '以在所有设备上保存偏好设置。',
 };
 
 export default zh;

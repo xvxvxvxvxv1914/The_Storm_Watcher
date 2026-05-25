@@ -933,6 +933,9 @@ const ko: Record<string, string> = {
   'settings.kp.severeStorm': '심한 폭풍',
   'settings.kp.extreme': '극단적',
   'settings.kp.extremePlus': '극단적+',
+  'settings.lang.loadError': '저장된 환경설정을 불러올 수 없습니다.',
+  'settings.lang.saveError': '저장에 실패했습니다. 다시 시도해주세요.',
+  'settings.lang.signInPrompt': '모든 기기에서 환경설정을 저장하려면 로그인하세요.',
 };
 
 export default ko;

@@ -903,6 +903,9 @@ const fr: Record<string, string> = {
   'settings.kp.severeStorm': 'Tempête sévère',
   'settings.kp.extreme': 'Extrême',
   'settings.kp.extremePlus': 'Extrême+',
+  'settings.lang.loadError': 'Impossible de charger la préférence enregistrée.',
+  'settings.lang.saveError': 'Échec de l\'enregistrement. Veuillez réessayer.',
+  'settings.lang.signInPrompt': 'pour enregistrer les préférences sur tous les appareils.',
 };
 
 export default fr;

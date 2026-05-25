@@ -895,6 +895,9 @@ const pl: Record<string, string> = {
   'settings.kp.severeStorm': 'Silna burza magnetyczna',
   'settings.kp.extreme': 'Ekstremalna',
   'settings.kp.extremePlus': 'Ekstremalna+',
+  'settings.lang.loadError': 'Nie można załadować zapisanych preferencji.',
+  'settings.lang.saveError': 'Zapisywanie nie powiodło się. Spróbuj ponownie.',
+  'settings.lang.signInPrompt': 'aby zapisać preferencje na wszystkich urządzeniach.',
 };
 
 export default pl;

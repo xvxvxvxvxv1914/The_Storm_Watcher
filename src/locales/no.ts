@@ -895,6 +895,9 @@ const no: Record<string, string> = {
   'settings.kp.severeStorm': 'Alvorlig storm',
   'settings.kp.extreme': 'Ekstrem',
   'settings.kp.extremePlus': 'Ekstrem+',
+  'settings.lang.loadError': 'Kunne ikke laste inn lagret innstilling.',
+  'settings.lang.saveError': 'Lagring mislyktes. Vennligst prøv igjen.',
+  'settings.lang.signInPrompt': 'for å lagre innstillinger på tvers av enheter.',
 };
 
 export default no;

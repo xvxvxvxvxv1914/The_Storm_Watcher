@@ -906,6 +906,9 @@ const de: Record<string, string> = {
   'settings.kp.severeStorm': 'Schwerer Sturm',
   'settings.kp.extreme': 'Extrem',
   'settings.kp.extremePlus': 'Extrem+',
+  'settings.lang.loadError': 'Gespeicherte Einstellung konnte nicht geladen werden.',
+  'settings.lang.saveError': 'Speichern fehlgeschlagen. Bitte erneut versuchen.',
+  'settings.lang.signInPrompt': 'um Einstellungen geräteübergreifend zu speichern.',
 };
 
 export default de;

@@ -895,6 +895,9 @@ const uk: Record<string, string> = {
   'settings.kp.severeStorm': 'Важка буря',
   'settings.kp.extreme': 'Екстремна',
   'settings.kp.extremePlus': 'Екстремна+',
+  'settings.lang.loadError': 'Не вдалося завантажити збережені налаштування.',
+  'settings.lang.saveError': 'Не вдалося зберегти. Спробуйте ще раз.',
+  'settings.lang.signInPrompt': 'щоб зберегти налаштування на всіх пристроях.',
 };
 
 export default uk;

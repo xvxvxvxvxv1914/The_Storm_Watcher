@@ -895,6 +895,9 @@ const da: Record<string, string> = {
   'settings.kp.severeStorm': 'Alvorlig storm',
   'settings.kp.extreme': 'Ekstrem',
   'settings.kp.extremePlus': 'Ekstrem+',
+  'settings.lang.loadError': 'Kunne ikke indlæse gemt præference.',
+  'settings.lang.saveError': 'Kunne ikke gemme. Prøv igen.',
+  'settings.lang.signInPrompt': 'for at gemme indstillinger på tværs af enheder.',
 };
 
 export default da;

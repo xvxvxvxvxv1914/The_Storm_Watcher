@@ -895,6 +895,9 @@ const fi: Record<string, string> = {
   'settings.kp.severeStorm': 'Ankara myrsky',
   'settings.kp.extreme': 'Äärimmäinen',
   'settings.kp.extremePlus': 'Äärimmäinen+',
+  'settings.lang.loadError': 'Tallennettujen asetusten lataaminen epäonnistui.',
+  'settings.lang.saveError': 'Tallennus epäonnistui. Yritä uudelleen.',
+  'settings.lang.signInPrompt': 'tallentaaksesi asetukset kaikille laitteille.',
 };
 
 export default fi;

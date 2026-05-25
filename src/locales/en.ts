@@ -933,6 +933,9 @@ const en: Record<string, string> = {
   'settings.kp.severeStorm': 'Severe Storm',
   'settings.kp.extreme': 'Extreme',
   'settings.kp.extremePlus': 'Extreme+',
+  'settings.lang.loadError': 'Could not load saved preference.',
+  'settings.lang.saveError': 'Failed to save. Please try again.',
+  'settings.lang.signInPrompt': 'to save preferences across devices.',
 };
 
 export default en;

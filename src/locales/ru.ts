@@ -903,6 +903,9 @@ const ru: Record<string, string> = {
   'settings.kp.severeStorm': 'Тяжёлая буря',
   'settings.kp.extreme': 'Экстремальная',
   'settings.kp.extremePlus': 'Экстремальная+',
+  'settings.lang.loadError': 'Не удалось загрузить сохранённые настройки.',
+  'settings.lang.saveError': 'Не удалось сохранить. Попробуйте снова.',
+  'settings.lang.signInPrompt': 'чтобы сохранить настройки на всех устройствах.',
 };
 
 export default ru;

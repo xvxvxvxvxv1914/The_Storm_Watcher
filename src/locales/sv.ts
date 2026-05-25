@@ -895,6 +895,9 @@ const sv: Record<string, string> = {
   'settings.kp.severeStorm': 'Svår storm',
   'settings.kp.extreme': 'Extrem',
   'settings.kp.extremePlus': 'Extrem+',
+  'settings.lang.loadError': 'Det gick inte att ladda sparade inställningar.',
+  'settings.lang.saveError': 'Det gick inte att spara. Försök igen.',
+  'settings.lang.signInPrompt': 'för att spara inställningar på alla enheter.',
 };
 
 export default sv;
