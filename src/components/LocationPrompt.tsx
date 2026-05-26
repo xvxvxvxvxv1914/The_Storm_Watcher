@@ -4,6 +4,7 @@ import { MapPin, X } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { reverseGeocode } from '../utils/reverseGeocode';
+import { getCurrentPosition } from '../utils/geolocation';
 
 const ASKED_KEY = 'tsw_location_asked';
 
@@ -19,21 +20,16 @@ const LocationPrompt = ({ onDone }: { onDone: () => void }) => {
   const [loading, setLoading] = useState(false);
 
   const allow = () => {
-    if (!navigator.geolocation) { dismiss(); return; }
     setLoading(true);
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        const lat = pos.coords.latitude;
-        const lon = pos.coords.longitude;
-        const name = await reverseGeocode(lat, lon);
-        updateSettings({ preferredLat: lat, preferredLon: lon, preferredLocationName: name });
-        localStorage.setItem(ASKED_KEY, '1');
-        setLoading(false);
-        onDone();
-      },
-      () => { dismiss(); },
-      { timeout: 8000 }
-    );
+    getCurrentPosition().then(async (pos) => {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+      const name = await reverseGeocode(lat, lon);
+      updateSettings({ preferredLat: lat, preferredLon: lon, preferredLocationName: name });
+      localStorage.setItem(ASKED_KEY, '1');
+      setLoading(false);
+      onDone();
+    }).catch(() => { dismiss(); });
   };
 
   const dismiss = () => {

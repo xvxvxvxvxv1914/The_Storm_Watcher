@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { logError } from '../utils/logger';
+import { getCurrentPosition } from '../utils/geolocation';
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import PageMeta from '../components/PageMeta';
@@ -127,11 +128,9 @@ const Dashboard = () => {
       })
       .catch(() => {
         // ipapi.co failed — fall back to GPS if available
-        navigator.geolocation?.getCurrentPosition(
-          ({ coords }) => setInNigggRegion(isInNigggBbox(coords.latitude, coords.longitude)),
-          () => {},
-          { timeout: 5000 },
-        );
+        getCurrentPosition()
+          .then(({ coords }) => setInNigggRegion(isInNigggBbox(coords.latitude, coords.longitude)))
+          .catch(() => {});
       });
   }, [settings.preferredLat, settings.preferredLon]);
 

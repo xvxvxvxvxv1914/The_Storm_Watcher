@@ -7,6 +7,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import LocationPicker from '../components/LocationPicker';
 import { reverseGeocode } from '../utils/reverseGeocode';
+import { getCurrentPosition } from '../utils/geolocation';
 
 const formatDaylight = (seconds: number) => {
   const h = Math.floor(seconds / 3600);
@@ -101,10 +102,9 @@ const SunTimes = () => {
   }, []);
 
   const requestGPS = useCallback(() => {
-    navigator.geolocation?.getCurrentPosition(
-      (pos) => loadForCoords(pos.coords.latitude, pos.coords.longitude),
-      () => loadForCoords(42.7, 23.3),
-    );
+    getCurrentPosition()
+      .then(pos => loadForCoords(pos.coords.latitude, pos.coords.longitude))
+      .catch(() => loadForCoords(42.7, 23.3));
   }, [loadForCoords]);
 
   useEffect(() => {

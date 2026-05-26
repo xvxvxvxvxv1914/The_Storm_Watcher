@@ -10,6 +10,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { logError } from '../utils/logger';
+import { getCurrentPosition } from '../utils/geolocation';
 
 const AuroraGlobe = lazy(() => import('../components/AuroraGlobe'));
 
@@ -97,13 +98,10 @@ const Aurora = () => {
 
     if (settings.preferredLat !== null && settings.preferredLon !== null) {
       load(settings.preferredLat, settings.preferredLon);
-    } else if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => load(pos.coords.latitude, pos.coords.longitude),
-        () => { if (mounted) { setLocationError(true); setIsWeatherLoading(false); } }
-      );
     } else {
-      setIsWeatherLoading(false);
+      getCurrentPosition()
+        .then(pos => load(pos.coords.latitude, pos.coords.longitude))
+        .catch(() => { if (mounted) { setLocationError(true); setIsWeatherLoading(false); } });
     }
 
     return () => { mounted = false; };

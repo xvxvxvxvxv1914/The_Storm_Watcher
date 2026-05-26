@@ -7,6 +7,7 @@ import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useOnboarding } from '../hooks/useOnboarding';
 import LocationPicker from '../components/LocationPicker';
 import { reverseGeocode } from '../utils/reverseGeocode';
+import { getCurrentPosition } from '../utils/geolocation';
 
 export default function Settings() {
   const { settings, updateSettings } = useSettings();
@@ -33,26 +34,18 @@ export default function Settings() {
   };
 
   const handleUseGPS = () => {
-    if (!navigator.geolocation) {
-      setLocError(t('settings.gpsUnsupported') || 'GPS not supported in this browser.');
-      return;
-    }
     setLocating(true);
     setLocError('');
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        const lat = parseFloat(pos.coords.latitude.toFixed(4));
-        const lon = parseFloat(pos.coords.longitude.toFixed(4));
-        const name = await reverseGeocode(lat, lon);
-        updateSettings({ preferredLat: lat, preferredLon: lon, preferredLocationName: name });
-        setLocating(false);
-      },
-      () => {
-        setLocError(t('settings.gpsError') || 'Could not get your location. Check browser permissions.');
-        setLocating(false);
-      },
-      { timeout: 10000 }
-    );
+    getCurrentPosition().then(async (pos) => {
+      const lat = parseFloat(pos.coords.latitude.toFixed(4));
+      const lon = parseFloat(pos.coords.longitude.toFixed(4));
+      const name = await reverseGeocode(lat, lon);
+      updateSettings({ preferredLat: lat, preferredLon: lon, preferredLocationName: name });
+      setLocating(false);
+    }).catch(() => {
+      setLocError(t('settings.gpsError') || 'Could not get your location. Check permissions.');
+      setLocating(false);
+    });
   };
 
   const handleLocationSelect = (lat: number, lon: number, name: string) => {

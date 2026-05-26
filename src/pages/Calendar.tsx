@@ -11,6 +11,7 @@ import { useSettings } from '../contexts/SettingsContext';
 import LocationPicker from '../components/LocationPicker';
 import { Skeleton } from '../components/Skeleton';
 import { reverseGeocode } from '../utils/reverseGeocode';
+import { getCurrentPosition } from '../utils/geolocation';
 
 interface ForecastItem {
   kp: number;
@@ -119,12 +120,12 @@ export default function Calendar() {
   }, []);
 
   const handleRequestGPS = useCallback(() => {
-    navigator.geolocation?.getCurrentPosition(async pos => {
+    getCurrentPosition().then(async pos => {
       const { latitude, longitude } = pos.coords;
       setLat(latitude);
       setLon(longitude);
       setLocationName(await reverseGeocode(latitude, longitude));
-    });
+    }).catch(() => {});
   }, []);
 
   const nightLabel = (label: NightForecast['label']) =>

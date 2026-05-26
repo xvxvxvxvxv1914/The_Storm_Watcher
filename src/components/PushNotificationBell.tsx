@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Bell, BellOff, Check } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { isNative } from '../utils/platform';
 
 const isSupported =
-  typeof window !== 'undefined' && 'Notification' in window;
+  !isNative() && typeof window !== 'undefined' && 'Notification' in window;
 
 const PushNotificationBell = () => {
   const { t } = useLanguage();

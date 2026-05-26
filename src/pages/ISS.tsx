@@ -9,6 +9,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { reverseGeocode } from '../utils/reverseGeocode';
+import { getCurrentPosition } from '../utils/geolocation';
 
 const ISS = () => {
   const { t } = useLanguage();
@@ -85,10 +86,9 @@ const ISS = () => {
       load(settings.preferredLat, settings.preferredLon);
       if (settings.preferredLocationName) setLocationName(settings.preferredLocationName);
     } else {
-      navigator.geolocation?.getCurrentPosition(
-        (pos) => load(pos.coords.latitude, pos.coords.longitude),
-        () => { load(42.7, 23.3); if (mounted) setLocationName(defaultLocationLabel); },
-      );
+      getCurrentPosition()
+        .then(pos => load(pos.coords.latitude, pos.coords.longitude))
+        .catch(() => { load(42.7, 23.3); if (mounted) setLocationName(defaultLocationLabel); });
     }
 
     return () => { mounted = false; };

@@ -7,6 +7,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useKpLive } from '../hooks/useKpLive';
 import { supabase } from '../lib/supabase';
 import { Link } from 'react-router-dom';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
 interface GalleryPhoto {
   id: string;
@@ -126,6 +127,7 @@ export default function Gallery() {
 
   const handleUpload = async () => {
     if (!selectedFile || !user) return;
+    Haptics.impact({ style: ImpactStyle.Medium }).catch(() => {});
     setUploading(true);
     setUploadError('');
     try {
@@ -175,6 +177,7 @@ export default function Gallery() {
 
   const handleDelete = async () => {
     if (!pendingDelete || !user || user.id !== pendingDelete.user_id) return;
+    Haptics.impact({ style: ImpactStyle.Heavy }).catch(() => {});
 
     // Extract storage path from public URL: everything after /aurora-gallery/
     const extractPath = (url: string) => {

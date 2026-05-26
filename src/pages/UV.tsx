@@ -9,6 +9,7 @@ import { useSettings } from '../contexts/SettingsContext';
 import LocationPicker from '../components/LocationPicker';
 import ErrorCard from '../components/ErrorCard';
 import { reverseGeocode } from '../utils/reverseGeocode';
+import { getCurrentPosition } from '../utils/geolocation';
 
 const UV = () => {
   const { t } = useLanguage();
@@ -37,12 +38,9 @@ const UV = () => {
   }, []);
 
   const requestGPS = useCallback(() => {
-    if (!navigator.geolocation) { loadForCoords(42.7, 23.3); return; }
-    navigator.geolocation.getCurrentPosition(
-      (pos) => loadForCoords(pos.coords.latitude, pos.coords.longitude),
-      () => loadForCoords(42.7, 23.3),
-      { timeout: 5000 }
-    );
+    getCurrentPosition()
+      .then(pos => loadForCoords(pos.coords.latitude, pos.coords.longitude))
+      .catch(() => loadForCoords(42.7, 23.3));
   }, [loadForCoords]);
 
   useEffect(() => {

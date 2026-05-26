@@ -9,6 +9,7 @@ import { useSettings } from '../contexts/SettingsContext';
 import LocationPicker from '../components/LocationPicker';
 import ErrorCard from '../components/ErrorCard';
 import { reverseGeocode } from '../utils/reverseGeocode';
+import { getCurrentPosition } from '../utils/geolocation';
 
 const verdictConfig = {
   excellent: {
@@ -71,10 +72,9 @@ const SkyVisibility = () => {
   }, []);
 
   const requestGPS = useCallback(() => {
-    navigator.geolocation?.getCurrentPosition(
-      (pos) => loadForCoords(pos.coords.latitude, pos.coords.longitude),
-      () => loadForCoords(42.7, 23.3),
-    );
+    getCurrentPosition()
+      .then(pos => loadForCoords(pos.coords.latitude, pos.coords.longitude))
+      .catch(() => loadForCoords(42.7, 23.3));
   }, [loadForCoords]);
 
   useEffect(() => {

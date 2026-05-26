@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react';
 import { Bell, X, Zap } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { getKpIndex } from '../services/noaaApi';
+import { isNative } from '../utils/platform';
 
 const DISMISSED_KEY = 'tsw_kp_prompt_dismissed';
 const PROMPT_KP_THRESHOLD = 4;
 const CHECK_MS = 3 * 60 * 1000; // check every 3 minutes
 
-const isSupported = typeof window !== 'undefined' && 'Notification' in window;
+const isSupported = !isNative() && typeof window !== 'undefined' && 'Notification' in window;
 
 export default function KpAlertPrompt() {
   const { t } = useLanguage();
@@ -37,8 +38,9 @@ export default function KpAlertPrompt() {
   }, []);
 
   const handleEnable = async () => {
+    if (!isSupported) { setVisible(false); return; }
     const result = await Notification.requestPermission();
-    if (result === 'granted') {
+    if (result === 'granted' && isSupported) {
       new Notification(t('push.grantedTitle') || '🌌 Storm alerts enabled', {
         body: t('push.grantedMsg') || "You'll receive alerts when Kp crosses your threshold.",
         icon: '/icons/icon-192.png',

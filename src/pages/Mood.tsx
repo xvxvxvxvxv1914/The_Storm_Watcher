@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { logError } from '../utils/logger';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import {
@@ -382,6 +383,7 @@ const Mood = () => {
 
   const handleSubmit = async () => {
     if (!selectedMood) return;
+    Haptics.impact({ style: ImpactStyle.Medium }).catch(() => {});
     const sessionId = getSessionId();
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
     try {
