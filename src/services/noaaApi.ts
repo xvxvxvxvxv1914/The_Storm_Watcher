@@ -168,10 +168,13 @@ export const getMagField = (): Promise<MagFieldData[]> =>
   cached('mag', TTL_1M, async () => {
     try {
       const data = await getJson<MagFieldData[]>(`${NOAA_BASE_URL}/json/rtsw/rtsw_mag_1m.json`);
-      return ascByTime(data ?? []);
+      const result = ascByTime(data ?? []);
+      persistSet('offline_mag', result).catch(() => {});
+      return result;
     } catch (error) {
       logError('Error fetching data in getMagField:', error);
-      return [];
+      const cached_offline = await persistGet<MagFieldData[]>('offline_mag');
+      return cached_offline ?? [];
     }
   });
 
@@ -194,15 +197,18 @@ export const getKpForecast = (): Promise<KpIndexData[]> =>
       const data = await getJson<Array<{ time_tag: string; kp: number; observed: string }>>(
         `${NOAA_BASE_URL}/products/noaa-planetary-k-index-forecast.json`
       );
-      return (data ?? [])
+      const result = (data ?? [])
         .filter((row) => row.observed === 'predicted')
         .map((row) => ({
           time_tag: row.time_tag,
           kp_index: row.kp,
         }));
+      persistSet('offline_kp_forecast', result).catch(() => {});
+      return result;
     } catch (error) {
       logError('Error fetching data in getKpForecast:', error);
-      return [];
+      const cached_offline = await persistGet<KpIndexData[]>('offline_kp_forecast');
+      return cached_offline ?? [];
     }
   });
 
