@@ -30,15 +30,24 @@ const cached = async <T,>(key: string, ttlMs: number, fetcher: () => Promise<T>)
   return promise;
 };
 
-const getJson = async <T,>(url: string, timeoutMs = 10000): Promise<T> => {
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+const getJson = async <T,>(url: string, timeoutMs = 10000, retries = 1): Promise<T> => {
+  const attempt = async (): Promise<T> => {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+    try {
+      const res = await fetch(url, { signal: ctrl.signal });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json() as Promise<T>;
+    } finally {
+      clearTimeout(timer);
+    }
+  };
   try {
-    const res = await fetch(url, { signal: ctrl.signal });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json() as Promise<T>;
-  } finally {
-    clearTimeout(timer);
+    return await attempt();
+  } catch (err) {
+    if (retries <= 0) throw err;
+    await new Promise(r => setTimeout(r, 1500));
+    return attempt();
   }
 };
 
@@ -145,10 +154,13 @@ export const getSolarWind = (): Promise<SolarWindData[]> =>
   cached('wind', TTL_1M, async () => {
     try {
       const data = await getJson<SolarWindData[]>(`${NOAA_BASE_URL}/json/rtsw/rtsw_wind_1m.json`);
-      return ascByTime(data ?? []);
+      const result = ascByTime(data ?? []);
+      persistSet('offline_wind', result).catch(() => {});
+      return result;
     } catch (error) {
       logError('Error fetching data in getSolarWind:', error);
-      return [];
+      const cached_offline = await persistGet<SolarWindData[]>('offline_wind');
+      return cached_offline ?? [];
     }
   });
 
