@@ -71,4 +71,14 @@ export function usePushNotifications() {
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
+
+  // Sync threshold change to all existing device tokens in DB
+  useEffect(() => {
+    if (!isNative() || !user?.id) return;
+    supabase
+      .from('device_push_tokens')
+      .update({ threshold_kp: settings.kpThreshold, updated_at: new Date().toISOString() })
+      .eq('user_id', user.id)
+      .then(({ error }) => { if (error) logError('Failed to sync push threshold', error); });
+  }, [user?.id, settings.kpThreshold]);
 }
