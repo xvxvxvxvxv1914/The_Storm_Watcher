@@ -390,7 +390,11 @@ const Home = () => {
             </div>
 
             {/* Community Pulse Widget */}
-            {!loading && (
+            {loading ? (
+              <div className="flex justify-center">
+                <Skeleton className="w-72 h-20 rounded-2xl" />
+              </div>
+            ) : (
               <div className="flex justify-center">
                 <Link
                   to="/mood"
