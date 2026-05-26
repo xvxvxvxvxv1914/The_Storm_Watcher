@@ -36,6 +36,10 @@
             android:grantUriPermissions="true">
             <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
         </provider>
+
+        <meta-data android:name="io.sentry.dsn" android:value="https://de558fb5e979298f9299cb1353fd1fcb@o4511450965213184.ingest.de.sentry.io/4511450970128464" />
+        <meta-data android:name="io.sentry.traces-sample-rate" android:value="0.1" />
+        <meta-data android:name="io.sentry.environment" android:value="production" />
     </application>
 
     <!-- Permissions -->

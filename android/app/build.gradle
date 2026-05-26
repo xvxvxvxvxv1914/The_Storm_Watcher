@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'io.sentry.android.gradle'
 
 android {
     namespace = "com.stormwatcher.app"
@@ -40,6 +41,7 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     implementation project(':capacitor-cordova-android-plugins')
+    implementation 'io.sentry:sentry-android:7.14.0'
 }
 
 apply from: 'capacitor.build.gradle'
