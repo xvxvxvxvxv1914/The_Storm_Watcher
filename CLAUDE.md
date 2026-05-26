@@ -92,6 +92,22 @@ Manual chunks in `vite.config.ts` keep the initial bundle small:
 
 _(Add ideas and future feature plans here as they come up)_
 
+### Apple Watch App
+watchOS companion app за The Storm Watcher. Данните вече са в App Group (`group.com.stormwatcher.app`) от iOS widget-а.
+
+**Планирано съдържание:**
+- Главен екран: Kp index (голям) + solar wind speed + storm status (G0–G5)
+- Complication за watch face (Corner, Circular, Graphic Rectangular) с Kp
+- Фонова refresh на данните на всеки 15 мин (Background App Refresh)
+- Тактилна нотификация при Kp > потребителски праг
+
+**Имплементация (всичко нативен Swift/SwiftUI):**
+1. Добави watchOS target в Xcode (`StormWatcherWatch` extension)
+2. App Group sharing — чете `widget_kp`, `widget_wind`, `widget_updated` от `group.com.stormwatcher.app`
+3. WatchConnectivity (WCSession) за live sync от iOS при отворено приложение
+4. SwiftUI интерфейс: тъмен фон, aurora зелено (#10b981), orange (#f97316) за high Kp
+5. Complications в `CLKComplicationDescriptor` формат
+
 ## TODO / Pending Work
 
 ### Mobile App Payments (преди пускане в App Store / Play Store)
