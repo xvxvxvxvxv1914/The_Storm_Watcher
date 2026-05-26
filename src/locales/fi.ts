@@ -946,6 +946,7 @@ const fi: Record<string, string> = {
   'settings.lang.loadError': 'Tallennettujen asetusten lataaminen epäonnistui.',
   'settings.lang.saveError': 'Tallennus epäonnistui. Yritä uudelleen.',
   'settings.lang.signInPrompt': 'tallentaaksesi asetukset kaikille laitteille.',
+  'offline.banner': 'Ei internetyhteyttä — näytetään välimuistissa olevat tiedot',
 };
 
 export default fi;

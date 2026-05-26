@@ -954,6 +954,7 @@ const ja: Record<string, string> = {
   'settings.lang.loadError': '保存した設定を読み込めませんでした。',
   'settings.lang.saveError': '保存に失敗しました。もう一度お試しください。',
   'settings.lang.signInPrompt': 'すべてのデバイスで設定を保存するにはサインインしてください。',
+  'offline.banner': 'インターネット接続なし — キャッシュデータを表示中',
 };
 
 export default ja;

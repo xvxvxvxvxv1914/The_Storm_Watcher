@@ -946,6 +946,7 @@ const no: Record<string, string> = {
   'settings.lang.loadError': 'Kunne ikke laste inn lagret innstilling.',
   'settings.lang.saveError': 'Lagring mislyktes. Vennligst prøv igjen.',
   'settings.lang.signInPrompt': 'for å lagre innstillinger på tvers av enheter.',
+  'offline.banner': 'Ingen internettforbindelse — viser bufrede data',
 };
 
 export default no;

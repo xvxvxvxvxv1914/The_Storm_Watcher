@@ -946,6 +946,7 @@ const sv: Record<string, string> = {
   'settings.lang.loadError': 'Det gick inte att ladda sparade inställningar.',
   'settings.lang.saveError': 'Det gick inte att spara. Försök igen.',
   'settings.lang.signInPrompt': 'för att spara inställningar på alla enheter.',
+  'offline.banner': 'Ingen internetanslutning — visar cachade data',
 };
 
 export default sv;

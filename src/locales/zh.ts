@@ -954,6 +954,7 @@ const zh: Record<string, string> = {
   'settings.lang.loadError': '无法加载已保存的偏好设置。',
   'settings.lang.saveError': '保存失败，请重试。',
   'settings.lang.signInPrompt': '以在所有设备上保存偏好设置。',
+  'offline.banner': '无网络连接 — 显示缓存数据',
 };
 
 export default zh;

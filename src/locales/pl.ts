@@ -946,6 +946,7 @@ const pl: Record<string, string> = {
   'settings.lang.loadError': 'Nie można załadować zapisanych preferencji.',
   'settings.lang.saveError': 'Zapisywanie nie powiodło się. Spróbuj ponownie.',
   'settings.lang.signInPrompt': 'aby zapisać preferencje na wszystkich urządzeniach.',
+  'offline.banner': 'Brak połączenia z internetem — wyświetlanie danych z pamięci podręcznej',
 };
 
 export default pl;

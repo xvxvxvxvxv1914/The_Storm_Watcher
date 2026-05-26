@@ -957,6 +957,7 @@ const de: Record<string, string> = {
   'settings.lang.loadError': 'Gespeicherte Einstellung konnte nicht geladen werden.',
   'settings.lang.saveError': 'Speichern fehlgeschlagen. Bitte erneut versuchen.',
   'settings.lang.signInPrompt': 'um Einstellungen geräteübergreifend zu speichern.',
+  'offline.banner': 'Keine Internetverbindung — Zeige zwischengespeicherte Daten',
 };
 
 export default de;

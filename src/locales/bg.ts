@@ -977,6 +977,7 @@ const bg: Record<string, string> = {
   'settings.lang.loadError': 'Неуспешно зареждане на запазените предпочитания.',
   'settings.lang.saveError': 'Неуспешно запазване. Опитайте отново.',
   'settings.lang.signInPrompt': 'за да запазите предпочитанията на всички устройства.',
+  'offline.banner': 'Няма интернет връзка — показват се кешираните данни',
 };
 
 export default bg;

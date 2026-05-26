@@ -954,6 +954,7 @@ const ru: Record<string, string> = {
   'settings.lang.loadError': 'Не удалось загрузить сохранённые настройки.',
   'settings.lang.saveError': 'Не удалось сохранить. Попробуйте снова.',
   'settings.lang.signInPrompt': 'чтобы сохранить настройки на всех устройствах.',
+  'offline.banner': 'Нет подключения к интернету — показываются кешированные данные',
 };
 
 export default ru;

@@ -946,6 +946,7 @@ const is_: Record<string, string> = {
   'settings.lang.loadError': 'Gat ekki hlaðið inn vistuðum stillingum.',
   'settings.lang.saveError': 'Vista mistókst. Vinsamlegast reyndu aftur.',
   'settings.lang.signInPrompt': 'til að vista stillingar á öllum tækjum.',
+  'offline.banner': 'Engin nettenging — sýnir geymd gögn',
 };
 
 export default is_;

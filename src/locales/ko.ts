@@ -984,6 +984,7 @@ const ko: Record<string, string> = {
   'settings.lang.loadError': '저장된 환경설정을 불러올 수 없습니다.',
   'settings.lang.saveError': '저장에 실패했습니다. 다시 시도해주세요.',
   'settings.lang.signInPrompt': '모든 기기에서 환경설정을 저장하려면 로그인하세요.',
+  'offline.banner': '인터넷 연결 없음 — 캐시된 데이터 표시 중',
 };
 
 export default ko;

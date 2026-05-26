@@ -954,6 +954,7 @@ const es: Record<string, string> = {
   'settings.lang.loadError': 'No se pudo cargar la preferencia guardada.',
   'settings.lang.saveError': 'Error al guardar. Por favor, inténtelo de nuevo.',
   'settings.lang.signInPrompt': 'para guardar las preferencias en todos los dispositivos.',
+  'offline.banner': 'Sin conexión a internet — mostrando datos en caché',
 };
 
 export default es;

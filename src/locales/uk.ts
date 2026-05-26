@@ -946,6 +946,7 @@ const uk: Record<string, string> = {
   'settings.lang.loadError': 'Не вдалося завантажити збережені налаштування.',
   'settings.lang.saveError': 'Не вдалося зберегти. Спробуйте ще раз.',
   'settings.lang.signInPrompt': 'щоб зберегти налаштування на всіх пристроях.',
+  'offline.banner': 'Немає підключення до інтернету — показуються кешовані дані',
 };
 
 export default uk;

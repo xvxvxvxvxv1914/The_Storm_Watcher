@@ -954,6 +954,7 @@ const fr: Record<string, string> = {
   'settings.lang.loadError': 'Impossible de charger la préférence enregistrée.',
   'settings.lang.saveError': 'Échec de l\'enregistrement. Veuillez réessayer.',
   'settings.lang.signInPrompt': 'pour enregistrer les préférences sur tous les appareils.',
+  'offline.banner': 'Pas de connexion internet — affichage des données en cache',
 };
 
 export default fr;
