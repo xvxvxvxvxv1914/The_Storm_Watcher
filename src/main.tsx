@@ -42,9 +42,10 @@ Sentry.init({
   environment: import.meta.env.MODE,
   integrations: [
     Sentry.replayIntegration({
-      maskAllText: true,
-      blockAllMedia: true,
+      maskAllText: false,
+      blockAllMedia: false,
       maskAllInputs: true,
+      mask: ['.sentry-mask'],
     }),
   ],
   tracesSampleRate: 0.1,

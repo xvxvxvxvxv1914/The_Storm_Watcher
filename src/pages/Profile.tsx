@@ -221,7 +221,7 @@ export default function Profile() {
               {plan}
             </span>
           </div>
-          <p className="text-[#94a3b8] text-sm">{user?.email}</p>
+          <p className="sentry-mask text-[#94a3b8] text-sm">{user?.email}</p>
           {memberSince && (
             <p className="text-[#475569] text-xs mt-0.5">
               {t('profile.memberSince') || 'Member since'} {memberSince}

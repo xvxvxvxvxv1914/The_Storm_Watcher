@@ -7,7 +7,13 @@ const navOrder = [
   '/forecast',
   '/aurora',
   '/alerts',
+  '/calendar',
   '/mood',
+  '/uv',
+  '/sky',
+  '/iss',
+  '/magnetic-effects',
+  '/gallery',
 ];
 
 export function useSwipeNavigation() {
