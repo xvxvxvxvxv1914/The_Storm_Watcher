@@ -723,6 +723,7 @@ const ko: Record<string, string> = {
   'hunt.submit': '목격 제출',
   'hunt.reportSuccess': '목격 보고됨! +10 포인트',
   'hunt.reportError': '목격 보고에 실패했습니다',
+  'hunt.cooldownError': '시간당 하나의 목격만 보고할 수 있습니다.',
   'hunt.locationRequired': '위치를 입력하세요',
   'hunt.cooldown': '다음 보고까지',
   'hunt.currentKp': '현재 Kp:',

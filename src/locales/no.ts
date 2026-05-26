@@ -686,6 +686,7 @@ const no: Record<string, string> = {
   'hunt.submit': 'Send inn observasjon',
   'hunt.reportSuccess': 'Observasjon rapportert! +10 poeng',
   'hunt.reportError': 'Kunne ikke rapportere observasjon',
+  'hunt.cooldownError': 'Du kan bare rapportere én observasjon per time.',
   'hunt.locationRequired': 'Vennligst skriv inn posisjonen din',
   'hunt.cooldown': 'Neste rapport om',
   'hunt.currentKp': 'Nåværende Kp:',

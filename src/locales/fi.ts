@@ -686,6 +686,7 @@ const fi: Record<string, string> = {
   'hunt.submit': 'Lähetä havainto',
   'hunt.reportSuccess': 'Havainto raportoitu! +10 pistettä',
   'hunt.reportError': 'Havainnon raportointi epäonnistui',
+  'hunt.cooldownError': 'Voit raportoida vain yhden havainnon tunnissa.',
   'hunt.locationRequired': 'Syötä sijaintisi',
   'hunt.cooldown': 'Seuraava raportti',
   'hunt.currentKp': 'Nykyinen Kp:',

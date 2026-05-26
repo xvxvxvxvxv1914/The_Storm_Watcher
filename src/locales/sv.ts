@@ -686,6 +686,7 @@ const sv: Record<string, string> = {
   'hunt.submit': 'Skicka in observation',
   'hunt.reportSuccess': 'Observation rapporterad! +10 poäng',
   'hunt.reportError': 'Misslyckades att rapportera observation',
+  'hunt.cooldownError': 'Du kan bara rapportera en observation per timme.',
   'hunt.locationRequired': 'Ange din plats',
   'hunt.cooldown': 'Nästa rapport om',
   'hunt.currentKp': 'Aktuellt Kp:',

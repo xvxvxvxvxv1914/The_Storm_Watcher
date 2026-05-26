@@ -686,6 +686,7 @@ const da: Record<string, string> = {
   'hunt.submit': 'Indsend observation',
   'hunt.reportSuccess': 'Observation rapporteret! +10 point',
   'hunt.reportError': 'Kunne ikke rapportere observation',
+  'hunt.cooldownError': 'Du kan kun rapportere én observation i timen.',
   'hunt.locationRequired': 'Angiv venligst din placering',
   'hunt.cooldown': 'Næste rapport om',
   'hunt.currentKp': 'Aktuelt Kp:',

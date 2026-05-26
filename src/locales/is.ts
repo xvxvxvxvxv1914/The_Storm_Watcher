@@ -686,6 +686,7 @@ const is_: Record<string, string> = {
   'hunt.submit': 'Senda inn athugun',
   'hunt.reportSuccess': 'Athugun tilkynnt! +10 stig',
   'hunt.reportError': 'Tókst ekki að tilkynna athugun',
+  'hunt.cooldownError': 'Þú getur aðeins tilkynnt eina athugun á klukkutíma.',
   'hunt.locationRequired': 'Vinsamlegast sláðu inn staðsetningu þína',
   'hunt.cooldown': 'Næsta tilkynning eftir',
   'hunt.currentKp': 'Núverandi Kp:',
