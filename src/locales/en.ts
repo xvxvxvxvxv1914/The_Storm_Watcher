@@ -761,6 +761,7 @@ const en: Record<string, string> = {
   'hunt.notes': 'Notes (optional)',
   'hunt.submit': 'Submit Sighting',
   'hunt.reportSuccess': 'Sighting reported! +10 points',
+  'hunt.share': 'Share',
   'hunt.reportError': 'Failed to report sighting',
   'hunt.cooldownError': 'You can only report one sighting per hour.',
   'hunt.locationRequired': 'Please enter your location',

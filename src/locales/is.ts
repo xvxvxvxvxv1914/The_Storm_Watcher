@@ -685,6 +685,7 @@ const is_: Record<string, string> = {
   'hunt.notes': 'Minnismiðar (valfrjálst)',
   'hunt.submit': 'Senda inn athugun',
   'hunt.reportSuccess': 'Athugun tilkynnt! +10 stig',
+  'hunt.share': 'Deila',
   'hunt.reportError': 'Tókst ekki að tilkynna athugun',
   'hunt.cooldownError': 'Þú getur aðeins tilkynnt eina athugun á klukkutíma.',
   'hunt.locationRequired': 'Vinsamlegast sláðu inn staðsetningu þína',

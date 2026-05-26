@@ -715,6 +715,7 @@ const ru: Record<string, string> = {
   'hunt.notes': 'Заметки (необязательно)',
   'hunt.submit': 'Отправить наблюдение',
   'hunt.reportSuccess': 'Наблюдение зафиксировано! +10 баллов',
+  'hunt.share': 'Поделиться',
   'hunt.reportError': 'Не удалось зафиксировать наблюдение',
   'hunt.cooldownError': 'Можно сообщать только об одном наблюдении в час.',
   'hunt.locationRequired': 'Пожалуйста, введите своё местоположение',

@@ -722,6 +722,7 @@ const ko: Record<string, string> = {
   'hunt.notes': '메모 (선택사항)',
   'hunt.submit': '목격 제출',
   'hunt.reportSuccess': '목격 보고됨! +10 포인트',
+  'hunt.share': '공유',
   'hunt.reportError': '목격 보고에 실패했습니다',
   'hunt.cooldownError': '시간당 하나의 목격만 보고할 수 있습니다.',
   'hunt.locationRequired': '위치를 입력하세요',

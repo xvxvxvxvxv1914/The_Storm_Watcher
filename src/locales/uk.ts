@@ -685,6 +685,7 @@ const uk: Record<string, string> = {
   'hunt.notes': 'Нотатки (необов\'язково)',
   'hunt.submit': 'Надіслати спостереження',
   'hunt.reportSuccess': 'Спостереження повідомлено! +10 очок',
+  'hunt.share': 'Поділитися',
   'hunt.reportError': 'Не вдалося повідомити про спостереження',
   'hunt.cooldownError': 'Ви можете повідомляти лише про одне спостереження на годину.',
   'hunt.locationRequired': 'Вкажіть своє місцезнаходження',

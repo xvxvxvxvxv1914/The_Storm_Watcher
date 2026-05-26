@@ -685,6 +685,7 @@ const sv: Record<string, string> = {
   'hunt.notes': 'Anteckningar (valfritt)',
   'hunt.submit': 'Skicka in observation',
   'hunt.reportSuccess': 'Observation rapporterad! +10 poäng',
+  'hunt.share': 'Dela',
   'hunt.reportError': 'Misslyckades att rapportera observation',
   'hunt.cooldownError': 'Du kan bara rapportera en observation per timme.',
   'hunt.locationRequired': 'Ange din plats',

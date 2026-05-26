@@ -685,6 +685,7 @@ const fi: Record<string, string> = {
   'hunt.notes': 'Muistiinpanot (valinnainen)',
   'hunt.submit': 'Lähetä havainto',
   'hunt.reportSuccess': 'Havainto raportoitu! +10 pistettä',
+  'hunt.share': 'Jaa',
   'hunt.reportError': 'Havainnon raportointi epäonnistui',
   'hunt.cooldownError': 'Voit raportoida vain yhden havainnon tunnissa.',
   'hunt.locationRequired': 'Syötä sijaintisi',

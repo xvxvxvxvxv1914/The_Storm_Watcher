@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
-import { Trophy, MapPin, Star, ChevronDown, ChevronUp, Target } from 'lucide-react';
+import { Trophy, MapPin, Star, ChevronDown, ChevronUp, Target, Share2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
@@ -100,6 +100,7 @@ export default function Hunt() {
   const [locationName, setLocationName] = useState(settings.preferredLocationName || '');
   const [cooldownMs, setCooldownMs] = useState(getCooldownRemaining);
   const [showMySightings, setShowMySightings] = useState(false);
+  const [lastSharedSighting, setLastSharedSighting] = useState<{ location: string; kp: number } | null>(null);
 
   useEffect(() => {
     if (cooldownMs <= 0) return;
@@ -189,7 +190,8 @@ export default function Hunt() {
       if (newlyEarned.length) setNewBadges(newlyEarned);
 
       setSubmitMsg(t('hunt.reportSuccess') || 'Sighting reported!');
-      setTimeout(() => { setSubmitMsg(''); setNewBadges([]); }, 6000);
+      setLastSharedSighting({ location: locationName, kp: kp ?? 0 });
+      setTimeout(() => { setSubmitMsg(''); setNewBadges([]); setLastSharedSighting(null); }, 8000);
       setShowForm(false);
       setNotes('');
       setIntensity(3);
@@ -233,7 +235,25 @@ export default function Hunt() {
       {/* Success / badge toast */}
       {(submitMsg || newBadges.length > 0) && (
         <div className="mb-6 glass-surface rounded-2xl px-5 py-4 border border-[#10b981]/30 space-y-1">
-          {submitMsg && <p className="text-[#10b981] font-semibold">{submitMsg}</p>}
+          <div className="flex items-center justify-between gap-3">
+            {submitMsg && <p className="text-[#10b981] font-semibold">{submitMsg}</p>}
+            {lastSharedSighting && typeof navigator !== 'undefined' && 'share' in navigator && (
+              <button
+                onClick={() => {
+                  const { location, kp } = lastSharedSighting;
+                  navigator.share({
+                    title: 'Aurora sighting — The Storm Watcher',
+                    text: `I just saw the aurora at ${location}! Kp was ${kp.toFixed(1)} 🌌 #AuroraHunt #StormWatcher`,
+                    url: 'https://thestormwatcher.com/hunt',
+                  }).catch(() => {});
+                }}
+                className="flex items-center gap-1.5 text-xs font-semibold text-[#10b981] bg-[#10b981]/10 px-3 py-1.5 rounded-full hover:bg-[#10b981]/20 transition-colors shrink-0"
+              >
+                <Share2 className="w-3.5 h-3.5" />
+                {t('hunt.share') || 'Share'}
+              </button>
+            )}
+          </div>
           {newBadges.map(b => (
             <p key={b} className="text-[#fbbf24] text-sm">🎉 {t('hunt.newBadge') || 'New badge:'} {b}</p>
           ))}

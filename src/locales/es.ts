@@ -715,6 +715,7 @@ const es: Record<string, string> = {
   'hunt.notes': 'Notas (opcional)',
   'hunt.submit': 'Enviar avistamiento',
   'hunt.reportSuccess': '¡Avistamiento reportado! +10 puntos',
+  'hunt.share': 'Compartir',
   'hunt.reportError': 'Error al reportar avistamiento',
   'hunt.cooldownError': 'Solo puedes reportar un avistamiento por hora.',
   'hunt.locationRequired': 'Por favor, ingresa tu ubicación',

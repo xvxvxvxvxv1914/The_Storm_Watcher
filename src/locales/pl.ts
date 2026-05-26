@@ -685,6 +685,7 @@ const pl: Record<string, string> = {
   'hunt.notes': 'Notatki (opcjonalnie)',
   'hunt.submit': 'Wyślij obserwację',
   'hunt.reportSuccess': 'Obserwacja zgłoszona! +10 pkt',
+  'hunt.share': 'Udostępnij',
   'hunt.reportError': 'Nie udało się zgłosić obserwacji',
   'hunt.cooldownError': 'Możesz zgłaszać tylko jedną obserwację na godzinę.',
   'hunt.locationRequired': 'Podaj swoją lokalizację',

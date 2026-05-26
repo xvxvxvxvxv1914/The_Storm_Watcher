@@ -715,6 +715,7 @@ const zh: Record<string, string> = {
   'hunt.notes': '备注（可选）',
   'hunt.submit': '提交目击',
   'hunt.reportSuccess': '目击已报告！+10积分',
+  'hunt.share': '分享',
   'hunt.reportError': '报告目击失败',
   'hunt.cooldownError': '每小时只能报告一次目击。',
   'hunt.locationRequired': '请输入您的位置',

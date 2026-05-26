@@ -685,6 +685,7 @@ const no: Record<string, string> = {
   'hunt.notes': 'Notater (valgfritt)',
   'hunt.submit': 'Send inn observasjon',
   'hunt.reportSuccess': 'Observasjon rapportert! +10 poeng',
+  'hunt.share': 'Del',
   'hunt.reportError': 'Kunne ikke rapportere observasjon',
   'hunt.cooldownError': 'Du kan bare rapportere én observasjon per time.',
   'hunt.locationRequired': 'Vennligst skriv inn posisjonen din',
