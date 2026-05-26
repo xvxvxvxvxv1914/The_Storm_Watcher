@@ -80,7 +80,7 @@ export default function ISSGlobe({ globeWidth, auroraData, issLat, issLng, userL
   useEffect(() => {
     const loader = new THREE.TextureLoader();
     Promise.all([
-      loader.loadAsync('//cdn.jsdelivr.net/npm/three-globe/example/img/earth-day.jpg'),
+      loader.loadAsync('https://cdn.jsdelivr.net/npm/three-globe/example/img/earth-day.jpg'),
       loader.loadAsync('/textures/earth-night.jpg'),
     ]).then(([dayTexture, nightTexture]) => {
       setGlobeMaterial(new THREE.ShaderMaterial({
