@@ -1,4 +1,6 @@
 import { logError } from '../utils/logger';
+import { isNative as getNative } from '../utils/platform';
+import { persistGet, persistSet } from '../utils/offlineCache';
 
 export interface NigggDataPoint {
   time: number;
@@ -58,10 +60,7 @@ export const getNigggStormStatus = (minDelta: number): NigggStormStatus => {
 
 // On native (Capacitor iOS/Android) CapacitorHttp bypasses CORS so we can call
 // the endpoint directly. On web we go through the Vercel serverless proxy.
-const isNative = typeof (window as Window & { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor?.isNativePlatform === 'function'
-  && (window as Window & { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor!.isNativePlatform!();
-
-const NIGGG_BASE = isNative
+const NIGGG_BASE = getNative()
   ? 'https://pagmag.ngic.bg/assets/php/datacalendar26.php'
   : '/api/niggg';
 
@@ -127,9 +126,12 @@ export const fetchNigggData = async (): Promise<NigggDataSet> => {
       }
     });
 
-    return { hComponent, fComponent };
+    const result = { hComponent, fComponent };
+    persistSet('offline_niggg', result).catch(() => {});
+    return result;
   } catch (error) {
     logError('Error fetching NIGGG data:', error);
-    return { hComponent: [], fComponent: [] };
+    const cached = await persistGet<NigggDataSet>('offline_niggg');
+    return cached ?? { hComponent: [], fComponent: [] };
   }
 };
