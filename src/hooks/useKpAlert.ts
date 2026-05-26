@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { Haptics, NotificationType } from '@capacitor/haptics';
 import { getKpIndex } from '../services/noaaApi';
 import { useSettings } from '../contexts/SettingsContext';
 
@@ -37,6 +38,7 @@ export function useKpAlert() {
           icon: '/icons/icon-192.png',
           tag: 'kp-alert',
         });
+        Haptics.notification({ type: NotificationType.Warning }).catch(() => {});
         localStorage.setItem(COOLDOWN_KEY, Date.now().toString());
       } catch {
         // silent — network issues shouldn't crash the app
