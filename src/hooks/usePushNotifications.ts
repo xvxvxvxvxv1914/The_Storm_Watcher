@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { PushNotifications } from '@capacitor/push-notifications';
-import { isNative } from '../utils/platform';
+import { isIos } from '../utils/platform';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { useSettings } from '../contexts/SettingsContext';
@@ -21,7 +21,7 @@ export function usePushNotifications() {
   const { settings } = useSettings();
 
   useEffect(() => {
-    if (!isNative()) return;
+    if (!isIos()) return;
 
     let registered = false;
 
@@ -74,7 +74,7 @@ export function usePushNotifications() {
 
   // Sync threshold change to all existing device tokens in DB
   useEffect(() => {
-    if (!isNative() || !user?.id) return;
+    if (!isIos() || !user?.id) return;
     supabase
       .from('device_push_tokens')
       .update({ threshold_kp: settings.kpThreshold, updated_at: new Date().toISOString() })
