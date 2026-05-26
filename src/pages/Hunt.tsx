@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
+import SwipeToDelete from '../components/SwipeToDelete';
 import { Trophy, MapPin, Star, ChevronDown, ChevronUp, Target, Share2 } from 'lucide-react';
+import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
@@ -189,6 +191,7 @@ export default function Hunt() {
       const newlyEarned = BADGES.filter(b => !oldBadgeIds.includes(b.id) && b.req(newSightings)).map(b => `${b.emoji} ${b.name}`);
       if (newlyEarned.length) setNewBadges(newlyEarned);
 
+      Haptics.notification({ type: NotificationType.Success }).catch(() => {});
       setSubmitMsg(t('hunt.reportSuccess') || 'Sighting reported!');
       setLastSharedSighting({ location: locationName, kp: kp ?? 0 });
       setTimeout(() => { setSubmitMsg(''); setNewBadges([]); setLastSharedSighting(null); }, 8000);
@@ -197,6 +200,7 @@ export default function Hunt() {
       setIntensity(3);
       await loadData();
     } catch (err: unknown) {
+      Haptics.notification({ type: NotificationType.Error }).catch(() => {});
       const msg = (err as { message?: string })?.message ?? '';
       if (msg.includes('cooldown')) {
         localStorage.setItem(COOLDOWN_KEY, String(Date.now()));
@@ -209,6 +213,11 @@ export default function Hunt() {
       setSubmitting(false);
     }
   };
+
+  const deleteSighting = useCallback(async (id: string) => {
+    setMySightings(prev => prev.filter(s => s.id !== id));
+    await supabase.from('aurora_sightings').delete().eq('id', id).eq('user_id', user!.id);
+  }, [user]);
 
   const myRank = leaderboard.findIndex(e => e.user_id === user?.id) + 1;
 
@@ -346,7 +355,7 @@ export default function Hunt() {
 
             <div className="flex gap-3">
               <button
-                onClick={handleSubmit}
+                onClick={() => { Haptics.impact({ style: ImpactStyle.Medium }).catch(() => {}); handleSubmit(); }}
                 disabled={submitting}
                 className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#f59e0b] to-[#d97706] text-white font-semibold text-sm hover:opacity-90 disabled:opacity-50"
               >
@@ -440,18 +449,20 @@ export default function Hunt() {
             {t('hunt.mySightings') || 'My sightings'} ({mySightings.length})
           </button>
           {showMySightings && (
-            <div className="mt-3 space-y-2 max-h-64 overflow-y-auto pr-1">
+            <div className="mt-3 space-y-0 max-h-64 overflow-y-auto pr-1">
               {mySightings.map(s => (
-                <div key={s.id} className="flex items-center justify-between text-xs text-[#94a3b8] py-1.5 border-b border-white/5">
-                  <span className="flex items-center gap-1">
-                    <MapPin className="w-3 h-3 flex-shrink-0" />
-                    {s.location_name ?? '—'}
-                  </span>
-                  <span className="flex items-center gap-3">
-                    {s.kp_at_sighting !== null && <span className="text-[#f97316] font-bold">Kp {s.kp_at_sighting.toFixed(1)}</span>}
-                    <span>{new Date(s.created_at).toLocaleDateString()}</span>
-                  </span>
-                </div>
+                <SwipeToDelete key={s.id} onDelete={() => deleteSighting(s.id)}>
+                  <div className="flex items-center justify-between text-xs text-[#94a3b8] py-1.5 border-b border-white/5 bg-transparent">
+                    <span className="flex items-center gap-1">
+                      <MapPin className="w-3 h-3 flex-shrink-0" />
+                      {s.location_name ?? '—'}
+                    </span>
+                    <span className="flex items-center gap-3">
+                      {s.kp_at_sighting !== null && <span className="text-[#f97316] font-bold">Kp {s.kp_at_sighting.toFixed(1)}</span>}
+                      <span>{new Date(s.created_at).toLocaleDateString()}</span>
+                    </span>
+                  </div>
+                </SwipeToDelete>
               ))}
             </div>
           )}
