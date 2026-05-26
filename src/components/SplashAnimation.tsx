@@ -1,17 +1,20 @@
 import { useEffect, useState } from 'react';
 
 const SPLASH_KEY = 'splash_shown';
+const isNativePlatform = typeof window !== 'undefined' && 'Capacitor' in window;
 
 const SplashAnimation = () => {
   const [phase, setPhase] = useState<'enter' | 'show' | 'exit' | 'done'>('enter');
 
   useEffect(() => {
-    if (sessionStorage.getItem(SPLASH_KEY)) {
+    // On web/PWA: show splash only once per browser session (tab stays open)
+    // On native: always show — WKWebView sessionStorage survives background/foreground
+    // so we skip the guard on native and rely on the short 1.4s duration instead.
+    if (!isNativePlatform && sessionStorage.getItem(SPLASH_KEY)) {
       setPhase('done');
       return;
     }
-    sessionStorage.setItem(SPLASH_KEY, '1');
-    // Native Capacitor splash auto-hides after launchShowDuration (1200ms) — no manual hide needed.
+    if (!isNativePlatform) sessionStorage.setItem(SPLASH_KEY, '1');
 
     const t1 = setTimeout(() => setPhase('show'), 60);
     const t2 = setTimeout(() => setPhase('exit'), 900);
