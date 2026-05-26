@@ -72,13 +72,17 @@ function AppRoutes() {
     }
   }, [user, navigate]);
 
-  // Handle deep links from iOS widget (stormwatcher://dashboard, stormwatcher://forecast)
+  // Handle deep links — stormwatcher://dashboard, stormwatcher://alerts?kp=7, etc.
   useEffect(() => {
-    const ALLOWED_ROUTES = new Set(['dashboard','forecast','aurora','alerts','uv','sun','mood','iss','profile','settings','pricing','privacy','terms']);
+    const ALLOWED_ROUTES = new Set(['dashboard','forecast','aurora','alerts','uv','sun','mood','iss','profile','settings','pricing','privacy','terms','calendar','gallery','magnetic-effects']);
     const sub = CapApp.addListener('appUrlOpen', ({ url }) => {
       try {
-        const host = new URL(url).hostname;
-        if (ALLOWED_ROUTES.has(host)) navigate(`/${host}`, { replace: true });
+        const parsed = new URL(url);
+        const route = parsed.hostname;
+        if (ALLOWED_ROUTES.has(route)) {
+          const qs = parsed.search; // preserve ?kp=7 etc.
+          navigate(`/${route}${qs}`, { replace: true });
+        }
       } catch { /* ignore malformed URLs */ }
     });
     return () => { sub.then(h => h.remove()); };
