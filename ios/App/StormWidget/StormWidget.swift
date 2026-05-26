@@ -2,7 +2,7 @@ import WidgetKit
 import SwiftUI
 
 private let appGroupID = "group.com.stormwatcher.app"
-private let sharedDataMaxAge: TimeInterval = 90
+private let sharedDataMaxAge: TimeInterval = 300 // 5 minutes — BGAppRefresh fires at most every 15 min
 
 // MARK: - Models
 

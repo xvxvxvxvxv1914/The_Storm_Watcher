@@ -54,6 +54,8 @@ const Aurora = () => {
   const [userLng, setUserLng] = useState<number | null>(null);
   const globeContainerRef = useRef<HTMLDivElement>(null);
   const [isGlobeVisible, setIsGlobeVisible] = useState(true);
+  // Defer loading the 1.2 MB globe bundle until the container enters the viewport
+  const [globeChunkLoaded, setGlobeChunkLoaded] = useState(false);
 
   const getMoonPhase = () => {
     const date = new Date();
@@ -123,7 +125,10 @@ const Aurora = () => {
     const el = globeContainerRef.current;
     if (!el) return;
     const io = new IntersectionObserver(
-      ([entry]) => setIsGlobeVisible(entry.isIntersecting),
+      ([entry]) => {
+        if (entry.isIntersecting) setGlobeChunkLoaded(true);
+        setIsGlobeVisible(entry.isIntersecting);
+      },
       { threshold: 0 }
     );
     io.observe(el);
@@ -474,7 +479,7 @@ const Aurora = () => {
                   <div className="text-[#10b981] font-bold tracking-widest text-sm uppercase animate-pulse">{t('aurora.loadingModel')}</div>
                 </div>
               }>
-                <AuroraGlobe
+                {globeChunkLoaded && <AuroraGlobe
                   globeWidth={globeWidth}
                   isGlobeLoading={isGlobeLoading}
                   auroraData={auroraData}
@@ -482,7 +487,7 @@ const Aurora = () => {
                   userLat={userLat}
                   userLng={userLng}
                   active={isGlobeVisible}
-                />
+                />}
               </Suspense>
             </GlobeErrorBoundary>
           </div>

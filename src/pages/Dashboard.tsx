@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { logError } from '../utils/logger';
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
+import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
@@ -222,6 +223,7 @@ const Dashboard = () => {
 
   useEffect(() => { fetchData(); }, [fetchData]);
   useVisibilityInterval(fetchData, 60000);
+  const { pulling, pullY } = usePullToRefresh(fetchData);
 
   const stormStatus = getStormStatus(kpValue);
   const xrayClass = getXrayClass(xrayFlux);
@@ -334,6 +336,14 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16 relative">
+      {pulling && (
+        <div
+          className="fixed top-16 left-1/2 -translate-x-1/2 z-[100] flex items-center justify-center w-9 h-9 rounded-full bg-[#10b981]/20 border border-[#10b981]/40 transition-transform"
+          style={{ transform: `translateX(-50%) translateY(${pullY}px)` }}
+        >
+          <div className="w-4 h-4 border-2 border-[#10b981] border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
       <PageMeta
         title="Dashboard — The Storm Watcher"
         description="Live space weather dashboard: Kp index, solar wind, magnetic field and X-ray flux charts updated every minute."

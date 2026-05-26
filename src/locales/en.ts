@@ -986,6 +986,7 @@ const en: Record<string, string> = {
   'settings.lang.loadError': 'Could not load saved preference.',
   'settings.lang.saveError': 'Failed to save. Please try again.',
   'settings.lang.signInPrompt': 'to save preferences across devices.',
+  'offline.banner': 'No internet connection — showing cached data',
 };
 
 export default en;

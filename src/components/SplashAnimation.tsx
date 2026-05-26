@@ -12,11 +12,7 @@ const SplashAnimation = () => {
       return;
     }
     sessionStorage.setItem(SPLASH_KEY, '1');
-
-    // Hide native Capacitor splash immediately so web animation takes over
-    import('@capacitor/splash-screen')
-      .then(({ SplashScreen }) => SplashScreen.hide({ fadeOutDuration: 0 }))
-      .catch(() => {});
+    // Native Capacitor splash auto-hides after launchShowDuration (1200ms) — no manual hide needed.
 
     const t1 = setTimeout(() => setPhase('show'), 60);
     const t2 = setTimeout(() => setPhase('exit'), 1900);

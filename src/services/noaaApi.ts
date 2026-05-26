@@ -1,6 +1,7 @@
 import type React from 'react';
 
 import { logError } from '../utils/logger';
+import { persistGet, persistSet } from '../utils/offlineCache';
 
 const NOAA_BASE_URL = 'https://services.swpc.noaa.gov';
 
@@ -103,17 +104,22 @@ export const getKpIndex = (): Promise<KpIndexData[]> =>
   cached('kp', TTL_FORECAST, async () => {
     try {
       const data = await getGfzKp3Day();
-      return (data.datetime ?? []).map((dt, i) => ({
+      const result = (data.datetime ?? []).map((dt, i) => ({
         time_tag: dt.replace('Z', ''),
         kp_index: data.Kp[i] ?? 0,
       }));
+      persistSet('offline_kp', result).catch(() => {});
+      return result;
     } catch {
       console.warn('GFZ Kp unavailable, falling back to NOAA');
       try {
-        return await getJson<KpIndexData[]>(`${NOAA_BASE_URL}/json/planetary_k_index_1m.json`);
+        const result = await getJson<KpIndexData[]>(`${NOAA_BASE_URL}/json/planetary_k_index_1m.json`);
+        persistSet('offline_kp', result).catch(() => {});
+        return result;
       } catch (error) {
         logError('NOAA Kp fallback failed:', error);
-        return [];
+        const cached_offline = await persistGet<KpIndexData[]>('offline_kp');
+        return cached_offline ?? [];
       }
     }
   });

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
+import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
@@ -76,6 +77,7 @@ const Forecast = () => {
 
   useEffect(() => { fetchForecast(); }, [fetchForecast]);
   useVisibilityInterval(fetchForecast, 300000);
+  const { pulling, pullY } = usePullToRefresh(fetchForecast);
 
   useEffect(() => {
     getSpaceWeatherOutlook().then(data => { if (data) setOutlook(data); }).catch(() => {});
@@ -273,6 +275,14 @@ const Forecast = () => {
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16 relative">
+      {pulling && (
+        <div
+          className="fixed top-16 left-1/2 z-[100] flex items-center justify-center w-9 h-9 rounded-full bg-[#10b981]/20 border border-[#10b981]/40"
+          style={{ transform: `translateX(-50%) translateY(${pullY}px)` }}
+        >
+          <div className="w-4 h-4 border-2 border-[#10b981] border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
       <PageMeta
         title="Kp Index Forecast — The Storm Watcher"
         description="7-day Kp forecast + 27-day long-range outlook from NOAA. Plan your aurora viewing."
