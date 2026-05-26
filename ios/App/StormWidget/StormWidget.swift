@@ -32,16 +32,25 @@ struct KpEntry: TimelineEntry {
 private struct WL {
     static var lang: String {
         let code = Locale.preferredLanguages.first.map { String($0.prefix(2)) } ?? "en"
-        return ["bg", "de", "es", "fr", "ja", "ru", "zh"].contains(code) ? code : "en"
+        let supported = ["bg","da","de","es","fi","fr","is","ja","ko","no","pl","ru","sv","uk","zh"]
+        return supported.contains(code) ? code : "en"
     }
     static var kpIndex: String {
         switch lang {
         case "bg": return "КP ИНДЕКС"
+        case "da": return "KP-INDEKS"
         case "de": return "KP-INDEX"
         case "es": return "ÍNDICE KP"
+        case "fi": return "KP-INDEKSI"
         case "fr": return "INDICE KP"
+        case "is": return "KP-VÍSITALA"
         case "ja": return "KP 指数"
+        case "ko": return "KP 지수"
+        case "no": return "KP-INDEKS"
+        case "pl": return "INDEKS KP"
         case "ru": return "КП ИНДЕКС"
+        case "sv": return "KP-INDEX"
+        case "uk": return "КП ІНДЕКС"
         case "zh": return "KP指数"
         default:   return "KP INDEX"
         }
@@ -49,11 +58,19 @@ private struct WL {
     static var forecast24h: String {
         switch lang {
         case "bg": return "ПРОГНОЗА 24Ч"
+        case "da": return "PROGNOSE 24T"
         case "de": return "PROGNOSE 24H"
         case "es": return "PRONÓSTICO 24H"
+        case "fi": return "ENNUSTE 24H"
         case "fr": return "PRÉVISION 24H"
+        case "is": return "SPÁ 24H"
         case "ja": return "24時間予報"
+        case "ko": return "24시간 예보"
+        case "no": return "PROGNOSE 24T"
+        case "pl": return "PROGNOZA 24H"
         case "ru": return "ПРОГНОЗ 24Ч"
+        case "sv": return "PROGNOS 24H"
+        case "uk": return "ПРОГНОЗ 24Г"
         case "zh": return "24小时预报"
         default:   return "FORECAST 24H"
         }
@@ -61,11 +78,19 @@ private struct WL {
     static var noData: String {
         switch lang {
         case "bg": return "Няма данни"
+        case "da": return "Ingen data"
         case "de": return "Keine Daten"
         case "es": return "Sin datos"
+        case "fi": return "Ei tietoja"
         case "fr": return "Pas de données"
+        case "is": return "Engin gögn"
         case "ja": return "データなし"
+        case "ko": return "데이터 없음"
+        case "no": return "Ingen data"
+        case "pl": return "Brak danych"
         case "ru": return "Нет данных"
+        case "sv": return "Inga data"
+        case "uk": return "Немає даних"
         case "zh": return "暂无数据"
         default:   return "No data"
         }
@@ -73,11 +98,19 @@ private struct WL {
     static var quiet: String {
         switch lang {
         case "bg": return "СПОКОЙНО"
+        case "da": return "ROLIGT"
         case "de": return "RUHIG"
         case "es": return "TRANQUILO"
+        case "fi": return "RAUHALLINEN"
         case "fr": return "CALME"
+        case "is": return "RÓLEGT"
         case "ja": return "静穏"
+        case "ko": return "조용함"
+        case "no": return "ROLIG"
+        case "pl": return "SPOKOJNY"
         case "ru": return "СПОКОЙНО"
+        case "sv": return "LUGNT"
+        case "uk": return "СПОКІЙНО"
         case "zh": return "平静"
         default:   return "QUIET"
         }
@@ -85,11 +118,19 @@ private struct WL {
     static var widgetDescription: String {
         switch lang {
         case "bg": return "Kp индекс, слънчев вятър и 24-часова прогноза в реално време."
+        case "da": return "Live Kp-indeks, solvind og 24h prognose."
         case "de": return "Live Kp-Index, Sonnenwind und 24h-Prognose."
         case "es": return "Índice Kp en vivo, viento solar y pronóstico de 24 horas."
+        case "fi": return "Live Kp-indeksi, aurinkotuuli ja 24h ennuste."
         case "fr": return "Indice Kp en direct, vent solaire et prévision 24h."
+        case "is": return "Kp-vísitala í beinni, sólvindur og 24h spá."
         case "ja": return "ライブKp指数、太陽風、24時間予報。"
+        case "ko": return "실시간 Kp 지수, 태양풍, 24시간 예보."
+        case "no": return "Live Kp-indeks, solvind og 24t prognose."
+        case "pl": return "Indeks Kp na żywo, wiatr słoneczny i prognoza 24h."
         case "ru": return "Kp-индекс, солнечный ветер и прогноз на 24 часа."
+        case "sv": return "Live Kp-index, solvind och 24h prognos."
+        case "uk": return "Kp-індекс, сонячний вітер і прогноз на 24 години."
         case "zh": return "实时Kp指数、太阳风和24小时预报。"
         default:   return "Live Kp index, solar wind and 24h forecast."
         }

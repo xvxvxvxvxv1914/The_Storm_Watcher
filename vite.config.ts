@@ -14,7 +14,7 @@ export default defineConfig(({ command }) => ({
       injectManifest: {
         globPatterns: ['**/*.{js,css,html,ico,svg,woff2}'],
         // Exclude heavy 3D chunks — only needed on Aurora page, let browser cache them
-        globIgnores: ['**/globe-vendor*', '**/three-vendor*', '**/charts-vendor*'],
+        globIgnores: ['**/globe-vendor*', '**/three-vendor*', '**/charts-vendor*', '**/map-vendor*'],
         maximumFileSizeToCacheInBytes: 2 * 1024 * 1024,
       },
       // Manifest is served from public/manifest.json; vite-plugin-pwa skips generation.
@@ -33,12 +33,16 @@ export default defineConfig(({ command }) => ({
     rollupOptions: {
       output: {
         manualChunks: {
-          'three-vendor': ['three'],
-          'globe-vendor': ['react-globe.gl', 'three-globe'],
-          'supabase-vendor': ['@supabase/supabase-js'],
-          'charts-vendor': ['lightweight-charts'],
-          'icons-vendor': ['lucide-react'],
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'three-vendor':   ['three'],
+          'globe-vendor':   ['react-globe.gl', 'three-globe'],
+          'supabase-vendor':['@supabase/supabase-js'],
+          'charts-vendor':  ['lightweight-charts'],
+          'icons-vendor':   ['lucide-react'],
+          'react-vendor':   ['react', 'react-dom', 'react-router-dom'],
+          // Split out large optional libs to shrink the root bundle
+          'map-vendor':     ['leaflet', 'react-leaflet'],
+          'motion-vendor':  ['framer-motion'],
+          'sentry-vendor':  ['@sentry/react', '@sentry/core', '@sentry/browser'],
         },
       },
     },
