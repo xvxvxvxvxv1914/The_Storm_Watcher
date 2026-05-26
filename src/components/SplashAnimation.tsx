@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Sun } from 'lucide-react';
 
 const SPLASH_KEY = 'splash_shown';
 
@@ -15,8 +14,8 @@ const SplashAnimation = () => {
     // Native Capacitor splash auto-hides after launchShowDuration (1200ms) — no manual hide needed.
 
     const t1 = setTimeout(() => setPhase('show'), 60);
-    const t2 = setTimeout(() => setPhase('exit'), 1900);
-    const t3 = setTimeout(() => setPhase('done'), 2500);
+    const t2 = setTimeout(() => setPhase('exit'), 900);
+    const t3 = setTimeout(() => setPhase('done'), 1400);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, []);
 
@@ -52,7 +51,7 @@ const SplashAnimation = () => {
         }}
       />
 
-      {/* Sun icon */}
+      {/* App icon */}
       <div
         className="relative transition-all duration-700"
         style={{
@@ -60,7 +59,7 @@ const SplashAnimation = () => {
           transform: visible ? 'scale(1)' : 'scale(0.3)',
         }}
       >
-        <Sun className="w-24 h-24 text-[#f97316]" strokeWidth={1.2} />
+        <img src="/icons/icon-192.png" alt="" width={96} height={96} className="rounded-[22px]" />
         {/* Pulse ring */}
         <div
           className="absolute inset-0 rounded-full border border-[#f97316]/30 animate-ping"

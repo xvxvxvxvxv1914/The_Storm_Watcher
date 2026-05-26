@@ -45,7 +45,7 @@ function AppRoutes() {
   const [locationPromptDone, setLocationPromptDone] = useState(false);
   const [splashDone, setSplashDone] = useState(false);
   useEffect(() => {
-    const t = setTimeout(() => setSplashDone(true), 1200);
+    const t = setTimeout(() => setSplashDone(true), 1500);
     return () => clearTimeout(t);
   }, []);
   useSwipeNavigation();
