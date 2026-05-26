@@ -303,3 +303,13 @@ html.light .solar-particle {
 .bottom-sheet-enter {
   animation: slideUp 0.3s cubic-bezier(0.32, 0.72, 0, 1);
 }
+
+/* D5 — Immersive globe mode: hide bottom tab bar while 3D globe is on screen */
+body.immersive-globe nav[aria-label="Main navigation"] {
+  transform: translateY(150%);
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+  pointer-events: none;
+}
+nav[aria-label="Main navigation"] {
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+}

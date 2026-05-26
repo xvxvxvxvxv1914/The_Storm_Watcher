@@ -127,11 +127,16 @@ const Aurora = () => {
       ([entry]) => {
         if (entry.isIntersecting) setGlobeChunkLoaded(true);
         setIsGlobeVisible(entry.isIntersecting);
+        // Immersive cinema mode: hide the bottom tab bar while globe is on screen
+        document.body.classList.toggle('immersive-globe', entry.isIntersecting);
       },
-      { threshold: 0 }
+      { threshold: 0.3 }
     );
     io.observe(el);
-    return () => io.disconnect();
+    return () => {
+      io.disconnect();
+      document.body.classList.remove('immersive-globe');
+    };
   }, []);
 
   const fetchAuroraModel = useCallback(async () => {
