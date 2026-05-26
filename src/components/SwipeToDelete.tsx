@@ -1,10 +1,9 @@
 import { useRef } from 'react';
-import { motion, useMotionValue, useTransform, AnimatePresence } from 'framer-motion';
+import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
 import { Trash2 } from 'lucide-react';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
 const DELETE_THRESHOLD = -72;
-const SNAP_WIDTH = -80;
 
 interface Props {
   onDelete: () => void;
@@ -23,7 +22,9 @@ export default function SwipeToDelete({ onDelete, children }: Props) {
       Haptics.impact({ style: ImpactStyle.Heavy }).catch(() => {});
       onDelete();
     } else {
+      // Snap back to closed position
       hapticFired.current = false;
+      animate(x, 0, { type: 'spring', stiffness: 400, damping: 30 });
     }
   }
 
@@ -39,23 +40,21 @@ export default function SwipeToDelete({ onDelete, children }: Props) {
   return (
     <div className="relative overflow-hidden">
       {/* Red delete layer underneath */}
-      <AnimatePresence>
-        <motion.div
-          className="absolute right-0 top-0 bottom-0 flex items-center justify-center bg-red-500/20 rounded-r-xl"
-          style={{ width: 80, opacity: deleteOpacity }}
-          aria-hidden
-        >
-          <motion.div style={{ scale: deleteScale }}>
-            <Trash2 className="w-5 h-5 text-red-400" />
-          </motion.div>
+      <motion.div
+        className="absolute right-0 top-0 bottom-0 flex items-center justify-center bg-red-500/20 rounded-r-xl"
+        style={{ width: 80, opacity: deleteOpacity }}
+        aria-hidden
+      >
+        <motion.div style={{ scale: deleteScale }}>
+          <Trash2 className="w-5 h-5 text-red-400" />
         </motion.div>
-      </AnimatePresence>
+      </motion.div>
 
       {/* Swipeable content */}
       <motion.div
         drag="x"
-        dragConstraints={{ left: SNAP_WIDTH, right: 0 }}
-        dragElastic={{ left: 0.1, right: 0.2 }}
+        dragConstraints={{ left: DELETE_THRESHOLD, right: 0 }}
+        dragElastic={{ left: 0.3, right: 0.1 }}
         style={{ x, touchAction: 'pan-y' }}
         onDrag={handleDrag}
         onDragEnd={handleDragEnd}
