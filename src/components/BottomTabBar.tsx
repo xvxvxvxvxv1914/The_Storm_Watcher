@@ -124,7 +124,7 @@ const BottomTabBar = () => {
                   size={24}
                   strokeWidth={active ? 2.5 : 1.8}
                 />
-                <span className={`text-[10px] ${active ? 'font-bold text-[#10b981]' : theme === 'light' ? 'font-medium text-slate-400' : 'font-medium text-[#4a5568]'}`}>
+                <span className={`text-[11px] ${active ? 'font-bold text-[#10b981]' : theme === 'light' ? 'font-medium text-slate-400' : 'font-medium text-[#4a5568]'}`}>
                   {t(labelKey)}
                 </span>
               </Link>
@@ -143,7 +143,7 @@ const BottomTabBar = () => {
               size={24}
               strokeWidth={isMoreActive ? 2.5 : 1.8}
             />
-            <span className={`text-[10px] ${isMoreActive ? 'font-bold text-[#10b981]' : theme === 'light' ? 'font-medium text-slate-400' : 'font-medium text-[#4a5568]'}`}>
+            <span className={`text-[11px] ${isMoreActive ? 'font-bold text-[#10b981]' : theme === 'light' ? 'font-medium text-slate-400' : 'font-medium text-[#4a5568]'}`}>
               {t('nav.more') || 'More'}
             </span>
           </button>
