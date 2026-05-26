@@ -10,6 +10,7 @@ import { useLanguage } from './contexts/LanguageContext';
 import { SettingsProvider } from './contexts/SettingsContext';
 import { useSwipeNavigation } from './hooks/useSwipeNavigation';
 import { useKpAlert } from './hooks/useKpAlert';
+import { usePushNotifications } from './hooks/usePushNotifications';
 import { AnimatedRoutes } from './components/AnimatedRoutes';
 import Navigation from './components/Navigation';
 import BottomTabBar from './components/BottomTabBar';
@@ -50,6 +51,7 @@ function AppRoutes() {
   }, []);
   useSwipeNavigation();
   useKpAlert();
+  usePushNotifications();
 
   // After email confirmation Supabase lands the user back on the site with
   // #access_token=...&type=signup in the hash. Redirect them to /dashboard
@@ -80,6 +82,16 @@ function AppRoutes() {
       } catch { /* ignore malformed URLs */ }
     });
     return () => { sub.then(h => h.remove()); };
+  }, [navigate]);
+
+  // Navigate from push notification tap (native)
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const url = (e as CustomEvent<string>).detail;
+      if (url) navigate(url, { replace: true });
+    };
+    window.addEventListener('push-navigate', handler);
+    return () => window.removeEventListener('push-navigate', handler);
   }, [navigate]);
 
   // Dispatch a custom event when app comes to foreground so data hooks can refresh
