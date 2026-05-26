@@ -64,6 +64,12 @@
       "short_name": "Alerts",
       "url": "/alerts",
       "description": "Space weather storm alerts"
+    },
+    {
+      "name": "Mood",
+      "short_name": "Mood",
+      "url": "/mood",
+      "description": "Track how space weather affects your mood"
     }
   ],
   "categories": ["weather", "science", "education"]
