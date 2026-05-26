@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef, useCallback, lazy, Suspense, useMemo, Component, type ReactNode } from 'react';
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
+import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { MapPin, Eye, Sparkles, AlertTriangle, Check, Zap, Share2 } from 'lucide-react';
@@ -179,6 +180,11 @@ const Aurora = () => {
   useEffect(() => { fetchSpace(); }, [fetchSpace]);
   useVisibilityInterval(fetchSpace, 60000);
 
+  const refreshAll = useCallback(async () => {
+    await Promise.all([fetchKp(), fetchAuroraModel(), fetchSpace()]);
+  }, [fetchKp, fetchAuroraModel, fetchSpace]);
+  const { pulling, pullY } = usePullToRefresh(refreshAll);
+
   const getVisibilityInfo = (kp: number) => {
     if (kp >= 7) return { latitude: 50, color: 'text-[#ef4444]', intensityKey: 'aurora.intensityVeryHigh', bgGlow: 'glow-red' };
     if (kp >= 6) return { latitude: 55, color: 'text-[#f97316]', intensityKey: 'aurora.intensityHigh', bgGlow: 'glow-orange' };
@@ -216,6 +222,14 @@ const Aurora = () => {
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16 relative">
+      {pulling && (
+        <div
+          className="fixed top-16 left-1/2 -translate-x-1/2 z-[100] flex items-center justify-center w-9 h-9 rounded-full bg-[#10b981]/20 border border-[#10b981]/40 transition-transform"
+          style={{ transform: `translateX(-50%) translateY(${pullY}px)` }}
+        >
+          <div className="w-4 h-4 border-2 border-[#10b981] border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
       <PageMeta
         title="Can I see the Aurora tonight? Live Forecast & Checklist | The Storm Watcher"
         description="Check your local aurora visibility in seconds. Interactive 3D OVATION model, real-time cloud cover, moon phase, and Kp index checklist for perfect aurora hunting."
