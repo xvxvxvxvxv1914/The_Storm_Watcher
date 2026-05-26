@@ -181,10 +181,13 @@ export const getMagField = (): Promise<MagFieldData[]> =>
 export const getAlerts = (): Promise<Alert[]> =>
   cached('alerts', TTL_5M, async () => {
     try {
-      return await getJson<Alert[]>(`${NOAA_BASE_URL}/products/alerts.json`);
+      const result = await getJson<Alert[]>(`${NOAA_BASE_URL}/products/alerts.json`);
+      persistSet('offline_alerts', result).catch(() => {});
+      return result;
     } catch (error) {
       logError('Error fetching data in getAlerts:', error);
-      return [];
+      const cached_offline = await persistGet<Alert[]>('offline_alerts');
+      return cached_offline ?? [];
     }
   });
 
