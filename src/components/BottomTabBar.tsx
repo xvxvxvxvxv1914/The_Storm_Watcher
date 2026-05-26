@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Home, LayoutDashboard, TrendingUp, Sparkles, MoreHorizontal,
@@ -115,7 +116,7 @@ const BottomTabBar = () => {
                 key={to}
                 to={to}
                 onClick={hapticLight}
-                className="flex flex-col items-center py-2.5 gap-0.5"
+                className="flex flex-col items-center py-2.5 gap-0.5 active:scale-[0.88] transition-transform duration-100"
                 style={{ minWidth: 64, borderRadius: 80 }}
               >
                 <Icon
@@ -134,7 +135,7 @@ const BottomTabBar = () => {
             aria-label="Open more menu"
             aria-expanded={moreOpen}
             aria-haspopup="menu"
-            className="flex flex-col items-center py-2.5 gap-0.5"
+            className="flex flex-col items-center py-2.5 gap-0.5 active:scale-[0.88] transition-transform duration-100"
             style={{ minWidth: 64 }}
           >
             <MoreHorizontal
@@ -157,11 +158,17 @@ const BottomTabBar = () => {
             className="lg:hidden fixed inset-0 z-[60] bg-black/60"
             onClick={() => setMoreOpen(false)}
           />
-          <div
+          <motion.div
             className="lg:hidden fixed bottom-0 left-0 right-0 z-[70] rounded-t-[20px] overflow-hidden glass-surface bottom-sheet-enter"
-            style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+            style={{ paddingBottom: 'env(safe-area-inset-bottom)', touchAction: 'none' }}
+            drag="y"
+            dragConstraints={{ top: 0, bottom: 0 }}
+            dragElastic={{ top: 0, bottom: 0.4 }}
+            onDragEnd={(_, info) => {
+              if (info.offset.y > 80 || info.velocity.y > 400) setMoreOpen(false);
+            }}
           >
-            <div className="flex justify-center pt-3 pb-2">
+            <div className="flex justify-center pt-3 pb-2 cursor-grab active:cursor-grabbing">
               <div className="w-9 h-1 rounded-full bg-white/25" />
             </div>
 
@@ -172,7 +179,7 @@ const BottomTabBar = () => {
               </button>
             </div>
 
-            <div className="max-h-[72vh] overflow-y-auto" role="menu">
+            <div className="max-h-[72vh] overflow-y-auto no-swipe" role="menu" style={{ touchAction: 'pan-y' }}>
               <div className="px-4 space-y-0.5 pb-2">
                 {moreLinks.map(({ to, icon: Icon, label, badge }) => (
                   <button
@@ -286,7 +293,7 @@ const BottomTabBar = () => {
 
               <div className="h-3" />
             </div>
-          </div>
+          </motion.div>
         </>
       )}
     </>
