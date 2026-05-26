@@ -1,6 +1,13 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
+import { sendEmail } from '../lib/resend';
+import { proActivatedEmail, paymentFailedEmail, subscriptionCancelledEmail } from '../emails/templates';
+
+async function getUserEmail(userId: string): Promise<string | null> {
+  const { data } = await supabase.auth.admin.getUserById(userId);
+  return data?.user?.email ?? null;
+}
 
 export const config = {
   api: { bodyParser: false },
@@ -72,6 +79,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         console.error('checkout.session.completed profile update failed', updateError, { userId, plan });
         return res.status(500).json({ error: 'DB update failed' });
       }
+
+      const email = await getUserEmail(userId);
+      if (email) {
+        sendEmail({
+          to: email,
+          subject: `🚀 Your ${plan === 'premium' ? 'Premium' : 'Pro'} plan is active — The Storm Watcher`,
+          html: proActivatedEmail(plan),
+        }).catch(err => console.error('Welcome email failed:', err));
+      }
       break;
     }
 
@@ -110,6 +126,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         console.error('customer.subscription.deleted profile update failed', updateError, { userId });
         return res.status(500).json({ error: 'DB update failed' });
       }
+
+      const email = await getUserEmail(userId);
+      if (email) {
+        sendEmail({
+          to: email,
+          subject: 'Your Storm Watcher subscription has ended',
+          html: subscriptionCancelledEmail(),
+        }).catch(err => console.error('Cancellation email failed:', err));
+      }
       break;
     }
 
@@ -128,6 +153,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (updateError) {
         console.error('invoice.payment_failed profile update failed', updateError, { userId });
         return res.status(500).json({ error: 'DB update failed' });
+      }
+
+      const email = await getUserEmail(userId);
+      if (email) {
+        sendEmail({
+          to: email,
+          subject: '⚠️ Payment failed — action required',
+          html: paymentFailedEmail(),
+        }).catch(err => console.error('Payment failed email error:', err));
       }
       break;
     }
