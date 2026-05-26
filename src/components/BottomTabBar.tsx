@@ -6,9 +6,13 @@ import {
   User, LogOut, SlidersHorizontal, Globe, ChevronRight,
   Magnet, HelpCircle, Camera, Trophy, Video, CalendarDays,
 } from 'lucide-react';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
+
+const hapticLight = () => Haptics.impact({ style: ImpactStyle.Light }).catch(() => {});
+const hapticMedium = () => Haptics.impact({ style: ImpactStyle.Medium }).catch(() => {});
 
 const tabs = [
   { to: '/',          icon: Home,            labelKey: 'nav.home' },
@@ -50,11 +54,13 @@ const BottomTabBar = () => {
   const isMoreActive = moreRoutes.some(r => location.pathname === r);
 
   const handleNav = (to: string) => {
+    hapticLight();
     setMoreOpen(false);
     navigate(to);
   };
 
   const handleLogout = async () => {
+    hapticMedium();
     setMoreOpen(false);
     await signOut();
     navigate('/');
@@ -108,7 +114,8 @@ const BottomTabBar = () => {
               <Link
                 key={to}
                 to={to}
-                className="flex flex-col items-center py-1.5 gap-0.5"
+                onClick={hapticLight}
+                className="flex flex-col items-center py-2.5 gap-0.5"
                 style={{ minWidth: 64, borderRadius: 80 }}
               >
                 <Icon
@@ -123,11 +130,11 @@ const BottomTabBar = () => {
             );
           })}
           <button
-            onClick={() => setMoreOpen(true)}
+            onClick={() => { hapticLight(); setMoreOpen(true); }}
             aria-label="Open more menu"
             aria-expanded={moreOpen}
             aria-haspopup="menu"
-            className="flex flex-col items-center py-1.5 gap-0.5"
+            className="flex flex-col items-center py-2.5 gap-0.5"
             style={{ minWidth: 64 }}
           >
             <MoreHorizontal
@@ -160,7 +167,7 @@ const BottomTabBar = () => {
 
             <div className="flex items-center justify-between px-5 pb-3">
               <span className={`font-bold text-lg ${theme === 'light' ? 'text-slate-800' : 'text-white'}`}>{t('nav.more') || 'More'}</span>
-              <button onClick={() => setMoreOpen(false)} aria-label="Close menu" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+              <button onClick={() => { hapticLight(); setMoreOpen(false); }} aria-label="Close menu" className="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center">
                 <X className={`w-4 h-4 ${theme === 'light' ? 'text-slate-500' : 'text-white/70'}`} />
               </button>
             </div>

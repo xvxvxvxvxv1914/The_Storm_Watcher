@@ -31,6 +31,8 @@ function start() {
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') poll();
   });
+  // Refresh when Capacitor app returns to foreground (native iOS/Android)
+  window.addEventListener('app-foreground', poll);
 }
 
 export function useKpLive(): number | null {

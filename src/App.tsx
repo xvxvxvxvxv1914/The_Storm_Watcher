@@ -81,6 +81,14 @@ function AppRoutes() {
     return () => { sub.then(h => h.remove()); };
   }, [navigate]);
 
+  // Dispatch a custom event when app comes to foreground so data hooks can refresh
+  useEffect(() => {
+    const sub = CapApp.addListener('appStateChange', ({ isActive }) => {
+      if (isActive) window.dispatchEvent(new CustomEvent('app-foreground'));
+    });
+    return () => { sub.then(h => h.remove()); };
+  }, []);
+
   return (
     <div className={`min-h-screen ${theme === 'light' ? 'bg-slate-100' : 'bg-[#0a0a1a]'}`}>
       <a

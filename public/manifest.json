@@ -26,6 +26,12 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
   "shortcuts": [
@@ -40,6 +46,18 @@
       "short_name": "Forecast",
       "url": "/forecast",
       "description": "3-day Kp index forecast"
+    },
+    {
+      "name": "Aurora",
+      "short_name": "Aurora",
+      "url": "/aurora",
+      "description": "Aurora forecast and globe"
+    },
+    {
+      "name": "Alerts",
+      "short_name": "Alerts",
+      "url": "/alerts",
+      "description": "Space weather storm alerts"
     }
   ],
   "categories": ["weather", "science", "education"]

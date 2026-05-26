@@ -7,7 +7,10 @@ import './index.css';
 import 'leaflet/dist/leaflet.css';
 import { LanguageProvider } from './contexts/LanguageContext';
 
-registerSW({ immediate: true });
+// Service worker is only useful for web/PWA — skip on native Capacitor (files are local)
+if (!('Capacitor' in window)) {
+  registerSW({ immediate: true });
+}
 
 // ── Chunk-load error recovery ──────────────────────────────────
 // After a new Vercel deploy, old cached index.html may reference JS chunks with

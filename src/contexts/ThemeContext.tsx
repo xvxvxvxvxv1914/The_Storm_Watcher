@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { StatusBar, Style } from '@capacitor/status-bar';
 
 type Theme = 'dark' | 'light';
 
@@ -23,6 +24,9 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     } else {
       document.documentElement.classList.remove('light');
     }
+    // Sync native status bar with theme (no-op on web)
+    StatusBar.setStyle({ style: theme === 'light' ? Style.Light : Style.Dark }).catch(() => {});
+    StatusBar.setBackgroundColor({ color: theme === 'light' ? '#f1f5f9' : '#0a0a1a' }).catch(() => {});
   }, [theme]);
 
   const toggleTheme = () => setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));

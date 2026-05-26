@@ -6,6 +6,9 @@ const POLL_MS = 5 * 60 * 1000; // 5 minutes
 const COOLDOWN_MS = 2 * 60 * 60 * 1000; // 2 hours between alerts
 const COOLDOWN_KEY = 'tsw_kp_alert_last';
 
+// iOS WKWebView does not implement the Web Notification API — guard every access.
+const isWebNotificationSupported = typeof window !== 'undefined' && 'Notification' in window;
+
 export function useKpAlert() {
   const { settings } = useSettings();
   const thresholdRef = useRef(settings.kpThreshold);
@@ -15,6 +18,7 @@ export function useKpAlert() {
   }, [settings.kpThreshold]);
 
   useEffect(() => {
+    if (!isWebNotificationSupported) return;
     if (Notification.permission !== 'granted') return;
 
     const check = async () => {
