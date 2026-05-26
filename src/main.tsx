@@ -41,16 +41,19 @@ Sentry.init({
   environment: import.meta.env.MODE,
   integrations: [
     Sentry.replayIntegration({
-      maskAllText: false,
-      blockAllMedia: false,
+      maskAllText: true,
+      blockAllMedia: true,
       maskAllInputs: true,
-      mask: ['.sentry-mask'],
     }),
   ],
   tracesSampleRate: 0.1,
   replaysSessionSampleRate: 0.05,
   replaysOnErrorSampleRate: 1.0,
-  beforeSend(event) {
+  beforeSend(event, hint) {
+    const err = hint?.originalException;
+    if (err instanceof Error && (err.name === 'AbortError' || err.message === 'Load failed')) {
+      return null;
+    }
     if (event.user) {
       delete event.user.email;
       delete event.user.username;
