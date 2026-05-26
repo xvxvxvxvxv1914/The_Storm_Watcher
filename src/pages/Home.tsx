@@ -12,6 +12,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { useAuth } from '../contexts/AuthContext';
 import { calcAuroraVisibility } from '../utils/auroraVisibility';
+import { isNative } from '../utils/platform';
 import StarField from '../components/StarField';
 import { Skeleton } from '../components/Skeleton';
 import { supabase } from '../lib/supabase';
@@ -378,16 +379,18 @@ const Home = () => {
                 </Link>
               )}
             </div>
-            <div className="flex justify-center mb-8">
-              <Link
-                to="/pricing"
-                className="inline-flex items-center gap-2 text-sm font-semibold text-[#f97316] hover:text-[#fbbf24] transition-colors group"
-              >
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#f97316] group-hover:scale-125 transition-transform" />
-                {t('pricing.tryProFree') || 'Try Pro free for 14 days'}
-                <span className="text-[#64748b] font-normal">{t('home.noCC') || '— no credit card required'}</span>
-              </Link>
-            </div>
+            {!isNative() && (
+              <div className="flex justify-center mb-8">
+                <Link
+                  to="/pricing"
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-[#f97316] hover:text-[#fbbf24] transition-colors group"
+                >
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#f97316] group-hover:scale-125 transition-transform" />
+                  {t('pricing.tryProFree') || 'Try Pro free for 14 days'}
+                  <span className="text-[#64748b] font-normal">{t('home.noCC') || '— no credit card required'}</span>
+                </Link>
+              </div>
+            )}
 
             {/* Community Pulse Widget */}
             {loading ? (

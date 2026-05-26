@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { isNative } from '../utils/platform';
 import { Check, Zap, Star, CreditCard } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -48,6 +49,7 @@ export default function Pricing() {
   const [cancelledMessage, setCancelledMessage] = useState(false);
 
   useEffect(() => {
+    if (isNative()) { navigate('/', { replace: true }); return; }
     const params = new URLSearchParams(location.search);
     if (params.get('payment') === 'cancelled') {
       setCancelledMessage(true);

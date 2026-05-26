@@ -2,10 +2,13 @@ import { Link } from 'react-router-dom';
 import { Clock, Zap, AlertCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { isNative } from '../utils/platform';
 
 export default function TrialBanner() {
   const { profile } = useAuth();
   const { t } = useLanguage();
+
+  if (isNative()) return null;
 
   const status = profile?.subscription_status;
 

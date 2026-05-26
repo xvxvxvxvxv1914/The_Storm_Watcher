@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Lock, Sparkles } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { isNative } from '../utils/platform';
 
 type Plan = 'free' | 'pro' | 'premium';
 
@@ -22,7 +23,7 @@ const PlanGuard = ({ requiredPlan, children }: PlanGuardProps) => {
   // Trialing users get Pro access even if plan field wasn't updated yet
   const isTrialing = profile?.subscription_status === 'trialing';
   const effectivePlan: Plan = (isTrialing && PLAN_RANK[userPlan] < PLAN_RANK['pro']) ? 'pro' : userPlan;
-  const hasAccess = !paymentsEnabled || PLAN_RANK[effectivePlan] >= PLAN_RANK[requiredPlan];
+  const hasAccess = isNative() || !paymentsEnabled || PLAN_RANK[effectivePlan] >= PLAN_RANK[requiredPlan];
 
   if (hasAccess) return <>{children}</>;
 
