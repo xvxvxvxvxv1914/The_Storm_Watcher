@@ -716,6 +716,7 @@ const fr: Record<string, string> = {
   'hunt.submit': 'Soumettre l\'observation',
   'hunt.reportSuccess': 'Observation signalée ! +10 points',
   'hunt.reportError': 'Échec du signalement',
+  'hunt.cooldownError': 'Vous ne pouvez signaler qu\'une observation par heure.',
   'hunt.locationRequired': 'Veuillez saisir votre lieu',
   'hunt.cooldown': 'Prochain signalement dans',
   'hunt.cooldownHint': 'Un signalement par heure pour garder les données précises.',

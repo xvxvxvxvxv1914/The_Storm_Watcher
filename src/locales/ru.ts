@@ -716,6 +716,7 @@ const ru: Record<string, string> = {
   'hunt.submit': 'Отправить наблюдение',
   'hunt.reportSuccess': 'Наблюдение зафиксировано! +10 баллов',
   'hunt.reportError': 'Не удалось зафиксировать наблюдение',
+  'hunt.cooldownError': 'Можно сообщать только об одном наблюдении в час.',
   'hunt.locationRequired': 'Пожалуйста, введите своё местоположение',
   'hunt.cooldown': 'Следующий отчёт через',
   'hunt.cooldownHint': 'Один отчёт в час для точности данных.',

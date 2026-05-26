@@ -716,6 +716,7 @@ const es: Record<string, string> = {
   'hunt.submit': 'Enviar avistamiento',
   'hunt.reportSuccess': '¡Avistamiento reportado! +10 puntos',
   'hunt.reportError': 'Error al reportar avistamiento',
+  'hunt.cooldownError': 'Solo puedes reportar un avistamiento por hora.',
   'hunt.locationRequired': 'Por favor, ingresa tu ubicación',
   'hunt.cooldown': 'Próximo reporte en',
   'hunt.cooldownHint': 'Un reporte por hora para mantener los datos precisos.',

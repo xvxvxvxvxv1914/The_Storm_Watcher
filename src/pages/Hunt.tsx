@@ -194,8 +194,15 @@ export default function Hunt() {
       setNotes('');
       setIntensity(3);
       await loadData();
-    } catch {
-      setSubmitError(t('hunt.reportError') || 'Failed to report sighting');
+    } catch (err: unknown) {
+      const msg = (err as { message?: string })?.message ?? '';
+      if (msg.includes('cooldown')) {
+        localStorage.setItem(COOLDOWN_KEY, String(Date.now()));
+        setCooldownMs(COOLDOWN_MS);
+        setSubmitError(t('hunt.cooldownError') || 'You can only report one sighting per hour.');
+      } else {
+        setSubmitError(t('hunt.reportError') || 'Failed to report sighting');
+      }
     } finally {
       setSubmitting(false);
     }

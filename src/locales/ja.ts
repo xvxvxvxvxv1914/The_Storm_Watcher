@@ -716,6 +716,7 @@ const ja: Record<string, string> = {
   'hunt.submit': '目撃を送信',
   'hunt.reportSuccess': '目撃を報告しました！+10ポイント',
   'hunt.reportError': '目撃の報告に失敗しました',
+  'hunt.cooldownError': '1時間に1件の目撃しか報告できません。',
   'hunt.locationRequired': '場所を入力してください',
   'hunt.cooldown': '次の報告まで',
   'hunt.cooldownHint': 'データを正確に保つため1時間に1回の報告。',

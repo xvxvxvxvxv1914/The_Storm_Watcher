@@ -744,6 +744,7 @@ const bg: Record<string, string> = {
   'hunt.submit': 'Изпрати',
   'hunt.reportSuccess': 'Наблюдението е докладвано! +10 точки',
   'hunt.reportError': 'Грешка при докладването',
+  'hunt.cooldownError': 'Можеш да докладваш само едно наблюдение на час.',
   'hunt.locationRequired': 'Моля въведи местоположение',
   'hunt.cooldown': 'Следващо докладване след',
   'hunt.currentKp': 'Текущо Kp:',

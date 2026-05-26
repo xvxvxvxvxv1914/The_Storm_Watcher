@@ -738,6 +738,7 @@ const de: Record<string, string> = {
   'hunt.submit': 'Sichtung einreichen',
   'hunt.reportSuccess': 'Sichtung gemeldet! +10 Punkte',
   'hunt.reportError': 'Fehler beim Melden der Sichtung',
+  'hunt.cooldownError': 'Du kannst nur eine Sichtung pro Stunde melden.',
   'hunt.locationRequired': 'Bitte Standort eingeben',
   'hunt.cooldown': 'Nächste Meldung in',
   'hunt.cooldownHint': 'Eine Meldung pro Stunde für genaue Daten.',
