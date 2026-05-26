@@ -4,7 +4,6 @@ import { registerSW } from 'virtual:pwa-register';
 import * as Sentry from '@sentry/react';
 import App from './App.tsx';
 import './index.css';
-import 'leaflet/dist/leaflet.css';
 import { LanguageProvider } from './contexts/LanguageContext';
 
 // Service worker is only useful for web/PWA — skip on native Capacitor (files are local)
