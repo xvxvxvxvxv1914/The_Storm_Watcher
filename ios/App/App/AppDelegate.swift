@@ -3,6 +3,7 @@ import Capacitor
 import WidgetKit
 import BackgroundTasks
 import UserNotifications
+import Sentry
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
@@ -13,6 +14,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     private var widgetRefreshTimer: Timer?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        if let dsn = Bundle.main.infoDictionary?["SENTRY_DSN"] as? String, !dsn.isEmpty {
+            SentrySDK.start { options in
+                options.dsn = dsn
+                options.tracesSampleRate = 0.1
+                options.enableCrashHandler = true
+                options.attachViewHierarchy = false
+            }
+        }
         BGTaskScheduler.shared.register(forTaskWithIdentifier: bgTaskID, using: nil) { [weak self] task in
             self?.handleWidgetRefresh(task as! BGAppRefreshTask)
         }
