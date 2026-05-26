@@ -39,8 +39,7 @@ export const AnimatedRoutes = () => {
   const { user } = useAuth();
 
   return (
-    <div style={{ position: 'relative', minHeight: '100dvh', overflow: 'hidden' }}>
-    <AnimatePresence mode="sync" initial={false}>
+    <AnimatePresence mode="wait" initial={false}>
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<AnimatedPage><Home /></AnimatedPage>} />
         <Route path="/auth" element={user && user.email_confirmed_at ? <Navigate to="/dashboard" replace /> : <AnimatedPage><Auth /></AnimatedPage>} />
@@ -72,6 +71,5 @@ export const AnimatedRoutes = () => {
         <Route path="*" element={<AnimatedPage><NotFound /></AnimatedPage>} />
       </Routes>
     </AnimatePresence>
-    </div>
   );
 };
