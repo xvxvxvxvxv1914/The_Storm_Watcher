@@ -179,178 +179,127 @@ export default function Profile() {
         <div className="magnetic-orb" style={{ top: '40%', left: '-250px' }} />
 
         {/* ── Top nav ── */}
-        <div className="sticky top-0 z-20 bg-[#0a0a1a]/80 backdrop-blur-md border-b border-white/5 px-4 h-14 flex items-center">
-          <Link to="/dashboard" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm">
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back</span>
-          </Link>
-          <span className="mx-auto text-white text-sm font-semibold tracking-wide">PROFILE</span>
-          <div className="w-12" />
+        <div className="sticky top-0 z-20 bg-[#0a0a1a]/80 backdrop-blur-md border-b border-white/5 h-14">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
+            <Link to="/dashboard" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm">
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back</span>
+            </Link>
+            <span className="ml-6 text-white text-sm font-semibold tracking-[0.2em]">PROFILE</span>
+          </div>
         </div>
 
-        <div className="relative z-10 max-w-lg mx-auto px-4 pt-6 space-y-4">
+        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 lg:pt-10 space-y-4">
 
           {/* ── Hero card ── */}
           <div className={`relative glass-surface rounded-3xl overflow-hidden ${cfg.glow}`}>
             {/* Animated aurora blobs */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
               <div
-                className={`absolute -top-32 -left-20 w-72 h-72 rounded-full opacity-40 blur-3xl bg-gradient-to-br ${cfg.bgGradient}`}
+                className={`absolute -top-32 -left-20 w-72 h-72 lg:w-[28rem] lg:h-[28rem] rounded-full opacity-40 blur-3xl bg-gradient-to-br ${cfg.bgGradient}`}
               />
               <div
-                className="absolute -bottom-20 -right-10 w-56 h-56 rounded-full opacity-30 blur-3xl"
+                className="absolute -bottom-20 -right-10 w-56 h-56 lg:w-80 lg:h-80 rounded-full opacity-30 blur-3xl"
                 style={{ background: cfg.color }}
               />
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0a0a1a]/40" />
             </div>
 
-            <div className="relative p-6">
-              <div className="flex items-center gap-4">
-                {/* Avatar with conic ring */}
-                <button
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={uploadingAvatar}
-                  className="relative flex-shrink-0 w-24 h-24 rounded-full focus:outline-none group"
-                >
-                  <div
-                    className="absolute -inset-1 rounded-full opacity-80 animate-pulse"
-                    style={{
-                      background: `conic-gradient(from 0deg, ${cfg.color}, ${cfg.color2}, ${cfg.color}, transparent, ${cfg.color})`,
-                    }}
-                  />
-                  <div className="relative w-full h-full rounded-full overflow-hidden bg-[#0a0a1a] border-2 border-[#0a0a1a]">
-                    {profile?.avatar_url ? (
-                      <img src={profile.avatar_url} alt="avatar" className="w-full h-full object-cover" loading="lazy" decoding="async" />
-                    ) : (
-                      <div
-                        className="w-full h-full flex items-center justify-center"
-                        style={{ background: `radial-gradient(circle, ${cfg.color}28, ${cfg.color}08)` }}
-                      >
-                        <User className="w-10 h-10" style={{ color: cfg.color }} />
+            <div className="relative p-6 lg:p-8">
+              <div className="flex flex-col lg:flex-row lg:items-center gap-5 lg:gap-8">
+                <div className="flex items-center gap-4 lg:gap-6 flex-1 min-w-0">
+                  {/* Avatar with conic ring */}
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploadingAvatar}
+                    className="relative flex-shrink-0 w-24 h-24 lg:w-32 lg:h-32 rounded-full focus:outline-none group"
+                  >
+                    <div
+                      className="absolute -inset-1 rounded-full opacity-80 animate-pulse"
+                      style={{
+                        background: `conic-gradient(from 0deg, ${cfg.color}, ${cfg.color2}, ${cfg.color}, transparent, ${cfg.color})`,
+                      }}
+                    />
+                    <div className="relative w-full h-full rounded-full overflow-hidden bg-[#0a0a1a] border-2 border-[#0a0a1a]">
+                      {profile?.avatar_url ? (
+                        <img src={profile.avatar_url} alt="avatar" className="w-full h-full object-cover" loading="lazy" decoding="async" />
+                      ) : (
+                        <div
+                          className="w-full h-full flex items-center justify-center"
+                          style={{ background: `radial-gradient(circle, ${cfg.color}28, ${cfg.color}08)` }}
+                        >
+                          <User className="w-10 h-10 lg:w-14 lg:h-14" style={{ color: cfg.color }} />
+                        </div>
+                      )}
+                      <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity">
+                        {uploadingAvatar
+                          ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                          : <Camera className="w-5 h-5 lg:w-6 lg:h-6 text-white" />}
                       </div>
-                    )}
-                    <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity">
-                      {uploadingAvatar
-                        ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        : <Camera className="w-5 h-5 text-white" />}
+                    </div>
+                  </button>
+                  <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileSelect} />
+
+                  <div className="flex-1 min-w-0">
+                    <h1 className="text-2xl lg:text-3xl font-bold text-white truncate leading-tight">
+                      {profile?.full_name || user?.email?.split('@')[0] || 'Profile'}
+                    </h1>
+                    <p className="sentry-mask text-[#94a3b8] text-sm lg:text-base truncate mt-0.5">{user?.email}</p>
+                    <div className="flex flex-wrap items-center gap-2 mt-2.5">
+                      <div
+                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider text-white bg-gradient-to-r ${cfg.gradient}`}
+                        style={{ boxShadow: `0 4px 20px ${cfg.color}40` }}
+                      >
+                        <PlanIcon className="w-3 h-3" />
+                        {cfg.label}
+                        {isTrialing && <span className="opacity-80">· Trial</span>}
+                      </div>
+                      {memberSince && (
+                        <span className="text-[#64748b] text-[11px]">
+                          Joined {memberSince}
+                          {isPastDue && <span className="ml-2 text-red-400 font-medium">· Past due</span>}
+                        </span>
+                      )}
                     </div>
                   </div>
-                </button>
-                <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileSelect} />
+                </div>
 
-                <div className="flex-1 min-w-0">
-                  <h1 className="text-2xl font-bold text-white truncate leading-tight">
-                    {profile?.full_name || user?.email?.split('@')[0] || 'Profile'}
-                  </h1>
-                  <p className="sentry-mask text-[#94a3b8] text-sm truncate mt-0.5">{user?.email}</p>
-                  <div
-                    className={`inline-flex items-center gap-1.5 mt-2.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider text-white bg-gradient-to-r ${cfg.gradient} shadow-lg`}
-                    style={{ boxShadow: `0 4px 20px ${cfg.color}40` }}
-                  >
-                    <PlanIcon className="w-3 h-3" />
-                    {cfg.label}
-                    {isTrialing && <span className="opacity-80">· Trial</span>}
+                {/* Member stats row */}
+                <div className="grid grid-cols-3 gap-2 pt-5 lg:pt-0 lg:pb-0 border-t lg:border-t-0 lg:border-l border-white/8 lg:pl-8 lg:flex-shrink-0">
+                  <div className="text-left lg:text-center lg:px-4">
+                    <div className="text-2xl lg:text-3xl font-bold text-white">{daysAsMember ?? '—'}</div>
+                    <div className="text-[10px] text-[#64748b] uppercase tracking-wider mt-0.5">Days</div>
+                  </div>
+                  <div className="text-left lg:text-center lg:px-4 lg:border-x border-white/8">
+                    <div className="text-2xl lg:text-3xl font-bold gradient-solar">{cfg.label[0]}</div>
+                    <div className="text-[10px] text-[#64748b] uppercase tracking-wider mt-0.5">Plan</div>
+                  </div>
+                  <div className="text-left lg:text-center lg:px-4">
+                    <div className="text-2xl lg:text-3xl font-bold text-white">
+                      {isPaid ? <Sparkles className="w-6 h-6 lg:w-7 lg:h-7 inline" style={{ color: cfg.color }} /> : '✦'}
+                    </div>
+                    <div className="text-[10px] text-[#64748b] uppercase tracking-wider mt-0.5">Status</div>
                   </div>
                 </div>
-              </div>
-
-              {/* Member stats row */}
-              <div className="grid grid-cols-3 gap-2 mt-5 pt-5 border-t border-white/8">
-                <div className="text-center">
-                  <div className="text-xl font-bold text-white">{daysAsMember ?? '—'}</div>
-                  <div className="text-[10px] text-[#64748b] uppercase tracking-wider mt-0.5">Days</div>
-                </div>
-                <div className="text-center border-x border-white/8">
-                  <div className="text-xl font-bold gradient-solar">{cfg.label[0]}</div>
-                  <div className="text-[10px] text-[#64748b] uppercase tracking-wider mt-0.5">Plan</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-xl font-bold text-white">
-                    {isPaid ? <Sparkles className="w-5 h-5 inline" style={{ color: cfg.color }} /> : '✦'}
-                  </div>
-                  <div className="text-[10px] text-[#64748b] uppercase tracking-wider mt-0.5">Status</div>
-                </div>
-              </div>
-
-              {memberSince && (
-                <p className="text-[#64748b] text-[11px] mt-3 text-center">
-                  Joined {memberSince}
-                  {isPastDue && <span className="ml-2 text-red-400 font-medium">· Payment past due</span>}
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* ── Subscription card ── */}
-          <div className={`relative glass-surface rounded-2xl overflow-hidden ${isPaid || isTrialing ? cfg.glow : ''}`}>
-            <div className={`h-0.5 w-full bg-gradient-to-r ${cfg.gradient}`} />
-            <div
-              className="absolute -top-16 right-0 w-40 h-40 rounded-full opacity-20 blur-3xl pointer-events-none"
-              style={{ background: cfg.color }}
-            />
-            <div className="relative p-4">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2.5">
-                  <div
-                    className={`w-9 h-9 rounded-xl bg-gradient-to-br ${cfg.gradient} flex items-center justify-center flex-shrink-0`}
-                    style={{ boxShadow: `0 4px 16px ${cfg.color}40` }}
-                  >
-                    <PlanIcon className="w-4 h-4 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-white font-bold text-sm">Storm Watcher {cfg.label}</p>
-                    {isTrialing && trialDaysLeft !== null && (
-                      <p className="text-orange-400 text-[11px] mt-0.5 font-medium">{trialDaysLeft} days left in trial</p>
-                    )}
-                    {!isTrialing && isPaid && subscriptionEnd && (
-                      <p className="text-[#64748b] text-[11px] mt-0.5">Renews {subscriptionEnd}</p>
-                    )}
-                    {!isPaid && !isTrialing && (
-                      <p className="text-[#64748b] text-[11px] mt-0.5">Unlock more features</p>
-                    )}
-                  </div>
-                </div>
-                {(isPaid || isTrialing || isPastDue) ? (
-                  <button
-                    onClick={openPortal}
-                    disabled={portalLoading}
-                    className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold uppercase tracking-wider text-white bg-gradient-to-r ${cfg.gradient} disabled:opacity-50 hover:opacity-90 transition-opacity`}
-                    style={{ boxShadow: `0 4px 16px ${cfg.color}40` }}
-                  >
-                    <CreditCard className="w-3.5 h-3.5" />
-                    {portalLoading ? '...' : 'Manage'}
-                  </button>
-                ) : (
-                  <Link
-                    to="/pricing"
-                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold uppercase tracking-wider text-white bg-gradient-to-r from-orange-500 to-amber-400 hover:opacity-90 transition-opacity"
-                    style={{ boxShadow: '0 4px 16px #f9731640' }}
-                  >
-                    <Zap className="w-3.5 h-3.5" />
-                    Upgrade
-                  </Link>
-                )}
-              </div>
-              <div className="space-y-1.5">
-                {(PLAN_FEATURES[plan] ?? PLAN_FEATURES.free).map(f => (
-                  <div key={f} className="flex items-center gap-2 text-xs text-[#cbd5e1]">
-                    <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0" style={{ color: cfg.color }} />
-                    <span>{f}</span>
-                  </div>
-                ))}
               </div>
             </div>
           </div>
+
+          {/* ── Two-column body ── */}
+          <div className="grid lg:grid-cols-3 gap-4">
+
+          {/* LEFT (wider) ── Quick links + Account ── */}
+          <div className="lg:col-span-2 space-y-4 lg:order-1 order-2">
 
           {/* ── Quick links grid ── */}
           <div>
             <p className="text-[#64748b] text-[10px] font-bold uppercase tracking-[0.2em] px-1 mb-2">Navigate</p>
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 lg:gap-3">
               {QUICK_LINKS.map(({ to, icon: Icon, label, sub, color }) => (
                 <Link
                   key={to}
                   to={to}
-                  className="group glass-surface rounded-2xl p-3.5 hover:scale-[1.02] active:scale-[0.98] transition-transform relative overflow-hidden"
+                  className="group glass-surface rounded-2xl p-3.5 lg:p-4 hover:scale-[1.02] active:scale-[0.98] transition-transform relative overflow-hidden"
                 >
                   <div
                     className="absolute -top-8 -right-8 w-24 h-24 rounded-full opacity-0 group-hover:opacity-25 blur-2xl transition-opacity"
@@ -375,7 +324,7 @@ export default function Profile() {
               ))}
               <Link
                 to="/pricing"
-                className="group glass-surface rounded-2xl p-3.5 hover:scale-[1.02] active:scale-[0.98] transition-transform relative overflow-hidden"
+                className="group glass-surface rounded-2xl p-3.5 lg:p-4 hover:scale-[1.02] active:scale-[0.98] transition-transform relative overflow-hidden"
               >
                 <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full opacity-25 group-hover:opacity-40 blur-2xl transition-opacity bg-gradient-to-br from-orange-500 to-amber-400" />
                 <div className="relative flex items-start gap-3">
@@ -439,6 +388,73 @@ export default function Profile() {
                 {saving ? 'Saving…' : 'Save changes'}
               </button>
             </form>
+          </div>
+
+          </div>
+          {/* END LEFT */}
+
+          {/* RIGHT ── Subscription + Danger ── */}
+          <div className="lg:col-span-1 space-y-4 lg:order-2 order-1">
+
+          {/* ── Subscription card ── */}
+          <div className={`relative glass-surface rounded-2xl overflow-hidden ${isPaid || isTrialing ? cfg.glow : ''}`}>
+            <div className={`h-0.5 w-full bg-gradient-to-r ${cfg.gradient}`} />
+            <div
+              className="absolute -top-16 right-0 w-40 h-40 rounded-full opacity-20 blur-3xl pointer-events-none"
+              style={{ background: cfg.color }}
+            />
+            <div className="relative p-4">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2.5">
+                  <div
+                    className={`w-9 h-9 rounded-xl bg-gradient-to-br ${cfg.gradient} flex items-center justify-center flex-shrink-0`}
+                    style={{ boxShadow: `0 4px 16px ${cfg.color}40` }}
+                  >
+                    <PlanIcon className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-white font-bold text-sm">Storm Watcher {cfg.label}</p>
+                    {isTrialing && trialDaysLeft !== null && (
+                      <p className="text-orange-400 text-[11px] mt-0.5 font-medium">{trialDaysLeft} days left in trial</p>
+                    )}
+                    {!isTrialing && isPaid && subscriptionEnd && (
+                      <p className="text-[#64748b] text-[11px] mt-0.5">Renews {subscriptionEnd}</p>
+                    )}
+                    {!isPaid && !isTrialing && (
+                      <p className="text-[#64748b] text-[11px] mt-0.5">Unlock more features</p>
+                    )}
+                  </div>
+                </div>
+                {(isPaid || isTrialing || isPastDue) ? (
+                  <button
+                    onClick={openPortal}
+                    disabled={portalLoading}
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold uppercase tracking-wider text-white bg-gradient-to-r ${cfg.gradient} disabled:opacity-50 hover:opacity-90 transition-opacity`}
+                    style={{ boxShadow: `0 4px 16px ${cfg.color}40` }}
+                  >
+                    <CreditCard className="w-3.5 h-3.5" />
+                    {portalLoading ? '...' : 'Manage'}
+                  </button>
+                ) : (
+                  <Link
+                    to="/pricing"
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold uppercase tracking-wider text-white bg-gradient-to-r from-orange-500 to-amber-400 hover:opacity-90 transition-opacity"
+                    style={{ boxShadow: '0 4px 16px #f9731640' }}
+                  >
+                    <Zap className="w-3.5 h-3.5" />
+                    Upgrade
+                  </Link>
+                )}
+              </div>
+              <div className="space-y-1.5">
+                {(PLAN_FEATURES[plan] ?? PLAN_FEATURES.free).map(f => (
+                  <div key={f} className="flex items-center gap-2 text-xs text-[#cbd5e1]">
+                    <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0" style={{ color: cfg.color }} />
+                    <span>{f}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* ── Danger zone ── */}
@@ -506,6 +522,12 @@ export default function Profile() {
               )}
             </div>
           </div>
+
+          </div>
+          {/* END RIGHT */}
+
+          </div>
+          {/* END grid */}
 
         </div>
       </div>
