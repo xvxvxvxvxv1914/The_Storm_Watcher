@@ -71,7 +71,21 @@ export default function BlogPost() {
         title={`${post.title} — The Storm Watcher`}
         description={post.description}
         path={`/blog/${post.slug}`}
-      />
+      >
+        <meta property="og:type" content="article" />
+        <meta property="article:published_time" content={post.date} />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Article",
+          "headline": post.title,
+          "description": post.description,
+          "datePublished": post.date,
+          "author": { "@type": "Organization", "name": "The Storm Watcher", "url": "https://www.thestormwatcher.com" },
+          "publisher": { "@type": "Organization", "name": "The Storm Watcher", "logo": { "@type": "ImageObject", "url": "https://www.thestormwatcher.com/og-image.webp" } },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": `https://www.thestormwatcher.com/blog/${post.slug}` },
+          "image": "https://www.thestormwatcher.com/og-image.webp"
+        })}</script>
+      </PageMeta>
       <div className="min-h-screen bg-[#0a0a1a] px-4 py-8">
         <div className="max-w-2xl mx-auto">
           <Link
