@@ -1,9 +1,10 @@
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { Clock, ArrowLeft, Info, AlertTriangle, Lightbulb } from 'lucide-react';
-import { getBlogPost, blogPosts, CATEGORY_LABELS } from '../data/blog';
+import { getLocalizedBlogPost, getLocalizedBlogList, CATEGORY_LABELS } from '../data/blog';
 import type { BlogSection } from '../data/blog/types';
 import PageMeta from '../components/PageMeta';
 import { AnimatedPage } from '../components/AnimatedPage';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const CATEGORY_COLORS: Record<string, string> = {
   'space-weather': 'text-blue-400 bg-blue-400/10',
@@ -59,11 +60,12 @@ function Section({ section }: { section: BlogSection }) {
 
 export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
-  const post = getBlogPost(slug ?? '');
+  const { language } = useLanguage();
+  const post = getLocalizedBlogPost(slug ?? '', language);
 
   if (!post) return <Navigate to="/blog" replace />;
 
-  const otherPosts = blogPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
+  const otherPosts = getLocalizedBlogList(language).filter((p) => p.slug !== post.slug).slice(0, 3);
 
   return (
     <AnimatedPage>

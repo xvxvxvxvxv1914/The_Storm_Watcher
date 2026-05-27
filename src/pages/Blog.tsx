@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
 import { Clock, ChevronRight } from 'lucide-react';
-import { blogPosts, CATEGORY_LABELS } from '../data/blog';
+import { getLocalizedBlogList, CATEGORY_LABELS } from '../data/blog';
 import PageMeta from '../components/PageMeta';
 import { AnimatedPage } from '../components/AnimatedPage';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const CATEGORY_COLORS: Record<string, string> = {
   'space-weather': 'text-blue-400 bg-blue-400/10',
@@ -12,6 +13,9 @@ const CATEGORY_COLORS: Record<string, string> = {
 };
 
 export default function Blog() {
+  const { language } = useLanguage();
+  const posts = getLocalizedBlogList(language);
+
   return (
     <AnimatedPage>
       <PageMeta
@@ -27,7 +31,7 @@ export default function Blog() {
           </div>
 
           <div className="space-y-4">
-            {blogPosts.map((post) => (
+            {posts.map((post) => (
               <Link
                 key={post.slug}
                 to={`/blog/${post.slug}`}
