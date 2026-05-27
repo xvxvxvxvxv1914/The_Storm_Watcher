@@ -1,3 +1,9 @@
+export interface BlogTranslation {
+  title: string;
+  description: string;
+  content: BlogSection[];
+}
+
 export interface BlogPost {
   slug: string;
   title: string;
@@ -7,6 +13,7 @@ export interface BlogPost {
   category: 'space-weather' | 'aurora' | 'solar' | 'guide';
   coverEmoji: string;
   content: BlogSection[];
+  translations?: Record<string, BlogTranslation>;
 }
 
 export interface BlogSection {

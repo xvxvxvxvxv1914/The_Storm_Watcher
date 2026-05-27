@@ -27,6 +27,22 @@ export function getBlogPost(slug: string): BlogPost | undefined {
   return blogPosts.find((p) => p.slug === slug);
 }
 
+export function getLocalizedBlogPost(slug: string, lang: string): BlogPost | undefined {
+  const post = getBlogPost(slug);
+  if (!post) return undefined;
+  const t = post.translations?.[lang];
+  if (!t) return post;
+  return { ...post, title: t.title, description: t.description, content: t.content };
+}
+
+export function getLocalizedBlogList(lang: string): BlogPost[] {
+  return blogPosts.map((post) => {
+    const t = post.translations?.[lang];
+    if (!t) return post;
+    return { ...post, title: t.title, description: t.description, content: t.content };
+  });
+}
+
 export const CATEGORY_LABELS: Record<BlogPost['category'], string> = {
   'space-weather': 'Space Weather',
   'aurora': 'Aurora',
