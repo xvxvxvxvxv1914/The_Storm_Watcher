@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => ({
@@ -20,6 +21,13 @@ export default defineConfig(({ command }) => ({
       // Manifest is served from public/manifest.json; vite-plugin-pwa skips generation.
       manifest: false,
       devOptions: { enabled: false },
+    }),
+    sentryVitePlugin({
+      org: 'thestormwatcher',
+      project: 'javascript-react',
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+      sourcemaps: { filesToDeleteAfterUpload: ['dist/**/*.map'] },
+      telemetry: false,
     }),
   ],
   base: '/',
@@ -46,6 +54,7 @@ export default defineConfig(({ command }) => ({
         },
       },
     },
+    sourcemap: true,
     chunkSizeWarningLimit: 1000,
   },
   server: {
