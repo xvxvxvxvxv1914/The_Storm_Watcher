@@ -43,9 +43,9 @@ const PLAN_CONFIG = {
 };
 
 const PLAN_FEATURES: Record<string, string[]> = {
-  free: ['Live Kp index', 'Aurora forecasts', 'UV & sun times', 'ISS tracking'],
+  free: ['Live Kp index readings', 'Daily aurora forecast', 'ISS tracker (basic)'],
   pro: ['Real-time CME alerts', 'Hourly solar wind data', '3-day aurora forecast', 'Push notifications worldwide'],
-  premium: ['Everything in Pro', 'Priority support', 'Early feature access', 'Custom Kp threshold alerts'],
+  premium: ['Everything in Pro', 'Satellite imagery feeds', 'Custom geomagnetic models', 'Priority storm SMS alerts', 'Early-access research data'],
 };
 
 const QUICK_LINKS = [
@@ -261,15 +261,18 @@ export default function Profile() {
                     </div>
 
                     {/* Plan switcher pills */}
-                    <div className="inline-flex mt-4 p-1 rounded-full bg-white/[0.04] border border-white/8">
+                    <div className="inline-flex mt-4 p-1 rounded-full bg-white/[0.03] border border-white/8">
                       {PLAN_PILLS.map(({ key, label }) => {
                         const active = plan === key;
-                        const pillCfg = PLAN_CONFIG[key];
                         return active ? (
                           <span
                             key={key}
-                            className={`px-4 py-1.5 rounded-full text-[11px] font-bold tracking-wider text-white bg-gradient-to-r ${pillCfg.gradient}`}
-                            style={{ boxShadow: `0 2px 12px ${pillCfg.color}50` }}
+                            className="px-4 py-1.5 rounded-full text-[11px] font-bold tracking-wider text-white"
+                            style={{
+                              background: 'rgba(255,255,255,0.06)',
+                              border: '1px solid rgba(255,255,255,0.10)',
+                              boxShadow: `0 2px 14px ${cfg.color}40, inset 0 0 0 1px ${cfg.color}25`,
+                            }}
                           >
                             {label}
                           </span>
@@ -300,7 +303,7 @@ export default function Profile() {
                     <div className="text-[10px] text-[#64748b] uppercase tracking-wider mt-1">Plan</div>
                   </div>
                   <div className="w-full lg:w-24 h-24 rounded-2xl glass-surface flex flex-col items-center justify-center">
-                    <Sparkles className="w-6 h-6 lg:w-7 lg:h-7" style={{ color: isPaid ? cfg.color : '#64748b' }} />
+                    <Sparkles className="w-6 h-6 lg:w-7 lg:h-7" style={{ color: cfg.color }} />
                     <div className="text-[10px] text-[#64748b] uppercase tracking-wider mt-1">Status</div>
                   </div>
                 </div>
@@ -402,7 +405,7 @@ export default function Profile() {
             <div className="lg:col-span-1 space-y-4 lg:order-2 order-1">
 
               {/* Subscription */}
-              <div className={`relative glass-surface rounded-2xl overflow-hidden ${isPaid || isTrialing ? cfg.glow : ''}`}>
+              <div className={`relative glass-surface rounded-2xl overflow-hidden ${cfg.glow}`}>
                 <div className={`h-0.5 w-full bg-gradient-to-r ${cfg.gradient}`} />
                 <div
                   className="absolute -top-16 right-0 w-40 h-40 rounded-full opacity-20 blur-3xl pointer-events-none"
@@ -428,7 +431,7 @@ export default function Profile() {
                             <p className="text-[#64748b] text-xs mt-0.5">Renews {subscriptionEnd}</p>
                           )}
                           {!isPaid && !isTrialing && (
-                            <p className="text-[#64748b] text-xs mt-0.5">Free plan</p>
+                            <p className="text-[#64748b] text-xs mt-0.5">Free forever</p>
                           )}
                         </div>
                       </div>
@@ -446,8 +449,8 @@ export default function Profile() {
                     ) : (
                       <Link
                         to="/pricing"
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider text-white bg-gradient-to-r from-orange-500 to-amber-400 hover:opacity-90 transition-opacity flex-shrink-0"
-                        style={{ boxShadow: '0 4px 16px #f9731640' }}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider text-white bg-gradient-to-r ${cfg.gradient} hover:opacity-90 transition-opacity flex-shrink-0`}
+                        style={{ boxShadow: `0 4px 16px ${cfg.color}40` }}
                       >
                         <Zap className="w-3 h-3" />
                         Upgrade
