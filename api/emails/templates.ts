@@ -212,6 +212,31 @@ export function paymentFailedEmail(): string {
   return base(content, 'Action required — your payment could not be processed.');
 }
 
+export function trialEndingEmail(daysLeft: number): string {
+  const content = `
+    ${badge('⏰', 'Trial Ending Soon', '#f59e0b')}
+    <h1 style="margin:0 0 12px;color:#f1f5f9;font-size:24px;font-weight:700;text-align:center;line-height:1.3;">
+      Your free trial ends in ${daysLeft} day${daysLeft !== 1 ? 's' : ''}
+    </h1>
+    <p style="margin:0 0 24px;color:#94a3b8;font-size:15px;text-align:center;line-height:1.6;">
+      Add a payment method now to keep your Pro features uninterrupted. No charge until your trial ends.
+    </p>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#0a1628;border:1px solid #1e293b;border-radius:12px;padding:18px 24px;margin-bottom:8px;">
+      <tr>
+        <td style="color:#94a3b8;font-size:14px;line-height:1.7;">
+          After the trial, your account moves to the <strong style="color:#f1f5f9;">Free plan</strong> if no payment method is added. Your sightings and data remain safe.
+        </td>
+      </tr>
+    </table>
+    ${btn('Add Payment Method', `${BASE_URL}/profile`)}
+    ${divider()}
+    <p style="margin:0;color:#475569;font-size:13px;text-align:center;line-height:1.7;">
+      Questions? Reply to this email — we're happy to help.
+    </p>`;
+
+  return base(content, `Your Storm Watcher trial ends in ${daysLeft} day${daysLeft !== 1 ? 's' : ''}.`);
+}
+
 export function subscriptionCancelledEmail(): string {
   const content = `
     ${badge('💔', 'Subscription Cancelled', '#64748b')}

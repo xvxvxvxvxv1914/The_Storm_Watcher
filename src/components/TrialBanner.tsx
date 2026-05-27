@@ -15,7 +15,7 @@ export default function TrialBanner() {
   if (status === 'trialing') {
     const periodEnd = profile?.subscription_period_end;
     const daysLeft = periodEnd
-      ? Math.max(0, Math.ceil((new Date(periodEnd as unknown as string).getTime() - Date.now()) / 86_400_000))
+      ? Math.max(0, Math.ceil((new Date(periodEnd).getTime() - Date.now()) / 86_400_000))
       : 14;
 
     return (

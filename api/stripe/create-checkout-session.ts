@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2026-04-22.dahlia' });
 
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL!,
@@ -10,17 +10,20 @@ const supabase = createClient(
   { auth: { autoRefreshToken: false, persistSession: false } }
 );
 
-const APP_URL = 'https://thestormwatcher.com';
-
-const ALLOWED_ORIGINS = ['https://thestormwatcher.com', 'https://www.thestormwatcher.com'];
+const ALLOWED_ORIGINS = [
+  'https://thestormwatcher.com',
+  'https://www.thestormwatcher.com',
+  'http://localhost:5173',
+];
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).end();
 
-  const origin = req.headers.origin ?? req.headers.referer ?? '';
+  const origin = req.headers['origin'] as string | undefined ?? '';
   if (!ALLOWED_ORIGINS.includes(origin)) {
     return res.status(403).json({ error: 'Forbidden' });
   }
+  const appUrl = origin;
 
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) return res.status(401).json({ error: 'Unauthorized' });
@@ -71,8 +74,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     mode: 'subscription',
     payment_method_types: ['card'],
     line_items: [{ price: priceId, quantity: 1 }],
-    success_url: `${APP_URL}/dashboard?payment=success`,
-    cancel_url: `${APP_URL}/pricing?payment=cancelled`,
+    success_url: `${appUrl}/dashboard?payment=success`,
+    cancel_url: `${appUrl}/pricing?payment=cancelled`,
     metadata: { supabase_user_id: user.id },
     // No card required upfront for Pro trials — charged only after 14 days
     ...(isProTrial ? { payment_method_collection: 'if_required' } : {}),

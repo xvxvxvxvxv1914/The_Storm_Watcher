@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2026-04-22.dahlia' });
 
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL!,
@@ -10,7 +10,11 @@ const supabase = createClient(
   { auth: { autoRefreshToken: false, persistSession: false } }
 );
 
-const APP_URL = 'https://thestormwatcher.com';
+const ALLOWED_ORIGINS = [
+  'https://thestormwatcher.com',
+  'https://www.thestormwatcher.com',
+  'http://localhost:5173',
+];
 
 // In-memory rate limit: max 5 requests per user per minute
 const portalRateLimit = new Map<string, { count: number; resetAt: number }>();
@@ -28,6 +32,9 @@ function isPortalRateLimited(userId: string): boolean {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).end();
+
+  const origin = req.headers['origin'] as string | undefined ?? '';
+  const returnBase = ALLOWED_ORIGINS.includes(origin) ? origin : 'https://thestormwatcher.com';
 
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) return res.status(401).json({ error: 'Unauthorized' });
@@ -49,7 +56,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const session = await stripe.billingPortal.sessions.create({
     customer: profile.stripe_customer_id as string,
-    return_url: `${APP_URL}/profile`,
+    return_url: `${returnBase}/profile`,
   });
 
   res.status(200).json({ url: session.url });

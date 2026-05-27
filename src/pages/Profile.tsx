@@ -101,7 +101,7 @@ export default function Profile() {
     : null;
 
   const periodEndRaw = profile?.subscription_period_end;
-  const periodEndDate = periodEndRaw ? new Date(periodEndRaw as unknown as string) : null;
+  const periodEndDate = periodEndRaw ? new Date(periodEndRaw) : null;
   const subscriptionEnd = periodEndDate && !isNaN(periodEndDate.getTime())
     ? periodEndDate.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
     : null;

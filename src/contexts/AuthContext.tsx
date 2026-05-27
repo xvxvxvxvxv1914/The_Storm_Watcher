@@ -11,7 +11,7 @@ interface Profile {
   plan: 'free' | 'pro' | 'premium';
   stripe_customer_id?: string;
   subscription_status?: string;
-  subscription_period_end?: number;
+  subscription_period_end?: string | null;
   created_at: string;
   updated_at: string;
 }
