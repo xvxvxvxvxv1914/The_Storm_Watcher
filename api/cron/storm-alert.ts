@@ -49,7 +49,8 @@ Track live → ${appUrl}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const bearerToken = req.headers.authorization?.replace('Bearer ', '');
-  if (bearerToken !== process.env.CRON_SECRET) {
+  const querySecret = req.query.secret as string | undefined;
+  if (bearerToken !== process.env.CRON_SECRET && querySecret !== process.env.CRON_SECRET) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
