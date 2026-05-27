@@ -415,7 +415,7 @@ export default function Hunt() {
                 >
                   {earned && (
                     <span
-                      className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-black text-white"
+                      className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-black text-white"
                       style={{ background: tier.border, boxShadow: `0 0 8px ${tier.glow}` }}
                     >
                       ✓

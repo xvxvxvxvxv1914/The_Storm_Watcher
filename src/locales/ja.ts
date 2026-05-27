@@ -822,6 +822,7 @@ const ja: Record<string, string> = {
   'install.button': 'インストール',
   'aurora.calendar.exportICal': 'カレンダーに追加',
   'aurora.calendar.tipsKp5': 'Kp ≥ 5 — 中緯度（北緯50°以上）で観測可能。',
+  'aurora.calendar.hourlyKp': '時間別Kp',
   'aurora.calendar.tipsKp7': 'Kp ≥ 7 — さらに南（北緯45°以上）でも観測可能。',
   'aurora.calendar.tipsBestViewing': '最適観察時間：現地時制22時～翌2時、晴れた暗い空、都市の明かりから離れた場所。',
   'mood.exportCSV': '気分履歴を CSV でエクスポート',

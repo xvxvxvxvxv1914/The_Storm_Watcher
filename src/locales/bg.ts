@@ -845,6 +845,7 @@ const bg: Record<string, string> = {
   'install.button': 'Инсталирай',
   'aurora.calendar.exportICal': 'Добави в календара',
   'aurora.calendar.tipsKp5': 'Kp ≥ 5 — видимо на средни географски ширини (50°N+).',
+  'aurora.calendar.hourlyKp': 'Почасов Kp',
   'aurora.calendar.tipsKp7': 'Kp ≥ 7 — видимо по-на юг (45°N+).',
   'aurora.calendar.tipsBestViewing': 'Най-добро наблюдение: 22:00–02:00 местно време, ясно тъмно небе, далеч от светлините на града.',
   'mood.exportCSV': 'Експорт на история на настроенията (CSV)',

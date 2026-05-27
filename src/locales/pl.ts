@@ -814,6 +814,7 @@ const pl: Record<string, string> = {
   'install.button': 'Zainstaluj',
   'aurora.calendar.exportICal': 'Dodaj do kalendarza',
   'aurora.calendar.tipsKp5': 'Kp ≥ 5 — widoczne na średnich szerokościach geograficznych (50°N+).',
+  'aurora.calendar.hourlyKp': 'Kp co godzinę',
   'aurora.calendar.tipsKp7': 'Kp ≥ 7 — widoczne dalej na południe (45°N+).',
   'aurora.calendar.tipsBestViewing': 'Najlepszy czas obserwacji: 22:00–02:00 czasu lokalnego, czyste ciemne niebo, z dala od świateł miejskich.',
   'mood.exportCSV': 'Eksportuj historię nastroju CSV',

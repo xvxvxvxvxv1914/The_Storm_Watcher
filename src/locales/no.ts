@@ -814,6 +814,7 @@ const no: Record<string, string> = {
   'install.button': 'Installer',
   'aurora.calendar.exportICal': 'Legg til i kalender',
   'aurora.calendar.tipsKp5': 'Kp ≥ 5 — synlig på mellombreddegrader (50°N+).',
+  'aurora.calendar.hourlyKp': 'Timevis Kp',
   'aurora.calendar.tipsKp7': 'Kp ≥ 7 — synlig lengre sørover (45°N+).',
   'aurora.calendar.tipsBestViewing': 'Beste tidspunkt: kl. 22–02 lokal tid, klar mørk himmel, langt fra bylys.',
   'mood.exportCSV': 'Eksporter humørhistorikk CSV',

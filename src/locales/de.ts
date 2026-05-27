@@ -825,6 +825,7 @@ const de: Record<string, string> = {
   'install.button': 'Installieren',
   'aurora.calendar.exportICal': 'Zum Kalender hinzufügen',
   'aurora.calendar.tipsKp5': 'Kp ≥ 5 — sichtbar auf mittleren Breiten (50°N+).',
+  'aurora.calendar.hourlyKp': 'Stündlicher Kp',
   'aurora.calendar.tipsKp7': 'Kp ≥ 7 — sichtbar weiter südlich (45°N+).',
   'aurora.calendar.tipsBestViewing': 'Beste Sicht: 22:00–02:00 Uhr Ortszeit, klarer dunkler Himmel, abseits der Stadtlichter.',
   'mood.exportCSV': 'Stimmungsverlauf als CSV exportieren',

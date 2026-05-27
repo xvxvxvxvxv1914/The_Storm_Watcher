@@ -814,6 +814,7 @@ const sv: Record<string, string> = {
   'install.button': 'Installera',
   'aurora.calendar.exportICal': 'Lägg till i kalendern',
   'aurora.calendar.tipsKp5': 'Kp ≥ 5 — synlig på mellanbrettgrader (50°N+).',
+  'aurora.calendar.hourlyKp': 'Timvis Kp',
   'aurora.calendar.tipsKp7': 'Kp ≥ 7 — synlig längre söderut (45°N+).',
   'aurora.calendar.tipsBestViewing': 'Bäst tidpunkt: kl. 22–02 lokal tid, klar mörk himmel, långt från stadsljus.',
   'mood.exportCSV': 'Exportera humörhistorik CSV',

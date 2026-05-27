@@ -814,6 +814,7 @@ const fi: Record<string, string> = {
   'install.button': 'Asenna',
   'aurora.calendar.exportICal': 'Lisää kalenteriin',
   'aurora.calendar.tipsKp5': 'Kp ≥ 5 — näkyvissä keskileveyksillä (50°N+).',
+  'aurora.calendar.hourlyKp': 'Tuntikohtainen Kp',
   'aurora.calendar.tipsKp7': 'Kp ≥ 7 — näkyvissä etelään päin (45°N+).',
   'aurora.calendar.tipsBestViewing': 'Paras katseluaika: klo 22–02 paikallista aikaa, kirkas pimeä taivas, kaukana kaupunkivaloista.',
   'mood.exportCSV': 'Vie mielialahistoria CSV',

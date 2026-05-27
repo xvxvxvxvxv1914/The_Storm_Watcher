@@ -814,6 +814,7 @@ const is_: Record<string, string> = {
   'install.button': 'Setja upp',
   'aurora.calendar.exportICal': 'Bæta við dagatal',
   'aurora.calendar.tipsKp5': 'Kp ≥ 5 — sýnilegt á miðbreiddum (50°N+).',
+  'aurora.calendar.hourlyKp': 'Kp á klukkustund',
   'aurora.calendar.tipsKp7': 'Kp ≥ 7 — sýnilegt lengra suður (45°N+).',
   'aurora.calendar.tipsBestViewing': 'Besta áhorfstími: kl. 22–02 staðartíma, tær myrkur himinn, fjarri borgairlýsingu.',
   'mood.exportCSV': 'Flytja út skapsögu CSV',

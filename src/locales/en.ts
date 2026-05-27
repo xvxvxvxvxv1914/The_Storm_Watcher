@@ -863,6 +863,7 @@ const en: Record<string, string> = {
   'install.button': 'Install',
   'aurora.calendar.exportICal': 'Add to Calendar',
   'aurora.calendar.tipsKp5': 'Kp ≥ 5 — visible at mid-latitudes (50°N+).',
+  'aurora.calendar.hourlyKp': 'Hourly Kp',
   'aurora.calendar.tipsKp7': 'Kp ≥ 7 — visible further south (45°N+).',
   'aurora.calendar.tipsBestViewing': 'Best viewing: 10 PM – 2 AM local time, clear dark skies, away from city lights.',
   'mood.exportCSV': 'Export mood history as CSV',

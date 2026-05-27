@@ -852,6 +852,7 @@ const ko: Record<string, string> = {
   'install.button': '설치',
   'aurora.calendar.exportICal': '캘린더에 추가',
   'aurora.calendar.tipsKp5': 'Kp ≥ 5 — 중위도(북위 50° 이상)에서 관측 가능.',
+  'aurora.calendar.hourlyKp': '시간별 Kp',
   'aurora.calendar.tipsKp7': 'Kp ≥ 7 — 더 남쪽(북위 45° 이상)에서도 관측 가능.',
   'aurora.calendar.tipsBestViewing': '최적 관측 시간: 오후 10시 ~ 오전 2시, 맑고 어두운 하늘, 도시 불빛에서 멀리 떨어진 곳.',
   'mood.exportCSV': '기분 기록 CSV 내보내기',

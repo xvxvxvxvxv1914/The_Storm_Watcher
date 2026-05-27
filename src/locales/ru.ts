@@ -822,6 +822,7 @@ const ru: Record<string, string> = {
   'install.button': 'Установить',
   'aurora.calendar.exportICal': 'Добавить в календарь',
   'aurora.calendar.tipsKp5': 'Kp ≥ 5 — видно на средних широтах (50°N+).',
+  'aurora.calendar.hourlyKp': 'Почасовой Kp',
   'aurora.calendar.tipsKp7': 'Kp ≥ 7 — видно южнее (45°N+).',
   'aurora.calendar.tipsBestViewing': 'Лучшее время: 22:00–02:00 по местному времени, ясное тёмное небо, вдали от городских огней.',
   'mood.exportCSV': 'Экспорт истории настроения CSV',

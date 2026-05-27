@@ -814,6 +814,7 @@ const uk: Record<string, string> = {
   'install.button': 'Встановити',
   'aurora.calendar.exportICal': 'Додати до календаря',
   'aurora.calendar.tipsKp5': 'Kp ≥ 5 — видно на середніх широтах (50°N+).',
+  'aurora.calendar.hourlyKp': 'Погодинний Kp',
   'aurora.calendar.tipsKp7': 'Kp ≥ 7 — видно далі на південь (45°N+).',
   'aurora.calendar.tipsBestViewing': 'Найкращий час: 22:00–02:00 за місцевим часом, ясне темне небо, далеко від міських вогнів.',
   'mood.exportCSV': 'Експорт історії настрою CSV',
