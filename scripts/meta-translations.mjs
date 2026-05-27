@@ -32,6 +32,17 @@ export const ROUTES = [
   { path: '/livestream',        slug: 'livestream' },
   { path: '/calendar',          slug: 'calendar' },
   { path: '/aurora-map',        slug: 'auroraMap' },
+  { path: '/blog',              slug: 'blog' },
+  { path: '/blog/what-is-kp-index',               slug: 'blog_kp' },
+  { path: '/blog/what-is-geomagnetic-storm',       slug: 'blog_storm' },
+  { path: '/blog/how-to-see-northern-lights',      slug: 'blog_northern_lights' },
+  { path: '/blog/what-is-solar-wind',              slug: 'blog_solar_wind' },
+  { path: '/blog/g1-to-g5-storm-levels',           slug: 'blog_g_scale' },
+  { path: '/blog/best-places-aurora-europe',       slug: 'blog_aurora_europe' },
+  { path: '/blog/what-is-solar-flare',             slug: 'blog_solar_flare' },
+  { path: '/blog/aurora-forecast-explained',       slug: 'blog_forecast' },
+  { path: '/blog/space-weather-effects-on-earth',  slug: 'blog_effects' },
+  { path: '/blog/what-is-iss-how-to-track',        slug: 'blog_iss' },
 ];
 
 export const META = {
@@ -413,4 +424,15 @@ export const META = {
     sv: { title: 'Norrskenssynlighetskarta — Var Kan Du Se Norrsken? | The Storm Watcher', description: 'Live världskarta med norrskenssynlighetszoner baserat på aktuellt Kp-index.' },
     uk: { title: 'Карта Видимості Авроральної Активності — де Видно Полярне Сяйво? | The Storm Watcher', description: 'Карта світу в реальному часі із зонами видимості авроральної активності на основі поточного індексу Kp.' },
   },
+  blog: { en: { title: 'Space Weather Blog — Aurora & Solar Storm Guides | The Storm Watcher', description: 'Learn about the Kp index, geomagnetic storms, aurora forecasts, solar flares, and space weather with expert guides.' } },
+  blog_kp: { en: { title: 'What is the Kp Index? A Complete Guide | The Storm Watcher', description: 'The Kp index is the most important number in space weather. Learn what it means, how it\'s measured, and why it matters for aurora visibility.' } },
+  blog_storm: { en: { title: 'What is a Geomagnetic Storm? | The Storm Watcher', description: 'Geomagnetic storms are disturbances in Earth\'s magnetic field caused by solar activity. Learn how they form, their effects, and how to prepare.' } },
+  blog_northern_lights: { en: { title: 'How to See the Northern Lights: A Practical Guide | The Storm Watcher', description: 'Everything you need to know to see the aurora borealis — best locations, ideal conditions, timing, and gear.' } },
+  blog_solar_wind: { en: { title: 'What is Solar Wind and Why Does It Matter? | The Storm Watcher', description: 'Solar wind is a constant stream of particles from the Sun that drives space weather on Earth. Learn how it works.' } },
+  blog_g_scale: { en: { title: 'G1 to G5: Understanding Geomagnetic Storm Levels | The Storm Watcher', description: 'NOAA\'s G-scale classifies geomagnetic storms from G1 to G5. Here\'s exactly what each level means for aurora and technology.' } },
+  blog_aurora_europe: { en: { title: 'Best Places to See the Aurora in Europe | The Storm Watcher', description: 'From Norway\'s fjords to Iceland\'s lava fields — the definitive guide to the best aurora viewing locations in Europe.' } },
+  blog_solar_flare: { en: { title: 'What is a Solar Flare? | The Storm Watcher', description: 'Solar flares are the most energetic explosions in our solar system. Learn what causes them and whether they pose a danger to Earth.' } },
+  blog_forecast: { en: { title: 'Aurora Forecast Explained: How to Read Space Weather Data | The Storm Watcher', description: 'Aurora forecasts are full of jargon — Kp, Bz, solar wind speed, OVATION. This guide explains each number.' } },
+  blog_effects: { en: { title: 'Space Weather and Its Effects on Earth | The Storm Watcher', description: 'Space weather affects power grids, satellites, GPS, aviation, and more. Here\'s how solar activity shapes modern technology.' } },
+  blog_iss: { en: { title: 'What is the ISS and How to Track It | The Storm Watcher', description: 'The International Space Station is the brightest object in the night sky after the Moon. Learn how to spot it and track it in real time.' } },
 };
