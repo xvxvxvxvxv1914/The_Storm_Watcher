@@ -3,32 +3,57 @@ import PageMeta from '../components/PageMeta';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   User, Save, Trash2, Zap, Star, CreditCard, Camera,
-  Settings, Globe, Bell, Map, ChevronRight, Shield,
-  LayoutDashboard, ArrowLeft,
+  Settings, Globe, Bell, Map, Shield,
+  LayoutDashboard, ArrowLeft, CheckCircle2, Sparkles,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { supabase } from '../lib/supabase';
 import AvatarCropper from '../components/AvatarCropper';
+import StarField from '../components/StarField';
 
 const PLAN_CONFIG = {
-  free:    { label: 'Free',    color: '#10b981', gradient: 'from-emerald-500 to-teal-400',    icon: Shield },
-  pro:     { label: 'Pro',     color: '#f97316', gradient: 'from-orange-500 to-amber-400',    icon: Zap    },
-  premium: { label: 'Premium', color: '#a855f7', gradient: 'from-purple-500 to-violet-400',   icon: Star   },
+  free: {
+    label: 'Free',
+    color: '#10b981',
+    color2: '#059669',
+    gradient: 'from-emerald-500 to-teal-400',
+    bgGradient: 'from-emerald-500/15 via-teal-500/5 to-transparent',
+    glow: 'glow-green',
+    icon: Shield,
+  },
+  pro: {
+    label: 'Pro',
+    color: '#f97316',
+    color2: '#fbbf24',
+    gradient: 'from-orange-500 to-amber-400',
+    bgGradient: 'from-orange-500/20 via-amber-500/8 to-transparent',
+    glow: 'glow-orange',
+    icon: Zap,
+  },
+  premium: {
+    label: 'Premium',
+    color: '#a855f7',
+    color2: '#7c3aed',
+    gradient: 'from-purple-500 to-violet-400',
+    bgGradient: 'from-purple-500/20 via-violet-500/8 to-transparent',
+    glow: 'glow-purple',
+    icon: Star,
+  },
 };
 
 const PLAN_FEATURES: Record<string, string[]> = {
-  free:    ['Live Kp index', 'Aurora forecasts', 'UV & sun times', 'ISS tracking', 'Sky visibility'],
-  pro:     ['Everything in Free', 'Storm alerts', 'Aurora gallery & hunt', 'Advanced charts'],
+  free: ['Live Kp index', 'Aurora forecasts', 'UV & sun times', 'ISS tracking', 'Sky visibility'],
+  pro: ['Everything in Free', 'Storm alerts', 'Aurora gallery & hunt', 'Advanced charts'],
   premium: ['Everything in Pro', 'Priority support', 'Early feature access'],
 };
 
 const QUICK_LINKS = [
-  { to: '/dashboard',         icon: LayoutDashboard, label: 'Dashboard',        sub: 'Live space weather' },
-  { to: '/settings',          icon: Settings,        label: 'Settings',         sub: 'App preferences' },
-  { to: '/settings/language', icon: Globe,           label: 'Language',         sub: '16 languages' },
-  { to: '/alerts',            icon: Bell,            label: 'Storm Alerts',     sub: 'Kp notifications' },
-  { to: '/aurora-map',        icon: Map,             label: 'Aurora Map',       sub: 'Visibility heatmap' },
+  { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', sub: 'Live data', color: '#10b981' },
+  { to: '/aurora-map', icon: Map, label: 'Aurora Map', sub: 'Visibility', color: '#7c3aed' },
+  { to: '/alerts', icon: Bell, label: 'Storm Alerts', sub: 'Kp pings', color: '#f97316' },
+  { to: '/settings', icon: Settings, label: 'Settings', sub: 'Preferences', color: '#06b6d4' },
+  { to: '/settings/language', icon: Globe, label: 'Language', sub: '16 langs', color: '#ec4899' },
 ];
 
 export default function Profile() {
@@ -59,6 +84,10 @@ export default function Profile() {
 
   const memberSince = profile?.created_at
     ? new Date(profile.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long' })
+    : null;
+
+  const daysAsMember = profile?.created_at
+    ? Math.max(1, Math.floor((Date.now() - new Date(profile.created_at).getTime()) / 86_400_000))
     : null;
 
   const periodEndRaw = profile?.subscription_period_end;
@@ -132,7 +161,7 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-[#0a0a1a]">
         <div className="w-8 h-8 border-2 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin" />
       </div>
     );
@@ -142,50 +171,62 @@ export default function Profile() {
     <>
       {cropSrc && <AvatarCropper imageSrc={cropSrc} onConfirm={handleCropConfirm} onCancel={() => setCropSrc(null)} />}
 
-      <div className="min-h-screen bg-[#0a0a1a] pb-28">
+      <div className="min-h-screen bg-[#0a0a1a] pb-28 relative">
         <PageMeta title="Profile — The Storm Watcher" description="Manage your profile and subscription." path="/profile" noindex />
 
+        <StarField />
+        <div className="solar-orb" style={{ top: '-200px', right: '-300px' }} />
+        <div className="magnetic-orb" style={{ top: '40%', left: '-250px' }} />
+
         {/* ── Top nav ── */}
-        <div className="sticky top-0 z-10 bg-[#0a0a1a]/80 backdrop-blur-md border-b border-white/5 px-4 h-14 flex items-center">
+        <div className="sticky top-0 z-20 bg-[#0a0a1a]/80 backdrop-blur-md border-b border-white/5 px-4 h-14 flex items-center">
           <Link to="/dashboard" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm">
             <ArrowLeft className="w-4 h-4" />
             <span>Back</span>
           </Link>
-          <span className="mx-auto text-white text-sm font-semibold">Profile</span>
+          <span className="mx-auto text-white text-sm font-semibold tracking-wide">PROFILE</span>
           <div className="w-12" />
         </div>
 
-        <div className="max-w-lg mx-auto px-4 pt-6 space-y-3">
+        <div className="relative z-10 max-w-lg mx-auto px-4 pt-6 space-y-4">
 
           {/* ── Hero card ── */}
-          <div className="relative rounded-2xl overflow-hidden border border-white/8">
-            {/* Aurora background */}
-            <div className="absolute inset-0 pointer-events-none">
+          <div className={`relative glass-surface rounded-3xl overflow-hidden ${cfg.glow}`}>
+            {/* Animated aurora blobs */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
               <div
-                className="absolute -top-20 -left-20 w-64 h-64 rounded-full opacity-20 blur-3xl"
+                className={`absolute -top-32 -left-20 w-72 h-72 rounded-full opacity-40 blur-3xl bg-gradient-to-br ${cfg.bgGradient}`}
+              />
+              <div
+                className="absolute -bottom-20 -right-10 w-56 h-56 rounded-full opacity-30 blur-3xl"
                 style={{ background: cfg.color }}
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-white/4 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0a0a1a]/40" />
             </div>
 
-            <div className="relative p-5 pb-4">
+            <div className="relative p-6">
               <div className="flex items-center gap-4">
-                {/* Avatar */}
+                {/* Avatar with conic ring */}
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploadingAvatar}
-                  className="relative flex-shrink-0 w-20 h-20 rounded-full focus:outline-none group"
+                  className="relative flex-shrink-0 w-24 h-24 rounded-full focus:outline-none group"
                 >
                   <div
-                    className="absolute -inset-0.5 rounded-full opacity-70"
-                    style={{ background: `conic-gradient(${cfg.color}, transparent, ${cfg.color})` }}
+                    className="absolute -inset-1 rounded-full opacity-80 animate-pulse"
+                    style={{
+                      background: `conic-gradient(from 0deg, ${cfg.color}, ${cfg.color2}, ${cfg.color}, transparent, ${cfg.color})`,
+                    }}
                   />
-                  <div className="relative w-full h-full rounded-full overflow-hidden bg-[#0a0a1a]">
+                  <div className="relative w-full h-full rounded-full overflow-hidden bg-[#0a0a1a] border-2 border-[#0a0a1a]">
                     {profile?.avatar_url ? (
                       <img src={profile.avatar_url} alt="avatar" className="w-full h-full object-cover" loading="lazy" decoding="async" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center" style={{ background: `${cfg.color}18` }}>
-                        <User className="w-8 h-8" style={{ color: cfg.color }} />
+                      <div
+                        className="w-full h-full flex items-center justify-center"
+                        style={{ background: `radial-gradient(circle, ${cfg.color}28, ${cfg.color}08)` }}
+                      >
+                        <User className="w-10 h-10" style={{ color: cfg.color }} />
                       </div>
                     )}
                     <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -201,119 +242,177 @@ export default function Profile() {
                   <h1 className="text-2xl font-bold text-white truncate leading-tight">
                     {profile?.full_name || user?.email?.split('@')[0] || 'Profile'}
                   </h1>
-                  <p className="sentry-mask text-slate-400 text-sm truncate mt-0.5">{user?.email}</p>
+                  <p className="sentry-mask text-[#94a3b8] text-sm truncate mt-0.5">{user?.email}</p>
                   <div
-                    className={`inline-flex items-center gap-1.5 mt-2 px-2.5 py-1 rounded-full text-xs font-bold bg-gradient-to-r text-white ${cfg.gradient}`}
+                    className={`inline-flex items-center gap-1.5 mt-2.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider text-white bg-gradient-to-r ${cfg.gradient} shadow-lg`}
+                    style={{ boxShadow: `0 4px 20px ${cfg.color}40` }}
                   >
                     <PlanIcon className="w-3 h-3" />
                     {cfg.label}
-                    {isTrialing && <span className="opacity-70">· Trial</span>}
+                    {isTrialing && <span className="opacity-80">· Trial</span>}
                   </div>
                 </div>
               </div>
 
-              {/* Stats */}
+              {/* Member stats row */}
+              <div className="grid grid-cols-3 gap-2 mt-5 pt-5 border-t border-white/8">
+                <div className="text-center">
+                  <div className="text-xl font-bold text-white">{daysAsMember ?? '—'}</div>
+                  <div className="text-[10px] text-[#64748b] uppercase tracking-wider mt-0.5">Days</div>
+                </div>
+                <div className="text-center border-x border-white/8">
+                  <div className="text-xl font-bold gradient-solar">{cfg.label[0]}</div>
+                  <div className="text-[10px] text-[#64748b] uppercase tracking-wider mt-0.5">Plan</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-xl font-bold text-white">
+                    {isPaid ? <Sparkles className="w-5 h-5 inline" style={{ color: cfg.color }} /> : '✦'}
+                  </div>
+                  <div className="text-[10px] text-[#64748b] uppercase tracking-wider mt-0.5">Status</div>
+                </div>
+              </div>
+
               {memberSince && (
-                <p className="text-slate-600 text-xs mt-4 pt-4 border-t border-white/5">
-                  Member since {memberSince}
-                  {isPastDue && <span className="ml-3 text-red-400 font-medium">· Payment past due</span>}
+                <p className="text-[#64748b] text-[11px] mt-3 text-center">
+                  Joined {memberSince}
+                  {isPastDue && <span className="ml-2 text-red-400 font-medium">· Payment past due</span>}
                 </p>
               )}
             </div>
           </div>
 
           {/* ── Subscription card ── */}
-          <div className="rounded-2xl border border-white/8 bg-white/2 overflow-hidden">
-            <div className={`h-px w-full bg-gradient-to-r ${cfg.gradient}`} />
-            <div className="p-4">
+          <div className={`relative glass-surface rounded-2xl overflow-hidden ${isPaid || isTrialing ? cfg.glow : ''}`}>
+            <div className={`h-0.5 w-full bg-gradient-to-r ${cfg.gradient}`} />
+            <div
+              className="absolute -top-16 right-0 w-40 h-40 rounded-full opacity-20 blur-3xl pointer-events-none"
+              style={{ background: cfg.color }}
+            />
+            <div className="relative p-4">
               <div className="flex items-center justify-between mb-3">
-                <div>
-                  <p className="text-white font-semibold text-sm">Storm Watcher {cfg.label}</p>
-                  {isTrialing && trialDaysLeft !== null && (
-                    <p className="text-orange-400 text-xs mt-0.5">{trialDaysLeft} days remaining in trial</p>
-                  )}
-                  {!isTrialing && isPaid && subscriptionEnd && (
-                    <p className="text-slate-500 text-xs mt-0.5">Renews {subscriptionEnd}</p>
-                  )}
-                  {!isPaid && !isTrialing && (
-                    <p className="text-slate-500 text-xs mt-0.5">Upgrade to unlock more features</p>
-                  )}
+                <div className="flex items-center gap-2.5">
+                  <div
+                    className={`w-9 h-9 rounded-xl bg-gradient-to-br ${cfg.gradient} flex items-center justify-center flex-shrink-0`}
+                    style={{ boxShadow: `0 4px 16px ${cfg.color}40` }}
+                  >
+                    <PlanIcon className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-white font-bold text-sm">Storm Watcher {cfg.label}</p>
+                    {isTrialing && trialDaysLeft !== null && (
+                      <p className="text-orange-400 text-[11px] mt-0.5 font-medium">{trialDaysLeft} days left in trial</p>
+                    )}
+                    {!isTrialing && isPaid && subscriptionEnd && (
+                      <p className="text-[#64748b] text-[11px] mt-0.5">Renews {subscriptionEnd}</p>
+                    )}
+                    {!isPaid && !isTrialing && (
+                      <p className="text-[#64748b] text-[11px] mt-0.5">Unlock more features</p>
+                    )}
+                  </div>
                 </div>
                 {(isPaid || isTrialing || isPastDue) ? (
                   <button
                     onClick={openPortal}
                     disabled={portalLoading}
-                    className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-white bg-gradient-to-r ${cfg.gradient} disabled:opacity-50 hover:opacity-90 transition-opacity`}
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold uppercase tracking-wider text-white bg-gradient-to-r ${cfg.gradient} disabled:opacity-50 hover:opacity-90 transition-opacity`}
+                    style={{ boxShadow: `0 4px 16px ${cfg.color}40` }}
                   >
                     <CreditCard className="w-3.5 h-3.5" />
-                    {portalLoading ? 'Loading…' : 'Manage'}
+                    {portalLoading ? '...' : 'Manage'}
                   </button>
                 ) : (
                   <Link
                     to="/pricing"
-                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-orange-500 to-amber-400 hover:opacity-90 transition-opacity"
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold uppercase tracking-wider text-white bg-gradient-to-r from-orange-500 to-amber-400 hover:opacity-90 transition-opacity"
+                    style={{ boxShadow: '0 4px 16px #f9731640' }}
                   >
                     <Zap className="w-3.5 h-3.5" />
                     Upgrade
                   </Link>
                 )}
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="space-y-1.5">
                 {(PLAN_FEATURES[plan] ?? PLAN_FEATURES.free).map(f => (
-                  <span
-                    key={f}
-                    className="text-xs px-2.5 py-1 rounded-full border border-white/8 text-slate-400"
-                    style={{ background: `${cfg.color}0d` }}
-                  >
-                    {f}
-                  </span>
+                  <div key={f} className="flex items-center gap-2 text-xs text-[#cbd5e1]">
+                    <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0" style={{ color: cfg.color }} />
+                    <span>{f}</span>
+                  </div>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* ── Quick links ── */}
-          <div className="rounded-2xl border border-white/8 bg-white/2 overflow-hidden">
-            <div className="px-4 pt-3.5 pb-1">
-              <p className="text-slate-500 text-[11px] font-semibold uppercase tracking-wider">Navigate</p>
-            </div>
-            {QUICK_LINKS.map(({ to, icon: Icon, label, sub }, i) => (
+          {/* ── Quick links grid ── */}
+          <div>
+            <p className="text-[#64748b] text-[10px] font-bold uppercase tracking-[0.2em] px-1 mb-2">Navigate</p>
+            <div className="grid grid-cols-2 gap-2.5">
+              {QUICK_LINKS.map(({ to, icon: Icon, label, sub, color }) => (
+                <Link
+                  key={to}
+                  to={to}
+                  className="group glass-surface rounded-2xl p-3.5 hover:scale-[1.02] active:scale-[0.98] transition-transform relative overflow-hidden"
+                >
+                  <div
+                    className="absolute -top-8 -right-8 w-24 h-24 rounded-full opacity-0 group-hover:opacity-25 blur-2xl transition-opacity"
+                    style={{ background: color }}
+                  />
+                  <div className="relative flex items-start gap-3">
+                    <div
+                      className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                      style={{
+                        background: `linear-gradient(135deg, ${color}30, ${color}10)`,
+                        border: `1px solid ${color}30`,
+                      }}
+                    >
+                      <Icon className="w-4 h-4" style={{ color }} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-white text-[13px] font-bold leading-tight">{label}</p>
+                      <p className="text-[#64748b] text-[11px] mt-0.5">{sub}</p>
+                    </div>
+                  </div>
+                </Link>
+              ))}
               <Link
-                key={to}
-                to={to}
-                className={`flex items-center gap-3.5 px-4 py-3.5 hover:bg-white/4 active:bg-white/6 transition-colors ${i < QUICK_LINKS.length - 1 ? 'border-b border-white/5' : ''}`}
+                to="/pricing"
+                className="group glass-surface rounded-2xl p-3.5 hover:scale-[1.02] active:scale-[0.98] transition-transform relative overflow-hidden"
               >
-                <div className="w-9 h-9 rounded-xl bg-white/6 border border-white/8 flex items-center justify-center flex-shrink-0">
-                  <Icon className="w-4 h-4 text-slate-300" />
+                <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full opacity-25 group-hover:opacity-40 blur-2xl transition-opacity bg-gradient-to-br from-orange-500 to-amber-400" />
+                <div className="relative flex items-start gap-3">
+                  <div
+                    className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-orange-500 to-amber-400"
+                    style={{ boxShadow: '0 4px 16px #f9731640' }}
+                  >
+                    <Sparkles className="w-4 h-4 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white text-[13px] font-bold leading-tight">Plans</p>
+                    <p className="text-[#64748b] text-[11px] mt-0.5">Free · Pro · Premium</p>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-white text-sm font-medium leading-tight">{label}</p>
-                  <p className="text-slate-500 text-xs mt-0.5">{sub}</p>
-                </div>
-                <ChevronRight className="w-4 h-4 text-slate-600 flex-shrink-0" />
               </Link>
-            ))}
+            </div>
           </div>
 
           {/* ── Account info ── */}
-          <div className="rounded-2xl border border-white/8 bg-white/2 overflow-hidden">
-            <div className="px-4 pt-3.5 pb-1">
-              <p className="text-slate-500 text-[11px] font-semibold uppercase tracking-wider">Account information</p>
+          <div className="glass-surface rounded-2xl overflow-hidden">
+            <div className="px-4 pt-4 pb-1">
+              <p className="text-[#64748b] text-[10px] font-bold uppercase tracking-[0.2em]">Account</p>
             </div>
             <form onSubmit={handleSubmit} className="px-4 pb-4 pt-3 space-y-3">
               <div>
-                <label className="block text-xs text-slate-500 mb-1.5 font-medium">Display name</label>
+                <label className="block text-[11px] text-[#94a3b8] mb-1.5 font-semibold uppercase tracking-wider">Display name</label>
                 <input
                   type="text"
                   value={fullName}
                   onChange={e => setFullName(e.target.value)}
                   maxLength={80}
-                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white text-sm placeholder-slate-700 focus:outline-none focus:border-white/25 focus:bg-white/7 transition-colors"
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white text-sm placeholder-slate-700 focus:outline-none focus:border-emerald-500/40 focus:bg-white/7 transition-colors"
                   placeholder="Your name"
                 />
               </div>
               <div>
-                <label className="block text-xs text-slate-500 mb-1.5 font-medium">Email address</label>
+                <label className="block text-[11px] text-[#94a3b8] mb-1.5 font-semibold uppercase tracking-wider">Email</label>
                 <input
                   type="email"
                   value={user?.email || ''}
@@ -325,12 +424,16 @@ export default function Profile() {
                 <div className="px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs">{formError}</div>
               )}
               {success && (
-                <div className="px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs">Changes saved successfully.</div>
+                <div className="px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+                  Changes saved successfully.
+                </div>
               )}
               <button
                 type="submit"
                 disabled={saving}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-black text-sm font-semibold hover:bg-white/90 disabled:opacity-40 transition-opacity"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-white text-sm font-bold uppercase tracking-wider hover:opacity-90 disabled:opacity-40 transition-opacity"
+                style={{ boxShadow: '0 4px 16px #10b98140' }}
               >
                 <Save className="w-3.5 h-3.5" />
                 {saving ? 'Saving…' : 'Save changes'}
@@ -339,9 +442,9 @@ export default function Profile() {
           </div>
 
           {/* ── Danger zone ── */}
-          <div className="rounded-2xl border border-white/8 bg-white/2 overflow-hidden">
-            <div className="px-4 pt-3.5 pb-1">
-              <p className="text-slate-500 text-[11px] font-semibold uppercase tracking-wider">Danger zone</p>
+          <div className="glass-surface rounded-2xl overflow-hidden border-red-500/10">
+            <div className="px-4 pt-4 pb-1">
+              <p className="text-red-400/70 text-[10px] font-bold uppercase tracking-[0.2em]">Danger zone</p>
             </div>
             <div className="px-4 pb-4 pt-3">
               {!confirmDelete ? (
@@ -354,8 +457,8 @@ export default function Profile() {
                 </button>
               ) : (
                 <div className="space-y-3">
-                  <p className="text-slate-300 text-sm">This will permanently delete your account and all associated data. This action cannot be undone.</p>
-                  <p className="text-slate-500 text-xs">
+                  <p className="text-[#cbd5e1] text-sm">This will permanently delete your account and all associated data. This action cannot be undone.</p>
+                  <p className="text-[#64748b] text-xs">
                     Type <span className="font-mono text-slate-400">{user?.email}</span> to confirm:
                   </p>
                   <input
@@ -387,7 +490,8 @@ export default function Profile() {
                           setConfirmDelete(false);
                         }
                       }}
-                      className="px-5 py-2.5 rounded-xl bg-red-500 text-white text-sm font-semibold hover:bg-red-600 transition-colors disabled:opacity-40"
+                      className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-500 to-red-600 text-white text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-40"
+                      style={{ boxShadow: '0 4px 16px #ef444440' }}
                     >
                       {deleting ? 'Deleting…' : 'Delete everything'}
                     </button>
