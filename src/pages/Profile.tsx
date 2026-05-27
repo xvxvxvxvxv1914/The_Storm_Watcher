@@ -49,12 +49,12 @@ const PLAN_FEATURES: Record<string, string[]> = {
 };
 
 const QUICK_LINKS = [
-  { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', sub: 'Live readings', color: '#10b981' },
-  { to: '/aurora-map', icon: Map, label: 'Aurora Map', sub: 'Real-time forecast', color: '#7c3aed' },
-  { to: '/alerts', icon: Bell, label: 'Storm Alerts', sub: 'Push & SMS', color: '#f97316' },
-  { to: '/settings', icon: Settings, label: 'Settings', sub: 'Preferences', color: '#06b6d4' },
-  { to: '/settings/language', icon: Globe, label: 'Language', sub: 'English (US)', color: '#ec4899' },
-  { to: '/pricing', icon: Sparkles, label: 'Plans', sub: 'Compare tiers', color: '#f97316', gradient: true },
+  { to: '/dashboard',         icon: LayoutDashboard, label: 'Dashboard',    sub: 'Live readings',     from: '#10b981', to2: '#059669' },
+  { to: '/aurora-map',        icon: Map,             label: 'Aurora Map',   sub: 'Real-time forecast', from: '#a855f7', to2: '#7c3aed' },
+  { to: '/alerts',            icon: Bell,            label: 'Storm Alerts', sub: 'Push & SMS',        from: '#f97316', to2: '#ea580c' },
+  { to: '/settings',          icon: Settings,        label: 'Settings',     sub: 'Preferences',       from: '#06b6d4', to2: '#0891b2' },
+  { to: '/settings/language', icon: Globe,           label: 'Language',     sub: 'English (US)',      from: '#ec4899', to2: '#db2777' },
+  { to: '/pricing',           icon: Sparkles,        label: 'Plans',        sub: 'Compare tiers',     from: '#f97316', to2: '#fbbf24' },
 ];
 
 const PLAN_PILLS: Array<{ key: keyof typeof PLAN_CONFIG; label: string }> = [
@@ -217,23 +217,22 @@ export default function Profile() {
                   <button
                     onClick={() => fileInputRef.current?.click()}
                     disabled={uploadingAvatar}
-                    className="relative flex-shrink-0 w-24 h-24 lg:w-32 lg:h-32 rounded-full focus:outline-none group"
+                    className="relative flex-shrink-0 w-24 h-24 lg:w-32 lg:h-32 rounded-full focus:outline-none group overflow-hidden flex items-center justify-center"
+                    style={{
+                      background: '#0f0f1f',
+                      border: `2px solid ${cfg.ring}`,
+                      boxShadow: `0 0 32px ${cfg.ring}45`,
+                    }}
                   >
-                    <div
-                      className="absolute inset-0 rounded-full"
-                      style={{ border: `2px solid ${cfg.ring}`, boxShadow: `0 0 24px ${cfg.ring}40` }}
-                    />
-                    <div className="relative w-full h-full rounded-full overflow-hidden bg-[#0f0f1f] flex items-center justify-center m-0.5">
-                      {profile?.avatar_url ? (
-                        <img src={profile.avatar_url} alt="avatar" className="w-full h-full object-cover" loading="lazy" decoding="async" />
-                      ) : (
-                        <span className="text-3xl lg:text-5xl font-bold text-white/90">{initial}</span>
-                      )}
-                      <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity">
-                        {uploadingAvatar
-                          ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                          : <Camera className="w-5 h-5 lg:w-6 lg:h-6 text-white" />}
-                      </div>
+                    {profile?.avatar_url ? (
+                      <img src={profile.avatar_url} alt="avatar" className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
+                    ) : (
+                      <span className="text-3xl lg:text-5xl font-bold text-white/90 select-none">{initial}</span>
+                    )}
+                    <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {uploadingAvatar
+                        ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        : <Camera className="w-5 h-5 lg:w-6 lg:h-6 text-white" />}
                     </div>
                   </button>
                   <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileSelect} />
@@ -320,25 +319,25 @@ export default function Profile() {
               <div>
                 <p className="text-[#94a3b8] text-[10px] font-bold uppercase tracking-[0.3em] px-1 mb-3">Quick Access</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 lg:gap-3">
-                  {QUICK_LINKS.map(({ to, icon: Icon, label, sub, color, gradient }) => (
+                  {QUICK_LINKS.map(({ to, icon: Icon, label, sub, from, to2 }) => (
                     <Link
                       key={to}
                       to={to}
                       className="group glass-surface rounded-2xl p-4 hover:scale-[1.02] active:scale-[0.98] transition-transform relative overflow-hidden"
                     >
                       <div
-                        className="absolute -top-8 -right-8 w-24 h-24 rounded-full opacity-0 group-hover:opacity-25 blur-2xl transition-opacity"
-                        style={{ background: color }}
+                        className="absolute -top-8 -right-8 w-24 h-24 rounded-full opacity-0 group-hover:opacity-30 blur-2xl transition-opacity"
+                        style={{ background: from }}
                       />
                       <div className="relative flex items-center gap-3">
                         <div
-                          className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${gradient ? 'bg-gradient-to-br from-orange-500 to-amber-400' : ''}`}
-                          style={gradient ? { boxShadow: `0 4px 16px ${color}40` } : {
-                            background: `linear-gradient(135deg, ${color}30, ${color}12)`,
-                            border: `1px solid ${color}30`,
+                          className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+                          style={{
+                            background: `linear-gradient(135deg, ${from}, ${to2})`,
+                            boxShadow: `0 6px 20px ${from}40`,
                           }}
                         >
-                          <Icon className="w-5 h-5" style={{ color: gradient ? '#fff' : color }} />
+                          <Icon className="w-5 h-5 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-white text-sm font-bold leading-tight">{label}</p>
