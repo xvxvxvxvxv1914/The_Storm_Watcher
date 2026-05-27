@@ -36,6 +36,20 @@ ROUTES = [
     ('/terms',            'yearly', '0.3'),
 ]
 
+# Blog posts (English only — no hreflang variants until translations are merged)
+BLOG_SLUGS = [
+    'what-is-kp-index',
+    'what-is-geomagnetic-storm',
+    'how-to-see-northern-lights',
+    'what-is-solar-wind',
+    'g1-to-g5-storm-levels',
+    'best-places-aurora-europe',
+    'what-is-solar-flare',
+    'aurora-forecast-explained',
+    'space-weather-effects-on-earth',
+    'what-is-iss',
+]
+
 LASTMOD = date.today().isoformat()
 
 
@@ -76,6 +90,17 @@ def url_block(path: str, changefreq: str, priority: str) -> str:
     return '\n'.join(lines)
 
 
+def blog_url_block(slug: str) -> str:
+    path = f'/blog/{slug}'
+    full = f'{BASE}{path}'
+    return '\n'.join([
+        '  <url>',
+        f'    <loc>{full}</loc>',
+        f'    <lastmod>{LASTMOD}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority>',
+        '  </url>',
+    ])
+
+
 def main():
     parts = [
         '<?xml version="1.0" encoding="UTF-8"?>',
@@ -84,12 +109,22 @@ def main():
     ]
     for path, freq, prio in ROUTES:
         parts.append(url_block(path, freq, prio))
+    # Blog index
+    parts.append('\n'.join([
+        '  <url>',
+        f'    <loc>{BASE}/blog</loc>',
+        f'    <lastmod>{LASTMOD}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>',
+        '  </url>',
+    ]))
+    # Blog posts
+    for slug in BLOG_SLUGS:
+        parts.append(blog_url_block(slug))
     parts.append('</urlset>')
 
     out = os.path.join(os.path.dirname(__file__), '..', 'public', 'sitemap.xml')
     with open(out, 'w', encoding='utf-8') as f:
         f.write('\n'.join(parts) + '\n')
-    print(f'Generated sitemap.xml: {len(ROUTES)} routes × {len(LANGUAGES)} languages')
+    print(f'Generated sitemap.xml: {len(ROUTES)} routes × {len(LANGUAGES)} languages + {len(BLOG_SLUGS) + 1} blog pages')
 
 
 if __name__ == '__main__':
