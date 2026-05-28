@@ -27,7 +27,9 @@ const getScoreShareStatus = (score: number) => {
 const Home = () => {
   const { t } = useLanguage();
   const { settings } = useSettings();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
+  const paymentsEnabled = import.meta.env.VITE_PAYMENTS_ENABLED === 'true';
+  const hasPaidPlan = paymentsEnabled && (profile?.plan === 'pro' || profile?.plan === 'premium' || profile?.subscription_status === 'trialing');
   const kpValue = useKpLive();
   const [windSpeed, setWindSpeed] = useState<number | null>(null);
   const [xrayClass, setXrayClass] = useState<string | null>(null);
@@ -379,7 +381,7 @@ const Home = () => {
                 </Link>
               )}
             </div>
-            {!isNative() && (
+            {!isNative() && !hasPaidPlan && (
               <div className="flex justify-center mb-8">
                 <Link
                   to="/pricing"
