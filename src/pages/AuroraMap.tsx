@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 import { Map, Sparkles, MapPin } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
+import { useAuth } from '../contexts/AuthContext';
 import { useKpLive } from '../hooks/useKpLive';
 import { getStormStatus } from '../services/noaaApi';
 import { calcAuroraVisibility } from '../utils/auroraVisibility';
+import { isNative } from '../utils/platform';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 
@@ -14,9 +16,15 @@ const AuroraHeatmap = lazy(() => import('../components/AuroraHeatmap'));
 export default function AuroraMap() {
   const { t } = useLanguage();
   const { settings } = useSettings();
+  const { profile } = useAuth();
   const kp = useKpLive();
   const kpVal = kp ?? 0;
   const storm = kp !== null ? getStormStatus(kp) : null;
+
+  const paymentsEnabled = import.meta.env.VITE_PAYMENTS_ENABLED === 'true';
+  const plan = profile?.plan ?? 'free';
+  const isTrialing = profile?.subscription_status === 'trialing';
+  const hasPro = isNative() || !paymentsEnabled || plan === 'pro' || plan === 'premium' || isTrialing;
 
   const userLat = settings.preferredLat ?? undefined;
   const userLon = settings.preferredLon ?? undefined;
@@ -157,8 +165,8 @@ export default function AuroraMap() {
           {t('auroraMap.note') || 'Visibility calculated using dipole geomagnetic model. Actual aurora depends on cloud cover, light pollution, and local horizon.'}
         </p>
 
-        {/* Pro upgrade CTA */}
-        <div className="mt-8 rounded-2xl border border-[#10b981]/20 bg-[#10b981]/5 p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        {/* Pro upgrade CTA — only for free users */}
+        {!hasPro && <div className="mt-8 rounded-2xl border border-[#10b981]/20 bg-[#10b981]/5 p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-start gap-3">
             <Sparkles className="w-5 h-5 text-[#10b981] mt-0.5 flex-shrink-0" />
             <div>
@@ -176,7 +184,7 @@ export default function AuroraMap() {
           >
             {t('auroraMap.proCta.cta') || 'Upgrade to Pro'}
           </Link>
-        </div>
+        </div>}
       </div>
     </div>
   );
