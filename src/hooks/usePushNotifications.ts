@@ -17,11 +17,18 @@ async function saveToken(userId: string, token: string, platform: string, thresh
 }
 
 export function usePushNotifications() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { settings } = useSettings();
+
+  const paymentsEnabled = import.meta.env.VITE_PAYMENTS_ENABLED === 'true';
+  const plan = profile?.plan ?? 'free';
+  const isTrialing = profile?.subscription_status === 'trialing';
+  const hasPro = !paymentsEnabled || plan === 'pro' || plan === 'premium' || isTrialing;
 
   useEffect(() => {
     if (!isIos()) return;
+    // Push notifications are a Pro feature — skip registration for free users
+    if (!hasPro) return;
 
     let registered = false;
 
@@ -70,7 +77,7 @@ export function usePushNotifications() {
       }
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.id]);
+  }, [user?.id, hasPro]);
 
   // Sync threshold change to all existing device tokens in DB
   useEffect(() => {

@@ -151,8 +151,8 @@ export function proActivatedEmail(plan: 'pro' | 'premium'): string {
   const planLabel = isPremium ? 'Premium' : 'Pro';
   const planColor = isPremium ? '#f59e0b' : '#10b981';
   const features = isPremium
-    ? ['Aurora 3D Globe & Forecast', 'Real-time Storm Alerts', 'Aurora Visibility Map', 'Aurora Hunt & Gallery', 'Priority support']
-    : ['Aurora 3D Globe & Forecast', 'Real-time Storm Alerts', 'Aurora Visibility Map', 'Aurora Hunt & Gallery'];
+    ? ['Everything in Pro', 'Unlimited saved locations', 'Custom Kp alert thresholds (3–9)', 'CSV data export', 'Priority email support', 'Early beta access']
+    : ['Extended 7-day Kp forecast', '3D Aurora Globe', 'Push storm notifications', 'Aurora visibility % by location', 'Up to 10 saved locations'];
 
   const featureRows = features.map(f =>
     `<tr><td style="padding:5px 0;color:#94a3b8;font-size:14px;">

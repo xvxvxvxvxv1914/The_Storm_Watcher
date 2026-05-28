@@ -147,11 +147,14 @@ Deno.serve(async (req: Request) => {
   let nativeSent = 0;
 
   // 2. Web push (existing push_subscriptions)
+  // Only send to Pro/Premium users — push notifications are a paid feature.
+  // Trialing users are also included (trialing = pro access).
   const { data: subs, error: subsError } = await supabase
     .from('push_subscriptions')
-    .select('id, endpoint, p256dh, auth, threshold_kp')
+    .select('id, endpoint, p256dh, auth, threshold_kp, profiles!inner(plan, subscription_status)')
     .lte('threshold_kp', currentKp)
-    .or(`last_notified_at.is.null,last_notified_at.lt.${cooldownCutoff}`);
+    .or(`last_notified_at.is.null,last_notified_at.lt.${cooldownCutoff}`)
+    .or('profiles.plan.in.(pro,premium),profiles.subscription_status.eq.trialing', { referencedTable: 'profiles' });
 
   if (subsError) {
     console.error('DB query failed:', subsError.message);
@@ -195,9 +198,10 @@ Deno.serve(async (req: Request) => {
   if (apnsEnabled) {
     const { data: tokens, error: tokensError } = await supabase
       .from('device_push_tokens')
-      .select('id, token, platform, threshold_kp, last_notified_at')
+      .select('id, token, platform, threshold_kp, last_notified_at, profiles!inner(plan, subscription_status)')
       .lte('threshold_kp', currentKp)
-      .or(`last_notified_at.is.null,last_notified_at.lt.${cooldownCutoff}`);
+      .or(`last_notified_at.is.null,last_notified_at.lt.${cooldownCutoff}`)
+      .or('profiles.plan.in.(pro,premium),profiles.subscription_status.eq.trialing', { referencedTable: 'profiles' });
 
     if (tokensError) {
       console.error('Device tokens query failed:', tokensError.message);
