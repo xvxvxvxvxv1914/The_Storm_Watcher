@@ -156,12 +156,12 @@ export default function Pricing() {
           <span className={`text-sm font-medium ${billing === 'monthly' ? 'text-white' : 'text-[#64748b]'}`}>{t('pricing.monthly') || 'Monthly'}</span>
           <button
             onClick={() => setBilling(b => b === 'monthly' ? 'yearly' : 'monthly')}
-            className="relative w-12 h-6 rounded-full transition-colors"
+            className="relative w-12 h-6 rounded-full transition-colors duration-200"
             style={{ background: billing === 'yearly' ? '#7c3aed' : '#334155' }}
           >
             <span
-              className="absolute top-1 w-4 h-4 bg-white rounded-full transition-transform"
-              style={{ transform: billing === 'yearly' ? 'translateX(26px)' : 'translateX(4px)' }}
+              className="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform duration-200"
+              style={{ transform: billing === 'yearly' ? 'translateX(24px)' : 'translateX(0)' }}
             />
           </button>
           <div className="flex items-center gap-2">
