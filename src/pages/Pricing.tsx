@@ -3,10 +3,11 @@ import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { isNative } from '../utils/platform';
-import { Check, Zap, Star, CreditCard, Sparkles } from 'lucide-react';
+import { Check, Zap, Star, CreditCard, Sparkles, Smartphone, RefreshCw } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { supabase } from '../lib/supabase';
+import { useIAP } from '../hooks/useIAP';
 
 type Billing = 'monthly' | 'yearly';
 
@@ -56,8 +57,11 @@ export default function Pricing() {
   const [error, setError] = useState('');
   const [cancelledMessage, setCancelledMessage] = useState(false);
 
+  const iap = useIAP();
+
   useEffect(() => {
-    if (isNative()) { navigate('/', { replace: true }); return; }
+    // Native: stay on /pricing to show IAP UI (no redirect to home)
+    if (isNative()) return;
     const params = new URLSearchParams(location.search);
     if (params.get('payment') === 'cancelled') {
       setCancelledMessage(true);
@@ -125,6 +129,84 @@ export default function Pricing() {
 
   // suppress unused warning — session used implicitly via supabase.auth.getSession()
   void session;
+
+  // ── Native IAP UI ─────────────────────────────────────────────────────────
+  if (isNative()) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center px-4 py-16"
+        style={{ background: 'radial-gradient(ellipse at top, #0d1b2a 0%, #0a0a1a 60%)' }}
+      >
+        <PageMeta title={`${t('pricing.title') || 'Pricing'} — The Storm Watcher`} description="" path="/pricing" noindex />
+        <div className="max-w-sm w-full text-center">
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6" style={{ background: '#7c3aed22' }}>
+            <Smartphone className="w-8 h-8" style={{ color: '#a78bfa' }} />
+          </div>
+          <h1 className="text-2xl font-bold text-white mb-3">{t('pricing.heroTitle') || 'Choose your plan'}</h1>
+          <p className="text-[#64748b] text-sm mb-8 leading-relaxed">
+            {t('pricing.nativeDesc') || 'Subscriptions are managed through the App Store or Google Play. Tap a plan below to subscribe.'}
+          </p>
+
+          {/* Plan cards */}
+          {(['pro', 'premium'] as const).map(plan => {
+            const color = plan === 'pro' ? '#f97316' : '#7c3aed';
+            const Icon = plan === 'pro' ? Zap : Star;
+            const isPurchasing = iap.purchasing === iap.getProductId(plan, 'monthly') || iap.purchasing === iap.getProductId(plan, 'yearly');
+            const isCurrent = currentPlan === plan;
+            return (
+              <div key={plan} className="glass-surface rounded-2xl p-6 mb-4 border text-left" style={{ borderColor: `${color}33` }}>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: `${color}22` }}>
+                    <Icon className="w-5 h-5" style={{ color }} />
+                  </div>
+                  <div>
+                    <div className="text-white font-bold">{plan === 'pro' ? 'Pro' : 'Premium'}</div>
+                    <div className="text-[#64748b] text-xs">{iap.getFallbackPrice(plan, 'monthly')} / {t('pricing.perMonth') || 'month'}</div>
+                  </div>
+                </div>
+                {isCurrent ? (
+                  <div className="w-full py-2.5 rounded-xl text-center text-sm font-bold" style={{ background: `${color}22`, color }}>
+                    {t('pricing.currentPlan') || 'Current plan'}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-2">
+                    {(['monthly', 'yearly'] as const).map(billing => (
+                      <button
+                        key={billing}
+                        onClick={() => iap.purchase(plan, billing)}
+                        disabled={iap.purchasing !== null}
+                        className="py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 disabled:opacity-50"
+                        style={{ background: `linear-gradient(to right, ${color}, ${plan === 'pro' ? '#fbbf24' : '#6d28d9'})` }}
+                      >
+                        {isPurchasing ? '…' : billing === 'monthly'
+                          ? (t('pricing.monthly') || 'Monthly')
+                          : `${t('pricing.yearly') || 'Yearly'} (−25%)`}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
+          {iap.error && <p className="text-red-400 text-sm mb-4">{iap.error}</p>}
+
+          {/* Restore Purchases — required by App Store guidelines */}
+          <button
+            onClick={iap.restore}
+            disabled={iap.purchasing !== null}
+            className="flex items-center justify-center gap-2 w-full py-3 text-sm text-[#64748b] hover:text-white transition-colors disabled:opacity-50"
+          >
+            <RefreshCw className="w-4 h-4" />
+            {t('pricing.restorePurchases') || 'Restore Purchases'}
+          </button>
+
+          <p className="text-[#475569] text-xs mt-4 leading-relaxed">
+            {t('pricing.nativeFooter') || 'Subscriptions auto-renew unless cancelled. Manage in device Settings.'}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col items-center px-4 py-16"
