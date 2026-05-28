@@ -6,9 +6,11 @@ import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
 import {
   Calendar, TrendingUp, AlertCircle, Sun, Sparkles, Cloud, Radio, Zap, Activity,
-  ExternalLink, ChevronDown, Star,
+  ExternalLink, ChevronDown, Star, Lock,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { isNative } from '../utils/platform';
 import {
   getKpForecast, getKpHistory3Day, get27DayOutlook, getStormStatus, getKpGradientStyle,
   getSpaceWeatherOutlook, type SpaceWeatherOutlook, type DayOutlook,
@@ -39,6 +41,11 @@ interface DayForecast {
 const Forecast = () => {
   const { t, language } = useLanguage();
   const { settings } = useSettings();
+  const { profile } = useAuth();
+  const paymentsEnabled = import.meta.env.VITE_PAYMENTS_ENABLED === 'true';
+  const userPlan = profile?.plan ?? 'free';
+  const isTrialing = profile?.subscription_status === 'trialing';
+  const hasPro = isNative() || !paymentsEnabled || userPlan === 'pro' || userPlan === 'premium' || isTrialing;
   const chartH = useChartHeight(190, 300);
   const [forecastData, setForecastData] = useState<ForecastItem[]>([]);
   const [outlook27, setOutlook27] = useState<DayOutlook[]>([]);
@@ -397,7 +404,8 @@ const Forecast = () => {
           </div>
 
           <div className="space-y-2">
-            {sevenDays.map((day) => {
+            {sevenDays.map((day, dayIndex) => {
+              if (!hasPro && dayIndex >= 3) return null;
               const key = day.date.toDateString();
               const expanded = expandedDay === key;
               const status = getStormStatus(day.maxKp);
@@ -487,6 +495,44 @@ const Forecast = () => {
                 </div>
               );
             })}
+
+            {!hasPro && (
+              <div className="relative rounded-xl border border-[#f97316]/20 bg-[#f97316]/5 overflow-hidden">
+                {/* Blurred preview of locked days */}
+                <div className="pointer-events-none select-none" style={{ filter: 'blur(4px)', opacity: 0.35 }}>
+                  {sevenDays.slice(3, 6).map((day) => (
+                    <div key={day.date.toDateString()} className="flex items-center gap-3 p-3 border-b border-white/5 last:border-0">
+                      <div className="w-20 sm:w-24 shrink-0">
+                        <div className="text-sm font-bold text-white">{formatWeekday(day.date)}</div>
+                        <div className="text-[10px] text-[#64748b]">{formatMonthDay(day.date)}</div>
+                      </div>
+                      <div className="flex-1 h-6 bg-white/5 rounded-md overflow-hidden">
+                        <div className="h-full" style={{ width: `${(day.maxKp / 9) * 100}%`, background: `linear-gradient(90deg, ${kpBarColor(day.maxKp)}aa, ${kpBarColor(day.maxKp)})` }} />
+                      </div>
+                      <div className="w-12 text-right text-lg font-bold" style={getKpGradientStyle(day.maxKp)}>{day.maxKp.toFixed(1)}</div>
+                    </div>
+                  ))}
+                </div>
+                {/* Overlay */}
+                <div className="absolute inset-0 flex items-center justify-center"
+                  style={{ background: 'linear-gradient(to bottom, rgba(10,10,26,0.1) 0%, rgba(10,10,26,0.75) 50%, rgba(10,10,26,0.95) 100%)' }}>
+                  <div className="text-center px-6 py-4">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-3" style={{ background: '#f9731622' }}>
+                      <Lock className="w-5 h-5" style={{ color: '#f97316' }} />
+                    </div>
+                    <div className="text-white font-bold text-sm mb-1">{t('forecast.proGateTitle') || '4 more days — Pro feature'}</div>
+                    <div className="text-[#64748b] text-xs mb-3">{t('forecast.proGateDesc') || 'Upgrade to Pro for the full 7-day Kp forecast'}</div>
+                    <Link
+                      to="/pricing"
+                      className="inline-block px-5 py-2 rounded-lg font-bold text-white text-xs transition-all hover:scale-105"
+                      style={{ background: 'linear-gradient(to right, #f97316, #fbbf24)' }}
+                    >
+                      {t('pricing.tryProFree') || 'Try Pro free for 14 days'}
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

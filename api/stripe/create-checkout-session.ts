@@ -16,6 +16,20 @@ const ALLOWED_ORIGINS = [
   'http://localhost:5173',
 ];
 
+// In-memory rate limit: max 3 checkout attempts per user per 10 minutes
+const checkoutRateLimit = new Map<string, { count: number; resetAt: number }>();
+
+function isCheckoutRateLimited(userId: string): boolean {
+  const now = Date.now();
+  const entry = checkoutRateLimit.get(userId);
+  if (!entry || now > entry.resetAt) {
+    checkoutRateLimit.set(userId, { count: 1, resetAt: now + 600_000 });
+    return false;
+  }
+  entry.count++;
+  return entry.count > 3;
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).end();
 
@@ -30,6 +44,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const { data: { user }, error: authError } = await supabase.auth.getUser(token);
   if (authError || !user) return res.status(401).json({ error: 'Unauthorized' });
+
+  if (isCheckoutRateLimited(user.id)) return res.status(429).json({ error: 'Too many requests' });
 
   const { priceId } = req.body as { priceId: string };
   if (!priceId) return res.status(400).json({ error: 'Missing priceId' });

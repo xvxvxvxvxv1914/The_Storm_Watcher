@@ -43,9 +43,9 @@ const PLAN_CONFIG = {
 };
 
 const PLAN_FEATURES: Record<string, string[]> = {
-  free: ['Live Kp index readings', 'Daily aurora forecast', 'ISS tracker (basic)'],
-  pro: ['Real-time CME alerts', 'Hourly solar wind data', '3-day aurora forecast', 'Push notifications worldwide'],
-  premium: ['Everything in Pro', 'Satellite imagery feeds', 'Custom geomagnetic models', 'Priority storm SMS alerts', 'Early-access research data'],
+  free: ['Real-time Kp index & solar wind', '3-day Kp forecast', 'Aurora visibility map', 'ISS tracker', 'UV index & sky conditions'],
+  pro: ['Extended 7-day Kp forecast', 'Aurora visibility % by location', '3D Aurora Globe', 'Push storm notifications', 'Up to 10 saved locations'],
+  premium: ['Everything in Pro', 'Unlimited saved locations', 'Custom Kp alert thresholds', 'CSV data export', 'Priority email support', 'Early beta access'],
 };
 
 const QUICK_LINKS = [
