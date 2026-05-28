@@ -28,7 +28,7 @@ export function useFavoriteLocations() {
   const [favorites, setFavorites] = useState<FavoriteLocation[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const maxFavorites = (profile?.plan === 'pro' || profile?.plan === 'premium') ? 10 : 3;
+  const maxFavorites = profile?.plan === 'premium' ? Infinity : profile?.plan === 'pro' ? 10 : 3;
 
   useEffect(() => {
     if (!user) {

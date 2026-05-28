@@ -650,6 +650,8 @@ const bg: Record<string, string> = {
   'settings.kpThreshold': 'Праг на предупреждение',
   'settings.kpThresholdDesc': 'Уведоми ме, когато индексът Kp достигне или надвиши тази стойност.',
   'settings.kpThresholdNote': 'Push известията изискват предварително активиране чрез иконата камбана в навигационната лента.',
+  'settings.thresholdProHint': 'Персонализираните прагове изискват ',
+  'settings.thresholdPremiumHint': 'Надградете до Premium за прагове Kp 3–4',
   'settings.units': 'Единици',
   'settings.unitsDesc': 'Изберете как се показват измерванията в приложението.',
   'settings.unitsMetric': 'Метрични (km/s, °C)',
@@ -660,6 +662,11 @@ const bg: Record<string, string> = {
   'settings.saved': 'Запазено!',
   'dashboard.kp7day': 'Kp индекс — последните 7 дни',
   'dashboard.kp7dayNote': 'Дневен максимален Kp. Слънчевата активност се повтаря на всеки ~27 дни — периодът на въртене на Слънцето.',
+  'dashboard.exportTitle': 'Експорт на данни',
+  'dashboard.exportDesc': 'Изтегли данни за космическото време като CSV',
+  'dashboard.exportKp': 'Kp история (3 дни)',
+  'dashboard.exportWind': 'Слънчев вятър (3 дни)',
+  'dashboard.exportForecast': 'Kp прогноза (7 дни)',
   'home.stormScore.saveImage': 'Запази като изображение',
 
   // Space Weather Outlook

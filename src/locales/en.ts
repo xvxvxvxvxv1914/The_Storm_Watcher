@@ -487,6 +487,11 @@ const en: Record<string, string> = {
   'dashboard.yesterday': 'Yesterday',
   'dashboard.kp7day': 'Kp Index — Last 7 Days',
   'dashboard.kp7dayNote': "Daily maximum Kp. Solar activity repeats every ~27 days — the Sun's rotation period.",
+  'dashboard.exportTitle': 'Export Data',
+  'dashboard.exportDesc': 'Download raw space weather data as CSV',
+  'dashboard.exportKp': 'Kp History (3 days)',
+  'dashboard.exportWind': 'Solar Wind (3 days)',
+  'dashboard.exportForecast': 'Kp Forecast (7 days)',
 
   // Profile page
   'profile.title': 'My Profile',
@@ -532,6 +537,8 @@ const en: Record<string, string> = {
   'settings.kpThreshold': 'Alert threshold',
   'settings.kpThresholdDesc': 'Alert me when the Kp index reaches or exceeds this value.',
   'settings.kpThresholdNote': 'Push notifications require enabling them first via the bell icon in the navigation bar.',
+  'settings.thresholdProHint': 'Custom thresholds require ',
+  'settings.thresholdPremiumHint': 'Upgrade to Premium for Kp 3–4 fine-grain thresholds',
   'settings.units': 'Units',
   'settings.unitsDesc': 'Choose how measurements are displayed across the app.',
   'settings.unitsMetric': 'Metric (km/s, °C)',

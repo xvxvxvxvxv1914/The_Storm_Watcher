@@ -1,19 +1,28 @@
 import { useState } from 'react';
 import PageMeta from '../components/PageMeta';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Bell, Ruler, Globe, Check, Loader2, X, HelpCircle } from 'lucide-react';
+import { ArrowLeft, MapPin, Bell, Ruler, Globe, Check, Loader2, X, HelpCircle, Lock } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
 import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useOnboarding } from '../hooks/useOnboarding';
 import LocationPicker from '../components/LocationPicker';
 import { reverseGeocode } from '../utils/reverseGeocode';
 import { getCurrentPosition } from '../utils/geolocation';
+import { useAuth } from '../contexts/AuthContext';
+import { isNative } from '../utils/platform';
 
 export default function Settings() {
   const { settings, updateSettings } = useSettings();
   const { language, setLanguage, t } = useLanguage();
   const { reset: resetOnboarding } = useOnboarding();
+  const { profile } = useAuth();
   const navigate = useNavigate();
+
+  const paymentsEnabled = import.meta.env.VITE_PAYMENTS_ENABLED === 'true';
+  const plan = profile?.plan ?? 'free';
+  const isTrialing = profile?.subscription_status === 'trialing';
+  const hasPro = isNative() || !paymentsEnabled || plan === 'pro' || plan === 'premium' || isTrialing;
+  const hasPremium = isNative() || !paymentsEnabled || plan === 'premium';
 
   const [saved, setSaved] = useState(false);
   const [locating, setLocating] = useState(false);
@@ -146,21 +155,47 @@ export default function Settings() {
             <div className="mb-3">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-[#94a3b8]">{t('settings.kpThreshold') || 'Alert threshold'}</span>
-                <span className="text-sm font-bold text-[#f97316]">{kpLabels[kpThreshold] ?? `Kp ${kpThreshold}`}</span>
+                {hasPro ? (
+                  <span className="text-sm font-bold text-[#f97316]">{kpLabels[kpThreshold] ?? `Kp ${kpThreshold}`}</span>
+                ) : (
+                  <span className="text-sm font-bold text-[#f97316]">{kpLabels[5]}</span>
+                )}
               </div>
-              <input
-                type="range"
-                min={3}
-                max={9}
-                step={1}
-                value={kpThreshold}
-                onChange={e => setKpThreshold(Number(e.target.value))}
-                className="w-full accent-[#f97316]"
-              />
-              <div className="flex justify-between text-xs text-[#64748b] mt-1">
-                <span>3</span>
-                <span>9</span>
-              </div>
+              {hasPro ? (
+                <>
+                  <input
+                    type="range"
+                    min={hasPremium ? 3 : 5}
+                    max={9}
+                    step={1}
+                    value={kpThreshold}
+                    onChange={e => setKpThreshold(Number(e.target.value))}
+                    className="w-full accent-[#f97316]"
+                  />
+                  <div className="flex justify-between text-xs text-[#64748b] mt-1">
+                    <span>{hasPremium ? '3' : '5'}</span>
+                    <span>9</span>
+                  </div>
+                  {!hasPremium && (
+                    <p className="text-xs mt-2" style={{ color: '#7c3aed99' }}>
+                      <Link to="/pricing" className="underline hover:text-[#a78bfa] transition-colors">
+                        {t('settings.thresholdPremiumHint') || 'Upgrade to Premium for Kp 3–4 fine-grain thresholds'}
+                      </Link>
+                    </p>
+                  )}
+                </>
+              ) : (
+                <div className="flex items-center gap-2 mt-2 text-xs text-[#475569]">
+                  <Lock className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#f97316' }} />
+                  <span>
+                    {t('settings.thresholdProHint') || 'Custom thresholds require '}
+                    <Link to="/pricing" className="text-[#f97316] underline hover:text-[#fb923c] transition-colors">
+                      Pro
+                    </Link>
+                    {'. Default: Kp 5.'}
+                  </span>
+                </div>
+              )}
             </div>
             <p className="text-xs text-[#64748b]">
               {t('settings.kpThresholdNote') || 'Push notifications require enabling them first via the bell icon in the navigation bar.'}

@@ -9,8 +9,9 @@ import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
 import SvgBarChart from '../components/charts/SvgBarChart';
-import { Activity, Wind, Compass, Sun, Radio, MapPin } from 'lucide-react';
-import { getKpIndex, getSolarWind, getMagField, getXrayFlux, getKpHistory3Day, getStormStatus, getXrayClass, getKpGradientStyle } from '../services/noaaApi';
+import { Activity, Wind, Compass, Sun, Radio, MapPin, Download } from 'lucide-react';
+import { getKpIndex, getSolarWind, getMagField, getXrayFlux, getKpHistory3Day, getKpForecast, getStormStatus, getXrayClass, getKpGradientStyle } from '../services/noaaApi';
+import PlanGuard from '../components/PlanGuard';
 import { fetchNigggData, toDeltaSeries, getNigggStormStatus, type NigggDataPoint } from '../services/nigggApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
@@ -665,9 +666,86 @@ const Dashboard = () => {
             />
           </div>
         )}
+
+        {/* CSV Export — Premium */}
+        <PlanGuard requiredPlan="premium">
+          <ExportDataCard t={t} />
+        </PlanGuard>
       </div>
     </div>
   );
 };
+
+function ExportDataCard({ t }: { t: (k: string) => string }) {
+  const [exporting, setExporting] = React.useState(false);
+
+  async function handleExport(type: 'kp' | 'wind' | 'forecast') {
+    setExporting(true);
+    try {
+      let csv = '';
+      let filename = '';
+
+      if (type === 'kp') {
+        const rows = await getKpHistory3Day();
+        csv = 'timestamp,kp_index\n' + rows.map(r => `${r.time_tag},${r.Kp}`).join('\n');
+        filename = `kp-history-${today()}.csv`;
+      } else if (type === 'wind') {
+        const rows = await getSolarWind();
+        csv = 'timestamp,proton_speed_km_s,proton_density_cm3\n' +
+          rows.map(r => `${r.time_tag},${r.proton_speed},${r.proton_density}`).join('\n');
+        filename = `solar-wind-${today()}.csv`;
+      } else {
+        const rows = await getKpForecast();
+        csv = 'timestamp,kp_index\n' + rows.map(r => `${r.time_tag},${r.kp_index ?? r.estimated_kp ?? 0}`).join('\n');
+        filename = `kp-forecast-${today()}.csv`;
+      }
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    } finally {
+      setExporting(false);
+    }
+  }
+
+  return (
+    <div className="glass-surface rounded-2xl p-4 sm:p-6 mb-4 sm:mb-8">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#7c3aed22' }}>
+          <Download className="w-5 h-5" style={{ color: '#a78bfa' }} />
+        </div>
+        <div>
+          <h3 className="text-white font-bold text-sm">{t('dashboard.exportTitle') || 'Export Data'}</h3>
+          <p className="text-[#64748b] text-xs">{t('dashboard.exportDesc') || 'Download raw space weather data as CSV'}</p>
+        </div>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {(['kp', 'wind', 'forecast'] as const).map(type => (
+          <button
+            key={type}
+            onClick={() => handleExport(type)}
+            disabled={exporting}
+            className="px-4 py-2 rounded-lg text-xs font-semibold text-white transition-all hover:opacity-90 disabled:opacity-50"
+            style={{ background: 'linear-gradient(to right, #7c3aed, #6d28d9)' }}
+          >
+            {exporting ? '…' : {
+              kp: t('dashboard.exportKp') || 'Kp History (3 days)',
+              wind: t('dashboard.exportWind') || 'Solar Wind (3 days)',
+              forecast: t('dashboard.exportForecast') || 'Kp Forecast (7 days)',
+            }[type]}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function today() {
+  return new Date().toISOString().split('T')[0];
+}
 
 export default Dashboard;

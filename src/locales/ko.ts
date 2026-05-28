@@ -446,6 +446,11 @@ const ko: Record<string, string> = {
   'dashboard.yesterday': '어제',
   'dashboard.kp7day': 'Kp 지수 — 최근 7일',
   'dashboard.kp7dayNote': '일별 최대 Kp. 태양 활동은 약 27일마다 반복됩니다 — 태양의 자전 주기.',
+  'dashboard.exportTitle': 'Export Data',
+  'dashboard.exportDesc': 'Download raw space weather data as CSV',
+  'dashboard.exportKp': 'Kp History (3 days)',
+  'dashboard.exportWind': 'Solar Wind (3 days)',
+  'dashboard.exportForecast': 'Kp Forecast (7 days)',
 
   // Profile page
   'profile.title': '내 프로필',
@@ -491,6 +496,8 @@ const ko: Record<string, string> = {
   'settings.kpThreshold': '알림 임계값',
   'settings.kpThresholdDesc': 'Kp 지수가 이 값에 도달하거나 초과할 때 알림을 받습니다.',
   'settings.kpThresholdNote': '푸시 알림은 내비게이션 바의 벨 아이콘을 통해 먼저 활성화해야 합니다.',
+  'settings.thresholdProHint': 'Custom thresholds require ',
+  'settings.thresholdPremiumHint': 'Upgrade to Premium for Kp 3–4 fine-grain thresholds',
   'settings.units': '단위',
   'settings.unitsDesc': '앱에서 측정값이 표시되는 방식을 선택하세요.',
   'settings.unitsMetric': '미터법 (km/s, °C)',
