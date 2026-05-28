@@ -84,7 +84,7 @@ const Home = () => {
           setPulseData({ mood: topMood, symptom: topSymptom, count: data.length });
         }
       } catch (err) {
-        logError('Error fetching pulse:', err);
+        console.warn('Error fetching pulse (non-critical):', err);
       }
     };
 

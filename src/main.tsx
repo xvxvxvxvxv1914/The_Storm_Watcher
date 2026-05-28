@@ -22,7 +22,9 @@ window.addEventListener('error', (e) => {
   if (
     e.message?.includes('Failed to fetch dynamically imported module') ||
     e.message?.includes('Importing a module script failed') ||
-    e.message?.includes('error loading dynamically imported module')
+    e.message?.includes('error loading dynamically imported module') ||
+    // Service worker serving stale HTML for a JS chunk after a new deploy
+    e.message?.includes('is not a valid JavaScript MIME type')
   ) {
     if (!sessionStorage.getItem(RELOAD_KEY)) {
       sessionStorage.setItem(RELOAD_KEY, '1');
