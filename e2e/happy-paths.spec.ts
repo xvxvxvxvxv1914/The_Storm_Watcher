@@ -82,6 +82,13 @@ test.describe('Happy paths', () => {
     await page.addInitScript(() => {
       localStorage.setItem('tsw-onboarding-seen', '1');
       localStorage.setItem('language', 'en');
+      // Prevent LocationPrompt (z-[200]) and CookieConsent overlays
+      localStorage.setItem('tsw_location_asked', '1');
+      localStorage.setItem('cookie-consent', 'accepted');
+    });
+    // SplashAnimation uses sessionStorage
+    await page.context().addInitScript(() => {
+      sessionStorage.setItem('splash_shown', '1');
     });
   });
 
