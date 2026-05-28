@@ -20,7 +20,6 @@ const Footer = () => {
       links: [
         { to: '/aurora',          label: t('nav.aurora') },
         { to: '/aurora-map',      label: t('nav.auroraMap') || 'Aurora Map' },
-        { to: '/viewing-window',  label: t('nav.viewingWindow') || 'Viewing Window' },
         { to: '/iss',             label: t('nav.iss') },
         { to: '/calendar',        label: t('nav.calendar') },
         { to: '/sky',             label: t('nav.sky') },

@@ -15,27 +15,8 @@ const en: Record<string, string> = {
   'nav.magneticEffects': 'Magnetic Storms & Health',
   'nav.faq': 'Aurora FAQ',
   'nav.auroraMap': 'Aurora Map',
-  'nav.viewingWindow': 'Viewing Window',
 
   // Viewing Window page
-  'viewingWindow.meta.title': "Tonight's Viewing Window | The Storm Watcher",
-  'viewingWindow.meta.description': 'See the best hours to observe the aurora tonight based on Kp forecast and cloud cover at your location.',
-  'viewingWindow.title': "Tonight's Viewing Window",
-  'viewingWindow.subtitle': 'Best hours for aurora viewing based on sky conditions and Kp forecast',
-  'viewingWindow.bestWindow': 'Best Window',
-  'viewingWindow.noLocation': 'Set your location in Settings to get a personalized viewing forecast.',
-  'viewingWindow.setLocation': 'Go to Settings',
-  'viewingWindow.loading': 'Loading forecast…',
-  'viewingWindow.sunset': 'Sunset',
-  'viewingWindow.sunrise': 'Sunrise',
-  'viewingWindow.cloud': 'Clouds',
-  'viewingWindow.kpLabel': 'Kp',
-  'viewingWindow.aurora': 'Aurora Chance',
-  'viewingWindow.excellent': 'Excellent',
-  'viewingWindow.good': 'Good',
-  'viewingWindow.fair': 'Fair',
-  'viewingWindow.poor': 'Poor',
-  'viewingWindow.noNightData': 'No nighttime data available for your location.',
 
   // Aurora Map page
   'auroraMap.meta.title': 'Aurora Visibility Map — The Storm Watcher',

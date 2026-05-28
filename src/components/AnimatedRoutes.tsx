@@ -32,7 +32,6 @@ const Livestream = lazy(() => import('../pages/Livestream'));
 const Calendar = lazy(() => import('../pages/Calendar'));
 const LanguageSettings = lazy(() => import('../pages/LanguageSettings'));
 const AuroraMap = lazy(() => import('../pages/AuroraMap'));
-const ViewingWindow = lazy(() => import('../pages/ViewingWindow'));
 const Blog = lazy(() => import('../pages/Blog'));
 const BlogPost = lazy(() => import('../pages/BlogPost'));
 
@@ -69,7 +68,6 @@ export const AnimatedRoutes = () => {
         <Route path="/livestream" element={<AnimatedPage><Livestream /></AnimatedPage>} />
         <Route path="/calendar" element={<AnimatedPage><Calendar /></AnimatedPage>} />
         <Route path="/aurora-map" element={<AnimatedPage><AuroraMap /></AnimatedPage>} />
-        <Route path="/viewing-window" element={<AnimatedPage><ViewingWindow /></AnimatedPage>} />
         <Route path="/blog" element={<AnimatedPage><Blog /></AnimatedPage>} />
         <Route path="/blog/:slug" element={<AnimatedPage><BlogPost /></AnimatedPage>} />
         <Route path="*" element={<AnimatedPage><NotFound /></AnimatedPage>} />
