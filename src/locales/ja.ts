@@ -930,6 +930,7 @@ const ja: Record<string, string> = {
   'footer.terms': '利用規約',
   'footer.privacyPolicy': 'プライバシーポリシー',
   'footer.termsOfService': '利用規約',
+  'footer.premiumSupport': 'Priority support for Premium subscribers',
   'nav.about': '概要',
   'nav.magneticEffectsShort': '磁気',
   'aurora.quality.excellent': '優れた',

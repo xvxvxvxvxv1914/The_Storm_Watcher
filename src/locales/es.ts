@@ -930,6 +930,7 @@ const es: Record<string, string> = {
   'footer.terms': 'Términos',
   'footer.privacyPolicy': 'Política de Privacidad',
   'footer.termsOfService': 'Términos de Servicio',
+  'footer.premiumSupport': 'Priority support for Premium subscribers',
   'nav.about': 'Acerca de',
   'nav.magneticEffectsShort': 'Magnético',
   'aurora.quality.excellent': 'Excelente',

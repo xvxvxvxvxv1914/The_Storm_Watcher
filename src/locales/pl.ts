@@ -922,6 +922,7 @@ const pl: Record<string, string> = {
   'footer.terms': 'Warunki',
   'footer.privacyPolicy': 'Polityka Prywatności',
   'footer.termsOfService': 'Warunki Usługi',
+  'footer.premiumSupport': 'Priority support for Premium subscribers',
   'nav.about': 'O nas',
   'nav.magneticEffectsShort': 'Magnetyzm',
   'aurora.quality.excellent': 'Doskonały',

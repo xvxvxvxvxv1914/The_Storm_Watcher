@@ -960,6 +960,7 @@ const ko: Record<string, string> = {
   'footer.terms': '약관',
   'footer.privacyPolicy': '개인정보 처리방침',
   'footer.termsOfService': '서비스 약관',
+  'footer.premiumSupport': 'Priority support for Premium subscribers',
   'nav.about': '소개',
   'nav.magneticEffectsShort': '자기장',
   'aurora.quality.excellent': '우수',

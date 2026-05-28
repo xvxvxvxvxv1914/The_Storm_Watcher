@@ -922,6 +922,7 @@ const uk: Record<string, string> = {
   'footer.terms': 'Умови',
   'footer.privacyPolicy': 'Політика конфіденційності',
   'footer.termsOfService': 'Умови використання',
+  'footer.premiumSupport': 'Priority support for Premium subscribers',
   'nav.about': 'Про нас',
   'nav.magneticEffectsShort': 'Магнетизм',
   'aurora.quality.excellent': 'Відмінна',

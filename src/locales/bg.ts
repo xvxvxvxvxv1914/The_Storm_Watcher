@@ -953,6 +953,7 @@ const bg: Record<string, string> = {
   'footer.terms': 'Условия',
   'footer.privacyPolicy': 'Политика за поверителност',
   'footer.termsOfService': 'Условия за ползване',
+  'footer.premiumSupport': 'Приоритетна поддръжка за Premium абонати',
   'nav.about': 'За нас',
   'nav.magneticEffectsShort': 'Магнетизъм',
   'aurora.quality.excellent': 'Отлично',

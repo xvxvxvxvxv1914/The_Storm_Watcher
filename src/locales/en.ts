@@ -398,6 +398,7 @@ const en: Record<string, string> = {
   'footer.terms': 'Terms',
   'footer.privacyPolicy': 'Privacy Policy',
   'footer.termsOfService': 'Terms of Service',
+  'footer.premiumSupport': 'Priority support for Premium subscribers',
   'nav.about': 'About',
   'nav.magneticEffectsShort': 'Magnetic',
   'planguard.proFeature': 'Pro Feature',

@@ -922,6 +922,7 @@ const sv: Record<string, string> = {
   'footer.terms': 'Villkor',
   'footer.privacyPolicy': 'Integritetspolicy',
   'footer.termsOfService': 'Användarvillkor',
+  'footer.premiumSupport': 'Priority support for Premium subscribers',
   'nav.about': 'Om oss',
   'nav.magneticEffectsShort': 'Magnetisk',
   'aurora.quality.excellent': 'Utmärkt',

@@ -13,7 +13,7 @@ const supabase = createClient(
 const ALLOWED_ORIGINS = [
   'https://thestormwatcher.com',
   'https://www.thestormwatcher.com',
-  'http://localhost:5173',
+  ...(process.env.ALLOWED_DEV_ORIGIN ? [process.env.ALLOWED_DEV_ORIGIN] : []),
 ];
 
 // In-memory rate limit: max 3 checkout attempts per user per 10 minutes

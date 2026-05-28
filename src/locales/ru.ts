@@ -930,6 +930,7 @@ const ru: Record<string, string> = {
   'footer.terms': 'Условия',
   'footer.privacyPolicy': 'Политика конфиденциальности',
   'footer.termsOfService': 'Условия использования',
+  'footer.premiumSupport': 'Priority support for Premium subscribers',
   'nav.about': 'О нас',
   'nav.magneticEffectsShort': 'Магнетизм',
   'aurora.quality.excellent': 'Отличное',

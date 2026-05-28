@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
 import { logError } from '../utils/logger';
 import { getCurrentPosition } from '../utils/geolocation';
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
@@ -103,13 +104,34 @@ const Dashboard = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    if (params.get('payment') === 'success') {
-      setShowPaymentSuccess(true);
-      navigate('/dashboard', { replace: true });
-      const t = setTimeout(() => setShowPaymentSuccess(false), 7000);
-      return () => clearTimeout(t);
-    }
-  }, [location.search, navigate]);
+    if (params.get('payment') !== 'success') return;
+
+    setShowPaymentSuccess(true);
+    navigate('/dashboard', { replace: true });
+    const dismissTimer = setTimeout(() => setShowPaymentSuccess(false), 7000);
+
+    // Poll profile until plan != 'free' (webhook may arrive a few seconds after redirect).
+    // Max 10 attempts × 1 s = 10 s, then give up silently.
+    let attempts = 0;
+    const poll = setInterval(async () => {
+      attempts++;
+      const { data } = await supabase
+        .from('profiles')
+        .select('plan, subscription_status')
+        .eq('id', (await supabase.auth.getUser()).data.user?.id ?? '')
+        .maybeSingle();
+      if ((data?.plan && data.plan !== 'free') || attempts >= 10) {
+        clearInterval(poll);
+        if (data?.plan && data.plan !== 'free') {
+          // Trigger full profile reload via AuthContext
+          window.dispatchEvent(new Event('tsw:profile-refresh'));
+        }
+      }
+    }, 1000);
+
+    return () => { clearTimeout(dismissTimer); clearInterval(poll); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search]);
 
   useEffect(() => {
     // Fast path: use saved preferred location from settings

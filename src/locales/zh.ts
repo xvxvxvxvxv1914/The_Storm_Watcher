@@ -930,6 +930,7 @@ const zh: Record<string, string> = {
   'footer.terms': '条款',
   'footer.privacyPolicy': '隐私政策',
   'footer.termsOfService': '服务条款',
+  'footer.premiumSupport': 'Priority support for Premium subscribers',
   'nav.about': '关于',
   'nav.magneticEffectsShort': '磁场',
   'aurora.quality.excellent': '极佳',

@@ -922,6 +922,7 @@ const is_: Record<string, string> = {
   'footer.terms': 'Skilmálar',
   'footer.privacyPolicy': 'Persónuverndarstefna',
   'footer.termsOfService': 'Þjónustuskilmálar',
+  'footer.premiumSupport': 'Priority support for Premium subscribers',
   'nav.about': 'Um okkur',
   'nav.magneticEffectsShort': 'Segulmagn',
   'aurora.quality.excellent': 'Framúrskarandi',

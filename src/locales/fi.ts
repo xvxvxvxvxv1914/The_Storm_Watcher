@@ -922,6 +922,7 @@ const fi: Record<string, string> = {
   'footer.terms': 'Ehdot',
   'footer.privacyPolicy': 'Tietosuojakäytäntö',
   'footer.termsOfService': 'Käyttöehdot',
+  'footer.premiumSupport': 'Priority support for Premium subscribers',
   'nav.about': 'Tietoja',
   'nav.magneticEffectsShort': 'Magneettinen',
   'aurora.quality.excellent': 'Erinomainen',

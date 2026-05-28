@@ -9,6 +9,7 @@ interface Profile {
   full_name?: string;
   avatar_url?: string;
   plan: 'free' | 'pro' | 'premium';
+  is_beta: boolean;
   stripe_customer_id?: string;
   subscription_status?: string;
   subscription_period_end?: string | null;
@@ -73,7 +74,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       })();
     });
 
-    return () => subscription.unsubscribe();
+    const handleProfileRefresh = () => {
+      supabase.auth.getUser().then(({ data: { user } }) => {
+        if (user) fetchProfile(user.id);
+      });
+    };
+    window.addEventListener('tsw:profile-refresh', handleProfileRefresh);
+
+    return () => {
+      subscription.unsubscribe();
+      window.removeEventListener('tsw:profile-refresh', handleProfileRefresh);
+    };
   }, []);
 
   const fetchProfile = async (userId: string) => {
@@ -81,7 +92,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, email, full_name, avatar_url, plan, subscription_status, subscription_period_end, created_at, updated_at')
+        .select('id, email, full_name, avatar_url, plan, is_beta, subscription_status, subscription_period_end, created_at, updated_at')
         .eq('id', userId)
         .maybeSingle();
 

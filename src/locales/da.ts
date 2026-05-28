@@ -922,6 +922,7 @@ const da: Record<string, string> = {
   'footer.terms': 'Vilkår',
   'footer.privacyPolicy': 'Privatlivspolitik',
   'footer.termsOfService': 'Servicevilkår',
+  'footer.premiumSupport': 'Priority support for Premium subscribers',
   'nav.about': 'Om os',
   'nav.magneticEffectsShort': 'Magnetisk',
   'aurora.quality.excellent': 'Fremragende',

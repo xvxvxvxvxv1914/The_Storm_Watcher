@@ -933,6 +933,7 @@ const de: Record<string, string> = {
   'footer.terms': 'Nutzungsbedingungen',
   'footer.privacyPolicy': 'Datenschutzrichtlinie',
   'footer.termsOfService': 'Nutzungsbedingungen',
+  'footer.premiumSupport': 'Priority support for Premium subscribers',
   'nav.about': 'Über uns',
   'nav.magneticEffectsShort': 'Magnetismus',
   'aurora.quality.excellent': 'Ausgezeichnet',

@@ -142,6 +142,16 @@ const Footer = () => {
                   contact@thestormwatcher.com
                 </a>
                 <a
+                  href="mailto:support@thestormwatcher.com"
+                  className="flex items-center gap-2 text-sm hover:text-white transition-colors"
+                  style={{ color: '#a78bfa' }}
+                  title={t('footer.premiumSupport') || 'Priority support for Premium subscribers'}
+                >
+                  <Mail className="w-4 h-4" />
+                  support@thestormwatcher.com
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded" style={{ background: '#7c3aed33', color: '#a78bfa' }}>Premium</span>
+                </a>
+                <a
                   href="mailto:partnerships@thestormwatcher.com"
                   className="flex items-center gap-2 text-[#94a3b8] text-sm hover:text-white transition-colors"
                 >
