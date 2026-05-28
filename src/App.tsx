@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { BrowserRouter as Router, useNavigate } from 'react-router-dom';
 import { App as CapApp } from '@capacitor/app';
+import * as Sentry from '@sentry/react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import { useLanguage } from './contexts/LanguageContext';
@@ -39,7 +40,7 @@ const LoadingFallback = () => {
 };
 
 function AppRoutes() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { theme } = useTheme();
   const navigate = useNavigate();
   const shouldShowLocationPrompt = useLocationPromptVisible();
@@ -61,6 +62,15 @@ function AppRoutes() {
       navigate('/dashboard', { replace: true });
     }
   }, [user, navigate]);
+
+  // Set Sentry user context with plan info for better error debugging
+  useEffect(() => {
+    if (user) {
+      Sentry.setUser({ id: user.id, plan: profile?.plan ?? 'free' });
+    } else {
+      Sentry.setUser(null);
+    }
+  }, [user, profile?.plan]);
 
   // Block unverified email users from accessing the app
   useEffect(() => {
