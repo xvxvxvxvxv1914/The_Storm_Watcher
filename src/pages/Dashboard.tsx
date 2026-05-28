@@ -45,10 +45,21 @@ function useCountUp(target: number, duration = 700): number {
 
 const InfoTooltip = React.memo(({ text }: { text: string }) => (
   <div className="absolute top-3 right-3 group z-20">
-    <div className="w-5 h-5 rounded-full bg-white/10 border border-white/20 flex items-center justify-center cursor-help text-[#94a3b8] hover:text-white hover:bg-white/20 transition-colors" style={{ fontSize: '11px', fontWeight: 700 }}>
+    <div
+      role="button"
+      tabIndex={0}
+      aria-label={text}
+      title={text}
+      className="w-5 h-5 rounded-full bg-white/10 border border-white/20 flex items-center justify-center cursor-help text-[#94a3b8] hover:text-white hover:bg-white/20 transition-colors"
+      style={{ fontSize: '11px', fontWeight: 700 }}
+    >
       i
     </div>
-    <div className="absolute right-0 bottom-full mb-2 w-56 rounded-xl p-3 text-xs text-[#cbd5e1] leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-30 border border-white/10" style={{ background: 'rgba(10,10,26,0.97)', backdropFilter: 'blur(12px)' }}>
+    <div
+      role="tooltip"
+      className="absolute right-0 bottom-full mb-2 w-56 rounded-xl p-3 text-xs text-[#cbd5e1] leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-30 border border-white/10"
+      style={{ background: 'rgba(10,10,26,0.97)', backdropFilter: 'blur(12px)' }}
+    >
       {text}
     </div>
   </div>

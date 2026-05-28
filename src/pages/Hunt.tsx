@@ -115,15 +115,20 @@ export default function Hunt() {
   }, [cooldownMs]);
 
   const loadData = useCallback(async () => {
-    const [recentRes, leaderRes, myRes] = await Promise.all([
-      supabase.from('aurora_sightings').select('*').order('created_at', { ascending: false }).limit(20),
-      supabase.from('hunter_leaderboard').select('*').limit(10),
-      user ? supabase.from('aurora_sightings').select('*').eq('user_id', user.id).order('created_at', { ascending: false }) : Promise.resolve({ data: [] }),
-    ]);
-    setRecentSightings((recentRes.data ?? []) as Sighting[]);
-    setLeaderboard((leaderRes.data ?? []) as LeaderEntry[]);
-    setMySightings((myRes.data ?? []) as Sighting[]);
-    setLoading(false);
+    try {
+      const [recentRes, leaderRes, myRes] = await Promise.all([
+        supabase.from('aurora_sightings').select('*').order('created_at', { ascending: false }).limit(20),
+        supabase.from('hunter_leaderboard').select('*').limit(10),
+        user ? supabase.from('aurora_sightings').select('*').eq('user_id', user.id).order('created_at', { ascending: false }) : Promise.resolve({ data: [] }),
+      ]);
+      setRecentSightings((recentRes.data ?? []) as Sighting[]);
+      setLeaderboard((leaderRes.data ?? []) as LeaderEntry[]);
+      setMySightings((myRes.data ?? []) as Sighting[]);
+    } catch {
+      // Data stays empty — leaderboard shows empty state
+    } finally {
+      setLoading(false);
+    }
   }, [user]);
 
   useEffect(() => { loadData(); }, [loadData]);

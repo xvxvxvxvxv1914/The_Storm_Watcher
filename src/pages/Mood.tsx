@@ -329,29 +329,34 @@ const Mood = () => {
   };
 
   const checkPersonalHistory = async () => {
-    const sessionId = getSessionId();
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-    sevenDaysAgo.setHours(0, 0, 0, 0);
+    try {
+      const sessionId = getSessionId();
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      sevenDaysAgo.setHours(0, 0, 0, 0);
 
-    const { data } = await supabase
-      .from('mood_entries')
-      .select('created_at, mood_type, kp_index')
-      .eq('user_session_id', sessionId)
-      .gte('created_at', sevenDaysAgo.toISOString())
-      .order('created_at', { ascending: false });
+      const { data } = await supabase
+        .from('mood_entries')
+        .select('created_at, mood_type, kp_index')
+        .eq('user_session_id', sessionId)
+        .gte('created_at', sevenDaysAgo.toISOString())
+        .order('created_at', { ascending: false });
 
-    const entries = (data ?? []) as PersonalEntry[];
-    setPersonalEntries(entries);
+      const entries = (data ?? []) as PersonalEntry[];
+      setPersonalEntries(entries);
 
-    const todayKey = dayKey(new Date());
-    const todayEntry = entries.find(e => dayKey(new Date(e.created_at)) === todayKey);
-    if (todayEntry) {
-      setHasSubmittedToday(true);
-      setSubmittedAt(new Date(todayEntry.created_at));
-      setSubmittedMood(todayEntry.mood_type);
+      const todayKey = dayKey(new Date());
+      const todayEntry = entries.find(e => dayKey(new Date(e.created_at)) === todayKey);
+      if (todayEntry) {
+        setHasSubmittedToday(true);
+        setSubmittedAt(new Date(todayEntry.created_at));
+        setSubmittedMood(todayEntry.mood_type);
+      }
+    } catch {
+      // Non-critical — page still works without history
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const fetchStats = async () => {
