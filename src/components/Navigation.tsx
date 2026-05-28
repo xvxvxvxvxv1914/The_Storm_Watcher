@@ -63,7 +63,6 @@ const Navigation = () => {
     { to: '/aurora', label: t('nav.aurora') },
     { to: '/alerts', label: t('nav.alerts') },
     { to: '/calendar', label: t('nav.calendar') || 'Aurora Calendar' },
-    { to: '/pricing', label: t('nav.pricing') || 'Pricing' },
   ];
 
   const moreLinks = [
@@ -250,6 +249,17 @@ const Navigation = () => {
                 </div>
               )}
             </div>
+
+            <Link
+              to="/pricing"
+              className={`shrink-0 px-2.5 xl:px-3 py-1.5 rounded-lg text-xs xl:text-sm font-semibold transition-colors border ${
+                isActive('/pricing')
+                  ? 'text-[#10b981] border-[#10b981]/40 bg-[#10b981]/10'
+                  : 'text-[#94a3b8] border-white/10 hover:text-white hover:border-white/20 hover:bg-white/5'
+              }`}
+            >
+              {t('nav.pricing') || 'Pricing'}
+            </Link>
 
             {user ? (
               <div data-tour="user-menu" className="relative shrink-0" ref={userMenuRef}>

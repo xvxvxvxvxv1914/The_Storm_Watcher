@@ -68,6 +68,7 @@ const BottomTabBar = () => {
   };
 
   const moreLinks = [
+    { to: '/pricing',          icon: CreditCard,    label: t('nav.pricing') || 'Pricing',            badge: 'bg-emerald-500' },
     // Priority (in desktop top menu, no room on mobile bottom bar)
     { to: '/alerts',           icon: AlertTriangle, label: t('nav.alerts'),                          badge: 'bg-red-500' },
     { to: '/calendar',         icon: CalendarDays,  label: t('nav.calendar') || 'Aurora Calendar',   badge: 'bg-emerald-600' },
@@ -84,7 +85,6 @@ const BottomTabBar = () => {
     // Info
     { to: '/magnetic-effects', icon: Magnet,        label: t('nav.magneticEffects') || 'Magnetic',   badge: 'bg-teal-600' },
     { to: '/faq',              icon: HelpCircle,    label: t('nav.faq') || 'FAQ',                    badge: 'bg-slate-500' },
-    { to: '/pricing',          icon: CreditCard,    label: t('nav.pricing') || 'Pricing',            badge: 'bg-emerald-500' },
   ];
 
   return (
