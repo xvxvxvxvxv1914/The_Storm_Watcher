@@ -101,21 +101,24 @@ test.describe('Pricing page', () => {
 // ── Plan guards (anonymous = Free) ────────────────────────────────────────────
 
 test.describe('Plan guards for anonymous users', () => {
-  test('/aurora shows Pro upgrade overlay', async ({ page }) => {
+  test('/aurora shows full-page Pro gate', async ({ page }) => {
     await page.goto('/aurora');
-    // PlanGuard renders a lock overlay with upgrade CTA
-    await expect(page.getByText(/Pro|premium/i).first()).toBeVisible({ timeout: 8_000 });
+    // fullPage gate: lock icon card on dark background, no 3D globe loaded
+    await expect(page.getByText('Pro Feature').first()).toBeVisible({ timeout: 8_000 });
+    await expect(page.getByText(/Unlock this/i)).toBeVisible();
     await expect(page.locator('a[href="/pricing"]').first()).toBeVisible();
+    // "Go back" button present
+    await expect(page.getByText(/Go back/i)).toBeVisible();
   });
 
-  test('/alerts shows Pro upgrade overlay', async ({ page }) => {
+  test('/alerts shows full-page Pro gate', async ({ page }) => {
     await page.goto('/alerts');
-    await expect(page.getByText(/Pro|premium/i).first()).toBeVisible({ timeout: 8_000 });
+    await expect(page.getByText('Pro Feature').first()).toBeVisible({ timeout: 8_000 });
+    await expect(page.getByText(/Unlock this/i)).toBeVisible();
     await expect(page.locator('a[href="/pricing"]').first()).toBeVisible();
   });
 
-  // This test requires VITE_PAYMENTS_ENABLED=true — skipped in dev mode where all features are unlocked.
-  test.skip('/forecast shows only 3 days for free users with upsell', async ({ page }) => {
+  test('/forecast shows 3 days for free users + Pro gate card', async ({ page }) => {
     // Stub NOAA forecast — shape must have observed:'predicted' to pass the filter in noaaApi.ts
     await page.route('**/products/noaa-planetary-k-index-forecast.json', route =>
       route.fulfill({
@@ -130,12 +133,12 @@ test.describe('Plan guards for anonymous users', () => {
       }));
 
     await page.goto('/forecast');
-    // Wait for content to load (not the skeleton/error state)
     await expect(page.getByText('7-Day Forecast').first()).toBeVisible({ timeout: 15_000 });
 
-    // Free users see the Pro gate for days 4-7
+    // Gate card is visible — no blurred days, just a clean upgrade card
     await expect(page.getByText(/4 more days/i)).toBeVisible();
     await expect(page.getByText(/Try Pro free/i).first()).toBeVisible();
+    await expect(page.getByText(/no credit card/i)).toBeVisible();
   });
 });
 

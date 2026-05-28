@@ -107,31 +107,18 @@ test.describe('Happy paths', () => {
     await expect(kpCard).toContainText('4.2', { timeout: 10_000 });
   });
 
-  test('Settings → change Kp threshold and save', async ({ page }) => {
+  test('Settings → Kp threshold locked for free users, other settings save correctly', async ({ page }) => {
     await page.goto('/settings');
 
-    const slider = page.locator('input[type="range"]');
-    await expect(slider).toBeVisible();
+    // Payments are enabled in e2e — free (anonymous) users see the threshold
+    // locked at Kp 5 with a Pro upgrade link instead of a range slider.
+    await expect(page.locator('input[type="range"]')).toBeHidden();
+    await expect(page.getByText(/Kp 5/i).first()).toBeVisible();
+    await expect(page.locator('a[href="/pricing"]').first()).toBeVisible();
 
-    // React patches the value setter, so writing `el.value = '6'` directly
-    // doesn't fire onChange. Use the native HTMLInputElement setter and let
-    // React see the input event.
-    await slider.evaluate((el: HTMLInputElement) => {
-      const proto = Object.getPrototypeOf(el) as HTMLInputElement;
-      const setter = Object.getOwnPropertyDescriptor(proto, 'value')?.set;
-      setter?.call(el, '6');
-      el.dispatchEvent(new Event('input', { bubbles: true }));
-    });
-
-    // The label updates synchronously to reflect the new threshold.
-    await expect(page.getByText('Kp 6 — Strong Storm')).toBeVisible();
-
+    // Other settings (units) are still editable and save works.
     await page.getByRole('button', { name: /^Save Settings$/ }).click();
     await expect(page.getByRole('button', { name: /^Saved!?$/ })).toBeVisible();
-
-    // Reload — value persists from localStorage via SettingsContext.
-    await page.reload();
-    await expect(page.getByText('Kp 6 — Strong Storm')).toBeVisible();
   });
 
   test('Onboarding tour appears on first dashboard visit and can be skipped', async ({ page }) => {

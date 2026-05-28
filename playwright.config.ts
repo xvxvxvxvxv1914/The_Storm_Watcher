@@ -8,16 +8,18 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: process.env.CI ? 'github' : 'list',
   use: {
-    baseURL: 'http://localhost:5173',
+    baseURL: 'http://localhost:5174',
     trace: 'on-first-retry',
   },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
   ],
   webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:5173',
-    reuseExistingServer: !process.env.CI,
+    // Port 5174 avoids conflict with the regular dev server on 5173.
+    // --mode test loads .env.test (VITE_PAYMENTS_ENABLED=true).
+    command: 'npm run dev -- --mode test --port 5174',
+    url: 'http://localhost:5174',
+    reuseExistingServer: false,
     timeout: 120_000,
   },
 });
