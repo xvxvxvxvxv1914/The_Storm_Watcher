@@ -4,7 +4,7 @@ const post: BlogPost = {
   slug: 'g1-to-g5-storm-levels',
   title: 'G1 to G5: Understanding Geomagnetic Storm Levels',
   description: 'NOAA\'s G-scale classifies geomagnetic storms from G1 (minor) to G5 (extreme). Here\'s exactly what each level means for aurora, technology, and daily life.',
-  date: '2025-06-05',
+  date: '2026-03-20',
   readingTime: 5,
   category: 'space-weather',
   coverEmoji: '⚡',

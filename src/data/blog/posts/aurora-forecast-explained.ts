@@ -4,7 +4,7 @@ const post: BlogPost = {
   slug: 'aurora-forecast-explained',
   title: 'Aurora Forecast Explained: How to Read Space Weather Data',
   description: 'Aurora forecasts are full of jargon — Kp, Bz, solar wind speed, OVATION. This guide explains each number and how to interpret them together.',
-  date: '2025-06-08',
+  date: '2026-04-15',
   readingTime: 6,
   category: 'guide',
   coverEmoji: '🔭',

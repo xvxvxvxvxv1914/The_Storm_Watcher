@@ -4,7 +4,7 @@ const post: BlogPost = {
   slug: 'what-is-geomagnetic-storm',
   title: 'What is a Geomagnetic Storm?',
   description: 'Geomagnetic storms are disturbances in Earth\'s magnetic field caused by solar activity. Learn how they form, their effects, and how to prepare.',
-  date: '2025-06-02',
+  date: '2026-02-22',
   readingTime: 5,
   category: 'space-weather',
   coverEmoji: '🌍',

@@ -4,7 +4,7 @@ const post: BlogPost = {
   slug: 'how-to-see-northern-lights',
   title: 'How to See the Northern Lights: A Practical Guide',
   description: 'Everything you need to know to see the aurora borealis — best locations, ideal conditions, timing, and gear. Stop missing the lights.',
-  date: '2025-06-03',
+  date: '2026-03-05',
   readingTime: 7,
   category: 'aurora',
   coverEmoji: '🌌',

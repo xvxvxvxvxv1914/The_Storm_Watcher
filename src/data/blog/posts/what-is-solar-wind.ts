@@ -4,7 +4,7 @@ const post: BlogPost = {
   slug: 'what-is-solar-wind',
   title: 'What is Solar Wind and Why Does It Matter?',
   description: 'Solar wind is a constant stream of particles from the Sun that drives space weather on Earth. Learn how it works and what the numbers mean.',
-  date: '2025-06-04',
+  date: '2026-03-12',
   readingTime: 5,
   category: 'solar',
   coverEmoji: '💨',

@@ -4,7 +4,7 @@ const post: BlogPost = {
   slug: 'best-places-aurora-europe',
   title: 'Best Places to See the Aurora in Europe',
   description: 'From Norway\'s fjords to Iceland\'s lava fields — the definitive guide to the best aurora viewing locations in Europe, with practical tips for each.',
-  date: '2025-06-06',
+  date: '2026-03-28',
   readingTime: 6,
   category: 'aurora',
   coverEmoji: '🗺️',

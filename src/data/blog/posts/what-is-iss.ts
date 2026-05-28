@@ -4,7 +4,7 @@ const post: BlogPost = {
   slug: 'what-is-iss-how-to-track',
   title: 'What is the ISS and How to Track It',
   description: 'The International Space Station is the brightest object in the night sky after the Moon. Learn what it is, how to spot it, and how to track it in real time.',
-  date: '2025-06-10',
+  date: '2026-05-06',
   readingTime: 5,
   category: 'guide',
   coverEmoji: '🛰️',

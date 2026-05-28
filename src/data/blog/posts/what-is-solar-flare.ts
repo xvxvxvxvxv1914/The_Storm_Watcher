@@ -4,7 +4,7 @@ const post: BlogPost = {
   slug: 'what-is-solar-flare',
   title: 'What is a Solar Flare?',
   description: 'Solar flares are the most energetic explosions in our solar system. Learn what causes them, how they\'re classified, and whether they pose a danger to Earth.',
-  date: '2025-06-07',
+  date: '2026-04-08',
   readingTime: 5,
   category: 'solar',
   coverEmoji: '☀️',

@@ -4,7 +4,7 @@ const post: BlogPost = {
   slug: 'space-weather-effects-on-earth',
   title: 'Space Weather and Its Effects on Earth',
   description: 'Space weather affects power grids, satellites, GPS, aviation, and more. Here\'s how solar activity shapes modern technology and everyday life.',
-  date: '2025-06-09',
+  date: '2026-04-24',
   readingTime: 6,
   category: 'space-weather',
   coverEmoji: '🛸',

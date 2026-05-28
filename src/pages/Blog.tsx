@@ -23,7 +23,9 @@ export default function Blog() {
         title="Space Weather Blog — The Storm Watcher"
         description="Learn about the Kp index, geomagnetic storms, aurora forecasts, solar flares, and space weather. Expert guides for aurora hunters and space weather enthusiasts."
         path="/blog"
-      />
+      >
+        <link rel="alternate" type="application/rss+xml" title="The Storm Watcher Blog" href="https://www.thestormwatcher.com/feed.xml" />
+      </PageMeta>
 
       <div className="min-h-screen bg-[#050510] relative overflow-hidden pt-20 pb-24 px-4">
         <StarField />
@@ -33,9 +35,19 @@ export default function Blog() {
         <div className="relative z-10 max-w-3xl mx-auto">
           {/* Hero */}
           <div className="mb-10 text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 mb-4">
-              <Rss size={13} className="text-emerald-400" />
-              <span className="text-emerald-300 text-xs font-medium tracking-wide uppercase">Space Weather Blog</span>
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10">
+                <Rss size={13} className="text-emerald-400" />
+                <span className="text-emerald-300 text-xs font-medium tracking-wide uppercase">Space Weather Blog</span>
+              </div>
+              <a
+                href="/feed.xml"
+                title="RSS Feed"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border border-orange-500/30 bg-orange-500/10 hover:bg-orange-500/20 transition-colors"
+              >
+                <Rss size={12} className="text-orange-400" />
+                <span className="text-orange-300 text-xs font-medium">RSS</span>
+              </a>
             </div>
             <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3 leading-tight">
               Guides for{' '}

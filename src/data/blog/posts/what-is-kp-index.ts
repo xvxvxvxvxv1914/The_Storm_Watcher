@@ -4,7 +4,7 @@ const post: BlogPost = {
   slug: 'what-is-kp-index',
   title: 'What is the Kp Index? A Complete Guide',
   description: 'The Kp index is the most important number in space weather. Learn what it means, how it\'s measured, and why it matters for aurora visibility.',
-  date: '2025-06-01',
+  date: '2026-02-15',
   readingTime: 6,
   category: 'space-weather',
   coverEmoji: '📊',
