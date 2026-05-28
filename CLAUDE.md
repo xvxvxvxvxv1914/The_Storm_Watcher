@@ -111,12 +111,32 @@ watchOS companion app за The Storm Watcher. Данните вече са в Ap
 ## TODO / Pending Work
 
 ### Mobile App Payments (преди пускане в App Store / Play Store)
-Stripe плащанията работят само за уеб. За мобилното приложение `VITE_PAYMENTS_ENABLED=false` и **няма имплементиран native IAP код**. Задължително преди пускане в магазините:
+IAP инфраструктурата е готова — остава само plugin install + конфигурация в магазините:
 
-- **iOS** — имплементирай Apple StoreKit 2 (in-app purchases); дефинирай SKU-та в App Store Connect
-- **Android** — имплементирай Google Play Billing Library; дефинирай продукти в Play Console
-- Добави Capacitor IAP плъгин (`@capacitor-community/in-app-purchase` или `@capacitor-community/stripe`)
-- Добави platform detection (web → Stripe, iOS/Android → native IAP)
-- Добави deep-link handling за връщане в приложението след плащане (`stormwatcher://pricing?payment=success`)
-- Supabase Edge Function за верификация на покупки от App Store / Play Store receipt-и и sync обратно към `profiles.plan`
-- Без тези промени Apple/Google ще отхвърлят приложението при ревю (политика: дигитален контент само през техните системи)
+**Готово:**
+- `src/hooks/useIAP.ts` — purchase/restore hooks, product ID map, verifyReceipt()
+- `src/pages/Pricing.tsx` — native platform вижда IAP UI (не Stripe)
+- `supabase/functions/verify-iap/index.ts` — Apple + Google receipt validation
+
+**Остава (4 стъпки):**
+1. `npm install @capgo/capacitor-purchases && npx cap sync`
+2. Създай продукти в App Store Connect + Play Console с ID-та:
+   - `com.stormwatcher.app.pro.monthly` / `pro.yearly`
+   - `com.stormwatcher.app.premium.monthly` / `premium.yearly`
+3. Добави в Supabase Edge Function secrets:
+   - `APPLE_SHARED_SECRET` (App Store Connect → Apps → My Apps → App Information → App-Specific Shared Secret)
+   - `GOOGLE_SERVICE_ACCOUNT` (Play Console → Setup → API access → Service account JSON)
+   - Deploy: `supabase functions deploy verify-iap --project-ref srzfoxlmhxyulrgkchjr`
+4. Uncomment plugin calls в `src/hooks/useIAP.ts` (маркирани с `// TODO`)
+
+**Stripe CLI тест (ръчна стъпка преди web go-live):**
+```bash
+stripe listen --forward-to localhost:5173/api/stripe/webhook
+stripe trigger checkout.session.completed --add checkout_session:metadata.supabase_user_id=<your-uid>
+stripe trigger customer.subscription.trial_will_end
+stripe trigger invoice.payment_failed
+stripe trigger customer.subscription.deleted
+```
+Verify: `profiles.plan` се обновява, emails пристигат в Resend dashboard.
+
+**Без тези промени Apple/Google ще отхвърлят приложението при ревю.**
