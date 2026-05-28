@@ -1,8 +1,30 @@
-import { useEffect, useRef, useState, useCallback, Suspense } from 'react';
+import { useEffect, useRef, useState, useCallback, Suspense, Component, type ReactNode, lazy } from 'react';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { MapPin, Clock, Eye, Satellite } from 'lucide-react';
-import ISSGlobe from '../components/ISSGlobe';
+const ISSGlobe = lazy(() => import('../components/ISSGlobe'));
+
+class ISSGlobeErrorBoundary extends Component<{ children: ReactNode; t: (k: string) => string }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  render() {
+    if (this.state.failed) {
+      const { t } = this.props;
+      return (
+        <div className="flex flex-col items-center justify-center py-12 gap-3 text-center">
+          <div className="text-[#64748b] text-sm">{t('aurora.globeError') || '3D globe failed to load'}</div>
+          <button
+            className="text-xs px-4 py-1.5 rounded-full border border-[#f97316]/40 text-[#f97316] hover:bg-[#f97316]/10 transition-colors"
+            onClick={() => this.setState({ failed: false })}
+          >
+            {t('aurora.globeRetry') || 'Retry'}
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 import { getIssPosition, getIssPasses, IssPosition, IssPass } from '../services/issApi';
 import { getAuroraModel, AuroraOvationPoint } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -145,6 +167,7 @@ const ISS = () => {
               </div>
             ) : (
               <>
+                <ISSGlobeErrorBoundary t={t}>
                 <Suspense fallback={<div style={{ width: globeWidth, height: Math.max(280, Math.round(globeWidth * 0.74)), background: '#050510' }} />}>
                   <ISSGlobe
                     globeWidth={globeWidth}
@@ -157,6 +180,7 @@ const ISS = () => {
                     active={true}
                   />
                 </Suspense>
+                </ISSGlobeErrorBoundary>
 
                 {/* Stats */}
                 {position && (
