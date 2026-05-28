@@ -36,15 +36,20 @@ export function useFavoriteLocations() {
       return;
     }
     setLoading(true);
-    supabase
-      .from('favorite_locations')
-      .select('id, name, lat, lon')
-      .eq('user_id', user.id)
-      .order('created_at')
-      .then(({ data }) => {
+    void (async () => {
+      try {
+        const { data } = await supabase
+          .from('favorite_locations')
+          .select('id, name, lat, lon')
+          .eq('user_id', user.id)
+          .order('created_at');
         setFavorites((data as FavoriteLocation[]) ?? []);
+      } catch {
+        // non-critical — favorites stay empty on fetch failure
+      } finally {
         setLoading(false);
-      });
+      }
+    })();
   }, [user]);
 
   const add = useCallback(async (name: string, lat: number, lon: number) => {

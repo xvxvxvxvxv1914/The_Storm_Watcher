@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useKpLive } from '../hooks/useKpLive';
 import { supabase } from '../lib/supabase';
+import { logError } from '../utils/logger';
 import { Link } from 'react-router-dom';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
@@ -76,23 +77,29 @@ export default function Gallery() {
 
   const fetchPhotos = useCallback(async (start: number, append: boolean) => {
     if (append) setLoadingMore(true);
+    try {
+      const { data, error } = await supabase
+        .from('aurora_photos')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .range(start, start + PAGE_SIZE - 1);
 
-    const { data } = await supabase
-      .from('aurora_photos')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .range(start, start + PAGE_SIZE - 1);
-
-    const rows = (data ?? []) as GalleryPhoto[];
-    if (append) {
-      setPhotos(prev => [...prev, ...rows]);
-    } else {
-      setPhotos(rows);
+      if (error) throw error;
+      const rows = (data ?? []) as GalleryPhoto[];
+      if (append) {
+        setPhotos(prev => [...prev, ...rows]);
+      } else {
+        setPhotos(rows);
+      }
+      setNextOffset(start + rows.length);
+      setHasMore(rows.length === PAGE_SIZE);
+    } catch (err) {
+      logError('Gallery fetch failed:', err);
+      if (!append) setPhotos([]);
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
     }
-    setNextOffset(start + rows.length);
-    setHasMore(rows.length === PAGE_SIZE);
-    setLoading(false);
-    setLoadingMore(false);
   }, []);
 
   useEffect(() => { fetchPhotos(0, false); }, [fetchPhotos]);
@@ -194,13 +201,17 @@ export default function Gallery() {
       if (thumbPath) paths.push(thumbPath);
     }
 
-    await Promise.all([
-      supabase.from('aurora_photos').delete().eq('id', pendingDelete.id),
-      paths.length > 0 ? supabase.storage.from('aurora-gallery').remove(paths) : Promise.resolve(),
-    ]);
-
-    setPhotos(prev => prev.filter(p => p.id !== pendingDelete.id));
-    setPendingDelete(null);
+    try {
+      await Promise.all([
+        supabase.from('aurora_photos').delete().eq('id', pendingDelete.id),
+        paths.length > 0 ? supabase.storage.from('aurora-gallery').remove(paths) : Promise.resolve(),
+      ]);
+      setPhotos(prev => prev.filter(p => p.id !== pendingDelete.id));
+      setPendingDelete(null);
+    } catch (err) {
+      logError('Delete photo failed:', err);
+      setPendingDelete(null);
+    }
   };
 
   return (

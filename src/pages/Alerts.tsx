@@ -243,21 +243,24 @@ const scaleColors = ['', 'bg-green-400', 'bg-yellow-400', 'bg-orange-400', 'bg-r
 const scaleTxt    = ['', 'text-green-400', 'text-yellow-400', 'text-orange-400', 'text-red-500', 'text-red-700'];
 function NoaaScale({ letter, current, t }: { letter: string; current: number; t: (k: string) => string }) {
   const max = 5;
+  const safe = Math.min(Math.max(current, 1), max);
   const gLabels = ['', t('alerts.scale.minor'), t('alerts.scale.moderate'), t('alerts.scale.strong'), t('alerts.scale.severe'), t('alerts.scale.extreme')];
   const fLabels = ['', t('alerts.flare.negligible'), t('alerts.flare.weak'), t('alerts.flare.moderate'), t('alerts.flare.extreme'), ''];
+  const flareLetters = ['A', 'C', 'M', 'X', ''] as const;
+  const flareLabel   = ['', 'C', 'M', 'X', 'X+'] as const;
   const labels = letter === 'F' ? fLabels : gLabels;
   return (
     <div className="flex items-center gap-1 mt-2">
       {Array.from({ length: max }, (_, i) => i + 1).map(n => (
         <div key={n} className="flex flex-col items-center gap-1">
-          <div className={`h-1.5 w-7 sm:w-8 rounded-full ${n <= current ? scaleColors[current] : 'bg-white/10'}`} />
-          <span className={`text-[9px] font-bold hidden sm:block ${n === current ? scaleTxt[current] : 'text-white/25'}`}>
-            {letter === 'F' ? ['A', 'C', 'M', 'X', ''][n - 1] : `${letter}${n}`}
+          <div className={`h-1.5 w-7 sm:w-8 rounded-full ${n <= safe ? scaleColors[safe] : 'bg-white/10'}`} />
+          <span className={`text-[9px] font-bold hidden sm:block ${n === safe ? scaleTxt[safe] : 'text-white/25'}`}>
+            {letter === 'F' ? (flareLetters[n - 1] ?? '') : `${letter}${n}`}
           </span>
         </div>
       ))}
-      <span className={`ml-2 text-xs font-bold ${scaleTxt[current]}`}>
-        {letter === 'F' ? ['', 'C', 'M', 'X', 'X+'][current - 1] : `${letter}${current}`} · {labels[current]}
+      <span className={`ml-2 text-xs font-bold ${scaleTxt[safe]}`}>
+        {letter === 'F' ? (flareLabel[safe - 1] ?? '') : `${letter}${safe}`} · {labels[safe] ?? ''}
       </span>
     </div>
   );
