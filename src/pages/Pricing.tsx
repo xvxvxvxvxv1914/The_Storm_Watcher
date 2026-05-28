@@ -3,7 +3,7 @@ import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { isNative } from '../utils/platform';
-import { Check, Zap, Star, CreditCard } from 'lucide-react';
+import { Check, Zap, Star, CreditCard, Sparkles } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { supabase } from '../lib/supabase';
@@ -20,6 +20,14 @@ const PRICES = {
     yearly:  { id: 'price_1TSJHtLqQEtEOCx4Q1RuknHo', amount: '€71.99' },
   },
 };
+
+const FREE_FEATURE_KEYS = [
+  'pricing.free.feat.realtime',
+  'pricing.free.feat.aurora',
+  'pricing.free.feat.forecast',
+  'pricing.free.feat.iss',
+  'pricing.free.feat.weather',
+];
 
 const PRO_FEATURE_KEYS = [
   'pricing.pro.feat.forecasts',
@@ -178,7 +186,71 @@ export default function Pricing() {
         )}
 
         {/* Plan cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          {/* Free */}
+          <div
+            className="glass-surface rounded-2xl p-8 border relative"
+            style={{ borderColor: currentPlan === 'free' && !hasSubscription ? '#10b981' : '#10b98122' }}
+          >
+            {currentPlan === 'free' && !hasSubscription && (
+              <span className="absolute top-4 right-4 text-xs font-bold px-2 py-1 rounded-full"
+                style={{ background: '#10b98122', color: '#10b981' }}>
+                {t('pricing.currentPlan') || 'Current plan'}
+              </span>
+            )}
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center"
+                style={{ background: '#10b98122' }}>
+                <Sparkles className="w-5 h-5" style={{ color: '#10b981' }} />
+              </div>
+              <div>
+                <div className="text-white font-bold text-lg">{t('pricing.free') || 'Free'}</div>
+                <div className="text-[#64748b] text-sm">{t('pricing.free.tagline') || 'Always free'}</div>
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <span className="text-3xl font-bold text-white">€0</span>
+              <span className="text-[#64748b] text-sm ml-1">/ {t('pricing.perMonth') || 'month'}</span>
+            </div>
+
+            <ul className="space-y-3 mb-8">
+              {FREE_FEATURE_KEYS.map(key => (
+                <li key={key} className="flex items-center gap-3 text-sm text-[#94a3b8]">
+                  <Check className="w-4 h-4 flex-shrink-0" style={{ color: '#10b981' }} />
+                  {t(key)}
+                </li>
+              ))}
+            </ul>
+
+            {user ? (
+              currentPlan === 'free' && !hasSubscription ? (
+                <div className="w-full py-3 rounded-xl font-bold text-center text-sm"
+                  style={{ background: '#10b98122', color: '#10b981' }}>
+                  {t('pricing.currentPlan') || 'Current plan'}
+                </div>
+              ) : (
+                <button
+                  onClick={manageSubscription}
+                  disabled={loading === 'portal'}
+                  className="w-full py-3 rounded-xl font-bold text-white transition-all hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2"
+                  style={{ background: '#1e293b' }}
+                >
+                  <CreditCard className="w-4 h-4" />
+                  {loading === 'portal' ? (t('pricing.loading') || 'Loading…') : (t('pricing.manageSubscription') || 'Manage subscription')}
+                </button>
+              )
+            ) : (
+              <button
+                onClick={() => navigate('/auth', { state: { from: '/pricing' } })}
+                className="w-full py-3 rounded-xl font-bold text-white transition-all hover:scale-105 hover:shadow-lg"
+                style={{ background: 'linear-gradient(to right, #10b981, #14b8a6)' }}
+              >
+                {t('pricing.getStarted') || 'Get Started'}
+              </button>
+            )}
+          </div>
+
           {/* Pro */}
           <div
             className="glass-surface rounded-2xl p-8 border relative"
