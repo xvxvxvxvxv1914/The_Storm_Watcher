@@ -21,7 +21,8 @@ export async function generateStormScoreImage(params: StormImageParams): Promise
   const canvas = document.createElement('canvas');
   canvas.width = W;
   canvas.height = H;
-  const ctx = canvas.getContext('2d')!;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('2D canvas context unavailable');
 
   // Background
   const bg = ctx.createLinearGradient(0, 0, W, H);

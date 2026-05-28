@@ -29,7 +29,8 @@ async function compressImage(file: File, maxWidth: number, quality = 0.85): Prom
   const canvas = document.createElement('canvas');
   canvas.width = Math.round(bitmap.width * ratio);
   canvas.height = Math.round(bitmap.height * ratio);
-  const ctx = canvas.getContext('2d')!;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('2D canvas context unavailable');
   ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
   bitmap.close();
   return new Promise((resolve, reject) => {
