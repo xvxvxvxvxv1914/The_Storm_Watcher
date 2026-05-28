@@ -41,7 +41,7 @@ vi.mock('../emails/templates', () => ({
   proActivatedEmail: vi.fn(() => '<html>pro</html>'),
   paymentFailedEmail: vi.fn(() => '<html>failed</html>'),
   subscriptionCancelledEmail: vi.fn(() => '<html>cancelled</html>'),
-  trialEndingEmail: vi.fn((_days: number) => '<html>trial</html>'),
+  trialEndingEmail: vi.fn(() => '<html>trial</html>'),
 }));
 
 import handler from './webhook';
