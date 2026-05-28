@@ -544,6 +544,10 @@ const ko: Record<string, string> = {
   'onboarding.close': '닫기',
 
   // Settings — onboarding section
+  'settings.beta': 'Beta Features',
+  'settings.betaDesc': 'You have early access to experimental features.',
+  'settings.betaEmpty': 'No active beta features right now.',
+  'settings.betaWatch': 'Watch this space — new experiments will appear here first.',
   'settings.help': '도움말 및 투어',
   'settings.tourDesc': '대시보드, 푸시 알림, 설정 위치를 설명하는 소개 투어를 다시 재생합니다.',
   'settings.restartTour': '온보딩 투어 다시 시작',

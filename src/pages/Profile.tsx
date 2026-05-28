@@ -87,6 +87,7 @@ export default function Profile() {
   const isPaid = isPro || isPremium;
   const isTrialing = profile?.subscription_status === 'trialing';
   const isPastDue = profile?.subscription_status === 'past_due';
+  const isBeta = profile?.is_beta === true;
   const PlanIcon = cfg.icon;
 
   const displayName = profile?.full_name || user?.email?.split('@')[0] || 'Profile';
@@ -423,7 +424,15 @@ export default function Profile() {
                           <PlanIcon className="w-5 h-5 text-white" />
                         </div>
                         <div className="min-w-0">
-                          <p className="text-white font-bold text-base leading-tight">Storm Watcher {cfg.label}</p>
+                          <div className="flex items-center gap-2 leading-tight">
+                            <p className="text-white font-bold text-base">Storm Watcher {cfg.label}</p>
+                            {isBeta && (
+                              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
+                                style={{ background: '#7c3aed33', color: '#a78bfa', border: '1px solid #7c3aed44' }}>
+                                BETA
+                              </span>
+                            )}
+                          </div>
                           {isTrialing && trialDaysLeft !== null && (
                             <p className="text-orange-400 text-xs mt-0.5 font-medium">{trialDaysLeft} days left in trial</p>
                           )}

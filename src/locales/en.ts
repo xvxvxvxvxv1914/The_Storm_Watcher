@@ -585,6 +585,12 @@ const en: Record<string, string> = {
   'onboarding.last': 'Got it',
   'onboarding.close': 'Close',
 
+  // Settings — beta section
+  'settings.beta': 'Beta Features',
+  'settings.betaDesc': 'You have early access to experimental features. These may change or be removed before general release.',
+  'settings.betaEmpty': 'No active beta features right now.',
+  'settings.betaWatch': 'Watch this space — new experiments will appear here first.',
+
   // Settings — onboarding section
   'settings.help': 'Help & Tour',
   'settings.tourDesc': 'Replay the introductory tour that explains the dashboard, push alerts and where to find your settings.',

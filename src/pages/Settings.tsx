@@ -9,6 +9,8 @@ import LocationPicker from '../components/LocationPicker';
 import { reverseGeocode } from '../utils/reverseGeocode';
 import { getCurrentPosition } from '../utils/geolocation';
 import { usePaymentGate } from '../hooks/usePaymentGate';
+import { useAuth } from '../contexts/AuthContext';
+import { FlaskConical } from 'lucide-react';
 
 export default function Settings() {
   const { settings, updateSettings } = useSettings();
@@ -16,6 +18,8 @@ export default function Settings() {
   const { reset: resetOnboarding } = useOnboarding();
   const navigate = useNavigate();
   const { hasPro, hasPremium } = usePaymentGate();
+  const { profile } = useAuth();
+  const isBeta = profile?.is_beta === true;
 
   const [saved, setSaved] = useState(false);
   const [locating, setLocating] = useState(false);
@@ -269,6 +273,31 @@ export default function Settings() {
               {t('settings.restartTour') || 'Restart onboarding tour'}
             </button>
           </section>
+
+          {/* Beta Features — visible only to is_beta users */}
+          {isBeta && (
+            <section className="glass-surface rounded-2xl p-4 sm:p-6 border"
+              style={{ borderColor: '#7c3aed44', background: 'linear-gradient(135deg, #7c3aed08, transparent)' }}>
+              <div className="flex items-center gap-3 mb-1">
+                <FlaskConical className="w-5 h-5" style={{ color: '#a78bfa' }} />
+                <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+                  {t('settings.beta') || 'Beta Features'}
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
+                    style={{ background: '#7c3aed33', color: '#a78bfa', border: '1px solid #7c3aed44' }}>
+                    BETA
+                  </span>
+                </h2>
+              </div>
+              <p className="text-sm text-[#94a3b8] mb-4">
+                {t('settings.betaDesc') || 'You have early access to experimental features. These may change or be removed before general release.'}
+              </p>
+              <div className="rounded-xl p-4 text-sm text-[#64748b]"
+                style={{ background: '#7c3aed0a', border: '1px solid #7c3aed22' }}>
+                <p className="text-[#94a3b8] font-medium mb-1">{t('settings.betaEmpty') || 'No active beta features right now.'}</p>
+                <p className="text-xs">{t('settings.betaWatch') || 'Watch this space — new experiments will appear here first.'}</p>
+              </div>
+            </section>
+          )}
 
           {/* Save */}
           <div className="flex justify-end">

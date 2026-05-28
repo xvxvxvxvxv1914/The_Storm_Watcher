@@ -491,6 +491,12 @@ const bg: Record<string, string> = {
   'onboarding.last': 'Разбрах',
   'onboarding.close': 'Затвори',
 
+  // Settings — beta section
+  'settings.beta': 'Бета функции',
+  'settings.betaDesc': 'Имате ранен достъп до експериментални функции. Те може да се променят или да бъдат премахнати преди общо пускане.',
+  'settings.betaEmpty': 'Няма активни бета функции в момента.',
+  'settings.betaWatch': 'Следете тук — новите експерименти ще се появяват тук първи.',
+
   // Settings — onboarding section
   'settings.help': 'Помощ и обиколка',
   'settings.tourDesc': 'Покажи отново въвеждащата обиколка, която обяснява таблото, известията и къде се намират настройките.',
