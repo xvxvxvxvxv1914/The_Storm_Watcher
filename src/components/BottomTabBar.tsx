@@ -5,7 +5,7 @@ import {
   Home, LayoutDashboard, TrendingUp, Sparkles, MoreHorizontal,
   X, Sun, Eye, Satellite, AlertTriangle, SmilePlus,
   User, LogOut, SlidersHorizontal, Globe, ChevronRight,
-  Magnet, HelpCircle, Camera, Trophy, Video, CalendarDays,
+  Magnet, HelpCircle, Camera, Trophy, Video, CalendarDays, CreditCard,
 } from 'lucide-react';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { useLanguage, languages } from '../contexts/LanguageContext';
@@ -22,7 +22,7 @@ const tabs = [
   { to: '/aurora',    icon: Sparkles,        labelKey: 'nav.aurora' },
 ];
 
-const moreRoutes = ['/alerts', '/mood', '/uv', '/sun', '/sky', '/iss', '/magnetic-effects', '/faq', '/profile', '/settings', '/gallery', '/hunt', '/livestream', '/calendar'];
+const moreRoutes = ['/alerts', '/mood', '/uv', '/sun', '/sky', '/iss', '/magnetic-effects', '/faq', '/profile', '/settings', '/gallery', '/hunt', '/livestream', '/calendar', '/pricing'];
 
 const BottomTabBar = () => {
   const [moreOpen, setMoreOpen] = useState(false);
@@ -84,6 +84,7 @@ const BottomTabBar = () => {
     // Info
     { to: '/magnetic-effects', icon: Magnet,        label: t('nav.magneticEffects') || 'Magnetic',   badge: 'bg-teal-600' },
     { to: '/faq',              icon: HelpCircle,    label: t('nav.faq') || 'FAQ',                    badge: 'bg-slate-500' },
+    { to: '/pricing',          icon: CreditCard,    label: t('nav.pricing') || 'Pricing',            badge: 'bg-emerald-500' },
   ];
 
   return (

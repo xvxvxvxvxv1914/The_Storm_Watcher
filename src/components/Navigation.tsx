@@ -63,6 +63,7 @@ const Navigation = () => {
     { to: '/aurora', label: t('nav.aurora') },
     { to: '/alerts', label: t('nav.alerts') },
     { to: '/calendar', label: t('nav.calendar') || 'Aurora Calendar' },
+    { to: '/pricing', label: t('nav.pricing') || 'Pricing' },
   ];
 
   const moreLinks = [
