@@ -568,6 +568,7 @@ const ru: Record<string, string> = {
   'planguard.unlockTitle': 'Разблокируйте с Pro или Premium',
   'planguard.signInUpgrade': 'Войдите для улучшения',
   'planguard.upgradePro': 'Перейти на Pro или Premium',
+  'planguard.goBack': 'Go back',
   'error.loadFailed': 'Не удалось загрузить данные.',
   'error.retry': 'Повторить',
   'iss.upcomingPasses': 'Предстоящие пролёты',

@@ -393,6 +393,7 @@ const bg: Record<string, string> = {
   'planguard.unlockTitle': 'Отключете с Pro или Premium',
   'planguard.signInUpgrade': 'Влезте за да надградите',
   'planguard.upgradePro': 'Надградете до Pro или Premium',
+  'planguard.goBack': 'Назад',
   'aurora.currentValue': 'Текуща стойност',
   'aurora.strength': 'Сила на Аврората',
   'aurora.latNorth': 'Северна ширина',

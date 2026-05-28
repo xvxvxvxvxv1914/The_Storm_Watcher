@@ -568,6 +568,7 @@ const ja: Record<string, string> = {
   'planguard.unlockTitle': 'ProまたはPremiumでアンロック',
   'planguard.signInUpgrade': 'サインインしてアップグレード',
   'planguard.upgradePro': 'ProまたはPremiumにアップグレード',
+  'planguard.goBack': 'Go back',
   'error.loadFailed': 'データの読み込みに失敗しました。',
   'error.retry': '再試行',
   'iss.upcomingPasses': '今後の通過',

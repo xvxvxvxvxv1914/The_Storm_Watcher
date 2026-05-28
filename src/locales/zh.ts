@@ -568,6 +568,7 @@ const zh: Record<string, string> = {
   'planguard.unlockTitle': '升级至Pro或Premium以解锁',
   'planguard.signInUpgrade': '登录以升级',
   'planguard.upgradePro': '升级至Pro或Premium',
+  'planguard.goBack': 'Go back',
   'error.loadFailed': '数据加载失败。',
   'error.retry': '重试',
   'iss.upcomingPasses': '即将过境',

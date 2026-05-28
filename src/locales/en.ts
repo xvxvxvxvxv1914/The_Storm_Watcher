@@ -406,6 +406,7 @@ const en: Record<string, string> = {
   'planguard.unlockTitle': 'Unlock this with Pro or Premium',
   'planguard.signInUpgrade': 'Sign In to Upgrade',
   'planguard.upgradePro': 'Upgrade to Pro or Premium',
+  'planguard.goBack': 'Go back',
   'aurora.currentValue': 'Current Value',
   'aurora.strength': 'Aurora Strength',
   'aurora.latNorth': 'Latitude North',

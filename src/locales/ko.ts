@@ -364,6 +364,7 @@ const ko: Record<string, string> = {
   'planguard.unlockTitle': '프로 또는 프리미엄으로 잠금 해제',
   'planguard.signInUpgrade': '업그레이드하려면 로그인',
   'planguard.upgradePro': '프로 또는 프리미엄으로 업그레이드',
+  'planguard.goBack': 'Go back',
   'aurora.currentValue': '현재 값',
   'aurora.strength': '오로라 강도',
   'aurora.latNorth': '북위',

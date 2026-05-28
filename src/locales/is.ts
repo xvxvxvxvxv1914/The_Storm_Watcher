@@ -497,6 +497,7 @@ const is_: Record<string, string> = {
   'planguard.unlockTitle': 'Opnaðu með Pro eða Premium',
   'planguard.signInUpgrade': 'Skráðu þig inn til að uppfæra',
   'planguard.upgradePro': 'Uppfæra í Pro eða Premium',
+  'planguard.goBack': 'Go back',
 
     'push.prompt.title': 'Geomagnetísk virkni eykst',
   'push.prompt.body': 'Kp er {kp} — viltu fá viðvörun við storm?',

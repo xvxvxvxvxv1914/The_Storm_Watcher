@@ -46,8 +46,8 @@ export const AnimatedRoutes = () => {
         <Route path="/auth" element={user && user.email_confirmed_at ? <Navigate to="/dashboard" replace /> : <AnimatedPage><Auth /></AnimatedPage>} />
         <Route path="/dashboard" element={<AnimatedPage><Dashboard /></AnimatedPage>} />
         <Route path="/forecast" element={<AnimatedPage><Forecast /></AnimatedPage>} />
-        <Route path="/aurora" element={<PlanGuard requiredPlan="pro"><AnimatedPage><Aurora /></AnimatedPage></PlanGuard>} />
-        <Route path="/alerts" element={<PlanGuard requiredPlan="pro"><AnimatedPage><Alerts /></AnimatedPage></PlanGuard>} />
+        <Route path="/aurora" element={<PlanGuard requiredPlan="pro" fullPage><AnimatedPage><Aurora /></AnimatedPage></PlanGuard>} />
+        <Route path="/alerts" element={<PlanGuard requiredPlan="pro" fullPage><AnimatedPage><Alerts /></AnimatedPage></PlanGuard>} />
         <Route path="/mood" element={<AnimatedPage><Mood /></AnimatedPage>} />
         <Route path="/uv" element={<AnimatedPage><UV /></AnimatedPage>} />
         <Route path="/sun" element={<AnimatedPage><SunTimes /></AnimatedPage>} />

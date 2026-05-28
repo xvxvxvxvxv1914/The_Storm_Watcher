@@ -1,26 +1,30 @@
-import { Link, useLocation } from 'react-router-dom';
-import { Lock, Sparkles } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Lock, Sparkles, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { isNative } from '../utils/platform';
+import StarField from './StarField';
 
 type Plan = 'free' | 'pro' | 'premium';
 
 interface PlanGuardProps {
   requiredPlan: Plan;
   children: React.ReactNode;
+  /** When true: renders a full-screen gate page instead of a blur overlay.
+   *  Use for route-level gating (/aurora, /alerts). */
+  fullPage?: boolean;
 }
 
 const PLAN_RANK: Record<Plan, number> = { free: 0, pro: 1, premium: 2 };
 
-const PlanGuard = ({ requiredPlan, children }: PlanGuardProps) => {
+const PlanGuard = ({ requiredPlan, children, fullPage = false }: PlanGuardProps) => {
   const { user, profile } = useAuth();
   const { t } = useLanguage();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const paymentsEnabled = import.meta.env.VITE_PAYMENTS_ENABLED === 'true';
   const userPlan: Plan = profile?.plan ?? 'free';
-  // Trialing users get Pro access even if plan field wasn't updated yet
   const isTrialing = profile?.subscription_status === 'trialing';
   const effectivePlan: Plan = (isTrialing && PLAN_RANK[userPlan] < PLAN_RANK['pro']) ? 'pro' : userPlan;
   const hasAccess = isNative() || !paymentsEnabled || PLAN_RANK[effectivePlan] >= PLAN_RANK[requiredPlan];
@@ -31,70 +35,107 @@ const PlanGuard = ({ requiredPlan, children }: PlanGuardProps) => {
   const gradientFrom = requiredPlan === 'pro' ? '#f97316' : '#7c3aed';
   const gradientTo = requiredPlan === 'pro' ? '#fbbf24' : '#6d28d9';
 
-  return (
-    <div className="relative">
-      {/* Blurred content underneath */}
-      <div className="pointer-events-none select-none" style={{ filter: 'blur(6px)', opacity: 0.45 }}>
-        {children}
+  const card = (
+    <div className="glass-surface rounded-2xl p-8 sm:p-10 max-w-sm w-full mx-4 text-center border"
+      style={{ borderColor: `${gradientFrom}40` }}
+    >
+      {/* Icon */}
+      <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5"
+        style={{ background: `${gradientFrom}18`, border: `1px solid ${gradientFrom}30` }}
+      >
+        <Lock className="w-8 h-8" style={{ color: gradientFrom }} />
       </div>
 
-      {/* Overlay */}
-      <div className="absolute inset-0 flex items-center justify-center z-10"
-        style={{ background: 'linear-gradient(to bottom, rgba(10,10,26,0.3) 0%, rgba(10,10,26,0.7) 60%, rgba(10,10,26,0.95) 100%)' }}
-      >
-        <div className="glass-surface rounded-2xl p-10 max-w-sm w-full mx-4 text-center border"
-          style={{ borderColor: `${gradientFrom}33` }}
+      {/* Badge */}
+      <div className="flex items-center justify-center gap-2 mb-3">
+        <Sparkles className="w-4 h-4" style={{ color: gradientFrom }} />
+        <span className="text-xs font-bold uppercase tracking-widest" style={{ color: gradientFrom }}>
+          {planLabel === 'Pro' ? t('planguard.proFeature') : t('planguard.premiumFeature')}
+        </span>
+      </div>
+
+      {/* Title */}
+      <h2 className="text-2xl font-bold text-white mb-3">
+        {t('planguard.unlockTitle')}
+      </h2>
+
+      {/* Description */}
+      <p className="text-[#64748b] text-sm mb-7 leading-relaxed">
+        {t('planguard.availableOn').split('Pro')[0]}
+        <span className="font-semibold" style={{ color: gradientFrom }}>Pro</span>
+        {t('planguard.availableOn').split('Pro')[1]?.split('Premium')[0]}
+        <span className="font-semibold text-[#a78bfa]">Premium</span>
+        {t('planguard.availableOn').split('Premium')[1]}
+      </p>
+
+      {/* CTA */}
+      {!user ? (
+        <Link
+          to="/auth"
+          state={{ from: location.pathname }}
+          className="block w-full py-3 rounded-xl font-bold text-white transition-all hover:scale-105 hover:shadow-lg"
+          style={{ background: `linear-gradient(to right, ${gradientFrom}, ${gradientTo})` }}
         >
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5"
-            style={{ background: `${gradientFrom}22` }}
+          {t('planguard.signInUpgrade')}
+        </Link>
+      ) : requiredPlan === 'pro' ? (
+        <>
+          <Link
+            to="/pricing"
+            className="block w-full py-3 rounded-xl font-bold text-white transition-all hover:scale-105 hover:shadow-lg"
+            style={{ background: `linear-gradient(to right, ${gradientFrom}, ${gradientTo})` }}
           >
-            <Lock className="w-7 h-7" style={{ color: gradientFrom }} />
-          </div>
+            {t('pricing.tryProFree') || 'Try Pro free for 14 days'}
+          </Link>
+          <p className="text-[#475569] text-xs mt-2">{t('home.noCC') || '— no credit card required'}</p>
+        </>
+      ) : (
+        <Link
+          to="/pricing"
+          className="block w-full py-3 rounded-xl font-bold text-white transition-all hover:scale-105 hover:shadow-lg"
+          style={{ background: `linear-gradient(to right, ${gradientFrom}, ${gradientTo})` }}
+        >
+          {t('planguard.upgradePro')}
+        </Link>
+      )}
 
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <Sparkles className="w-4 h-4" style={{ color: gradientFrom }} />
-            <span className="text-xs font-bold uppercase tracking-widest" style={{ color: gradientFrom }}>
-              {planLabel === 'Pro' ? t('planguard.proFeature') : t('planguard.premiumFeature')}
-            </span>
-          </div>
+      {/* Back link */}
+      {fullPage && (
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center justify-center gap-1.5 mx-auto mt-5 text-xs text-[#475569] hover:text-[#94a3b8] transition-colors"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          {t('planguard.goBack') || 'Go back'}
+        </button>
+      )}
+    </div>
+  );
 
-          <h2 className="text-xl font-bold text-white mb-3">
-            {t('planguard.unlockTitle')}
-          </h2>
-          <p className="text-[#64748b] text-sm mb-7 leading-relaxed">
-            {t('planguard.availableOn').split('Pro')[0]}<span className="font-semibold" style={{ color: gradientFrom }}>Pro</span>{t('planguard.availableOn').split('Pro')[1]?.split('Premium')[0]}<span className="font-semibold text-[#7c3aed]">Premium</span>{t('planguard.availableOn').split('Premium')[1]}
-          </p>
-
-          {!user ? (
-            <Link
-              to="/auth"
-              state={{ from: location.pathname }}
-              className="block w-full py-3 rounded-lg font-bold text-white transition-all hover:scale-105 hover:shadow-lg"
-              style={{ background: `linear-gradient(to right, ${gradientFrom}, ${gradientTo})`, boxShadow: `0 0 0 0 ${gradientFrom}` }}
-            >
-              {t('planguard.signInUpgrade')}
-            </Link>
-          ) : requiredPlan === 'pro' ? (
-            <>
-              <Link
-                to="/pricing"
-                className="block w-full py-3 rounded-lg font-bold text-white transition-all hover:scale-105 hover:shadow-lg"
-                style={{ background: `linear-gradient(to right, ${gradientFrom}, ${gradientTo})` }}
-              >
-                {t('pricing.tryProFree') || 'Try Pro free for 14 days'}
-              </Link>
-              <p className="text-[#475569] text-xs mt-2">{t('home.noCC') || '— no credit card required'}</p>
-            </>
-          ) : (
-            <Link
-              to="/pricing"
-              className="block w-full py-3 rounded-lg font-bold text-white transition-all hover:scale-105 hover:shadow-lg"
-              style={{ background: `linear-gradient(to right, ${gradientFrom}, ${gradientTo})` }}
-            >
-              {t('planguard.upgradePro')}
-            </Link>
-          )}
+  if (fullPage) {
+    return (
+      <div
+        className="min-h-screen flex flex-col items-center justify-center px-4 relative"
+        style={{ background: 'radial-gradient(ellipse at top, #0d1b2a 0%, #0a0a1a 70%)' }}
+      >
+        <StarField />
+        <div className="relative z-10">
+          {card}
         </div>
+      </div>
+    );
+  }
+
+  // Inline blur overlay (for section-level gating)
+  return (
+    <div className="relative">
+      <div className="pointer-events-none select-none" style={{ filter: 'blur(10px)', opacity: 0.3 }}>
+        {children}
+      </div>
+      <div className="absolute inset-0 flex items-center justify-center z-10"
+        style={{ background: 'linear-gradient(to bottom, rgba(10,10,26,0.4) 0%, rgba(10,10,26,0.85) 100%)' }}
+      >
+        {card}
       </div>
     </div>
   );

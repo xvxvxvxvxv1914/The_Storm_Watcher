@@ -497,6 +497,7 @@ const fi: Record<string, string> = {
   'planguard.unlockTitle': 'Avaa Pro- tai Premium-tilauksella',
   'planguard.signInUpgrade': 'Kirjaudu sisään päivittääksesi',
   'planguard.upgradePro': 'Päivitä Pro tai Premium',
+  'planguard.goBack': 'Go back',
 
     'push.prompt.title': 'Geomagneettinen aktiivisuus kasvaa',
   'push.prompt.body': 'Kp on {kp} — haluatko hälytyksen myrskyn sattuessa?',

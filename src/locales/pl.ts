@@ -497,6 +497,7 @@ const pl: Record<string, string> = {
   'planguard.unlockTitle': 'Odblokuj z Pro lub Premium',
   'planguard.signInUpgrade': 'Zaloguj się, aby uaktualnić',
   'planguard.upgradePro': 'Uaktualnij do Pro lub Premium',
+  'planguard.goBack': 'Go back',
 
     'push.prompt.title': 'Aktywność geomagnetyczna rośnie',
   'push.prompt.body': 'Kp wynosi {kp} — chcesz alert przy burzy?',

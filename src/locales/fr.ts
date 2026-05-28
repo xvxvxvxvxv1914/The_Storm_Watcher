@@ -568,6 +568,7 @@ const fr: Record<string, string> = {
   'planguard.unlockTitle': 'Débloquez avec Pro ou Premium',
   'planguard.signInUpgrade': 'Se connecter pour améliorer',
   'planguard.upgradePro': 'Passer à Pro ou Premium',
+  'planguard.goBack': 'Go back',
   'error.loadFailed': 'Échec du chargement des données.',
   'error.retry': 'Réessayer',
   'iss.upcomingPasses': 'Prochains passages',
