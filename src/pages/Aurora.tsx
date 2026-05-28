@@ -14,20 +14,21 @@ import { getCurrentPosition } from '../utils/geolocation';
 
 const AuroraGlobe = lazy(() => import('../components/AuroraGlobe'));
 
-class GlobeErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+class GlobeErrorBoundary extends Component<{ children: ReactNode; t: (k: string) => string }, { failed: boolean }> {
   state = { failed: false };
   static getDerivedStateFromError() { return { failed: true }; }
   render() {
     if (this.state.failed) {
+      const { t } = this.props;
       return (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center px-6">
-          <div className="text-[#64748b] text-sm">3D globe failed to load</div>
+          <div className="text-[#64748b] text-sm">{t('aurora.globeError') || '3D globe failed to load'}</div>
           <button
             className="text-xs px-4 py-1.5 rounded-full border border-[#10b981]/40 text-[#10b981] hover:bg-[#10b981]/10 transition-colors"
             onClick={() => this.setState({ failed: false })}
-            aria-label="Retry loading 3D globe"
+            aria-label={t('aurora.globeRetry') || 'Retry loading 3D globe'}
           >
-            Retry
+            {t('aurora.globeRetry') || 'Retry'}
           </button>
         </div>
       );
@@ -319,7 +320,7 @@ const Aurora = () => {
         <div className="glass-surface rounded-2xl p-5 sm:p-8 mb-6 md:mb-8 border border-white/5">
           <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
             <div className="shrink-0">
-              <div className="text-xs text-[#64748b] uppercase tracking-widest mb-1 font-semibold">Aurora Quality Index</div>
+              <div className="text-xs text-[#64748b] uppercase tracking-widest mb-1 font-semibold">{t('aurora.qualityIndex') || 'Aurora Quality Index'}</div>
               <div className="flex items-baseline gap-2">
                 <span className="text-6xl font-bold" style={{ color: qualityColor }}>{auroraQuality}</span>
                 <span className="text-[#94a3b8] text-lg">/100</span>
@@ -343,7 +344,7 @@ const Aurora = () => {
             </div>
           </div>
           <p className="text-[10px] text-[#374151] mt-4">
-            Bz 50% · Bt 20% · Solar wind speed 20% · Density 10%. More accurate than Kp alone.
+            {t('aurora.qualityWeights') || 'Bz 50% · Bt 20% · Solar wind speed 20% · Density 10%. More accurate than Kp alone.'}
           </p>
         </div>
 
@@ -489,7 +490,7 @@ const Aurora = () => {
           </div>
           
           <div ref={globeContainerRef} className="relative w-full flex justify-center cursor-grab active:cursor-grabbing" style={{ minHeight: Math.max(320, Math.round(globeWidth * 0.75)), background: '#050510' }}>
-            <GlobeErrorBoundary>
+            <GlobeErrorBoundary t={t}>
               <Suspense fallback={
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <div className="w-12 h-12 border-4 border-[#10b981]/20 border-t-[#10b981] rounded-full animate-spin mb-4" />
