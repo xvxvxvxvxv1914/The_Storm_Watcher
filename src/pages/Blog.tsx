@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Clock, ChevronRight, Rss } from 'lucide-react';
 import { getLocalizedBlogList, CATEGORY_LABELS } from '../data/blog';
 import PageMeta from '../components/PageMeta';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { AnimatedPage } from '../components/AnimatedPage';
 import { useLanguage } from '../contexts/LanguageContext';
 import StarField from '../components/StarField';
@@ -26,6 +27,7 @@ export default function Blog() {
       >
         <link rel="alternate" type="application/rss+xml" title="The Storm Watcher Blog" href="https://www.thestormwatcher.com/feed.xml" />
       </PageMeta>
+      <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Blog', path: '/blog' }]} />
 
       <div className="min-h-screen bg-[#050510] relative overflow-hidden pt-20 pb-24 px-4">
         <StarField />

@@ -3,6 +3,7 @@ import { Clock, ArrowLeft, Info, AlertTriangle, Lightbulb, ChevronRight } from '
 import { getLocalizedBlogPost, getLocalizedBlogList, CATEGORY_LABELS } from '../data/blog';
 import type { BlogSection } from '../data/blog/types';
 import PageMeta from '../components/PageMeta';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { AnimatedPage } from '../components/AnimatedPage';
 import { useLanguage } from '../contexts/LanguageContext';
 import StarField from '../components/StarField';
@@ -95,6 +96,7 @@ export default function BlogPost() {
           "image": "https://www.thestormwatcher.com/og-image.webp"
         })}</script>
       </PageMeta>
+      <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Blog', path: '/blog' }, { name: post.title, path: `/blog/${post.slug}` }]} />
 
       <div className="min-h-screen bg-[#050510] relative overflow-hidden pt-20 pb-24 px-4">
         <StarField />
