@@ -9,8 +9,7 @@ import {
   ExternalLink, ChevronDown, Star, Lock,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { isNative } from '../utils/platform';
+import { usePaymentGate } from '../hooks/usePaymentGate';
 import {
   getKpForecast, getKpHistory3Day, get27DayOutlook, getStormStatus, getKpGradientStyle,
   getSpaceWeatherOutlook, type SpaceWeatherOutlook, type DayOutlook,
@@ -41,11 +40,7 @@ interface DayForecast {
 const Forecast = () => {
   const { t, language } = useLanguage();
   const { settings } = useSettings();
-  const { profile } = useAuth();
-  const paymentsEnabled = import.meta.env.VITE_PAYMENTS_ENABLED === 'true';
-  const userPlan = profile?.plan ?? 'free';
-  const isTrialing = profile?.subscription_status === 'trialing';
-  const hasPro = isNative() || !paymentsEnabled || userPlan === 'pro' || userPlan === 'premium' || isTrialing;
+  const { hasPro } = usePaymentGate();
   const chartH = useChartHeight(190, 300);
   const [forecastData, setForecastData] = useState<ForecastItem[]>([]);
   const [outlook27, setOutlook27] = useState<DayOutlook[]>([]);

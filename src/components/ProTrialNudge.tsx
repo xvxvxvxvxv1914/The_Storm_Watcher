@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Sparkles, X, Check } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { usePaymentGate } from '../hooks/usePaymentGate';
 
 const DISMISS_KEY = 'tsw_trial_nudge_dismissed';
 const DISMISS_TTL = 7 * 24 * 60 * 60 * 1000; // 7 days
@@ -22,9 +23,8 @@ const PRO_HIGHLIGHTS = [
 export default function ProTrialNudge() {
   const { user, profile } = useAuth();
   const { t } = useLanguage();
+  const { paymentsEnabled } = usePaymentGate();
   const [dismissed, setDismissed] = useState(isDismissed);
-
-  const paymentsEnabled = import.meta.env.VITE_PAYMENTS_ENABLED === 'true';
 
   // Show only for logged-in free users with no subscription history
   const shouldShow =

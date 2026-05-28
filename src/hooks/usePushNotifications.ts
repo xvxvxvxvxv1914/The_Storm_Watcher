@@ -4,6 +4,7 @@ import { isIos } from '../utils/platform';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { useSettings } from '../contexts/SettingsContext';
+import { usePaymentGate } from './usePaymentGate';
 import { logError } from '../utils/logger';
 
 async function saveToken(userId: string, token: string, platform: string, thresholdKp: number) {
@@ -17,13 +18,9 @@ async function saveToken(userId: string, token: string, platform: string, thresh
 }
 
 export function usePushNotifications() {
-  const { user, profile } = useAuth();
+  const { user } = useAuth();
   const { settings } = useSettings();
-
-  const paymentsEnabled = import.meta.env.VITE_PAYMENTS_ENABLED === 'true';
-  const plan = profile?.plan ?? 'free';
-  const isTrialing = profile?.subscription_status === 'trialing';
-  const hasPro = !paymentsEnabled || plan === 'pro' || plan === 'premium' || isTrialing;
+  const { hasPro } = usePaymentGate();
 
   useEffect(() => {
     if (!isIos()) return;

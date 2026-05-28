@@ -3,11 +3,10 @@ import { Link } from 'react-router-dom';
 import { Map, Sparkles, MapPin } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
-import { useAuth } from '../contexts/AuthContext';
 import { useKpLive } from '../hooks/useKpLive';
 import { getStormStatus } from '../services/noaaApi';
 import { calcAuroraVisibility } from '../utils/auroraVisibility';
-import { isNative } from '../utils/platform';
+import { usePaymentGate } from '../hooks/usePaymentGate';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 
@@ -16,15 +15,10 @@ const AuroraHeatmap = lazy(() => import('../components/AuroraHeatmap'));
 export default function AuroraMap() {
   const { t } = useLanguage();
   const { settings } = useSettings();
-  const { profile } = useAuth();
   const kp = useKpLive();
   const kpVal = kp ?? 0;
   const storm = kp !== null ? getStormStatus(kp) : null;
-
-  const paymentsEnabled = import.meta.env.VITE_PAYMENTS_ENABLED === 'true';
-  const plan = profile?.plan ?? 'free';
-  const isTrialing = profile?.subscription_status === 'trialing';
-  const hasPro = isNative() || !paymentsEnabled || plan === 'pro' || plan === 'premium' || isTrialing;
+  const { hasPro } = usePaymentGate();
 
   const userLat = settings.preferredLat ?? undefined;
   const userLon = settings.preferredLon ?? undefined;

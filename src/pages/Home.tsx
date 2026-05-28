@@ -11,6 +11,7 @@ import { useKpLive } from '../hooks/useKpLive';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { useAuth } from '../contexts/AuthContext';
+import { usePaymentGate } from '../hooks/usePaymentGate';
 import { calcAuroraVisibility } from '../utils/auroraVisibility';
 import { isNative } from '../utils/platform';
 import StarField from '../components/StarField';
@@ -27,9 +28,8 @@ const getScoreShareStatus = (score: number) => {
 const Home = () => {
   const { t } = useLanguage();
   const { settings } = useSettings();
-  const { user, profile } = useAuth();
-  const paymentsEnabled = import.meta.env.VITE_PAYMENTS_ENABLED === 'true';
-  const hasPaidPlan = paymentsEnabled && (profile?.plan === 'pro' || profile?.plan === 'premium' || profile?.subscription_status === 'trialing');
+  const { user } = useAuth();
+  const { hasPro: hasPaidPlan } = usePaymentGate();
   const kpValue = useKpLive();
   const [windSpeed, setWindSpeed] = useState<number | null>(null);
   const [xrayClass, setXrayClass] = useState<string | null>(null);

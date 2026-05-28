@@ -8,21 +8,14 @@ import { useOnboarding } from '../hooks/useOnboarding';
 import LocationPicker from '../components/LocationPicker';
 import { reverseGeocode } from '../utils/reverseGeocode';
 import { getCurrentPosition } from '../utils/geolocation';
-import { useAuth } from '../contexts/AuthContext';
-import { isNative } from '../utils/platform';
+import { usePaymentGate } from '../hooks/usePaymentGate';
 
 export default function Settings() {
   const { settings, updateSettings } = useSettings();
   const { language, setLanguage, t } = useLanguage();
   const { reset: resetOnboarding } = useOnboarding();
-  const { profile } = useAuth();
   const navigate = useNavigate();
-
-  const paymentsEnabled = import.meta.env.VITE_PAYMENTS_ENABLED === 'true';
-  const plan = profile?.plan ?? 'free';
-  const isTrialing = profile?.subscription_status === 'trialing';
-  const hasPro = isNative() || !paymentsEnabled || plan === 'pro' || plan === 'premium' || isTrialing;
-  const hasPremium = isNative() || !paymentsEnabled || plan === 'premium';
+  const { hasPro, hasPremium } = usePaymentGate();
 
   const [saved, setSaved] = useState(false);
   const [locating, setLocating] = useState(false);
