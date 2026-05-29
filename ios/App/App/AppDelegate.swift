@@ -12,6 +12,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     private let appGroupID = "group.com.stormwatcher.app"
     private let bgTaskID = "com.stormwatcher.widget-refresh"
     private var widgetRefreshTimer: Timer?
+    private var pluginsRegistered = false
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         if let dsn = Bundle.main.infoDictionary?["SENTRY_DSN"] as? String, !dsn.isEmpty {
@@ -52,6 +53,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // React Router handles the resulting popstate event correctly.
         if let vc = window?.rootViewController as? CAPBridgeViewController {
             vc.webView?.allowsBackForwardNavigationGestures = true
+            // Capacitor 8 doesn't auto-discover local (app-target) plugins; register ours once.
+            if !pluginsRegistered, let bridge = vc.bridge {
+                bridge.registerPluginInstance(StormLiveActivityPlugin())
+                pluginsRegistered = true
+            }
         }
     }
 

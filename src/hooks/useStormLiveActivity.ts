@@ -18,7 +18,8 @@ function gLevel(kp: number): number {
 
 /**
  * Drives the iOS storm Live Activity from the live Kp feed (Phase A, app-driven).
- * Starts when Kp crosses G1, updates as it changes, ends when it drops below.
+ * Starts when Kp crosses G1, updates as it changes, ends when it drops below
+ * (also clears any stale activity left from a previous storm on launch).
  * No-op on web/Android — the lock-screen UI is native iOS only.
  */
 export function useStormLiveActivity() {
@@ -45,7 +46,8 @@ export function useStormLiveActivity() {
             const res = await StormLiveActivity.start(state);
             active.current = res.started;
           }
-        } else if (active.current) {
+        } else {
+          // Below threshold — end any running (or stale) activity.
           await StormLiveActivity.end();
           active.current = false;
         }
