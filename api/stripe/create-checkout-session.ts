@@ -51,15 +51,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!priceId) return res.status(400).json({ error: 'Missing priceId' });
 
   const ALLOWED_PRICES = new Set([
-    'price_1TSJBmLqQEtEOCx4utzZ07gf', // Pro Monthly
-    'price_1TSJGvLqQEtEOCx4VGsGFSyH', // Pro Yearly
-    'price_1TSJHYLqQEtEOCx43ks9UAAc', // Premium Monthly
-    'price_1TSJHtLqQEtEOCx4Q1RuknHo', // Premium Yearly
+    'price_1TSKUBLh5QwxSql30JIjhhn1', // Pro Monthly
+    'price_1TSKUGLh5QwxSql3vXTaBCH8', // Pro Yearly
+    'price_1TSKUFLh5QwxSql3JjNf7s34', // Premium Monthly
+    'price_1TSKUBLh5QwxSql3krNLC1CB', // Premium Yearly
   ]);
 
   const PRO_PRICES = new Set([
-    'price_1TSJBmLqQEtEOCx4utzZ07gf', // Pro Monthly
-    'price_1TSJGvLqQEtEOCx4VGsGFSyH', // Pro Yearly
+    'price_1TSKUBLh5QwxSql30JIjhhn1', // Pro Monthly
+    'price_1TSKUGLh5QwxSql3vXTaBCH8', // Pro Yearly
   ]);
   if (!ALLOWED_PRICES.has(priceId)) return res.status(400).json({ error: 'Invalid price' });
 

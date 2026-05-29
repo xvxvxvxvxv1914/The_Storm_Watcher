@@ -13,12 +13,12 @@ type Billing = 'monthly' | 'yearly';
 
 const PRICES = {
   pro: {
-    monthly: { id: 'price_1TSJBmLqQEtEOCx4utzZ07gf', amount: '€3.99' },
-    yearly:  { id: 'price_1TSJGvLqQEtEOCx4VGsGFSyH', amount: '€35.99' },
+    monthly: { id: 'price_1TSKUBLh5QwxSql30JIjhhn1', amount: '€3.99' },
+    yearly:  { id: 'price_1TSKUGLh5QwxSql3vXTaBCH8', amount: '€35.99' },
   },
   premium: {
-    monthly: { id: 'price_1TSJHYLqQEtEOCx43ks9UAAc', amount: '€7.99' },
-    yearly:  { id: 'price_1TSJHtLqQEtEOCx4Q1RuknHo', amount: '€71.99' },
+    monthly: { id: 'price_1TSKUFLh5QwxSql3JjNf7s34', amount: '€7.99' },
+    yearly:  { id: 'price_1TSKUBLh5QwxSql3krNLC1CB', amount: '€71.99' },
   },
 };
 
