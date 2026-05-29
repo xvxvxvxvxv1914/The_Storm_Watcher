@@ -53,10 +53,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // React Router handles the resulting popstate event correctly.
         if let vc = window?.rootViewController as? CAPBridgeViewController {
             vc.webView?.allowsBackForwardNavigationGestures = true
-            // Capacitor 8 doesn't auto-discover local (app-target) plugins; register ours once.
-            if !pluginsRegistered, let bridge = vc.bridge {
-                bridge.registerPluginInstance(StormLiveActivityPlugin())
-                pluginsRegistered = true
+        }
+        registerCustomPlugins()
+    }
+
+    // Capacitor 8 doesn't auto-discover local (app-target) plugins. Register ours
+    // once the bridge is ready — poll because the bridge may be nil right at launch.
+    private func registerCustomPlugins(attempt: Int = 0) {
+        guard !pluginsRegistered else { return }
+        if let vc = window?.rootViewController as? CAPBridgeViewController, let bridge = vc.bridge {
+            bridge.registerPluginInstance(StormLiveActivityPlugin())
+            pluginsRegistered = true
+        } else if attempt < 40 {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
+                self?.registerCustomPlugins(attempt: attempt + 1)
             }
         }
     }

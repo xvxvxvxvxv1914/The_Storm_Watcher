@@ -43,8 +43,17 @@ export function useStormLiveActivity() {
           if (active.current) {
             await StormLiveActivity.update(state);
           } else {
-            const res = await StormLiveActivity.start(state);
-            active.current = res.started;
+            // The native plugin can register slightly after a cold launch, so
+            // retry start() a few times if the bridge isn't ready yet.
+            for (let i = 0; i < 5; i++) {
+              try {
+                const res = await StormLiveActivity.start(state);
+                active.current = res.started;
+                break;
+              } catch {
+                if (i < 4) await new Promise(r => setTimeout(r, 1500));
+              }
+            }
           }
         } else {
           // Below threshold — end any running (or stale) activity.
