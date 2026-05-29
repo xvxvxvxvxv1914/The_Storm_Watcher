@@ -367,7 +367,7 @@ const Home = () => {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
               <Link
-                to={user ? '/dashboard' : '/auth'}
+                to={user ? '/dashboard' : '/pricing'}
                 className="px-8 py-4 bg-gradient-to-r from-[#f97316] to-[#ef4444] text-white rounded-lg font-bold uppercase tracking-wider hover:scale-105 transition-transform glow-orange"
               >
                 {user ? t('home.hero.viewMap') : t('home.hero.getStarted')}
