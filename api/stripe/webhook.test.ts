@@ -133,7 +133,7 @@ describe('Stripe webhook handler', () => {
       const sub = {
         id: 'sub_pro',
         status: 'active',
-        items: { data: [{ price: { id: 'price_1TSJBmLqQEtEOCx4utzZ07gf' }, current_period_end: 1_800_000_000 }] },
+        items: { data: [{ price: { id: 'price_1TSKUBLh5QwxSql30JIjhhn1' }, current_period_end: 1_800_000_000 }] },
       };
       const event = makeEvent('checkout.session.completed', {
         subscription: 'sub_pro',
@@ -155,7 +155,7 @@ describe('Stripe webhook handler', () => {
       const sub = {
         id: 'sub_prem',
         status: 'active',
-        items: { data: [{ price: { id: 'price_1TSJHYLqQEtEOCx43ks9UAAc' }, current_period_end: 1_800_000_000 }] },
+        items: { data: [{ price: { id: 'price_1TSKUFLh5QwxSql3JjNf7s34' }, current_period_end: 1_800_000_000 }] },
       };
       const event = makeEvent('checkout.session.completed', {
         subscription: 'sub_prem',
@@ -179,7 +179,7 @@ describe('Stripe webhook handler', () => {
         id: 'sub_trial',
         status: 'trialing',
         metadata: { supabase_user_id: 'user-456' },
-        items: { data: [{ price: { id: 'price_1TSJBmLqQEtEOCx4utzZ07gf' }, current_period_end: 1_800_000_000 }] },
+        items: { data: [{ price: { id: 'price_1TSKUBLh5QwxSql30JIjhhn1' }, current_period_end: 1_800_000_000 }] },
       };
       const event = makeEvent('customer.subscription.updated', sub);
       mockConstructEvent.mockReturnValue(event);
@@ -197,7 +197,7 @@ describe('Stripe webhook handler', () => {
         id: 'sub_canceled',
         status: 'canceled',
         metadata: { supabase_user_id: 'user-456' },
-        items: { data: [{ price: { id: 'price_1TSJBmLqQEtEOCx4utzZ07gf' }, current_period_end: 1_800_000_000 }] },
+        items: { data: [{ price: { id: 'price_1TSKUBLh5QwxSql30JIjhhn1' }, current_period_end: 1_800_000_000 }] },
       };
       const event = makeEvent('customer.subscription.updated', sub);
       mockConstructEvent.mockReturnValue(event);
@@ -245,7 +245,7 @@ describe('Stripe webhook handler', () => {
         id: 'sub_pastdue',
         status: 'past_due',
         metadata: { supabase_user_id: 'user-101' },
-        items: { data: [{ price: { id: 'price_1TSJBmLqQEtEOCx4utzZ07gf' } }] },
+        items: { data: [{ price: { id: 'price_1TSKUBLh5QwxSql30JIjhhn1' } }] },
       };
       const event = makeEvent('invoice.payment_failed', { subscription: 'sub_pastdue' });
       mockConstructEvent.mockReturnValue(event);

@@ -22,10 +22,10 @@ const supabase = createClient(
 );
 
 const PRICE_TO_PLAN: Record<string, 'pro' | 'premium'> = {
-  price_1TSJBmLqQEtEOCx4utzZ07gf: 'pro',     // Pro Monthly €3.99
-  price_1TSJGvLqQEtEOCx4VGsGFSyH: 'pro',     // Pro Yearly €35.99
-  price_1TSJHYLqQEtEOCx43ks9UAAc: 'premium', // Premium Monthly €7.99
-  price_1TSJHtLqQEtEOCx4Q1RuknHo: 'premium', // Premium Yearly €71.99
+  price_1TSKUBLh5QwxSql30JIjhhn1: 'pro',     // Pro Monthly €3.99
+  price_1TSKUGLh5QwxSql3vXTaBCH8: 'pro',     // Pro Yearly €35.99
+  price_1TSKUFLh5QwxSql3JjNf7s34: 'premium', // Premium Monthly €7.99
+  price_1TSKUBLh5QwxSql3krNLC1CB: 'premium', // Premium Yearly €71.99
 };
 
 const MAX_BODY_BYTES = 1_048_576; // 1 MB
