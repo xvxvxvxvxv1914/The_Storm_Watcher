@@ -1,8 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
-import { sendEmail } from '../lib/resend';
-import { proActivatedEmail, paymentFailedEmail, subscriptionCancelledEmail, trialEndingEmail } from '../emails/templates';
+import { sendEmail } from '../lib/resend.js';
+import { proActivatedEmail, paymentFailedEmail, subscriptionCancelledEmail, trialEndingEmail } from '../emails/templates.js';
 
 async function getUserEmail(userId: string): Promise<string | null> {
   const { data } = await supabase.auth.admin.getUserById(userId);
