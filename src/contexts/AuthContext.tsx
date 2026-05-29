@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { User, Session, AuthError } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
+import { isNative } from '../utils/platform';
 
 interface Profile {
   id: string;
@@ -108,10 +109,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signUp = async (email: string, password: string, fullName?: string) => {
+    // Where Supabase sends the user after they click the confirmation link.
+    // Web confirms back to the same origin (so staging confirms to staging);
+    // native opens the link in the device browser, so target the live site.
+    const emailRedirectTo = isNative() ? 'https://thestormwatcher.com' : window.location.origin;
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
+        emailRedirectTo,
         data: {
           full_name: fullName,
         },
