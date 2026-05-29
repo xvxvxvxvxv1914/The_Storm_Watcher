@@ -970,6 +970,23 @@ const es: Record<string, string> = {
   'settings.lang.saveError': 'Error al guardar. Por favor, inténtelo de nuevo.',
   'settings.lang.signInPrompt': 'para guardar las preferencias en todos los dispositivos.',
   'offline.banner': 'Sin conexión a internet — mostrando datos en caché',
+  'nav.referrals': 'Recomienda y gana',
+  'referrals.title': 'Recomienda amigos, consigue Pro gratis',
+  'referrals.subtitle': 'Tus amigos obtienen una prueba más larga. Tú ganas 30 días de Pro por cada amigo que se suscriba.',
+  'referrals.yourLink': 'Tu enlace de referido',
+  'referrals.copy': 'Copiar',
+  'referrals.copied': '¡Copiado!',
+  'referrals.share': 'Compartir',
+  'referrals.how': 'Cómo funciona',
+  'referrals.step1': 'Comparte tu enlace con amigos',
+  'referrals.step2': 'Se registran y obtienen una prueba gratuita ampliada',
+  'referrals.step3': 'Cuando se suscriben, ganas 30 días de Pro gratis',
+  'referrals.invited': 'Amigos invitados',
+  'referrals.subscribed': 'Suscritos',
+  'referrals.proEarned': 'Días de Pro ganados',
+  'referrals.proActiveUntil': 'Pro gratis activo hasta',
+  'referrals.signInPrompt': 'Inicia sesión para obtener tu enlace de referido y empezar a ganar Pro gratis.',
+  'referrals.signIn': 'Iniciar sesión',
 };
 
 export default es;

@@ -962,6 +962,23 @@ const fi: Record<string, string> = {
   'settings.lang.saveError': 'Tallennus epäonnistui. Yritä uudelleen.',
   'settings.lang.signInPrompt': 'tallentaaksesi asetukset kaikille laitteille.',
   'offline.banner': 'Ei internetyhteyttä — näytetään välimuistissa olevat tiedot',
+  'nav.referrals': 'Suosittele ja ansaitse',
+  'referrals.title': 'Suosittele ystäville, saa Pro ilmaiseksi',
+  'referrals.subtitle': 'Ystäväsi saavat pidemmän ilmaisen kokeilun. Sinä saat 30 päivää Pro jokaisesta ystävästä, joka tilaa.',
+  'referrals.yourLink': 'Suosittelulinkkisi',
+  'referrals.copy': 'Kopioi',
+  'referrals.copied': 'Kopioitu!',
+  'referrals.share': 'Jaa',
+  'referrals.how': 'Näin se toimii',
+  'referrals.step1': 'Jaa linkkisi ystäville',
+  'referrals.step2': 'He rekisteröityvät ja saavat pidennetyn ilmaisen kokeilun',
+  'referrals.step3': 'Kun he tilaavat, ansaitset 30 päivää ilmaista Pro',
+  'referrals.invited': 'Kutsutut ystävät',
+  'referrals.subscribed': 'Tilanneet',
+  'referrals.proEarned': 'Ansaitut Pro-päivät',
+  'referrals.proActiveUntil': 'Ilmainen Pro voimassa',
+  'referrals.signInPrompt': 'Kirjaudu sisään saadaksesi suosittelulinkkisi ja ansaitaksesi ilmaista Pro.',
+  'referrals.signIn': 'Kirjaudu',
 };
 
 export default fi;

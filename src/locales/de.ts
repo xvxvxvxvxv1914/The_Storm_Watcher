@@ -973,6 +973,23 @@ const de: Record<string, string> = {
   'settings.lang.saveError': 'Speichern fehlgeschlagen. Bitte erneut versuchen.',
   'settings.lang.signInPrompt': 'um Einstellungen geräteübergreifend zu speichern.',
   'offline.banner': 'Keine Internetverbindung — Zeige zwischengespeicherte Daten',
+  'nav.referrals': 'Empfehlen & Verdienen',
+  'referrals.title': 'Freunde einladen, Pro gratis erhalten',
+  'referrals.subtitle': 'Deine Freunde erhalten eine längere Testphase. Du bekommst 30 Tage Pro für jeden Freund, der abonniert.',
+  'referrals.yourLink': 'Dein Empfehlungslink',
+  'referrals.copy': 'Kopieren',
+  'referrals.copied': 'Kopiert!',
+  'referrals.share': 'Teilen',
+  'referrals.how': 'So funktioniert es',
+  'referrals.step1': 'Teile deinen Link mit Freunden',
+  'referrals.step2': 'Sie registrieren sich und erhalten eine verlängerte Testphase',
+  'referrals.step3': 'Wenn sie abonnieren, erhältst du 30 Tage gratis Pro',
+  'referrals.invited': 'Eingeladene Freunde',
+  'referrals.subscribed': 'Abonniert',
+  'referrals.proEarned': 'Verdiente Pro-Tage',
+  'referrals.proActiveUntil': 'Gratis Pro aktiv bis',
+  'referrals.signInPrompt': 'Melde dich an, um deinen Empfehlungslink zu erhalten und gratis Pro zu verdienen.',
+  'referrals.signIn': 'Anmelden',
 };
 
 export default de;

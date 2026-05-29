@@ -962,6 +962,23 @@ const da: Record<string, string> = {
   'settings.lang.saveError': 'Kunne ikke gemme. Prøv igen.',
   'settings.lang.signInPrompt': 'for at gemme indstillinger på tværs af enheder.',
   'offline.banner': 'Ingen internetforbindelse — viser cachelagrede data',
+  'nav.referrals': 'Henvis og tjen',
+  'referrals.title': 'Henvis venner, få gratis Pro',
+  'referrals.subtitle': 'Dine venner får en længere gratis prøveperiode. Du får 30 dages Pro for hver ven, der abonnerer.',
+  'referrals.yourLink': 'Dit henvisningslink',
+  'referrals.copy': 'Kopiér',
+  'referrals.copied': 'Kopieret!',
+  'referrals.share': 'Del',
+  'referrals.how': 'Sådan virker det',
+  'referrals.step1': 'Del dit link med venner',
+  'referrals.step2': 'De tilmelder sig og får en udvidet gratis prøveperiode',
+  'referrals.step3': 'Når de abonnerer, får du 30 dages gratis Pro',
+  'referrals.invited': 'Inviterede venner',
+  'referrals.subscribed': 'Abonnenter',
+  'referrals.proEarned': 'Optjente Pro-dage',
+  'referrals.proActiveUntil': 'Gratis Pro aktiv indtil',
+  'referrals.signInPrompt': 'Log ind for at få dit henvisningslink og begynde at tjene gratis Pro.',
+  'referrals.signIn': 'Log ind',
 };
 
 export default da;

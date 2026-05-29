@@ -79,6 +79,7 @@ const Navigation = () => {
     { to: '/iss',              label: t('nav.iss') },
     // Info
     { to: '/magnetic-effects', label: t('nav.magneticEffects') },
+    { to: '/referrals',        label: t('nav.referrals') || 'Refer & Earn' },
     { to: '/faq',              label: t('nav.faq') },
   ];
 

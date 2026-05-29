@@ -970,6 +970,23 @@ const fr: Record<string, string> = {
   'settings.lang.saveError': 'Échec de l\'enregistrement. Veuillez réessayer.',
   'settings.lang.signInPrompt': 'pour enregistrer les préférences sur tous les appareils.',
   'offline.banner': 'Pas de connexion internet — affichage des données en cache',
+  'nav.referrals': 'Parrainez et gagnez',
+  'referrals.title': 'Parrainez des amis, obtenez Pro gratuit',
+  'referrals.subtitle': 'Vos amis bénéficient d\'un essai plus long. Vous gagnez 30 jours de Pro pour chaque ami qui s\'abonne.',
+  'referrals.yourLink': 'Votre lien de parrainage',
+  'referrals.copy': 'Copier',
+  'referrals.copied': 'Copié !',
+  'referrals.share': 'Partager',
+  'referrals.how': 'Comment ça marche',
+  'referrals.step1': 'Partagez votre lien avec vos amis',
+  'referrals.step2': 'Ils s\'inscrivent et bénéficient d\'un essai gratuit prolongé',
+  'referrals.step3': 'Quand ils s\'abonnent, vous gagnez 30 jours de Pro gratuit',
+  'referrals.invited': 'Amis invités',
+  'referrals.subscribed': 'Abonnés',
+  'referrals.proEarned': 'Jours de Pro gagnés',
+  'referrals.proActiveUntil': 'Pro gratuit actif jusqu\'au',
+  'referrals.signInPrompt': 'Connectez-vous pour obtenir votre lien de parrainage et gagner du Pro gratuit.',
+  'referrals.signIn': 'Se connecter',
 };
 
 export default fr;

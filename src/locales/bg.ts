@@ -995,6 +995,23 @@ const bg: Record<string, string> = {
   'settings.lang.saveError': 'Неуспешно запазване. Опитайте отново.',
   'settings.lang.signInPrompt': 'за да запазите предпочитанията на всички устройства.',
   'offline.banner': 'Няма интернет връзка — показват се кешираните данни',
+  'nav.referrals': 'Покани и печели',
+  'referrals.title': 'Покани приятели, получи безплатен Pro',
+  'referrals.subtitle': 'Приятелите ти получават по-дълъг безплатен период. Ти получаваш 30 дни Pro за всеки приятел, който се абонира.',
+  'referrals.yourLink': 'Твоят реферален линк',
+  'referrals.copy': 'Копирай',
+  'referrals.copied': 'Копирано!',
+  'referrals.share': 'Сподели',
+  'referrals.how': 'Как работи',
+  'referrals.step1': 'Сподели линка си с приятели',
+  'referrals.step2': 'Те се регистрират и получават удължен безплатен период',
+  'referrals.step3': 'Когато се абонират, печелиш 30 дни безплатен Pro',
+  'referrals.invited': 'Поканени приятели',
+  'referrals.subscribed': 'Абонирани',
+  'referrals.proEarned': 'Спечелени дни Pro',
+  'referrals.proActiveUntil': 'Безплатен Pro до',
+  'referrals.signInPrompt': 'Влез, за да получиш реферален линк и да печелиш безплатен Pro.',
+  'referrals.signIn': 'Вход',
 };
 
 export default bg;

@@ -970,6 +970,23 @@ const zh: Record<string, string> = {
   'settings.lang.saveError': '保存失败，请重试。',
   'settings.lang.signInPrompt': '以在所有设备上保存偏好设置。',
   'offline.banner': '无网络连接 — 显示缓存数据',
+  'nav.referrals': '推荐赚奖励',
+  'referrals.title': '推荐好友，免费获得 Pro',
+  'referrals.subtitle': '你的好友可获得更长的免费试用。每有一位好友订阅，你就获得 30 天 Pro。',
+  'referrals.yourLink': '你的推荐链接',
+  'referrals.copy': '复制',
+  'referrals.copied': '已复制！',
+  'referrals.share': '分享',
+  'referrals.how': '运作方式',
+  'referrals.step1': '将链接分享给好友',
+  'referrals.step2': '他们注册并获得延长的免费试用',
+  'referrals.step3': '当他们订阅时，你将获得 30 天免费 Pro',
+  'referrals.invited': '已邀请好友',
+  'referrals.subscribed': '已订阅',
+  'referrals.proEarned': '已获得 Pro 天数',
+  'referrals.proActiveUntil': '免费 Pro 有效期至',
+  'referrals.signInPrompt': '登录以获取你的推荐链接并开始赚取免费 Pro。',
+  'referrals.signIn': '登录',
 };
 
 export default zh;

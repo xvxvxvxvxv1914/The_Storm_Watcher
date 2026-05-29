@@ -970,6 +970,23 @@ const ja: Record<string, string> = {
   'settings.lang.saveError': '保存に失敗しました。もう一度お試しください。',
   'settings.lang.signInPrompt': 'すべてのデバイスで設定を保存するにはサインインしてください。',
   'offline.banner': 'インターネット接続なし — キャッシュデータを表示中',
+  'nav.referrals': '紹介して特典をゲット',
+  'referrals.title': '友達を紹介してProを無料でゲット',
+  'referrals.subtitle': '友達はより長い無料トライアルを利用できます。友達が登録するたびに、あなたは30日間のProを獲得します。',
+  'referrals.yourLink': 'あなたの紹介リンク',
+  'referrals.copy': 'コピー',
+  'referrals.copied': 'コピーしました！',
+  'referrals.share': '共有',
+  'referrals.how': '仕組み',
+  'referrals.step1': 'リンクを友達に共有しましょう',
+  'referrals.step2': '友達が登録すると延長された無料トライアルを利用できます',
+  'referrals.step3': '友達が登録すると30日間の無料Proを獲得できます',
+  'referrals.invited': '招待した友達',
+  'referrals.subscribed': '登録済み',
+  'referrals.proEarned': '獲得したPro日数',
+  'referrals.proActiveUntil': '無料Proの有効期限',
+  'referrals.signInPrompt': 'ログインして紹介リンクを取得し、無料Proを獲得しましょう。',
+  'referrals.signIn': 'ログイン',
 };
 
 export default ja;

@@ -247,7 +247,7 @@ describe('Stripe webhook handler', () => {
         metadata: { supabase_user_id: 'user-101' },
         items: { data: [{ price: { id: 'price_1TSKUBLh5QwxSql30JIjhhn1' } }] },
       };
-      const event = makeEvent('invoice.payment_failed', { subscription: 'sub_pastdue' });
+      const event = makeEvent('invoice.payment_failed', { parent: { subscription_details: { subscription: 'sub_pastdue' } } });
       mockConstructEvent.mockReturnValue(event);
       mockSubRetrieve.mockResolvedValue(sub);
       const eq = vi.fn().mockResolvedValue({ error: null });

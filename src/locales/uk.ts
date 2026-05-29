@@ -962,6 +962,23 @@ const uk: Record<string, string> = {
   'settings.lang.saveError': 'Не вдалося зберегти. Спробуйте ще раз.',
   'settings.lang.signInPrompt': 'щоб зберегти налаштування на всіх пристроях.',
   'offline.banner': 'Немає підключення до інтернету — показуються кешовані дані',
+  'nav.referrals': 'Запрошуй і заробляй',
+  'referrals.title': 'Запрошуйте друзів, отримуйте безкоштовний Pro',
+  'referrals.subtitle': 'Ваші друзі отримують довший безкоштовний пробний період. Ви отримуєте 30 днів Pro за кожного друга, який оформить підписку.',
+  'referrals.yourLink': 'Ваше реферальне посилання',
+  'referrals.copy': 'Копіювати',
+  'referrals.copied': 'Скопійовано!',
+  'referrals.share': 'Поділитися',
+  'referrals.how': 'Як це працює',
+  'referrals.step1': 'Поділіться посиланням з друзями',
+  'referrals.step2': 'Вони реєструються й отримують подовжений безкоштовний пробний період',
+  'referrals.step3': 'Коли вони оформлять підписку, ви отримаєте 30 днів безкоштовного Pro',
+  'referrals.invited': 'Запрошені друзі',
+  'referrals.subscribed': 'Оформили підписку',
+  'referrals.proEarned': 'Зароблені дні Pro',
+  'referrals.proActiveUntil': 'Безкоштовний Pro активний до',
+  'referrals.signInPrompt': 'Увійдіть, щоб отримати реферальне посилання та заробляти безкоштовний Pro.',
+  'referrals.signIn': 'Увійти',
 };
 
 export default uk;

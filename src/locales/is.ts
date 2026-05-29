@@ -962,6 +962,23 @@ const is_: Record<string, string> = {
   'settings.lang.saveError': 'Vista mistókst. Vinsamlegast reyndu aftur.',
   'settings.lang.signInPrompt': 'til að vista stillingar á öllum tækjum.',
   'offline.banner': 'Engin nettenging — sýnir geymd gögn',
+  'nav.referrals': 'Mæltu með og fáðu fríðindi',
+  'referrals.title': 'Mæltu með vinum, fáðu Pro frítt',
+  'referrals.subtitle': 'Vinir þínir fá lengri ókeypis prufutíma. Þú færð 30 daga af Pro fyrir hvern vin sem gerist áskrifandi.',
+  'referrals.yourLink': 'Tilvísunarhlekkurinn þinn',
+  'referrals.copy': 'Afrita',
+  'referrals.copied': 'Afritað!',
+  'referrals.share': 'Deila',
+  'referrals.how': 'Hvernig það virkar',
+  'referrals.step1': 'Deildu hlekknum þínum með vinum',
+  'referrals.step2': 'Þeir skrá sig og fá lengri ókeypis prufutíma',
+  'referrals.step3': 'Þegar þeir gerast áskrifendur færð þú 30 daga af fríu Pro',
+  'referrals.invited': 'Boðnir vinir',
+  'referrals.subscribed': 'Áskrifendur',
+  'referrals.proEarned': 'Áunnir Pro-dagar',
+  'referrals.proActiveUntil': 'Frítt Pro virkt til',
+  'referrals.signInPrompt': 'Skráðu þig inn til að fá tilvísunarhlekkinn þinn og byrja að vinna þér inn frítt Pro.',
+  'referrals.signIn': 'Skrá inn',
 };
 
 export default is_;

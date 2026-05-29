@@ -970,6 +970,23 @@ const ru: Record<string, string> = {
   'settings.lang.saveError': 'Не удалось сохранить. Попробуйте снова.',
   'settings.lang.signInPrompt': 'чтобы сохранить настройки на всех устройствах.',
   'offline.banner': 'Нет подключения к интернету — показываются кешированные данные',
+  'nav.referrals': 'Приглашай и зарабатывай',
+  'referrals.title': 'Приглашайте друзей, получайте Pro бесплатно',
+  'referrals.subtitle': 'Ваши друзья получают более длинный пробный период. Вы получаете 30 дней Pro за каждого друга, который оформит подписку.',
+  'referrals.yourLink': 'Ваша реферальная ссылка',
+  'referrals.copy': 'Копировать',
+  'referrals.copied': 'Скопировано!',
+  'referrals.share': 'Поделиться',
+  'referrals.how': 'Как это работает',
+  'referrals.step1': 'Поделитесь ссылкой с друзьями',
+  'referrals.step2': 'Они регистрируются и получают расширенный бесплатный период',
+  'referrals.step3': 'Когда они оформят подписку, вы получите 30 дней бесплатного Pro',
+  'referrals.invited': 'Приглашено друзей',
+  'referrals.subscribed': 'Оформили подписку',
+  'referrals.proEarned': 'Заработано дней Pro',
+  'referrals.proActiveUntil': 'Бесплатный Pro активен до',
+  'referrals.signInPrompt': 'Войдите, чтобы получить реферальную ссылку и зарабатывать бесплатный Pro.',
+  'referrals.signIn': 'Войти',
 };
 
 export default ru;

@@ -962,6 +962,23 @@ const no: Record<string, string> = {
   'settings.lang.saveError': 'Lagring mislyktes. Vennligst prøv igjen.',
   'settings.lang.signInPrompt': 'for å lagre innstillinger på tvers av enheter.',
   'offline.banner': 'Ingen internettforbindelse — viser bufrede data',
+  'nav.referrals': 'Verv og tjen',
+  'referrals.title': 'Verv venner, få gratis Pro',
+  'referrals.subtitle': 'Vennene dine får en lengre gratis prøveperiode. Du får 30 dager Pro for hver venn som abonnerer.',
+  'referrals.yourLink': 'Din vervelenke',
+  'referrals.copy': 'Kopier',
+  'referrals.copied': 'Kopiert!',
+  'referrals.share': 'Del',
+  'referrals.how': 'Slik fungerer det',
+  'referrals.step1': 'Del lenken din med venner',
+  'referrals.step2': 'De registrerer seg og får en utvidet gratis prøveperiode',
+  'referrals.step3': 'Når de abonnerer, får du 30 dager gratis Pro',
+  'referrals.invited': 'Inviterte venner',
+  'referrals.subscribed': 'Abonnenter',
+  'referrals.proEarned': 'Opptjente Pro-dager',
+  'referrals.proActiveUntil': 'Gratis Pro aktiv til',
+  'referrals.signInPrompt': 'Logg inn for å få vervelenken din og begynne å tjene gratis Pro.',
+  'referrals.signIn': 'Logg inn',
 };
 
 export default no;

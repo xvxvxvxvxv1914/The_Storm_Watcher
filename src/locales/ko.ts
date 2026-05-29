@@ -1000,6 +1000,23 @@ const ko: Record<string, string> = {
   'settings.lang.saveError': '저장에 실패했습니다. 다시 시도해주세요.',
   'settings.lang.signInPrompt': '모든 기기에서 환경설정을 저장하려면 로그인하세요.',
   'offline.banner': '인터넷 연결 없음 — 캐시된 데이터 표시 중',
+  'nav.referrals': '추천하고 혜택 받기',
+  'referrals.title': '친구를 추천하고 Pro를 무료로 받으세요',
+  'referrals.subtitle': '친구는 더 긴 무료 체험을 받습니다. 구독하는 친구마다 30일의 Pro를 받습니다.',
+  'referrals.yourLink': '내 추천 링크',
+  'referrals.copy': '복사',
+  'referrals.copied': '복사됨!',
+  'referrals.share': '공유',
+  'referrals.how': '이용 방법',
+  'referrals.step1': '친구에게 링크를 공유하세요',
+  'referrals.step2': '친구가 가입하면 연장된 무료 체험을 받습니다',
+  'referrals.step3': '친구가 구독하면 30일의 무료 Pro를 받습니다',
+  'referrals.invited': '초대한 친구',
+  'referrals.subscribed': '구독함',
+  'referrals.proEarned': '획득한 Pro 일수',
+  'referrals.proActiveUntil': '무료 Pro 사용 가능 기한',
+  'referrals.signInPrompt': '로그인하여 추천 링크를 받고 무료 Pro를 받으세요.',
+  'referrals.signIn': '로그인',
 };
 
 export default ko;

@@ -1004,6 +1004,23 @@ const en: Record<string, string> = {
   'settings.lang.saveError': 'Failed to save. Please try again.',
   'settings.lang.signInPrompt': 'to save preferences across devices.',
   'offline.banner': 'No internet connection — showing cached data',
+  'nav.referrals': 'Refer & Earn',
+  'referrals.title': 'Refer friends, get free Pro',
+  'referrals.subtitle': 'Your friends get a longer free trial. You get 30 days of Pro for every friend who subscribes.',
+  'referrals.yourLink': 'Your referral link',
+  'referrals.copy': 'Copy',
+  'referrals.copied': 'Copied!',
+  'referrals.share': 'Share',
+  'referrals.how': 'How it works',
+  'referrals.step1': 'Share your link with friends',
+  'referrals.step2': 'They sign up and get an extended free trial',
+  'referrals.step3': 'When they subscribe, you earn 30 days of free Pro',
+  'referrals.invited': 'Friends invited',
+  'referrals.subscribed': 'Subscribed',
+  'referrals.proEarned': 'Free Pro days earned',
+  'referrals.proActiveUntil': 'Free Pro active until',
+  'referrals.signInPrompt': 'Sign in to get your referral link and start earning free Pro.',
+  'referrals.signIn': 'Sign in',
 };
 
 export default en;

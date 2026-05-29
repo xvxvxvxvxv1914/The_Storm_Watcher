@@ -962,6 +962,23 @@ const pl: Record<string, string> = {
   'settings.lang.saveError': 'Zapisywanie nie powiodło się. Spróbuj ponownie.',
   'settings.lang.signInPrompt': 'aby zapisać preferencje na wszystkich urządzeniach.',
   'offline.banner': 'Brak połączenia z internetem — wyświetlanie danych z pamięci podręcznej',
+  'nav.referrals': 'Poleć i zarabiaj',
+  'referrals.title': 'Poleć znajomym, zdobądź darmowe Pro',
+  'referrals.subtitle': 'Twoi znajomi otrzymują dłuższy darmowy okres próbny. Ty otrzymujesz 30 dni Pro za każdego znajomego, który się zapisze.',
+  'referrals.yourLink': 'Twój link polecający',
+  'referrals.copy': 'Kopiuj',
+  'referrals.copied': 'Skopiowano!',
+  'referrals.share': 'Udostępnij',
+  'referrals.how': 'Jak to działa',
+  'referrals.step1': 'Udostępnij link znajomym',
+  'referrals.step2': 'Rejestrują się i otrzymują wydłużony darmowy okres próbny',
+  'referrals.step3': 'Gdy się zapiszą, otrzymujesz 30 dni darmowego Pro',
+  'referrals.invited': 'Zaproszeni znajomi',
+  'referrals.subscribed': 'Subskrybenci',
+  'referrals.proEarned': 'Zdobyte dni Pro',
+  'referrals.proActiveUntil': 'Darmowe Pro aktywne do',
+  'referrals.signInPrompt': 'Zaloguj się, aby otrzymać link polecający i zdobywać darmowe Pro.',
+  'referrals.signIn': 'Zaloguj się',
 };
 
 export default pl;

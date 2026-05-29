@@ -962,6 +962,23 @@ const sv: Record<string, string> = {
   'settings.lang.saveError': 'Det gick inte att spara. Försök igen.',
   'settings.lang.signInPrompt': 'för att spara inställningar på alla enheter.',
   'offline.banner': 'Ingen internetanslutning — visar cachade data',
+  'nav.referrals': 'Tipsa och tjäna',
+  'referrals.title': 'Tipsa vänner, få gratis Pro',
+  'referrals.subtitle': 'Dina vänner får en längre gratis provperiod. Du får 30 dagar Pro för varje vän som prenumererar.',
+  'referrals.yourLink': 'Din värvningslänk',
+  'referrals.copy': 'Kopiera',
+  'referrals.copied': 'Kopierat!',
+  'referrals.share': 'Dela',
+  'referrals.how': 'Så fungerar det',
+  'referrals.step1': 'Dela din länk med vänner',
+  'referrals.step2': 'De registrerar sig och får en förlängd gratis provperiod',
+  'referrals.step3': 'När de prenumererar får du 30 dagar gratis Pro',
+  'referrals.invited': 'Inbjudna vänner',
+  'referrals.subscribed': 'Prenumeranter',
+  'referrals.proEarned': 'Intjänade Pro-dagar',
+  'referrals.proActiveUntil': 'Gratis Pro aktivt till',
+  'referrals.signInPrompt': 'Logga in för att få din värvningslänk och börja tjäna gratis Pro.',
+  'referrals.signIn': 'Logga in',
 };
 
 export default sv;
