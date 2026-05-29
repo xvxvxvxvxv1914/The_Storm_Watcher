@@ -93,12 +93,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     success_url: `${appUrl}/dashboard?payment=success`,
     cancel_url: `${appUrl}/pricing?payment=cancelled`,
     metadata: { supabase_user_id: user.id },
-    // Collect billing address so Stripe Tax can determine the correct VAT rate.
-    billing_address_collection: 'required',
-    // Sync the address back to the Customer object for future invoices.
-    customer_update: { address: 'auto' },
-    // Automatic tax — requires Stripe Tax to be enabled in the dashboard.
-    automatic_tax: { enabled: true },
+    // NOTE: automatic_tax (Stripe Tax / EU VAT) is disabled until a company +
+    // VAT registration exists. Re-enable by adding:
+    //   billing_address_collection: 'required',
+    //   customer_update: { address: 'auto' },
+    //   automatic_tax: { enabled: true },
     // No card required upfront for Pro trials — charged only after 14 days
     ...(isProTrial ? { payment_method_collection: 'if_required' } : {}),
     subscription_data: {
