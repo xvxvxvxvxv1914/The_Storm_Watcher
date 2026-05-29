@@ -230,6 +230,67 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
       break;
     }
+
+    case 'invoice.payment_succeeded': {
+      const invoice = event.data.object as Stripe.Invoice;
+      // Only real (non-zero) payments qualify — the $0 trial-start invoice must not
+      // trigger a referral reward. This is "the referred user became a paying customer".
+      if ((invoice.amount_paid ?? 0) <= 0) break;
+
+      const subRef = invoice.parent?.subscription_details?.subscription;
+      const subId = typeof subRef === 'string' ? subRef : subRef?.id ?? null;
+      if (!subId) break;
+
+      const sub = await stripe.subscriptions.retrieve(subId);
+      const referredUserId = sub.metadata?.supabase_user_id;
+      if (!referredUserId) break;
+
+      // Find an unrewarded referral for this payer.
+      const { data: ref } = await supabase
+        .from('referrals')
+        .select('id, referrer_id')
+        .eq('referred_id', referredUserId)
+        .eq('status', 'pending')
+        .maybeSingle();
+      if (!ref) break;
+
+      const REWARD_DAYS = 30;
+      const { data: referrer } = await supabase
+        .from('profiles')
+        .select('referral_pro_until')
+        .eq('id', ref.referrer_id)
+        .single();
+
+      // Stack on top of any still-active reward; otherwise start from now.
+      const current = referrer?.referral_pro_until ? new Date(referrer.referral_pro_until) : null;
+      const base = current && current > new Date() ? current : new Date();
+      base.setDate(base.getDate() + REWARD_DAYS);
+
+      const { error: rewardErr } = await supabase
+        .from('profiles')
+        .update({ referral_pro_until: base.toISOString() })
+        .eq('id', ref.referrer_id);
+      if (rewardErr) {
+        console.error('referral reward grant failed', rewardErr, { referrer: ref.referrer_id });
+        await releaseDedupLock();
+        return res.status(500).json({ error: 'DB update failed' });
+      }
+
+      await supabase
+        .from('referrals')
+        .update({ status: 'rewarded', reward_days: REWARD_DAYS, rewarded_at: new Date().toISOString() })
+        .eq('id', ref.id);
+
+      const refEmail = await getUserEmail(ref.referrer_id);
+      if (refEmail) {
+        sendEmail({
+          to: refEmail,
+          subject: '🎉 You earned 30 days of free Pro!',
+          html: `<p>Someone you referred to The Storm Watcher just subscribed — you've been credited <strong>30 days of free Pro</strong>. Thanks for spreading the word! 🌌</p>`,
+        }).catch(err => console.error('Referral reward email error:', err));
+      }
+      break;
+    }
   }
 
   res.status(200).json({ received: true });

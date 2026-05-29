@@ -65,7 +65,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('stripe_customer_id, email')
+    .select('stripe_customer_id, email, referred_by')
     .eq('id', user.id)
     .single();
 
@@ -84,6 +84,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const isProTrial = PRO_PRICES.has(priceId);
+  // Referred users get a longer Pro trial as the sign-up incentive.
+  const trialDays = profile?.referred_by ? 30 : 14;
 
   const session = await stripe.checkout.sessions.create({
     customer: customerId,
@@ -103,7 +105,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     subscription_data: {
       metadata: { supabase_user_id: user.id },
       ...(isProTrial ? {
-        trial_period_days: 14,
+        trial_period_days: trialDays,
         trial_settings: { end_behavior: { missing_payment_method: 'cancel' } },
       } : {}),
     },

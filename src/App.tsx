@@ -28,6 +28,7 @@ import SplashAnimation from './components/SplashAnimation';
 import LocationPrompt, { useLocationPromptVisible } from './components/LocationPrompt';
 import KpAlertPrompt from './components/KpAlertPrompt';
 import TrialBanner from './components/TrialBanner';
+import { captureReferralCode } from './utils/referral';
 
 const LoadingFallback = () => {
   const { t } = useLanguage();
@@ -50,6 +51,8 @@ function AppRoutes() {
     const t = setTimeout(() => setSplashDone(true), 1500);
     return () => clearTimeout(t);
   }, []);
+  // Stash ?ref=CODE from the landing URL so it survives until signup.
+  useEffect(() => { captureReferralCode(); }, []);
   useSwipeNavigation();
   useKpAlert();
   usePushNotifications();

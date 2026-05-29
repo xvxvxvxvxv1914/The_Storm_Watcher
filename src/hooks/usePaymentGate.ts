@@ -16,6 +16,11 @@ export function usePaymentGate() {
   const plan = profile?.plan ?? 'free';
   const isTrialing = profile?.subscription_status === 'trialing';
 
+  // Free Pro earned through the referral program (granted server-side on a
+  // referred user's first payment). Active while referral_pro_until is in the future.
+  const referralProUntil = profile?.referral_pro_until ?? null;
+  const hasReferralPro = referralProUntil !== null && new Date(referralProUntil) > new Date();
+
   const native = isNative();
   const gateActive = paymentsEnabled && !native;
 
@@ -23,7 +28,8 @@ export function usePaymentGate() {
     !gateActive ||
     plan === 'pro' ||
     plan === 'premium' ||
-    isTrialing;
+    isTrialing ||
+    hasReferralPro;
 
   const hasPremium =
     !gateActive ||
@@ -34,6 +40,8 @@ export function usePaymentGate() {
     isTrialing,
     hasPro,
     hasPremium,
+    hasReferralPro,
+    referralProUntil,
     paymentsEnabled,
     gateActive,
   };

@@ -3,6 +3,7 @@ import React, { createContext, useContext, useEffect, useRef, useState } from 'r
 import { User, Session, AuthError } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 import { isNative } from '../utils/platform';
+import { getStoredReferralCode, clearStoredReferralCode } from '../utils/referral';
 
 interface Profile {
   id: string;
@@ -14,6 +15,9 @@ interface Profile {
   stripe_customer_id?: string;
   subscription_status?: string;
   subscription_period_end?: string | null;
+  referral_code?: string | null;
+  referred_by?: string | null;
+  referral_pro_until?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -93,7 +97,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, email, full_name, avatar_url, plan, is_beta, subscription_status, subscription_period_end, created_at, updated_at')
+        .select('id, email, full_name, avatar_url, plan, is_beta, subscription_status, subscription_period_end, referral_code, referred_by, referral_pro_until, created_at, updated_at')
         .eq('id', userId)
         .maybeSingle();
 
@@ -113,6 +117,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Web confirms back to the same origin (so staging confirms to staging);
     // native opens the link in the device browser, so target the live site.
     const emailRedirectTo = isNative() ? 'https://thestormwatcher.com' : window.location.origin;
+    // If the visitor arrived via a referral link, attribute it. The handle_new_user
+    // trigger resolves the code to a referrer server-side (clients can't write it).
+    const referredByCode = getStoredReferralCode() ?? undefined;
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -120,9 +127,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         emailRedirectTo,
         data: {
           full_name: fullName,
+          ...(referredByCode ? { referred_by_code: referredByCode } : {}),
         },
       },
     });
+    if (!error) clearStoredReferralCode();
     return { error };
   };
 
