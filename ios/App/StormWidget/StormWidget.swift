@@ -782,5 +782,8 @@ struct StormWidget: Widget {
 struct StormWidgetBundle: WidgetBundle {
     var body: some Widget {
         StormWidget()
+        if #available(iOS 16.2, *) {
+            StormLiveActivity()
+        }
     }
 }

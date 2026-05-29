@@ -12,6 +12,7 @@ import { SettingsProvider } from './contexts/SettingsContext';
 import { useSwipeNavigation } from './hooks/useSwipeNavigation';
 import { useKpAlert } from './hooks/useKpAlert';
 import { usePushNotifications } from './hooks/usePushNotifications';
+import { useStormLiveActivity } from './hooks/useStormLiveActivity';
 import { AnimatedRoutes } from './components/AnimatedRoutes';
 import Navigation from './components/Navigation';
 import BottomTabBar from './components/BottomTabBar';
@@ -56,6 +57,7 @@ function AppRoutes() {
   useSwipeNavigation();
   useKpAlert();
   usePushNotifications();
+  useStormLiveActivity();
 
   // After email confirmation Supabase lands the user back on the site with
   // #access_token=...&type=signup in the hash. Redirect them to /dashboard
