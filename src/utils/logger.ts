@@ -15,3 +15,20 @@ export const logError = (msg: string, err?: unknown) => {
     Sentry.captureMessage(msg, { level: 'error', extra: { err } });
   }
 };
+
+// For expected, self-healing failures (e.g. a transient NOAA fetch that falls back
+// to cached/empty data). Reported at warning level so it doesn't drown out real
+// errors or trip alerting — see Sentry JAVASCRIPT-REACT-J.
+export const logWarning = (msg: string, err?: unknown) => {
+  if (err instanceof Error && err.name === 'AbortError') return;
+
+  if (import.meta.env.DEV) {
+    console.warn(msg, err);
+    return;
+  }
+  if (err instanceof Error) {
+    Sentry.captureException(err, { level: 'warning', extra: { msg } });
+  } else {
+    Sentry.captureMessage(msg, { level: 'warning', extra: { err } });
+  }
+};

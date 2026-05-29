@@ -1,6 +1,6 @@
 import type React from 'react';
 
-import { logError } from '../utils/logger';
+import { logError, logWarning } from '../utils/logger';
 import { persistGet, persistSet } from '../utils/offlineCache';
 
 const NOAA_BASE_URL = 'https://services.swpc.noaa.gov';
@@ -138,7 +138,7 @@ export const getXrayFlux = (): Promise<XrayData[]> =>
     try {
       return await getJson<XrayData[]>(`${NOAA_BASE_URL}/json/goes/primary/xrays-1-day.json`);
     } catch (error) {
-      logError('Error fetching data in getXrayFlux:', error);
+      logWarning('Error fetching data in getXrayFlux:', error);
       return [];
     }
   });
