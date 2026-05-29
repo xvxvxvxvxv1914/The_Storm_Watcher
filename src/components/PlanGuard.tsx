@@ -128,12 +128,12 @@ const PlanGuard = ({ requiredPlan, children, fullPage = false }: PlanGuardProps)
 
   // Inline blur overlay (for section-level gating)
   return (
-    <div className="relative">
-      <div className="pointer-events-none select-none" style={{ filter: 'blur(10px)', opacity: 0.3 }}>
+    <div className="relative overflow-hidden rounded-2xl">
+      <div className="pointer-events-none select-none" style={{ filter: 'blur(8px)', opacity: 0.25 }}>
         {children}
       </div>
       <div className="absolute inset-0 flex items-center justify-center z-10"
-        style={{ background: 'linear-gradient(to bottom, rgba(10,10,26,0.4) 0%, rgba(10,10,26,0.85) 100%)' }}
+        style={{ background: 'radial-gradient(ellipse at center, rgba(10,10,26,0.82) 30%, rgba(10,10,26,0.96) 100%)' }}
       >
         {card}
       </div>
