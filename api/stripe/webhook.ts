@@ -62,8 +62,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ error: 'Webhook signature verification failed' });
   }
 
-  // Deduplicate: check for duplicate key (23505); on transient DB errors, continue processing
-  // (our profile updates are idempotent, so double-processing a retry is safe)
+  // Deduplicate: insert the event id as a processing lock. A duplicate key
+  // (23505) means we already handled this event → ack and stop.
+  // The lock is released (deleted) below if processing fails, so Stripe's retry
+  // can re-process rather than being silently swallowed by the dedup check.
   const { error: dedupError } = await supabase
     .from('stripe_processed_events')
     .insert({ event_id: event.id });
@@ -74,6 +76,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Transient error — log and proceed rather than silently losing the event
     console.error('Dedup insert failed (non-fatal):', dedupError);
   }
+
+  // Release the dedup lock so Stripe's automatic retry can re-process the event.
+  const releaseDedupLock = async () => {
+    const { error } = await supabase
+      .from('stripe_processed_events')
+      .delete()
+      .eq('event_id', event.id);
+    if (error) console.error('Failed to release dedup lock:', error, { eventId: event.id });
+  };
 
   switch (event.type) {
     case 'checkout.session.completed': {
@@ -94,6 +105,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }).eq('id', userId);
       if (updateError) {
         console.error('checkout.session.completed profile update failed', updateError, { userId, plan });
+        await releaseDedupLock();
         return res.status(500).json({ error: 'DB update failed' });
       }
 
@@ -124,6 +136,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }).eq('id', userId);
       if (updateError) {
         console.error('customer.subscription.updated profile update failed', updateError, { userId, plan });
+        await releaseDedupLock();
         return res.status(500).json({ error: 'DB update failed' });
       }
       break;
@@ -150,6 +163,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }).eq('id', userId);
       if (updateError) {
         console.error('customer.subscription.deleted profile update failed', updateError, { userId });
+        await releaseDedupLock();
         return res.status(500).json({ error: 'DB update failed' });
       }
 
@@ -200,6 +214,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }).eq('id', userId);
       if (updateError) {
         console.error('invoice.payment_failed profile update failed', updateError, { userId });
+        await releaseDedupLock();
         return res.status(500).json({ error: 'DB update failed' });
       }
 
