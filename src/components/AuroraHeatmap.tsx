@@ -104,7 +104,9 @@ export default function AuroraHeatmap({ kp, userLat, userLon }: Props) {
     : [55, 10];
 
   return (
-    <div className="rounded-2xl overflow-hidden border border-white/10" style={{ height: 380 }}>
+    // `isolate` traps Leaflet's internal z-index panes (400–1000) inside this
+    // stacking context so they can't paint over the fixed nav dropdown (z-50).
+    <div className="relative isolate z-0 rounded-2xl overflow-hidden border border-white/10" style={{ height: 380 }}>
       <MapContainer
         center={center}
         zoom={2}
