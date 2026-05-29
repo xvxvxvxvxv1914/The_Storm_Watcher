@@ -126,16 +126,42 @@ const PlanGuard = ({ requiredPlan, children, fullPage = false }: PlanGuardProps)
     );
   }
 
-  // Inline blur overlay (for section-level gating)
+  // Inline compact lock banner (for section-level gating)
   return (
     <div className="relative overflow-hidden rounded-2xl">
-      <div className="pointer-events-none select-none" style={{ filter: 'blur(8px)', opacity: 0.25 }}>
+      <div className="pointer-events-none select-none" style={{ filter: 'blur(6px)', opacity: 0.2 }}>
         {children}
       </div>
-      <div className="absolute inset-0 flex items-center justify-center z-10"
-        style={{ background: 'radial-gradient(ellipse at center, rgba(10,10,26,0.82) 30%, rgba(10,10,26,0.96) 100%)' }}
+      <div
+        className="absolute inset-0 flex items-center justify-center z-10"
+        style={{ background: 'rgba(10,10,26,0.88)' }}
       >
-        {card}
+        <div className="flex flex-col sm:flex-row items-center gap-4 px-6 py-4 text-center sm:text-left">
+          <div
+            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+            style={{ background: `${gradientFrom}18`, border: `1px solid ${gradientFrom}40` }}
+          >
+            <Lock className="w-5 h-5" style={{ color: gradientFrom }} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-white font-bold text-sm leading-tight">
+              {planLabel === 'Pro' ? t('planguard.proFeature') : t('planguard.premiumFeature')}
+            </p>
+            <p className="text-[#64748b] text-xs mt-0.5">
+              {t('planguard.availableOn').replace('Pro', '').replace('Premium', '').trim() || 'Upgrade to unlock this feature'}
+            </p>
+          </div>
+          <Link
+            to={user ? '/pricing' : '/auth'}
+            state={user ? undefined : { from: location.pathname }}
+            className="shrink-0 px-5 py-2 rounded-xl font-bold text-white text-sm transition-all hover:scale-105 hover:shadow-lg whitespace-nowrap"
+            style={{ background: `linear-gradient(to right, ${gradientFrom}, ${gradientTo})` }}
+          >
+            {user
+              ? (requiredPlan === 'pro' ? (t('pricing.tryProFree') || 'Try Pro free') : (t('planguard.upgradePro') || 'Upgrade'))
+              : (t('planguard.signInUpgrade') || 'Sign in to upgrade')}
+          </Link>
+        </div>
       </div>
     </div>
   );
