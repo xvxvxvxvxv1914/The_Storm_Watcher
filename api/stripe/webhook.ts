@@ -201,8 +201,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     case 'invoice.payment_failed': {
       const invoice = event.data.object as Stripe.Invoice;
-      const subRef = invoice.subscription;
-      const subId = typeof subRef === 'string' ? subRef : (subRef as Stripe.Subscription | null)?.id ?? null;
+      // Stripe API 2026-04-22: the subscription moved off the top-level Invoice
+      // onto parent.subscription_details.subscription (string | Subscription).
+      const subRef = invoice.parent?.subscription_details?.subscription;
+      const subId = typeof subRef === 'string' ? subRef : subRef?.id ?? null;
       if (!subId) break;
 
       const sub = await stripe.subscriptions.retrieve(subId);
