@@ -1,6 +1,9 @@
 import Foundation
 import Capacitor
 import ActivityKit
+import OSLog
+
+private let logger = Logger(subsystem: "com.stormwatcher.app", category: "LiveActivity")
 
 // Bridges JS → ActivityKit so the web layer can drive the storm Live Activity.
 // Phase A: app-driven (starts/updates while the app runs). Phase B would add
@@ -38,6 +41,7 @@ public class StormLiveActivityPlugin: CAPPlugin, CAPBridgedPlugin {
             )
             call.resolve(["started": true])
         } catch {
+            logger.error("Activity.request failed: \(error.localizedDescription)")
             call.reject("Failed to start activity: \(error.localizedDescription)")
         }
     }
