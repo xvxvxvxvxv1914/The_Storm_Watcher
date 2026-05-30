@@ -1,8 +1,22 @@
 import * as Sentry from '@sentry/react';
 
+// Transient failures we never want to report — they're expected and self-healing:
+//  • AbortError — the user navigated away before a fetch completed.
+//  • Safari DOMException SYNTAX_ERR (code 12) "The string did not match the
+//    expected pattern." — Safari's misleading way of surfacing a failed/aborted
+//    network request. It is NOT a code syntax error. See Sentry JAVASCRIPT-REACT-J.
+const isExpectedTransientError = (err: unknown): boolean => {
+  if (err instanceof Error && err.name === 'AbortError') return true;
+  // A genuine JS SyntaxError (code parse error) is a plain Error, NOT a
+  // DOMException — so this only matches Safari's network-failure DOMException,
+  // never a real syntax bug.
+  if (typeof DOMException !== 'undefined' && err instanceof DOMException
+      && (err.code === 12 || err.name === 'SyntaxError')) return true;
+  return false;
+};
+
 export const logError = (msg: string, err?: unknown) => {
-  // AbortErrors are expected when the user navigates away before a fetch completes — not a real error.
-  if (err instanceof Error && err.name === 'AbortError') return;
+  if (isExpectedTransientError(err)) return;
 
   if (import.meta.env.DEV) {
     console.error(msg, err);
@@ -20,7 +34,7 @@ export const logError = (msg: string, err?: unknown) => {
 // to cached/empty data). Reported at warning level so it doesn't drown out real
 // errors or trip alerting — see Sentry JAVASCRIPT-REACT-J.
 export const logWarning = (msg: string, err?: unknown) => {
-  if (err instanceof Error && err.name === 'AbortError') return;
+  if (isExpectedTransientError(err)) return;
 
   if (import.meta.env.DEV) {
     console.warn(msg, err);

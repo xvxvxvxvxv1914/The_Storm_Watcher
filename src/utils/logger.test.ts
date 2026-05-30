@@ -31,4 +31,25 @@ describe('logError', () => {
     const { logError } = await import('./logger');
     expect(() => logError('no error arg')).not.toThrow();
   });
+
+  it('suppresses AbortError (user navigated away mid-fetch)', async () => {
+    vi.stubEnv('DEV', true);
+    vi.resetModules();
+    const { logError } = await import('./logger');
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const abort = new Error('aborted');
+    abort.name = 'AbortError';
+    logError('cancelled', abort);
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('suppresses Safari DOMException SYNTAX_ERR (code 12) from failed fetch', async () => {
+    vi.stubEnv('DEV', true);
+    vi.resetModules();
+    const { logError } = await import('./logger');
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    // Safari surfaces a failed network request as this DOMException — not a real error.
+    logError('xray fetch failed', new DOMException('The string did not match the expected pattern.', 'SyntaxError'));
+    expect(spy).not.toHaveBeenCalled();
+  });
 });
