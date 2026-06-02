@@ -19,7 +19,6 @@ import BottomTabBar from './components/BottomTabBar';
 import Footer from './components/Footer';
 
 import ErrorBoundary from './components/ErrorBoundary';
-import HreflangTags from './components/HreflangTags';
 import OfflineBanner from './components/OfflineBanner';
 import OnboardingTour from './components/OnboardingTour';
 import ScrollToTop from './components/ScrollToTop';
@@ -129,7 +128,6 @@ function AppRoutes() {
       >
         Skip to main content
       </a>
-      <HreflangTags />
       <OfflineBanner />
       <Navigation />
       <TrialBanner />
