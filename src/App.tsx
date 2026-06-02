@@ -33,7 +33,7 @@ import { captureReferralCode } from './utils/referral';
 const LoadingFallback = () => {
   const { t } = useLanguage();
   return (
-    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-16rem)] gap-4">
+    <div className="flex flex-col items-center justify-center min-h-screen gap-4">
       <div className="w-12 h-12 border-4 border-[#f97316]/20 border-t-[#f97316] rounded-full animate-spin"></div>
       <div className="text-[#f97316] font-bold tracking-widest text-sm uppercase animate-pulse">{t('app.loading')}</div>
     </div>
