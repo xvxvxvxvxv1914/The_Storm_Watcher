@@ -18,6 +18,11 @@ public class StormLiveActivityPlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "end", returnType: CAPPluginReturnPromise),
     ]
 
+    // Phase A only updates while the app runs, so data can't refresh in the
+    // background. Mark it stale after this long and iOS dims the banner instead
+    // of showing hours-old Kp as if it were current.
+    private static let staleAfter: TimeInterval = 45 * 60
+
     @objc func start(_ call: CAPPluginCall) {
         guard #available(iOS 16.2, *) else { call.resolve(["started": false, "reason": "unsupported"]); return }
         guard ActivityAuthorizationInfo().areActivitiesEnabled else {
@@ -28,7 +33,7 @@ public class StormLiveActivityPlugin: CAPPlugin, CAPBridgedPlugin {
         // If one is already live, just update it (avoids duplicate activities).
         if let existing = Activity<StormActivityAttributes>.activities.first {
             Task {
-                await existing.update(ActivityContent(state: state, staleDate: nil))
+                await existing.update(ActivityContent(state: state, staleDate: Date().addingTimeInterval(Self.staleAfter)))
                 call.resolve(["started": true])
             }
             return
@@ -37,7 +42,7 @@ public class StormLiveActivityPlugin: CAPPlugin, CAPBridgedPlugin {
         do {
             _ = try Activity.request(
                 attributes: StormActivityAttributes(title: "Geomagnetic storm"),
-                content: ActivityContent(state: state, staleDate: nil)
+                content: ActivityContent(state: state, staleDate: Date().addingTimeInterval(Self.staleAfter))
             )
             call.resolve(["started": true])
         } catch {
@@ -52,7 +57,7 @@ public class StormLiveActivityPlugin: CAPPlugin, CAPBridgedPlugin {
         Task {
             let activities = Activity<StormActivityAttributes>.activities
             for activity in activities {
-                await activity.update(ActivityContent(state: state, staleDate: nil))
+                await activity.update(ActivityContent(state: state, staleDate: Date().addingTimeInterval(Self.staleAfter)))
             }
             // Report whether anything was actually live so JS can restart if the
             // user dismissed it — otherwise the storm banner never comes back.

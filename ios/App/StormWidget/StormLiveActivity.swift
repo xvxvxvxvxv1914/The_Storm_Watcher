@@ -122,6 +122,9 @@ struct StormLiveActivity: Widget {
             )
             .activityBackgroundTint(Color(red: 0.05, green: 0.05, blue: 0.12))
             .activitySystemActionForegroundColor(.white)
+            // Tapping the lock-screen banner opens the alerts page (Dynamic Island
+            // already had this; the lock-screen view was missing it).
+            .widgetURL(URL(string: "stormwatcher://alerts"))
         } dynamicIsland: { context in
             let g = context.state.gLevel
             return DynamicIsland {
