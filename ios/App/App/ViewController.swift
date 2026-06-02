@@ -3,13 +3,17 @@ import Capacitor
 
 class ViewController: CAPBridgeViewController {
 
-    // Required for storyboard instantiation — must forward to the designated initializer.
+    // Kept deliberately: this VC is instantiated from Main.storyboard, and an
+    // earlier attempt to drive it without an explicit coder init crashed on
+    // launch. Don't remove without a device test.
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Enable iOS native swipe-back gesture — WKWebView disables it by default.
+        // React Router handles the resulting popstate event correctly.
         webView?.allowsBackForwardNavigationGestures = true
     }
 

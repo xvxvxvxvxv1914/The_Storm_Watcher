@@ -47,13 +47,16 @@ public class StormLiveActivityPlugin: CAPPlugin, CAPBridgedPlugin {
     }
 
     @objc func update(_ call: CAPPluginCall) {
-        guard #available(iOS 16.2, *) else { call.resolve(); return }
+        guard #available(iOS 16.2, *) else { call.resolve(["updated": false]); return }
         let state = makeState(call)
         Task {
-            for activity in Activity<StormActivityAttributes>.activities {
+            let activities = Activity<StormActivityAttributes>.activities
+            for activity in activities {
                 await activity.update(ActivityContent(state: state, staleDate: nil))
             }
-            call.resolve()
+            // Report whether anything was actually live so JS can restart if the
+            // user dismissed it — otherwise the storm banner never comes back.
+            call.resolve(["updated": !activities.isEmpty])
         }
     }
 

@@ -8,7 +8,9 @@ export interface StormLiveActivityState {
 
 export interface StormLiveActivityPlugin {
   start(state: StormLiveActivityState): Promise<{ started: boolean; reason?: string }>;
-  update(state: StormLiveActivityState): Promise<void>;
+  // `updated` is false when no live activity exists (e.g. the user dismissed it),
+  // which tells the caller to restart rather than silently no-op.
+  update(state: StormLiveActivityState): Promise<{ updated: boolean }>;
   end(): Promise<void>;
 }
 

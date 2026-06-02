@@ -48,11 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         widgetRefreshTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { [weak self] _ in
             self?.refreshWidgetData(completion: nil)
         }
-        // Enable iOS native swipe-back gesture on the WKWebView.
-        // React Router handles the resulting popstate event correctly.
-        if let vc = window?.rootViewController as? CAPBridgeViewController {
-            vc.webView?.allowsBackForwardNavigationGestures = true
-        }
+        // (Swipe-back gesture is enabled once in ViewController.viewDidLoad.)
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
