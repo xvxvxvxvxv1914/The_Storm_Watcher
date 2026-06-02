@@ -7,11 +7,13 @@ import * as Sentry from '@sentry/react';
 //    network request. It is NOT a code syntax error. See Sentry JAVASCRIPT-REACT-J.
 const isExpectedTransientError = (err: unknown): boolean => {
   if (err instanceof Error && err.name === 'AbortError') return true;
-  // A genuine JS SyntaxError (code parse error) is a plain Error, NOT a
-  // DOMException — so this only matches Safari's network-failure DOMException,
-  // never a real syntax bug.
+  // Safari surfaces a failed/aborted network request as a DOMException SYNTAX_ERR
+  // (code 12) with this exact message. Match the MESSAGE, not just the name/code —
+  // genuine DOM misuse (invalid querySelector, bad atob input) also throws a
+  // DOMException named 'SyntaxError', and those must still be reported.
   if (typeof DOMException !== 'undefined' && err instanceof DOMException
-      && (err.code === 12 || err.name === 'SyntaxError')) return true;
+      && (err.code === 12 || err.name === 'SyntaxError')
+      && err.message.includes('did not match the expected pattern')) return true;
   return false;
 };
 

@@ -255,6 +255,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (!ref) break;
 
       const REWARD_DAYS = 30;
+
+      // Atomically CLAIM the referral before granting anything. The `eq('status',
+      // 'pending')` guard means only one request can flip it; renewals, Stripe
+      // retries, and concurrent events all see 0 rows and skip. This makes the
+      // grant idempotent — without it, a later failure + retry (or a monthly
+      // renewal invoice) would re-grant 30 days every time.
+      const { data: claimed, error: claimErr } = await supabase
+        .from('referrals')
+        .update({ status: 'rewarded', reward_days: REWARD_DAYS, rewarded_at: new Date().toISOString() })
+        .eq('id', ref.id)
+        .eq('status', 'pending')
+        .select('id')
+        .maybeSingle();
+      if (claimErr) {
+        console.error('referral claim failed', claimErr, { referral: ref.id });
+        await releaseDedupLock();
+        return res.status(500).json({ error: 'DB update failed' });
+      }
+      if (!claimed) break; // already rewarded by another request — nothing to do
+
       const { data: referrer } = await supabase
         .from('profiles')
         .select('referral_pro_until')
@@ -271,15 +291,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         .update({ referral_pro_until: base.toISOString() })
         .eq('id', ref.referrer_id);
       if (rewardErr) {
-        console.error('referral reward grant failed', rewardErr, { referrer: ref.referrer_id });
+        // Already claimed above, so a retry won't double-grant — but the days
+        // didn't land. 500 surfaces it for reconciliation rather than silently
+        // dropping the reward.
+        console.error('referral reward grant failed', rewardErr, { referrer: ref.referrer_id, referral: ref.id });
         await releaseDedupLock();
         return res.status(500).json({ error: 'DB update failed' });
       }
-
-      await supabase
-        .from('referrals')
-        .update({ status: 'rewarded', reward_days: REWARD_DAYS, rewarded_at: new Date().toISOString() })
-        .eq('id', ref.id);
 
       const refEmail = await getUserEmail(ref.referrer_id);
       if (refEmail) {

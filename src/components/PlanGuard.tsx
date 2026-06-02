@@ -26,7 +26,11 @@ const PlanGuard = ({ requiredPlan, children, fullPage = false }: PlanGuardProps)
   const paymentsEnabled = import.meta.env.VITE_PAYMENTS_ENABLED === 'true';
   const userPlan: Plan = profile?.plan ?? 'free';
   const isTrialing = profile?.subscription_status === 'trialing';
-  const effectivePlan: Plan = (isTrialing && PLAN_RANK[userPlan] < PLAN_RANK['pro']) ? 'pro' : userPlan;
+  // Free Pro earned via the referral program (granted server-side, plan stays 'free').
+  const hasReferralPro = !!profile?.referral_pro_until && new Date(profile.referral_pro_until) > new Date();
+  // Anything that grants Pro lifts a sub-Pro plan up to Pro (never above).
+  const effectivePlan: Plan =
+    ((isTrialing || hasReferralPro) && PLAN_RANK[userPlan] < PLAN_RANK['pro']) ? 'pro' : userPlan;
   const hasAccess = isNative() || !paymentsEnabled || PLAN_RANK[effectivePlan] >= PLAN_RANK[requiredPlan];
 
   if (hasAccess) return <>{children}</>;
