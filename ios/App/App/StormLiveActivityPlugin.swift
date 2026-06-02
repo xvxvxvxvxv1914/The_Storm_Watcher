@@ -6,8 +6,10 @@ import OSLog
 private let logger = Logger(subsystem: "com.stormwatcher.app", category: "LiveActivity")
 
 // Bridges JS → ActivityKit so the web layer can drive the storm Live Activity.
-// Phase A: app-driven (starts/updates while the app runs). Phase B would add
-// APNs push tokens for background updates.
+// Phase A: app-driven (starts/updates while the app runs).
+// Phase B: each activity is requested with an APNs push token, emitted to JS as
+// the `liveActivityPushToken` event so the backend can keep the banner fresh
+// after the app is closed. `liveActivityEnded` fires so JS can drop the token.
 @objc(StormLiveActivityPlugin)
 public class StormLiveActivityPlugin: CAPPlugin, CAPBridgedPlugin {
     public let identifier = "StormLiveActivityPlugin"
@@ -22,6 +24,16 @@ public class StormLiveActivityPlugin: CAPPlugin, CAPBridgedPlugin {
     // background. Mark it stale after this long and iOS dims the banner instead
     // of showing hours-old Kp as if it were current.
     private static let staleAfter: TimeInterval = 45 * 60
+
+    // Re-attach token/lifecycle observers to any activity carried over from a
+    // previous launch, so its (possibly rotated) push token still reaches JS.
+    override public func load() {
+        guard #available(iOS 16.2, *) else { return }
+        for activity in Activity<StormActivityAttributes>.activities {
+            observePushToken(activity)
+            observeLifecycle(activity)
+        }
+    }
 
     @objc func start(_ call: CAPPluginCall) {
         guard #available(iOS 16.2, *) else { call.resolve(["started": false, "reason": "unsupported"]); return }
@@ -40,14 +52,44 @@ public class StormLiveActivityPlugin: CAPPlugin, CAPBridgedPlugin {
         }
 
         do {
-            _ = try Activity.request(
+            let activity = try Activity.request(
                 attributes: StormActivityAttributes(title: "Geomagnetic storm"),
-                content: ActivityContent(state: state, staleDate: Date().addingTimeInterval(Self.staleAfter))
+                content: ActivityContent(state: state, staleDate: Date().addingTimeInterval(Self.staleAfter)),
+                pushType: .token // ask APNs for a push-to-update token (Phase B)
             )
+            observePushToken(activity)
+            observeLifecycle(activity)
             call.resolve(["started": true])
         } catch {
             logger.error("Activity.request failed: \(error.localizedDescription)")
             call.reject("Failed to start activity: \(error.localizedDescription)")
+        }
+    }
+
+    // Stream the per-activity APNs push token to JS. The token can change over the
+    // activity's life, so we forward every value the system gives us.
+    @available(iOS 16.2, *)
+    private func observePushToken(_ activity: Activity<StormActivityAttributes>) {
+        Task {
+            for await tokenData in activity.pushTokenUpdates {
+                let token = tokenData.map { String(format: "%02x", $0) }.joined()
+                logger.info("Live Activity push token: \(token, privacy: .private)")
+                self.notifyListeners("liveActivityPushToken", data: ["token": token, "activityId": activity.id])
+            }
+        }
+    }
+
+    // Tell JS when an activity ends (user dismissed / system ended) so it can
+    // delete the now-dead push token from the backend.
+    @available(iOS 16.2, *)
+    private func observeLifecycle(_ activity: Activity<StormActivityAttributes>) {
+        Task {
+            for await state in activity.activityStateUpdates {
+                if state == .ended || state == .dismissed {
+                    self.notifyListeners("liveActivityEnded", data: ["activityId": activity.id])
+                    break
+                }
+            }
         }
     }
 
@@ -81,7 +123,7 @@ public class StormLiveActivityPlugin: CAPPlugin, CAPBridgedPlugin {
             kp: call.getDouble("kp") ?? 0,
             gLevel: call.getInt("gLevel") ?? 0,
             auroraPct: call.getInt("auroraPct"),
-            updatedAt: Date()
+            updatedAt: Date().timeIntervalSince1970
         )
     }
 }

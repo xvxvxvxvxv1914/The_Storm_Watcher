@@ -1,8 +1,11 @@
 import { useEffect, useRef } from 'react';
 import { useKpLive } from './useKpLive';
 import { useSettings } from '../contexts/SettingsContext';
+import { useAuth } from '../contexts/AuthContext';
 import { isNative, isIos } from '../utils/platform';
 import { calcAuroraVisibility } from '../utils/auroraVisibility';
+import { supabase } from '../lib/supabase';
+import { logError } from '../utils/logger';
 import { StormLiveActivity, type StormLiveActivityState } from '../plugins/stormLiveActivity';
 
 const STORM_THRESHOLD = 5; // Kp ≥ 5 = G1, the point a storm becomes "watchable"
@@ -57,10 +60,35 @@ export async function syncLiveActivity(
 export function useStormLiveActivity() {
   const kp = useKpLive();
   const { settings } = useSettings();
+  const { user } = useAuth();
   const active = useRef(false);
   // Serialize transitions: a slow start()-retry must not overlap the next Kp
   // update (which would race on `active` and could create duplicate activities).
   const queue = useRef<Promise<void>>(Promise.resolve());
+
+  // Phase B: persist each activity's APNs push token so the backend can refresh
+  // the banner while the app is closed; drop it again when the activity ends.
+  // Kept in a ref so the long-lived listeners always see the current user.
+  const userId = useRef<string | undefined>(user?.id);
+  userId.current = user?.id;
+  useEffect(() => {
+    if (!isNative() || !isIos()) return;
+    const handles = [
+      StormLiveActivity.addListener('liveActivityPushToken', async ({ token, activityId }) => {
+        if (!userId.current) return; // anonymous — can't attribute the token (RLS)
+        const { error } = await supabase
+          .from('live_activity_tokens')
+          .upsert({ user_id: userId.current, token, activity_id: activityId, platform: 'ios' }, { onConflict: 'token' });
+        if (error) logError('live activity token upsert failed', error);
+      }),
+      StormLiveActivity.addListener('liveActivityEnded', async ({ activityId }) => {
+        if (!userId.current) return;
+        await supabase.from('live_activity_tokens').delete()
+          .eq('user_id', userId.current).eq('activity_id', activityId);
+      }),
+    ];
+    return () => { handles.forEach(h => h.then(handle => handle.remove())); };
+  }, []);
 
   useEffect(() => {
     if (kp === null || !isNative() || !isIos()) return;

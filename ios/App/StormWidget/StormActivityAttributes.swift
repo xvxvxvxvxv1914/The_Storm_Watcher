@@ -9,7 +9,9 @@ struct StormActivityAttributes: ActivityAttributes {
         var kp: Double
         var gLevel: Int      // 0 = active/unsettled, 1–5 = G1–G5
         var auroraPct: Int?  // visibility at the user's saved location, if any
-        var updatedAt: Date
+        var updatedAt: Double // Unix epoch seconds — a plain number so the APNs
+                              // push content-state decodes without Date-strategy
+                              // ambiguity (the UI doesn't render it).
     }
 
     var title: String

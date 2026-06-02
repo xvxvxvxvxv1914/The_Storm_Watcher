@@ -87,6 +87,54 @@ async function sendApns(
   }
 }
 
+// Storm threshold and G-level mapping mirror the client (useStormLiveActivity).
+const STORM_THRESHOLD = 5;
+function gLevelOf(kp: number): number {
+  if (kp >= 9) return 5;
+  if (kp >= 8) return 4;
+  if (kp >= 7) return 3;
+  if (kp >= 6) return 2;
+  if (kp >= 5) return 1;
+  return 0;
+}
+
+// Push an update (or end) to a storm Live Activity. Separate from sendApns
+// because Live Activities use a different push type, topic and payload shape.
+// content-state keys MUST match StormActivityAttributes.ContentState in Swift.
+async function sendApnsLiveActivity(
+  token: string,
+  jwt: string,
+  bundleId: string,
+  kp: number,
+  event: 'update' | 'end',
+): Promise<{ ok: boolean; gone: boolean }> {
+  const now = Math.floor(Date.now() / 1000);
+  const aps: Record<string, unknown> = {
+    timestamp: now,
+    event,
+    'content-state': { kp, gLevel: gLevelOf(kp), updatedAt: now },
+  };
+  if (event === 'update') aps['stale-date'] = now + 45 * 60;
+  else aps['dismissal-date'] = now;
+
+  try {
+    const res = await fetch(`https://api.push.apple.com/3/device/${token}`, {
+      method: 'POST',
+      headers: {
+        'authorization': `bearer ${jwt}`,
+        'apns-topic': `${bundleId}.push-type.liveactivity`,
+        'apns-push-type': 'liveactivity',
+        'apns-priority': '10',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({ aps }),
+    });
+    return { ok: res.ok, gone: res.status === 410 || res.status === 400 };
+  } catch {
+    return { ok: false, gone: false };
+  }
+}
+
 // ── Main handler ─────────────────────────────────────────────────────────────
 
 Deno.serve(async (req: Request) => {
@@ -237,9 +285,45 @@ Deno.serve(async (req: Request) => {
     }
   }
 
-  console.log(`Kp=${kpLabel} | web=${sent} | native=${nativeSent} | apns=${apnsEnabled}`);
+  // 4. Live Activity push-to-update (live_activity_tokens — Phase B). Keeps the
+  // lock-screen storm banner fresh while the app is closed. While a storm is on
+  // (Kp ≥ threshold) we update; once it passes we end the banner and drop the
+  // token. No cooldown — the activity is meant to track the storm continuously.
+  let liveActivitySent = 0;
+  if (apnsEnabled) {
+    const { data: laTokens, error: laError } = await supabase
+      .from('live_activity_tokens')
+      .select('id, token');
+
+    if (laError) {
+      console.error('Live activity tokens query failed:', laError.message);
+    } else if (laTokens && laTokens.length > 0) {
+      const apnsJWT = await buildApnsJWT(apnsP8Key!, apnsKeyId!, apnsTeamId!);
+      const event = currentKp >= STORM_THRESHOLD ? 'update' : 'end';
+      const deadIds: string[] = [];
+
+      await Promise.allSettled(
+        (laTokens as { id: string; token: string }[]).map(async (t) => {
+          const { ok, gone } = await sendApnsLiveActivity(t.token, apnsJWT, apnsBundleId, currentKp, event);
+          if (ok && event === 'update') {
+            await supabase.from('live_activity_tokens').update({ last_pushed_at: now }).eq('id', t.id);
+            liveActivitySent++;
+          } else if (gone || event === 'end') {
+            // Token expired, or the storm is over and we just dismissed it.
+            deadIds.push(t.id);
+          }
+        })
+      );
+
+      if (deadIds.length > 0) {
+        await supabase.from('live_activity_tokens').delete().in('id', deadIds);
+      }
+    }
+  }
+
+  console.log(`Kp=${kpLabel} | web=${sent} | native=${nativeSent} | liveActivity=${liveActivitySent} | apns=${apnsEnabled}`);
   return new Response(
-    JSON.stringify({ sent, nativeSent, kp: currentKp, apnsEnabled }),
+    JSON.stringify({ sent, nativeSent, liveActivitySent, kp: currentKp, apnsEnabled }),
     { headers: { 'Content-Type': 'application/json' } }
   );
 });
