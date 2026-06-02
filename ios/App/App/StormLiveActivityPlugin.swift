@@ -51,18 +51,26 @@ public class StormLiveActivityPlugin: CAPPlugin, CAPBridgedPlugin {
             return
         }
 
+        let attributes = StormActivityAttributes(title: "Geomagnetic storm")
+        let content = ActivityContent(state: state, staleDate: Date().addingTimeInterval(Self.staleAfter))
+
         do {
-            let activity = try Activity.request(
-                attributes: StormActivityAttributes(title: "Geomagnetic storm"),
-                content: ActivityContent(state: state, staleDate: Date().addingTimeInterval(Self.staleAfter)),
-                pushType: .token // ask APNs for a push-to-update token (Phase B)
-            )
+            let activity = try Activity.request(attributes: attributes, content: content, pushType: .token)
             observePushToken(activity)
             observeLifecycle(activity)
-            call.resolve(["started": true])
+            call.resolve(["started": true, "push": true])
         } catch {
-            logger.error("Activity.request failed: \(error.localizedDescription)")
-            call.reject("Failed to start activity: \(error.localizedDescription)")
+            // Fall back to a local (non-push) activity so Phase A still works even
+            // if a push token can't be obtained (e.g. push provisioning issue).
+            logger.error("Activity.request(pushType:) failed: \(error.localizedDescription)")
+            do {
+                let activity = try Activity.request(attributes: attributes, content: content)
+                observeLifecycle(activity)
+                call.resolve(["started": true, "push": false, "pushError": error.localizedDescription])
+            } catch {
+                logger.error("Activity.request fallback failed: \(error.localizedDescription)")
+                call.reject("Failed to start activity: \(error.localizedDescription)")
+            }
         }
     }
 

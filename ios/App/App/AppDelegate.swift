@@ -27,6 +27,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { _, _ in }
         UNUserNotificationCenter.current().delegate = self
+        // Establish the APNs connection at launch. This does NOT require
+        // notification permission, but it IS required for Live Activity push
+        // tokens (Activity.request(pushType: .token)) — without it ActivityKit
+        // throws ActivityInput error 0. Safe to call alongside the Capacitor
+        // push plugin (idempotent).
+        application.registerForRemoteNotifications()
         return true
     }
 
