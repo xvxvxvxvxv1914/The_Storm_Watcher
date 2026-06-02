@@ -2,42 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
-}
-
-:root {
-  --tsw-bg:            #000008;
-  --tsw-fg:            #f8fafc;
-  --tsw-fg-muted:      #94a3b8;
-  --tsw-fg-subtle:     #64748b;
-  --tsw-surface-bg:    rgba(255, 255, 255, 0.03);
-  --tsw-surface-border:rgba(255, 255, 255, 0.10);
-}
-
-html.light {
-  --tsw-bg:            #f1f5f9;
-  --tsw-fg:            #0f172a;
-  --tsw-fg-muted:      #64748b;
-  --tsw-fg-subtle:     #94a3b8;
-  --tsw-surface-bg:    rgba(255, 255, 255, 0.88);
-  --tsw-surface-border:rgba(0, 0, 0, 0.09);
-  color-scheme: light;
-}
-
 @layer base {
   * {
     font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
   }
 
-  html {
-    scroll-padding-top: calc(env(safe-area-inset-top) + 3.5rem);
-  }
-
   body {
-    background: var(--tsw-bg);
-    color: var(--tsw-fg);
+    background: #000008;
+    color: #f8fafc;
     overflow-x: hidden;
   }
 
@@ -70,18 +42,9 @@ html.light {
   }
 
   .glass-surface {
-    background: var(--tsw-surface-bg);
-    border: 1px solid var(--tsw-surface-border);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    transform: translateZ(0);
-  }
-
-  @media (max-width: 767px) {
-    .glass-surface {
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-    }
   }
 
   .glow-orange {
@@ -109,32 +72,6 @@ html.light {
 @keyframes pulse-glow {
   0%, 100% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
   50% { box-shadow: 0 0 40px rgba(239, 68, 68, 0.8); }
-}
-
-@keyframes skeleton-shimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-.skeleton {
-  background: linear-gradient(
-    90deg,
-    rgba(255,255,255,0.04) 25%,
-    rgba(255,255,255,0.09) 50%,
-    rgba(255,255,255,0.04) 75%
-  );
-  background-size: 200% 100%;
-  animation: skeleton-shimmer 1.5s infinite linear;
-}
-
-html.light .skeleton {
-  background: linear-gradient(
-    90deg,
-    #e2e8f0 25%,
-    #f1f5f9 50%,
-    #e2e8f0 75%
-  );
-  background-size: 200% 100%;
 }
 
 @keyframes float-particles {
@@ -169,7 +106,7 @@ html.light .skeleton {
   height: 600px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(249, 115, 22, 0.15) 0%, transparent 70%);
-  filter: blur(40px);
+  filter: blur(60px);
   pointer-events: none;
   z-index: 0;
 }
@@ -180,23 +117,13 @@ html.light .skeleton {
   height: 500px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(124, 58, 237, 0.1) 0%, transparent 70%);
-  filter: blur(40px);
+  filter: blur(50px);
   pointer-events: none;
   z-index: 0;
 }
 
 .pulse-alert {
   animation: pulse-glow 2s infinite;
-}
-
-.storm-banner {
-  top: calc(env(safe-area-inset-top) + 3rem);
-}
-
-@media (min-width: 768px) {
-  .storm-banner {
-    top: calc(env(safe-area-inset-top) + 4rem);
-  }
 }
 
 .solar-particle {
@@ -215,101 +142,4 @@ html.light .skeleton {
   to {
     stroke-dashoffset: 0;
   }
-}
-
-/* Light mode — structural overrides still needed for Tailwind hardcoded classes */
-html.light .star-field {
-  display: none;
-}
-
-html.light .solar-orb,
-html.light .magnetic-orb {
-  opacity: 0.06;
-}
-
-html.light p.text-white,
-html.light h1.text-white,
-html.light h2.text-white,
-html.light h3.text-white,
-html.light span.text-white:not(.gradient-solar):not(.gradient-aurora):not(.gradient-fire),
-html.light label.text-white,
-html.light div.text-white,
-html.light a.text-white,
-html.light button.text-white {
-  color: #1e293b;
-}
-
-html.light .border-white\/10 {
-  border-color: rgba(0, 0, 0, 0.12);
-}
-
-html.light .text-white\/70 {
-  color: #475569;
-}
-
-html.light .text-white\/60 {
-  color: #64748b;
-}
-
-html.light .text-white\/50 {
-  color: #94a3b8;
-}
-
-html.light .text-white\/40 {
-  color: #94a3b8;
-}
-
-html.light .text-white\/25 {
-  color: #cbd5e1;
-}
-
-html.light .text-\[\#94a3b8\] {
-  color: #64748b;
-}
-
-html.light .text-\[\#64748b\] {
-  color: #94a3b8;
-}
-
-html.light .star {
-  background: transparent;
-}
-
-html.light .solar-particle {
-  display: none;
-}
-
-/* H21 — Accessibility: focus rings */
-*:focus-visible {
-  outline: 2px solid #10b981;
-  outline-offset: 2px;
-  border-radius: 4px;
-}
-
-/* M19 — Reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* L10 — Bottom sheet animation */
-@keyframes slideUp {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
-}
-.bottom-sheet-enter {
-  animation: slideUp 0.3s cubic-bezier(0.32, 0.72, 0, 1);
-}
-
-/* D5 — Immersive globe mode: hide bottom tab bar while 3D globe is on screen */
-body.immersive-globe nav[aria-label="Main navigation"] {
-  transform: translateY(150%);
-  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
-  pointer-events: none;
-}
-nav[aria-label="Main navigation"] {
-  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
 }

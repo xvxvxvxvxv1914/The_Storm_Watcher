@@ -1,19 +1,12 @@
-/* eslint-disable react-refresh/only-export-components */
-import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session, AuthError } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
-import { isNative } from '../utils/platform';
 
 interface Profile {
   id: string;
   email: string;
   full_name?: string;
   avatar_url?: string;
-  plan: 'free' | 'pro' | 'premium';
-  is_beta: boolean;
-  stripe_customer_id?: string;
-  subscription_status?: string;
-  subscription_period_end?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -29,7 +22,6 @@ interface AuthContextType {
   signInWithFacebook: () => Promise<{ error: AuthError | null }>;
   signInWithApple: () => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<void>;
-  resetPassword: (email: string) => Promise<{ error: AuthError | null }>;
   updateProfile: (updates: Partial<Profile>) => Promise<{ error: Error | null }>;
 }
 
@@ -40,14 +32,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  const profileReqRef = useRef(0);
 
   useEffect(() => {
-    let initialDone = false;
-
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (initialDone) return;
-      initialDone = true;
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
@@ -60,9 +47,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!initialDone) {
-        initialDone = true;
-      }
       (async () => {
         setSession(session);
         setUser(session?.user ?? null);
@@ -70,54 +54,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           await fetchProfile(session.user.id);
         } else {
           setProfile(null);
-          setLoading(false);
         }
       })();
     });
 
-    const handleProfileRefresh = () => {
-      supabase.auth.getUser().then(({ data: { user } }) => {
-        if (user) fetchProfile(user.id);
-      });
-    };
-    window.addEventListener('tsw:profile-refresh', handleProfileRefresh);
-
-    return () => {
-      subscription.unsubscribe();
-      window.removeEventListener('tsw:profile-refresh', handleProfileRefresh);
-    };
+    return () => subscription.unsubscribe();
   }, []);
 
   const fetchProfile = async (userId: string) => {
-    const req = ++profileReqRef.current;
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, email, full_name, avatar_url, plan, is_beta, subscription_status, subscription_period_end, created_at, updated_at')
+        .select('*')
         .eq('id', userId)
         .maybeSingle();
 
-      if (req !== profileReqRef.current) return;
       if (error) throw error;
       setProfile(data);
     } catch (error) {
-      if (req !== profileReqRef.current) return;
-      console.error('Error fetching profile:', error instanceof Error ? error.message : 'Unknown error');
+      console.error('Error fetching profile:', error);
     } finally {
-      if (req === profileReqRef.current) setLoading(false);
+      setLoading(false);
     }
   };
 
   const signUp = async (email: string, password: string, fullName?: string) => {
-    // Where Supabase sends the user after they click the confirmation link.
-    // Web confirms back to the same origin (so staging confirms to staging);
-    // native opens the link in the device browser, so target the live site.
-    const emailRedirectTo = isNative() ? 'https://thestormwatcher.com' : window.location.origin;
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo,
         data: {
           full_name: fullName,
         },
@@ -138,7 +103,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: 'https://thestormwatcher.com',
+        redirectTo: window.location.origin,
       },
     });
     return { error };
@@ -148,7 +113,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'facebook',
       options: {
-        redirectTo: 'https://thestormwatcher.com',
+        redirectTo: window.location.origin,
       },
     });
     return { error };
@@ -158,7 +123,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'apple',
       options: {
-        redirectTo: 'https://thestormwatcher.com',
+        redirectTo: window.location.origin,
       },
     });
     return { error };
@@ -166,38 +131,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     await supabase.auth.signOut();
-    sessionStorage.removeItem('session_id');
-    // Clear user-specific localStorage keys on logout.
-    // Intentionally kept: 'theme', 'language', 'tsw_settings', 'cookie-consent',
-    // 'tsw_location_asked' — these are device-level preferences, not account data.
-    localStorage.removeItem('tsw_hunt_last_sighting');
     setProfile(null);
-  };
-
-  const resetPassword = async (email: string) => {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: 'https://thestormwatcher.com/auth/reset',
-    });
-    return { error };
   };
 
   const updateProfile = async (updates: Partial<Profile>) => {
     if (!user) return { error: new Error('No user logged in') };
 
     try {
-      // Allowlist: only permit safe fields to be updated by the client
-      const { full_name, avatar_url } = updates;
-      const safeUpdates: Record<string, unknown> = {};
-      if (full_name !== undefined) safeUpdates.full_name = full_name;
-      if (avatar_url !== undefined) safeUpdates.avatar_url = avatar_url;
-
-      if (Object.keys(safeUpdates).length === 0) {
-        return { error: new Error('No valid fields to update') };
-      }
-
       const { error } = await supabase
         .from('profiles')
-        .update(safeUpdates)
+        .update(updates)
         .eq('id', user.id);
 
       if (error) throw error;
@@ -220,7 +163,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     signInWithFacebook,
     signInWithApple,
     signOut,
-    resetPassword,
     updateProfile,
   };
 

@@ -1,200 +1,65 @@
-import { Mail, Sun } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Github, Twitter, Mail, Sun } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Footer = () => {
   const { t } = useLanguage();
 
-  const navGroups = [
-    {
-      heading: t('footer.section.spaceWeather'),
-      links: [
-        { to: '/',          label: t('nav.home') },
-        { to: '/dashboard', label: t('nav.dashboard') },
-        { to: '/forecast',  label: t('nav.forecast') },
-        { to: '/alerts',    label: t('nav.alerts') },
-      ],
-    },
-    {
-      heading: t('footer.section.skyObservation'),
-      links: [
-        { to: '/aurora',          label: t('nav.aurora') },
-        { to: '/aurora-map',      label: t('nav.auroraMap') || 'Aurora Map' },
-        { to: '/iss',             label: t('nav.iss') },
-        { to: '/calendar',        label: t('nav.calendar') },
-        { to: '/sky',             label: t('nav.sky') },
-        { to: '/sun',             label: t('nav.sun') },
-        { to: '/uv',              label: t('nav.uv') },
-      ],
-    },
-    {
-      heading: t('footer.section.healthInfo'),
-      links: [
-        { to: '/gallery',          label: t('nav.gallery') },
-        { to: '/hunt',             label: t('nav.hunt') },
-        { to: '/livestream',       label: t('nav.livestream') },
-        { to: '/mood',             label: t('nav.mood') },
-        { to: '/magnetic-effects', label: t('nav.magneticEffects') },
-        { to: '/faq',              label: t('nav.faq') },
-        { to: '/about',            label: t('nav.about') },
-      ],
-    },
-  ];
-
   return (
-    <footer className="relative glass-surface border-t border-white/10 mt-16 pb-20 lg:pb-0" role="contentinfo" aria-label="Site footer">
+    <footer className="relative glass-surface border-t border-white/10 py-12 mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-
-        {/* Mobile: compact */}
-        <div className="lg:hidden py-5">
-          {/* Brand */}
-          <div className="flex items-center gap-2 mb-4">
-            <Sun className="w-5 h-5 text-[#f97316] shrink-0" />
-            <span className="text-white font-bold text-sm gradient-solar">The Storm Watcher</span>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+          <div>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="relative">
+                <Sun className="w-8 h-8 text-[#f97316]" />
+                <div className="absolute inset-0 w-8 h-8 rounded-full bg-[#f97316] opacity-20 blur-lg" />
+              </div>
+              <h3 className="text-white font-bold text-lg gradient-solar">The Storm Watcher</h3>
+            </div>
+            <p className="text-[#94a3b8] text-sm leading-relaxed">
+              {t('footer.tagline')}
+            </p>
           </div>
 
-          {/* 2-column link grid */}
-          <div className="grid grid-cols-2 gap-x-6 gap-y-4 mb-5">
-            <div>
-              <p className="text-white/30 text-[10px] uppercase tracking-widest mb-2">
-                {t('footer.section.spaceWeather')}
-              </p>
-              <ul className="space-y-2">
-                {[
-                  { to: '/',          label: t('nav.home') },
-                  { to: '/dashboard', label: t('nav.dashboard') },
-                  { to: '/forecast',  label: t('nav.forecast') },
-                  { to: '/alerts',    label: t('nav.alerts') },
-                  { to: '/aurora',    label: t('nav.aurora') },
-                ].map(l => (
-                  <li key={l.to}>
-                    <Link to={l.to} className="text-[#64748b] text-xs hover:text-white transition-colors">
-                      {l.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <p className="text-white/30 text-[10px] uppercase tracking-widest mb-2">
-                {t('footer.section.more')}
-              </p>
-              <ul className="space-y-2">
-                {[
-                  { to: '/iss',              label: t('nav.iss') },
-                  { to: '/calendar',         label: t('nav.calendar') },
-                  { to: '/sky',              label: t('nav.sky') },
-                  { to: '/sun',              label: t('nav.sun') },
-                  { to: '/uv',               label: t('nav.uv') },
-                  { to: '/mood',             label: t('nav.mood') },
-                  { to: '/magnetic-effects', label: t('nav.magneticEffectsShort') },
-                  { to: '/faq',              label: t('nav.faq') },
-                  { to: '/about',            label: t('nav.about') },
-                ].map(l => (
-                  <li key={l.to}>
-                    <Link to={l.to} className="text-[#64748b] text-xs hover:text-white transition-colors">
-                      {l.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          <div>
+            <h3 className="text-white font-bold mb-4 uppercase tracking-wider">{t('footer.company')}</h3>
+            <ul className="space-y-2">
+              <li>
+                <span className="text-[#94a3b8] text-sm">{t('footer.about')}</span>
+              </li>
+              <li>
+                <span className="text-[#94a3b8] text-sm">{t('footer.privacy')}</span>
+              </li>
+              <li>
+                <span className="text-[#94a3b8] text-sm">{t('footer.support')}</span>
+              </li>
+              <li>
+                <span className="text-[#94a3b8] text-sm">{t('footer.contact')}</span>
+              </li>
+            </ul>
           </div>
 
-          {/* Copyright */}
-          <div className="border-t border-white/8 pt-3 flex flex-col gap-1">
-            <p className="text-[#475569] text-xs">© {new Date().getFullYear()} The Storm Watcher</p>
-            <p className="text-[#374151] text-xs">
-              Data:{' '}
-              <a href="https://www.swpc.noaa.gov/" target="_blank" rel="noopener noreferrer" className="hover:text-[#64748b] underline">NOAA SWPC</a>
-              {' · '}
-              <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" className="hover:text-[#64748b] underline">Open-Meteo</a>
-            </p>
-            <p className="text-[#64748b] text-xs flex gap-2">
-              <Link to="/privacy" className="hover:text-white underline">{t('footer.privacy')}</Link>
-              <span>·</span>
-              <Link to="/terms" className="hover:text-white underline">{t('footer.terms')}</Link>
-            </p>
+          <div>
+            <h3 className="text-white font-bold mb-4 uppercase tracking-wider">Connect</h3>
+            <div className="flex gap-4">
+              <div className="w-10 h-10 glass-surface rounded-lg flex items-center justify-center text-[#94a3b8]">
+                <Github className="w-5 h-5" />
+              </div>
+              <div className="w-10 h-10 glass-surface rounded-lg flex items-center justify-center text-[#94a3b8]">
+                <Twitter className="w-5 h-5" />
+              </div>
+              <div className="w-10 h-10 glass-surface rounded-lg flex items-center justify-center text-[#94a3b8]">
+                <Mail className="w-5 h-5" />
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Desktop: full grid */}
-        <div className="hidden lg:block py-12">
-          <div className="grid grid-cols-5 gap-10 mb-10">
-            <div className="col-span-2">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="relative">
-                  <Sun className="w-8 h-8 text-[#f97316]" />
-                  <div className="absolute inset-0 w-8 h-8 rounded-full bg-[#f97316] opacity-20 blur-lg" />
-                </div>
-                <h3 className="text-white font-bold text-lg gradient-solar">The Storm Watcher</h3>
-              </div>
-              <p className="text-[#94a3b8] text-sm leading-relaxed mb-6">
-                {t('footer.description')}
-              </p>
-              <div className="space-y-2">
-                <a
-                  href="mailto:contact@thestormwatcher.com"
-                  className="flex items-center gap-2 text-[#94a3b8] text-sm hover:text-white transition-colors"
-                >
-                  <Mail className="w-4 h-4" />
-                  contact@thestormwatcher.com
-                </a>
-                <a
-                  href="mailto:support@thestormwatcher.com"
-                  className="flex items-center gap-2 text-sm hover:text-white transition-colors"
-                  style={{ color: '#a78bfa' }}
-                  title={t('footer.premiumSupport') || 'Priority support for Premium subscribers'}
-                >
-                  <Mail className="w-4 h-4" />
-                  support@thestormwatcher.com
-                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded" style={{ background: '#7c3aed33', color: '#a78bfa' }}>Premium</span>
-                </a>
-                <a
-                  href="mailto:partnerships@thestormwatcher.com"
-                  className="flex items-center gap-2 text-[#94a3b8] text-sm hover:text-white transition-colors"
-                >
-                  <Mail className="w-4 h-4" />
-                  partnerships@thestormwatcher.com
-                </a>
-              </div>
-            </div>
-
-            {navGroups.map(group => (
-              <div key={group.heading}>
-                <h3 className="text-white font-bold mb-4 uppercase tracking-wider text-xs">{group.heading}</h3>
-                <ul className="space-y-2">
-                  {group.links.map(link => (
-                    <li key={link.to}>
-                      <Link to={link.to} className="text-[#94a3b8] text-sm hover:text-white transition-colors">
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-
-          <div className="border-t border-white/10 pt-8 flex flex-col items-center gap-2">
-            <p className="text-center text-[#94a3b8] text-sm">
-              © {new Date().getFullYear()} The Storm Watcher. All rights reserved.
-            </p>
-            <p className="text-center text-[#475569] text-xs">
-              Data powered by{' '}
-              <a href="https://www.swpc.noaa.gov/" target="_blank" rel="noopener noreferrer" className="hover:text-[#94a3b8] transition-colors underline">NOAA SWPC</a>
-              {' · '}
-              <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" className="hover:text-[#94a3b8] transition-colors underline">Open-Meteo</a>
-            </p>
-            <p className="text-center text-[#64748b] text-xs flex gap-3">
-              <Link to="/privacy" className="hover:text-white transition-colors underline">{t('footer.privacyPolicy')}</Link>
-              <span>·</span>
-              <Link to="/terms" className="hover:text-white transition-colors underline">{t('footer.termsOfService')}</Link>
-            </p>
-          </div>
+        <div className="border-t border-white/10 pt-8">
+          <p className="text-center text-[#94a3b8] text-sm">
+            © 2026 The Storm Watcher. {t('footer.rights')}.
+          </p>
         </div>
-
       </div>
     </footer>
   );

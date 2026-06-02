@@ -21,22 +21,3 @@ dist-ssr
 *.sln
 *.sw?
 .env
-
-# Capacitor iOS
-ios/DerivedData
-ios/App/Pods
-ios/.xcode.env.local
-
-# Supabase CLI temp files
-supabase/.temp
-
-# Local test/debug data files
-niggg_test.json
-niggg_data.json
-
-# Playwright
-test-results
-playwright-report
-playwright/.cache
-.vercel
-.env.test

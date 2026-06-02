@@ -1,307 +1,124 @@
-import { useEffect, useRef, useState } from 'react';
-import { logError } from '../utils/logger';
-import { Helmet } from 'react-helmet-async';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Activity, AlertTriangle, Zap, Radio, Calendar, Bot, Globe, Bell, Camera, Trophy, Video, Share2, Copy, Twitter, ImageDown, Users } from 'lucide-react';
-import ErrorCard from '../components/ErrorCard';
-import { track } from '@vercel/analytics';
-import { generateStormScoreImage } from '../utils/generateStormImage';
-import { getSolarWind, getXrayFlux, getXrayClass, getStormStatus, getKpGradientStyle, getKpHistory3Day } from '../services/noaaApi';
-import { useKpLive } from '../hooks/useKpLive';
+import { Activity, AlertTriangle, Satellite, Sun, Zap, Radio } from 'lucide-react';
+import { getKpIndex, getStormStatus } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
-import { useSettings } from '../contexts/SettingsContext';
-import { useAuth } from '../contexts/AuthContext';
-import { usePaymentGate } from '../hooks/usePaymentGate';
-import { calcAuroraVisibility } from '../utils/auroraVisibility';
-import { isNative } from '../utils/platform';
-import StarField from '../components/StarField';
-import { Skeleton } from '../components/Skeleton';
-import { supabase } from '../lib/supabase';
-
-const getScoreShareStatus = (score: number) => {
-  if (score <= 25) return 'Quiet';
-  if (score <= 50) return 'Unsettled';
-  if (score <= 75) return 'Storm';
-  return 'Severe Storm';
-};
 
 const Home = () => {
   const { t } = useLanguage();
-  const { settings } = useSettings();
-  const { user } = useAuth();
-  const { hasPro: hasPaidPlan } = usePaymentGate();
-  const kpValue = useKpLive();
-  const [windSpeed, setWindSpeed] = useState<number | null>(null);
-  const [xrayClass, setXrayClass] = useState<string | null>(null);
-  const [kpSparkData, setKpSparkData] = useState<number[]>([]);
+  const [kpValue, setKpValue] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
-  const [retryCount, setRetryCount] = useState(0);
-  const [shareOpen, setShareOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const [downloaded, setDownloaded] = useState(false);
-  const [pulseData, setPulseData] = useState<{ mood: string; symptom: string; count: number } | null>(null);
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  const [timeAgo, setTimeAgo] = useState('');
-  const shareRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (shareRef.current && !shareRef.current.contains(e.target as Node)) {
-        setShareOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
-
-  useEffect(() => {
-    const fetchPulse = async () => {
+    const fetchKp = async () => {
       try {
-        const twentyFourHoursAgo = new Date();
-        twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
-
-        const { data, error } = await supabase
-          .from('mood_entries')
-          .select('mood_type, symptoms')
-          .gte('created_at', twentyFourHoursAgo.toISOString());
-
-        if (error) throw error;
+        const data = await getKpIndex();
         if (data && data.length > 0) {
-          const moodCounts: Record<string, number> = {};
-          const symptomCounts: Record<string, number> = {};
-          
-          data.forEach(entry => {
-            moodCounts[entry.mood_type] = (moodCounts[entry.mood_type] || 0) + 1;
-            entry.symptoms?.forEach((s: string) => {
-              symptomCounts[s] = (symptomCounts[s] || 0) + 1;
-            });
-          });
-
-          const moodEntries = Object.entries(moodCounts).sort((a, b) => b[1] - a[1]);
-          const topMood = moodEntries.length > 0 ? moodEntries[0][0] : 'neutral';
-          const topSymptom = Object.entries(symptomCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || '';
-          
-          setPulseData({ mood: topMood, symptom: topSymptom, count: data.length });
+          const latest = data[data.length - 1];
+          setKpValue(latest.kp_index || latest.estimated_kp || 0);
+        } else {
+          setKpValue(3.5 + Math.random() * 2);
         }
-      } catch (err) {
-        console.warn('Error fetching pulse (non-critical):', err);
-      }
-    };
-
-    const fetchAll = async () => {
-      try {
-        await Promise.all([
-          (async () => {
-            const windData = await getSolarWind();
-            if (windData && windData.length > 0) {
-              setWindSpeed(windData[windData.length - 1].proton_speed || 0);
-            }
-          })(),
-          (async () => {
-            const xrayData = await getXrayFlux();
-            if (xrayData && xrayData.length > 0) {
-              setXrayClass(getXrayClass(xrayData[xrayData.length - 1].flux || 0));
-            }
-          })(),
-          (async () => {
-            const historyData = await getKpHistory3Day();
-            if (historyData && historyData.length > 0) {
-              setKpSparkData(historyData.slice(-24).map(d => d.Kp));
-            }
-          })(),
-          fetchPulse(),
-        ]);
         setLoading(false);
-        setLastUpdated(new Date());
       } catch (error) {
-        logError('Error fetching data:', error);
+        console.error('Error fetching Kp index:', error);
+        setKpValue(3.5 + Math.random() * 2);
         setLoading(false);
       }
     };
 
-    fetchAll();
-    const interval = setInterval(() => { if (document.visibilityState !== 'hidden') fetchAll(); }, 60000);
+    fetchKp();
+    const interval = setInterval(fetchKp, 60000);
     return () => clearInterval(interval);
-  }, [retryCount]);
-
-  // Update "time ago" every 10 seconds
-  useEffect(() => {
-    const tick = () => {
-      if (!lastUpdated) return;
-      const seconds = Math.round((Date.now() - lastUpdated.getTime()) / 1000);
-      if (seconds < 60) setTimeAgo(`${seconds}s ago`);
-      else setTimeAgo(`${Math.floor(seconds / 60)}m ago`);
-    };
-    tick();
-    const timer = setInterval(() => { if (document.visibilityState !== 'hidden') tick(); }, 10000);
-    return () => clearInterval(timer);
-  }, [lastUpdated]);
-
+  }, []);
 
   const stormStatus = kpValue !== null ? getStormStatus(kpValue) : null;
   const isStorm = kpValue !== null && kpValue >= 5;
 
-  const KpSparkline = ({ data }: { data: number[] }) => {
-    if (data.length < 2) return null;
-    const w = 200, h = 40;
-    const pts = data.map((v, i) =>
-      `${((i / (data.length - 1)) * w).toFixed(1)},${(h - (Math.min(v, 9) / 9) * h).toFixed(1)}`
-    ).join(' ');
-    const max = Math.max(...data);
-    const color = max >= 5 ? '#f97316' : max >= 3 ? '#eab308' : '#10b981';
-    return (
-      <div className="flex flex-col items-center gap-1 mt-4">
-        <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} className="overflow-visible">
-          <defs>
-            <linearGradient id="sparkGrad" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor={color} stopOpacity="0.4" />
-              <stop offset="100%" stopColor={color} stopOpacity="1" />
-            </linearGradient>
-          </defs>
-          <polyline points={pts} fill="none" stroke="url(#sparkGrad)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        <span className="text-[10px] text-[#64748b] uppercase tracking-widest">{t('home.kpTrend3day')}</span>
-      </div>
-    );
-  };
+  const stars = useMemo(() =>
+    [...Array(100)].map((_, i) => ({
+      id: i,
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      delay: Math.random() * 3,
+      duration: 2 + Math.random() * 4,
+    })), []);
 
-  if (!loading && kpValue === null) {
-    return (
-      <div className="min-h-screen flex items-center justify-center relative">
-        <StarField />
-        <ErrorCard onRetry={() => { setLoading(true); setRetryCount(c => c + 1); }} />
-      </div>
-    );
-  }
+  const particles = useMemo(() =>
+    [...Array(20)].map((_, i) => ({
+      id: i,
+      top: Math.random() * 100,
+      delay: Math.random() * 20,
+      duration: 15 + Math.random() * 10,
+    })), []);
 
   return (
     <div className="min-h-screen relative">
-      <Helmet>
-        <title>
-          {kpValue !== null && kpValue >= 5
-            ? `⚠️ Solar Storm Alert: Kp ${kpValue.toFixed(1)} | Real-Time Space Weather`
-            : `Live Kp: ${kpValue?.toFixed(1) ?? '0.0'} | Real-Time Aurora & Space Weather`}
-        </title>
-        <link rel="canonical" href="https://www.thestormwatcher.com/" />
-        <meta 
-          name="description" 
-          content={kpValue !== null 
-            ? `Monitor current solar activity: Kp index ${kpValue.toFixed(1)}. Track real-time solar wind speeds, X-ray flares, and geomagnetic storm alerts to plan your aurora hunting.`
-            : "Get live space weather updates. Track Kp index, solar wind, and geomagnetic storm alerts in real-time. The ultimate dashboard for aurora hunters and space weather enthusiasts."
-          } 
-        />
-        <meta property="og:title" content={kpValue !== null && kpValue >= 5 ? `⚠️ LIVE ALERT: Geomagnetic Storm Kp ${kpValue.toFixed(1)}` : "The Storm Watcher — Real-Time Space Weather Dashboard"} />
-        <meta property="og:description" content={kpValue !== null ? `Current Kp index is ${kpValue.toFixed(1)}. Solar wind is at ${windSpeed?.toFixed(0) || '---'} km/s. See if a storm is coming!` : "Monitor solar activity and aurora forecasts with our professional-grade live dashboard."} />
-        <meta name="twitter:title" content={kpValue !== null && kpValue >= 5 ? `⚠️ ALERT: Solar Storm Kp ${kpValue.toFixed(1)}` : "The Storm Watcher"} />
-        <meta name="twitter:description" content={kpValue !== null ? `Current Kp index is ${kpValue.toFixed(1)}. Solar wind at ${windSpeed?.toFixed(0) || '---'} km/s.` : "Monitor solar activity and aurora forecasts with our live dashboard."} />
-        <meta property="og:image" content="https://thestormwatcher.com/og-image.webp" />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        <meta property="og:image:type" content="image/webp" />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:image" content="https://thestormwatcher.com/og-image.webp" />
-        <script type="application/ld+json">
-          {JSON.stringify([
-            {
-              "@context": "https://schema.org",
-              "@type": "SoftwareApplication",
-              "name": "The Storm Watcher",
-              "operatingSystem": "Web",
-              "applicationCategory": "ScientificApplication",
-              "description": "Real-time space weather monitoring and aurora forecasts.",
-              "offers": {
-                "@type": "Offer",
-                "price": "0",
-                "priceCurrency": "USD"
-              }
-            },
-            {
-              "@context": "https://schema.org",
-              "@type": "FAQPage",
-              "mainEntity": [
-                {
-                  "@type": "Question",
-                  "name": t('home.faq.q1'),
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": t('home.faq.a1')
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": t('home.faq.q2'),
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": t('home.faq.a2')
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": t('home.faq.q3'),
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": t('home.faq.a3')
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": t('home.faq.q4'),
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": t('home.faq.a4')
-                  }
-                }
-              ]
-            }
-          ])}
-        </script>
-      </Helmet>
-      <StarField />
+      <div className="star-field">
+        {stars.map((s) => (
+          <div
+            key={s.id}
+            className="star"
+            style={{
+              left: `${s.left}%`,
+              top: `${s.top}%`,
+              animationDelay: `${s.delay}s`,
+              animationDuration: `${s.duration}s`,
+            }}
+          />
+        ))}
+      </div>
 
       <div className="solar-orb" style={{ top: '-200px', right: '-200px' }} />
       <div className="magnetic-orb" style={{ bottom: '-150px', left: '-150px' }} />
 
-      <div className="relative overflow-hidden">
+      {isStorm && (
+        <div className="fixed top-0 left-0 right-0 z-50 pulse-alert">
+          <div className="bg-gradient-to-r from-[#ef4444] via-[#f97316] to-[#7c3aed] px-6 py-4">
+            <div className="max-w-7xl mx-auto flex items-center justify-center gap-3">
+              <AlertTriangle className="w-6 h-6 text-white" />
+              <span className="text-white font-bold uppercase tracking-wider">
+                {t('home.stormBanner')} {kpValue?.toFixed(1)}
+              </span>
+              <AlertTriangle className="w-6 h-6 text-white" />
+            </div>
+          </div>
+        </div>
+      )}
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-24 sm:pt-36 sm:pb-32">
+      <div className="relative overflow-hidden" style={{ paddingTop: isStorm ? '60px' : '0' }}>
+        {particles.map((p) => (
+          <div
+            key={p.id}
+            className="solar-particle"
+            style={{
+              top: `${p.top}%`,
+              animationDelay: `${p.delay}s`,
+              animationDuration: `${p.duration}s`,
+            }}
+          />
+        ))}
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 sm:py-48">
           <div className="text-center">
-
-            {/* Live badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-surface border border-[#f97316]/30 mb-6">
-              <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse" />
-              <span className="text-[#94a3b8] text-sm font-semibold uppercase tracking-widest">{t('home.liveSpaceWeather')}</span>
+            <div className="flex justify-center mb-8">
+              <div className="relative">
+                <Sun className="w-20 h-20 text-[#f97316] animate-pulse" />
+                <div className="absolute inset-0 w-20 h-20 rounded-full bg-[#f97316] opacity-20 blur-xl animate-pulse" />
+              </div>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl font-bold mb-8 gradient-solar">
+            <h1 className="text-5xl sm:text-7xl font-bold mb-4 gradient-solar">
               The Storm Watcher
             </h1>
 
-            {/* Live Kp — first thing people see */}
             {loading ? (
-              <div className="my-8 flex flex-col items-center gap-4">
-                <Skeleton className="w-40 h-24 sm:w-64 sm:h-40 rounded-2xl" />
-                <Skeleton className="w-48 h-8 rounded-full" />
-                <div className="flex gap-3 mt-2">
-                  {[...Array(3)].map((_, i) => <Skeleton key={i} className="w-24 h-8 rounded-xl" />)}
-                </div>
-              </div>
+              <div className="inline-block w-32 h-32 border-4 border-[#f97316]/20 border-t-[#f97316] rounded-full animate-spin my-8"></div>
             ) : (
-              <div className="my-6">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <span className="relative flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10b981] opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#10b981]"></span>
-                  </span>
-                  <span className="text-xs text-[#64748b] uppercase tracking-widest font-semibold">Live · Kp Index</span>
-                  {timeAgo && <span className="text-xs text-[#475569]">· {timeAgo}</span>}
-                </div>
+              <div className="my-12">
                 <div className={`inline-block ${isStorm ? 'pulse-alert' : ''}`}>
-                  <div
-                    className="text-8xl sm:text-[160px] font-bold leading-none"
-                    style={getKpGradientStyle(kpValue ?? 0)}
-                  >
-                    {kpValue?.toFixed(1) ?? '0.0'}
+                  <div className="text-9xl sm:text-[180px] font-bold gradient-fire leading-none">
+                    {kpValue?.toFixed(1) || '0.0'}
                   </div>
                 </div>
 
@@ -314,429 +131,72 @@ const Home = () => {
                   }`}>
                     {kpValue! >= 5 && <AlertTriangle className="w-6 h-6 text-white" />}
                     <span className="text-white font-bold text-xl uppercase tracking-wider">
-                      {t(stormStatus.statusKey)}
+                      {stormStatus.status}
                     </span>
                   </div>
                 )}
-
-                {/* Stats pills */}
-                <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
-                  <div className="glass-surface rounded-xl px-5 py-3 flex items-center gap-3">
-                    <Activity className="w-4 h-4 text-[#f97316]" />
-                    <span className="text-[#94a3b8] text-sm uppercase tracking-wider">Kp</span>
-                    <span className="text-white font-bold">{kpValue?.toFixed(1)}</span>
-                  </div>
-                  {windSpeed !== null && windSpeed > 0 && (
-                    <div className="glass-surface rounded-xl px-5 py-3 flex items-center gap-3">
-                      <Zap className="w-4 h-4 text-[#7c3aed]" />
-                      <span className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('home.solarWind')}</span>
-                      <span className="text-white font-bold">{windSpeed.toFixed(0)} km/s</span>
-                    </div>
-                  )}
-                  {xrayClass && (
-                    <div className="glass-surface rounded-xl px-5 py-3 flex items-center gap-3">
-                      <Radio className="w-4 h-4 text-[#fbbf24]" />
-                      <span className="text-[#94a3b8] text-sm uppercase tracking-wider">X-ray</span>
-                      <span className="text-white font-bold">Class {xrayClass}</span>
-                    </div>
-                  )}
-                  {/* Aurora visibility for saved location */}
-                  {settings.preferredLat !== null && settings.preferredLon !== null && kpValue !== null && (() => {
-                    const chance = calcAuroraVisibility(settings.preferredLat!, settings.preferredLon!, kpValue);
-                    const color = chance >= 60 ? '#10b981' : chance >= 30 ? '#eab308' : '#64748b';
-                    return (
-                      <Link to="/aurora" className="glass-surface rounded-xl px-5 py-3 flex items-center gap-3 hover:border-[#10b981]/30 border border-transparent transition-all">
-                        <span className="text-lg">🌌</span>
-                        <span className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('nav.aurora')}</span>
-                        <span className="font-bold" style={{ color }}>{chance}%</span>
-                      </Link>
-                    );
-                  })()}
-                </div>
-                {kpSparkData.length > 1 && <KpSparkline data={kpSparkData} />}
               </div>
             )}
 
-            {/* Tagline + CTA — after live data */}
-            <p className="text-xl sm:text-2xl text-white font-semibold mb-3 mt-4">
-              {t('home.hero.tagline')}
-            </p>
-            <p className="text-base text-[#94a3b8] mb-8 max-w-xl mx-auto leading-relaxed">
-              {t('home.hero.desc')}
+            <p className="text-xl sm:text-2xl text-[#94a3b8] mb-12 max-w-2xl mx-auto font-medium">
+              {t('home.tagline')}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                to={user ? '/dashboard' : '/pricing'}
+                to="/dashboard"
                 className="px-8 py-4 bg-gradient-to-r from-[#f97316] to-[#ef4444] text-white rounded-lg font-bold uppercase tracking-wider hover:scale-105 transition-transform glow-orange"
               >
-                {user ? t('home.hero.viewMap') : t('home.hero.getStarted')}
+                {t('home.hero.cta')}
               </Link>
-              {!user && (
-                <Link
-                  to="/dashboard"
-                  className="px-8 py-4 glass-surface text-white rounded-lg font-bold uppercase tracking-wider hover:glow-orange transition-all border border-white/10"
-                >
-                  {t('home.hero.viewMap')}
-                </Link>
-              )}
+              <Link
+                to="/alerts"
+                className="px-8 py-4 glass-surface text-white rounded-lg font-bold uppercase tracking-wider hover:glow-orange transition-all"
+              >
+                {t('nav.alerts')}
+              </Link>
             </div>
-            {!isNative() && !hasPaidPlan && (
-              <div className="flex justify-center mb-8">
-                <Link
-                  to="/pricing"
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-[#f97316] hover:text-[#fbbf24] transition-colors group"
-                >
-                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#f97316] group-hover:scale-125 transition-transform" />
-                  {t('pricing.tryProFree') || 'Try Pro free for 14 days'}
-                  <span className="text-[#64748b] font-normal">{t('home.noCC') || '— no credit card required'}</span>
-                </Link>
-              </div>
-            )}
-
-            {/* Community Pulse Widget */}
-            {loading ? (
-              <div className="flex justify-center">
-                <Skeleton className="w-72 h-20 rounded-2xl" />
-              </div>
-            ) : (
-              <div className="flex justify-center">
-                <Link
-                  to="/mood"
-                  className="glass-surface rounded-2xl px-6 py-4 border border-white/5 hover:border-[#f97316]/30 transition-all group max-w-sm"
-                >
-                  <div className="flex items-center gap-4 text-left">
-                    <div className="w-12 h-12 rounded-xl bg-[#f97316]/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <Users className="w-6 h-6 text-[#f97316]" />
-                    </div>
-                    <div>
-                      <div className="text-xs text-[#64748b] uppercase tracking-widest font-bold mb-0.5">
-                        {t('home.pulse.title')}
-                      </div>
-                      {pulseData ? (
-                        <>
-                          <div className="text-white font-semibold text-sm leading-tight">
-                            {pulseData.symptom
-                              ? `${t('home.pulse.topSymptom')}: ${t(pulseData.symptom)}`
-                              : `${t('home.pulse.mostCommon')}: ${t(`mood.${pulseData.mood}`)}`}
-                          </div>
-
-                        </>
-                      ) : (
-                        <div className="text-[#475569] text-xs italic">
-                          {t('home.pulse.noData')}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </Link>
-              </div>
-            )}
           </div>
         </div>
       </div>
 
-      {/* Storm Score */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="glass-surface rounded-3xl p-10 border border-[#f97316]/10 text-center">
-          <h2 className="text-3xl sm:text-2xl sm:text-4xl font-bold text-white mb-3 uppercase tracking-wide">
-            {t('home.stormScore.title')}
-          </h2>
-          <p className="text-[#94a3b8] max-w-xl mx-auto mb-10 leading-relaxed">
-            {t('home.stormScore.desc')}
-          </p>
-
-          {loading ? (
-            <div className="flex flex-col items-center gap-4">
-              <Skeleton className="w-32 h-32 sm:w-40 sm:h-40 rounded-2xl" />
-              <Skeleton className="w-40 h-5 rounded" />
-            </div>
-          ) : (
-            <div className="flex flex-col items-center gap-6">
-              {/* Score number + share button */}
-              <div className="flex items-center gap-4">
-                <div
-                  className="text-8xl sm:text-[120px] font-bold leading-none"
-                  style={getKpGradientStyle(kpValue ?? 0)}
-                >
-                  {kpValue !== null ? Math.round((kpValue / 9) * 100) : 0}
-                </div>
-                {downloaded && (
-                  <div className="self-start mt-2 px-3 py-1.5 rounded-lg bg-[#10b981]/20 border border-[#10b981]/30 text-[#10b981] text-xs font-medium animate-fade-in">
-                    ✓ {t('home.stormScore.imageSaved') || 'Image saved!'}
-                  </div>
-                )}
-                <div className="relative self-start mt-4" ref={shareRef}>
-                  <button
-                    onClick={() => setShareOpen(p => !p)}
-                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl glass-surface border border-white/10 text-[#94a3b8] hover:text-white hover:border-[#f97316]/40 transition-all text-sm font-medium"
-                    title="Share Storm Score"
-                  >
-                    <Share2 className="w-4 h-4" />
-                    {t('home.stormScore.share')}
-                  </button>
-                  {shareOpen && (() => {
-                    const score = kpValue !== null ? Math.round((kpValue / 9) * 100) : 0;
-                    const status = getScoreShareStatus(score);
-                    const text = `🌌 Storm Score is ${score}/100 right now! Space weather is ${status}. Track it live at thestormwatcher.com #aurora #spaceweather`;
-                    return (
-                      <div className="absolute left-0 mt-2 w-52 glass-surface rounded-xl shadow-2xl py-2 border border-[#f97316]/20 z-20">
-                        <a
-                          href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={() => { track('storm_score_shared', { method: 'twitter', score }); setShareOpen(false); }}
-                          className="flex items-center gap-3 px-4 py-2 text-sm text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors"
-                        >
-                          <Twitter className="w-4 h-4 text-[#1d9bf0]" />
-                          {t('home.stormScore.shareX')}
-                        </a>
-                        <a
-                          href={`https://wa.me/?text=${encodeURIComponent(text)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={() => { track('storm_score_shared', { method: 'whatsapp', score }); setShareOpen(false); }}
-                          className="flex items-center gap-3 px-4 py-2 text-sm text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors"
-                        >
-                          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                          {t('home.stormScore.shareWhatsApp') || 'Share on WhatsApp'}
-                        </a>
-                        <a
-                          href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://thestormwatcher.com')}&quote=${encodeURIComponent(text)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={() => setShareOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2 text-sm text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors"
-                        >
-                          <Globe className="w-4 h-4 text-[#1877f2]" />
-                          {t('home.stormScore.shareFb')}
-                        </a>
-                        <button
-                          onClick={() => {
-                            track('storm_score_shared', { method: 'copy', score });
-                            navigator.clipboard.writeText('https://thestormwatcher.com');
-                            setCopied(true);
-                            setTimeout(() => { setCopied(false); setShareOpen(false); }, 1500);
-                          }}
-                          className="w-full flex items-center gap-3 px-4 py-2 text-sm text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors"
-                        >
-                          <Copy className="w-4 h-4 text-[#10b981]" />
-                          {copied ? t('home.stormScore.copied') : t('home.stormScore.copy')}
-                        </button>
-                        <button
-                          onClick={async () => {
-                            track('storm_score_shared', { method: 'image', score });
-                            setShareOpen(false);
-                            const blob = await generateStormScoreImage({
-                              score,
-                              status,
-                              kp: kpValue ?? 0,
-                              windSpeed,
-                              xrayClass,
-                              communityMood: pulseData?.mood ? t(`mood.${pulseData.mood}`) : undefined,
-                              communitySymptom: pulseData?.symptom ? t(pulseData.symptom) : undefined,
-                            });
-                            if (navigator.canShare?.({ files: [new File([blob], 'storm-score.png', { type: 'image/png' })] })) {
-                              await navigator.share({ files: [new File([blob], 'storm-score.png', { type: 'image/png' })] });
-                            } else {
-                              const url = URL.createObjectURL(blob);
-                              const a = document.createElement('a');
-                              a.href = url;
-                              a.download = `storm-score-${score}.png`;
-                              a.click();
-                              URL.revokeObjectURL(url);
-                              setDownloaded(true);
-                              setShareOpen(false);
-                              setTimeout(() => setDownloaded(false), 2500);
-                            }
-                          }}
-                          className="w-full flex items-center gap-3 px-4 py-2 text-sm text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors"
-                        >
-                          <ImageDown className="w-4 h-4 text-[#7c3aed]" />
-                          {t('home.stormScore.saveImage') || 'Save as image'}
-                        </button>
-                      </div>
-                    );
-                  })()}
-                </div>
-              </div>
-
-              {/* Progress bar */}
-              <div className="w-full max-w-lg">
-                <div className="flex justify-between text-xs text-[#64748b] uppercase tracking-widest mb-2">
-                  <span>{t('home.stormScore.quiet')}</span>
-                  <span>{t('home.stormScore.unsettled')}</span>
-                  <span>{t('home.stormScore.storm')}</span>
-                  <span>{t('home.stormScore.severe')}</span>
-                </div>
-                <div className="h-3 rounded-full bg-white/5 overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all duration-1000"
-                    style={{
-                      width: `${kpValue !== null ? Math.round((kpValue / 9) * 100) : 0}%`,
-                      background: kpValue !== null && kpValue >= 7
-                        ? 'linear-gradient(to right, #ef4444, #dc2626)'
-                        : kpValue !== null && kpValue >= 5
-                        ? 'linear-gradient(to right, #f97316, #ef4444)'
-                        : kpValue !== null && kpValue >= 4
-                        ? 'linear-gradient(to right, #eab308, #f97316)'
-                        : 'linear-gradient(to right, #10b981, #059669)',
-                    }}
-                  />
-                </div>
-                <div className="flex justify-between text-xs text-[#64748b] mt-1">
-                  <span>0</span>
-                  <span>25</span>
-                  <span>50</span>
-                  <span>75</span>
-                  <span>100</span>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* What does this mean for me? */}
-      {!loading && kpValue !== null && (() => {
-        const score = Math.round((kpValue / 9) * 100);
-        const meanings = [
-          { max: 25, emoji: '🌙', text: t('home.meaningQuiet'), color: 'from-[#10b981]/20 to-[#059669]/10', border: 'border-[#10b981]/30', accent: '#10b981' },
-          { max: 50, emoji: '⚡', text: t('home.meaningModerate'), color: 'from-[#eab308]/20 to-[#ca8a04]/10', border: 'border-[#eab308]/30', accent: '#eab308' },
-          { max: 75, emoji: '🌌', text: t('home.meaningStorm'), color: 'from-[#f97316]/20 to-[#ea580c]/10', border: 'border-[#f97316]/30', accent: '#f97316' },
-          { max: 100, emoji: '🔴', text: t('home.meaningStrong'), color: 'from-[#ef4444]/20 to-[#dc2626]/10', border: 'border-[#ef4444]/30', accent: '#ef4444' },
-        ];
-        const m = meanings.find(x => score <= x.max) ?? meanings[3];
-        return (
-          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-            <div className={`rounded-2xl p-4 sm:p-8 bg-gradient-to-r ${m.color} border ${m.border} text-center`}>
-              <p className="text-xs uppercase tracking-widest font-bold mb-4" style={{ color: m.accent }}>
-                {t('home.meaning')}
-              </p>
-              <p className="text-2xl sm:text-3xl font-bold text-white">
-                {m.emoji} {m.text}
-              </p>
-            </div>
-          </div>
-        );
-      })()}
-
-      {/* Features */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-        <div className="text-center mb-14">
-          <h2 className="text-3xl sm:text-2xl sm:text-4xl font-bold text-white mb-4 uppercase tracking-wide">
-            {t('home.features2.title')}
-          </h2>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Link to="/calendar" className="glass-surface rounded-2xl p-7 hover:glow-green transition-all group block">
-            <div className="w-14 h-14 bg-[#2DD4BF]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-              <Calendar className="w-7 h-7 text-[#2DD4BF]" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="glass-surface rounded-2xl p-8 hover:glow-green transition-all">
+            <div className="w-16 h-16 bg-gradient-to-br from-[#10b981] to-[#059669] rounded-xl flex items-center justify-center mb-6">
+              <Activity className="w-8 h-8 text-white" />
             </div>
-            <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.calendar.title')}</h3>
-            <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.calendar.desc')}</p>
-          </Link>
-
-          <div className="glass-surface rounded-2xl p-7 hover:glow-purple transition-all group relative opacity-60">
-            <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#7c3aed]/20 text-[#a78bfa] border border-[#7c3aed]/30">{t('home.comingSoon')}</span>
-            <div className="w-14 h-14 bg-[#2DD4BF]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-              <Bot className="w-7 h-7 text-[#2DD4BF]" />
-            </div>
-            <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.ai.title')}</h3>
-            <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.ai.desc')}</p>
+            <h3 className="text-2xl font-bold text-white mb-3 uppercase tracking-wide">
+              {t('home.feature1.title')}
+            </h3>
+            <p className="text-[#94a3b8] leading-relaxed">
+              {t('home.feature1.desc')}
+            </p>
           </div>
 
-          <Link to="/aurora-map" className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group block">
-            <div className="w-14 h-14 bg-[#F97316]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-              <Globe className="w-7 h-7 text-[#F97316]" />
+          <div className="glass-surface rounded-2xl p-8 hover:glow-orange transition-all">
+            <div className="w-16 h-16 bg-gradient-to-br from-[#f97316] to-[#ef4444] rounded-xl flex items-center justify-center mb-6">
+              <Zap className="w-8 h-8 text-white" />
             </div>
-            <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.map.title')}</h3>
-            <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.map.desc')}</p>
-          </Link>
-
-          <Link to="/alerts" className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group block">
-            <div className="w-14 h-14 bg-[#F97316]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-              <Bell className="w-7 h-7 text-[#F97316]" />
-            </div>
-            <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.alerts.title')}</h3>
-            <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.alerts.desc')}</p>
-          </Link>
-
-          <Link to="/gallery" className="glass-surface rounded-2xl p-7 hover:glow-green transition-all group block">
-            <div className="w-14 h-14 bg-[#2DD4BF]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-              <Camera className="w-7 h-7 text-[#2DD4BF]" />
-            </div>
-            <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.gallery.title')}</h3>
-            <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.gallery.desc')}</p>
-          </Link>
-
-          <Link to="/hunt" className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group block">
-            <div className="w-14 h-14 bg-[#2DD4BF]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-              <Trophy className="w-7 h-7 text-[#2DD4BF]" />
-            </div>
-            <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.hunt.title')}</h3>
-            <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.hunt.desc')}</p>
-          </Link>
-
-          <Link to="/livestream" className="glass-surface rounded-2xl p-7 hover:glow-purple transition-all group block">
-            <div className="w-14 h-14 bg-[#2DD4BF]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-              <Video className="w-7 h-7 text-[#2DD4BF]" />
-            </div>
-            <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.livestream.title')}</h3>
-            <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.livestream.desc')}</p>
-          </Link>
-
-        </div>
-      </div>
-      {/* Data Sources */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="glass-surface rounded-3xl p-10 border border-white/10 text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4 uppercase tracking-wide flex items-center justify-center gap-3">
-            <span className="w-2 h-2 rounded-full bg-[#10b981] inline-block flex-shrink-0" />
-            {t('home.trustedSources')}
-          </h2>
-          <p className="text-[#94a3b8] max-w-2xl mx-auto mb-10 leading-relaxed">
-            {t('home.trustedSourcesDesc')}
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[
-              { name: 'NOAA SWPC', sub: 'Space Weather Prediction Center', flag: 'us' },
-              { name: 'NASA DONKI', sub: 'Space Weather Database', flag: 'us' },
-              { name: 'GFZ Potsdam', sub: 'Official Kp Index Authority', flag: 'de' },
-              { name: 'ESA', sub: 'Space Weather Service', flag: 'eu' },
-              { name: 'NIGGG', sub: 'Bulgaria Geophysics Institute', flag: 'bg' },
-            ].map(source => (
-              <div key={source.name} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '16px 24px' }} className="relative text-left">
-                <img src={`https://flagcdn.com/32x24/${source.flag}.png`} alt={source.flag} className="absolute top-3 right-3 rounded-sm shadow-sm" style={{ opacity: 0.8 }} width={32} height={24} />
-                <div className="text-xl font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.9)' }}>
-                  {source.name}
-                </div>
-                <div className="leading-snug" style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.75rem' }}>{source.sub}</div>
-              </div>
-            ))}
+            <h3 className="text-2xl font-bold text-white mb-3 uppercase tracking-wide">
+              {t('home.feature2.title')}
+            </h3>
+            <p className="text-[#94a3b8] leading-relaxed">
+              {t('home.feature2.desc')}
+            </p>
           </div>
-        </div>
-      </div>
 
-      {/* FAQ Section */}
-      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-        <div className="text-center mb-14">
-          <h2 className="text-3xl sm:text-2xl sm:text-4xl font-bold text-white mb-4 uppercase tracking-wide">
-            {t('home.faq.title')}
-          </h2>
-        </div>
-        <div className="space-y-6">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="glass-surface rounded-2xl p-4 sm:p-8 border border-white/5">
-              <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-3">
-                <span className="w-8 h-8 rounded-lg bg-[#f97316]/20 flex items-center justify-center text-[#f97316] text-sm font-bold">?</span>
-                {t(`home.faq.q${i}`)}
-              </h3>
-              <p className="text-[#94a3b8] leading-relaxed">
-                {t(`home.faq.a${i}`)}
-              </p>
+          <div className="glass-surface rounded-2xl p-8 hover:glow-purple transition-all">
+            <div className="w-16 h-16 bg-gradient-to-br from-[#7c3aed] to-[#6d28d9] rounded-xl flex items-center justify-center mb-6">
+              <Satellite className="w-8 h-8 text-white" />
             </div>
-          ))}
+            <h3 className="text-2xl font-bold text-white mb-3 uppercase tracking-wide">
+              {t('home.feature3.title')}
+            </h3>
+            <p className="text-[#94a3b8] leading-relaxed">
+              {t('home.feature3.desc')}
+            </p>
+          </div>
         </div>
       </div>
     </div>

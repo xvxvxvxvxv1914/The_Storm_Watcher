@@ -2,91 +2,18 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="manifest" href="/manifest.json" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#0a0a1a" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Storm Watcher" />
-    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>The Storm Watcher - Space Weather Monitoring</title>
     <meta name="description" content="Real-time space weather monitoring — Kp index, solar wind, aurora forecast and geomagnetic storm alerts." />
-    <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="https://www.thestormwatcher.com/" />
-    <link rel="alternate" hreflang="en" href="https://www.thestormwatcher.com/" />
-    <link rel="alternate" hreflang="bg" href="https://www.thestormwatcher.com/bg/" />
-    <link rel="alternate" hreflang="da" href="https://www.thestormwatcher.com/da/" />
-    <link rel="alternate" hreflang="de" href="https://www.thestormwatcher.com/de/" />
-    <link rel="alternate" hreflang="es" href="https://www.thestormwatcher.com/es/" />
-    <link rel="alternate" hreflang="fi" href="https://www.thestormwatcher.com/fi/" />
-    <link rel="alternate" hreflang="fr" href="https://www.thestormwatcher.com/fr/" />
-    <link rel="alternate" hreflang="is" href="https://www.thestormwatcher.com/is/" />
-    <link rel="alternate" hreflang="ja" href="https://www.thestormwatcher.com/ja/" />
-    <link rel="alternate" hreflang="ko" href="https://www.thestormwatcher.com/ko/" />
-    <link rel="alternate" hreflang="no" href="https://www.thestormwatcher.com/no/" />
-    <link rel="alternate" hreflang="pl" href="https://www.thestormwatcher.com/pl/" />
-    <link rel="alternate" hreflang="ru" href="https://www.thestormwatcher.com/ru/" />
-    <link rel="alternate" hreflang="sv" href="https://www.thestormwatcher.com/sv/" />
-    <link rel="alternate" hreflang="uk" href="https://www.thestormwatcher.com/uk/" />
-    <link rel="alternate" hreflang="zh" href="https://www.thestormwatcher.com/zh/" />
-    <link rel="alternate" hreflang="x-default" href="https://www.thestormwatcher.com/" />
     <meta property="og:title" content="The Storm Watcher" />
     <meta property="og:description" content="Real-time space weather monitoring — Kp index, solar wind, aurora forecast and geomagnetic storm alerts." />
-    <meta property="og:url" content="https://www.thestormwatcher.com/" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://www.thestormwatcher.com/og-image.webp" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:type" content="image/webp" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://www.thestormwatcher.com/og-image.webp" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="dns-prefetch" href="https://services.swpc.noaa.gov">
-    <link rel="dns-prefetch" href="https://api.open-meteo.com">
-    <link rel="dns-prefetch" href="https://api.wheretheiss.at">
-    <link rel="dns-prefetch" href="https://nominatim.openstreetmap.org">
-    <link rel="dns-prefetch" href="https://unpkg.com">
-    <link rel="dns-prefetch" href="https://srzfoxlmhxyulrgkchjr.supabase.co">
-    <link rel="preconnect" href="https://services.swpc.noaa.gov" crossorigin>
-    <link rel="preload" as="fetch" href="https://services.swpc.noaa.gov/json/planetary_k_index_1m.json" crossorigin>
-    <link rel="preconnect" href="https://api.open-meteo.com" crossorigin>
-    <link rel="preconnect" href="https://srzfoxlmhxyulrgkchjr.supabase.co" crossorigin>
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "WebSite",
-          "@id": "https://www.thestormwatcher.com/#website",
-          "url": "https://www.thestormwatcher.com/",
-          "name": "The Storm Watcher",
-          "description": "Real-time space weather monitoring, aurora forecasts, and geomagnetic storm alerts.",
-          "publisher": { "@id": "https://www.thestormwatcher.com/#organization" },
-          "inLanguage": ["en","bg","da","de","es","fi","fr","is","ja","ko","no","pl","ru","sv","uk","zh"]
-        },
-        {
-          "@type": "Organization",
-          "@id": "https://www.thestormwatcher.com/#organization",
-          "name": "The Storm Watcher",
-          "url": "https://www.thestormwatcher.com/",
-          "logo": "https://www.thestormwatcher.com/og-image.webp",
-          "sameAs": ["https://twitter.com/TheStormWatcher"]
-        }
-      ]
-    }
-    </script>
   </head>
   <body>
-    <noscript>
-      <div style="padding:40px;text-align:center;color:#f8fafc;background:#0a0a1a;font-family:sans-serif;min-height:100vh;">
-        <strong>JavaScript required</strong>
-        <p>The Storm Watcher needs JavaScript to show real-time space weather.</p>
-      </div>
-    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
