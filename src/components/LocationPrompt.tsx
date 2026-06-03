@@ -40,7 +40,7 @@ const LocationPrompt = ({ onDone }: { onDone: () => void }) => {
   return (
     <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(6px)' }}>
       <div className="glass-surface rounded-2xl p-6 max-w-sm w-full border border-white/10 relative">
-        <button onClick={dismiss} className="absolute top-4 right-4 text-[#64748b] hover:text-white transition-colors">
+        <button onClick={dismiss} aria-label="Close" className="absolute top-4 right-4 text-[#64748b] hover:text-white transition-colors">
           <X className="w-5 h-5" />
         </button>
 

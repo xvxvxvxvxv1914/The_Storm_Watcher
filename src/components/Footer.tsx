@@ -111,10 +111,10 @@ const Footer = () => {
               {' · '}
               <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" className="hover:text-[#64748b] underline">Open-Meteo</a>
             </p>
-            <p className="text-[#64748b] text-xs flex gap-2">
-              <Link to="/privacy" className="hover:text-white underline">{t('footer.privacy')}</Link>
-              <span>·</span>
-              <Link to="/terms" className="hover:text-white underline">{t('footer.terms')}</Link>
+            <p className="text-[#64748b] text-xs flex items-center gap-3">
+              <Link to="/privacy" className="hover:text-white underline inline-flex items-center min-h-[24px] py-1">{t('footer.privacy')}</Link>
+              <span aria-hidden="true">·</span>
+              <Link to="/terms" className="hover:text-white underline inline-flex items-center min-h-[24px] py-1">{t('footer.terms')}</Link>
             </p>
           </div>
         </div>
