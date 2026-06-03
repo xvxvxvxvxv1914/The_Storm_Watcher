@@ -1,4 +1,4 @@
-import { logError } from '../utils/logger';
+import { logWarning } from '../utils/logger';
 import { isNative as getNative } from '../utils/platform';
 import { persistGet, persistSet } from '../utils/offlineCache';
 
@@ -130,7 +130,9 @@ export const fetchNigggData = async (): Promise<NigggDataSet> => {
     persistSet('offline_niggg', result).catch(() => {});
     return result;
   } catch (error) {
-    logError('Error fetching NIGGG data:', error);
+    // External NIGGG endpoint is intermittently flaky (404/timeout); this is
+    // handled (falls back to cached/empty) so report at warning level, not error.
+    logWarning('Error fetching NIGGG data:', error);
     const cached = await persistGet<NigggDataSet>('offline_niggg');
     return cached ?? { hComponent: [], fComponent: [] };
   }
