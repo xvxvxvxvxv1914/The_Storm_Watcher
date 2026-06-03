@@ -409,7 +409,7 @@ const Dashboard = () => {
                 to="/aurora"
                 onClick={() => setShowPaymentSuccess(false)}
                 className="text-xs font-bold px-4 py-2 rounded-full text-white transition-all hover:opacity-90"
-                style={{ background: 'linear-gradient(to right, #f97316, #fbbf24)' }}
+                style={{ background: 'linear-gradient(to right, #10b981, #34d399)' }}
               >
                 {t('payment.exploreAurora') || 'Explore Aurora →'}
               </Link>
@@ -429,7 +429,7 @@ const Dashboard = () => {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ProTrialNudge />
         <div className="mb-3 md:mb-12">
-          <h1 className="text-3xl sm:text-5xl font-bold gradient-solar mb-2 sm:mb-3 uppercase tracking-tight">
+          <h1 className="text-3xl sm:text-5xl font-bold gradient-emerald mb-2 sm:mb-3 uppercase tracking-tight">
             {t('dashboard.title')}
           </h1>
           <p className="text-[#94a3b8] text-lg flex items-center gap-3">
@@ -488,7 +488,7 @@ const Dashboard = () => {
             <div className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider">{t('dashboard.kms')}</div>
           </div>
 
-          <div className="relative glass-surface rounded-2xl p-3 sm:p-6 hover:glow-orange transition-all hover:scale-105">
+          <div className="relative glass-surface rounded-2xl p-3 sm:p-6 hover:glow-green transition-all hover:scale-105">
             <InfoTooltip text={t('dashboard.tooltip.bz')} />
             <div className="flex items-center gap-2 mb-2 sm:mb-4">
               <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-[#06b6d4] to-[#0891b2] rounded-xl flex items-center justify-center">
@@ -504,7 +504,7 @@ const Dashboard = () => {
             <div className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider">{t('dashboard.nt')}</div>
           </div>
 
-          <div className="relative glass-surface rounded-2xl p-3 sm:p-6 hover:glow-orange transition-all hover:scale-105">
+          <div className="relative glass-surface rounded-2xl p-3 sm:p-6 hover:glow-green transition-all hover:scale-105">
             <InfoTooltip text={t('dashboard.tooltip.xray')} />
             <div className="flex items-center gap-2 mb-2 sm:mb-4">
               <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-[#fbbf24] to-[#f59e0b] rounded-xl flex items-center justify-center">
@@ -532,7 +532,7 @@ const Dashboard = () => {
                   onClick={() => setTimeRange(range)}
                   className={`px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all ${
                     timeRange === range
-                      ? 'bg-[#f97316] text-white'
+                      ? 'bg-[#10b981] text-white'
                       : 'glass-surface text-[#94a3b8] hover:text-white'
                   }`}
                 >
