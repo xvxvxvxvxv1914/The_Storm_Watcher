@@ -11,6 +11,7 @@ import { useSettings } from '../contexts/SettingsContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { logError } from '../utils/logger';
 import { getCurrentPosition } from '../utils/geolocation';
+import KpGauge from '../components/KpGauge';
 
 const AuroraGlobe = lazy(() => import('../components/AuroraGlobe'));
 
@@ -267,7 +268,7 @@ const Aurora = () => {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-6 md:mb-12">
-          <h1 className="text-3xl md:text-5xl font-bold gradient-aurora mb-3 uppercase tracking-tight">
+          <h1 className="text-3xl md:text-5xl font-bold gradient-emerald mb-3 uppercase tracking-tight">
             {t('aurora.title')}
           </h1>
           <p className="text-[#94a3b8] text-base md:text-lg">
@@ -285,8 +286,9 @@ const Aurora = () => {
                 {t('aurora.kpIndex')}
               </h3>
             </div>
-            <div className="text-6xl font-bold mb-3" style={getKpGradientStyle(kpValue)}>{kpValue.toFixed(1)}</div>
+            <div className="text-6xl font-bold mb-1" style={getKpGradientStyle(kpValue)}>{kpValue.toFixed(1)}</div>
             <div className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('aurora.currentValue')}</div>
+            <KpGauge kp={kpValue} />
           </div>
 
           <div className={`glass-surface rounded-2xl p-4 sm:p-8 ${visibility.bgGlow} hover:scale-105 transition-transform`}>
@@ -302,7 +304,7 @@ const Aurora = () => {
             <div className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('aurora.strength')}</div>
           </div>
 
-          <div className="glass-surface rounded-2xl p-4 sm:p-8 hover:glow-purple transition-all hover:scale-105">
+          <div className="glass-surface rounded-2xl p-4 sm:p-8 hover:glow-green transition-all hover:scale-105">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-[#7c3aed] to-[#6d28d9] rounded-xl flex items-center justify-center">
                 <MapPin className="w-6 h-6 text-white" />
