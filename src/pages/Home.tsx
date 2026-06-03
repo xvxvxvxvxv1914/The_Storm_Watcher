@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { Activity, AlertTriangle, Zap, Radio, Calendar, Bot, Globe, Bell, Camera, Trophy, Video, Share2, Copy, Twitter, ImageDown, Users } from 'lucide-react';
 import ErrorCard from '../components/ErrorCard';
+import KpGauge from '../components/KpGauge';
 import { track } from '@vercel/analytics';
 import { generateStormScoreImage } from '../utils/generateStormImage';
 import { getSolarWind, getXrayFlux, getXrayClass, getStormStatus, getKpGradientStyle, getKpHistory3Day } from '../services/noaaApi';
@@ -273,7 +274,7 @@ const Home = () => {
               <span className="text-[#94a3b8] text-sm font-semibold uppercase tracking-widest">{t('home.liveSpaceWeather')}</span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl font-bold mb-8 gradient-solar">
+            <h1 className="text-4xl sm:text-5xl font-bold mb-8 gradient-emerald">
               The Storm Watcher
             </h1>
 
@@ -304,6 +305,9 @@ const Home = () => {
                     {kpValue?.toFixed(1) ?? '0.0'}
                   </div>
                 </div>
+
+                {/* Severity gauge — shows where the current Kp sits on the storm scale */}
+                <KpGauge kp={kpValue ?? 0} />
 
                 {stormStatus && (
                   <div className={`inline-flex items-center gap-2 px-8 py-4 rounded-full mt-6 ${
@@ -368,7 +372,7 @@ const Home = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
               <Link
                 to={user ? '/dashboard' : '/pricing'}
-                className="px-8 py-4 bg-gradient-to-r from-[#f97316] to-[#ef4444] text-white rounded-lg font-bold uppercase tracking-wider hover:scale-105 transition-transform glow-orange"
+                className="px-8 py-4 bg-gradient-to-r from-[#10b981] to-[#059669] text-white rounded-lg font-bold uppercase tracking-wider hover:scale-105 transition-transform glow-green"
               >
                 {user ? t('home.hero.viewMap') : t('home.hero.getStarted')}
               </Link>

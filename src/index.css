@@ -69,6 +69,14 @@ html.light {
     background-clip: text;
   }
 
+  /* Signature aurora-green brand gradient (the distinctive accent). */
+  .gradient-emerald {
+    background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
   .glass-surface {
     background: var(--tsw-surface-bg);
     border: 1px solid var(--tsw-surface-border);
