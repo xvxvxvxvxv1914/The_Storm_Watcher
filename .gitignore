@@ -33,6 +33,10 @@ supabase/.temp
 # Local test/debug data files
 niggg_test.json
 niggg_data.json
+kp_data.json
+
+# Claude Code project settings
+.claude/
 
 # Playwright
 test-results
