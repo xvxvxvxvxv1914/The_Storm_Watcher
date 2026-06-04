@@ -279,13 +279,16 @@ const Home = () => {
             </h1>
 
             {/* Live Kp — first thing people see */}
+            <div className="min-h-[300px] sm:min-h-[420px]">
             {loading ? (
               <div className="my-8 flex flex-col items-center gap-4">
                 <Skeleton className="w-40 h-24 sm:w-64 sm:h-40 rounded-2xl" />
-                <Skeleton className="w-48 h-8 rounded-full" />
+                <Skeleton className="w-full max-w-xs h-6 rounded-full" />
+                <Skeleton className="w-48 h-12 rounded-full" />
                 <div className="flex gap-3 mt-2">
                   {[...Array(3)].map((_, i) => <Skeleton key={i} className="w-24 h-8 rounded-xl" />)}
                 </div>
+                <Skeleton className="w-48 h-10 rounded-lg" />
               </div>
             ) : (
               <div className="my-6">
@@ -360,6 +363,7 @@ const Home = () => {
                 {kpSparkData.length > 1 && <KpSparkline data={kpSparkData} />}
               </div>
             )}
+            </div>
 
             {/* Tagline + CTA — after live data */}
             <p className="text-xl sm:text-2xl text-white font-semibold mb-3 mt-4">
@@ -601,18 +605,20 @@ const Home = () => {
         </div>
       </div>
 
-      {/* What does this mean for me? */}
-      {!loading && kpValue !== null && (() => {
-        const score = Math.round((kpValue / 9) * 100);
-        const meanings = [
-          { max: 25, emoji: '🌙', text: t('home.meaningQuiet'), color: 'from-[#10b981]/20 to-[#059669]/10', border: 'border-[#10b981]/30', accent: '#10b981' },
-          { max: 50, emoji: '⚡', text: t('home.meaningModerate'), color: 'from-[#eab308]/20 to-[#ca8a04]/10', border: 'border-[#eab308]/30', accent: '#eab308' },
-          { max: 75, emoji: '🌌', text: t('home.meaningStorm'), color: 'from-[#f97316]/20 to-[#ea580c]/10', border: 'border-[#f97316]/30', accent: '#f97316' },
-          { max: 100, emoji: '🔴', text: t('home.meaningStrong'), color: 'from-[#ef4444]/20 to-[#dc2626]/10', border: 'border-[#ef4444]/30', accent: '#ef4444' },
-        ];
-        const m = meanings.find(x => score <= x.max) ?? meanings[3];
-        return (
-          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+      {/* What does this mean for me? — always rendered to avoid CLS */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        {loading ? (
+          <Skeleton className="w-full h-24 rounded-2xl" />
+        ) : kpValue !== null ? (() => {
+          const score = Math.round((kpValue / 9) * 100);
+          const meanings = [
+            { max: 25, emoji: '🌙', text: t('home.meaningQuiet'), color: 'from-[#10b981]/20 to-[#059669]/10', border: 'border-[#10b981]/30', accent: '#10b981' },
+            { max: 50, emoji: '⚡', text: t('home.meaningModerate'), color: 'from-[#eab308]/20 to-[#ca8a04]/10', border: 'border-[#eab308]/30', accent: '#eab308' },
+            { max: 75, emoji: '🌌', text: t('home.meaningStorm'), color: 'from-[#f97316]/20 to-[#ea580c]/10', border: 'border-[#f97316]/30', accent: '#f97316' },
+            { max: 100, emoji: '🔴', text: t('home.meaningStrong'), color: 'from-[#ef4444]/20 to-[#dc2626]/10', border: 'border-[#ef4444]/30', accent: '#ef4444' },
+          ];
+          const m = meanings.find(x => score <= x.max) ?? meanings[3];
+          return (
             <div className={`rounded-2xl p-4 sm:p-8 bg-gradient-to-r ${m.color} border ${m.border} text-center`}>
               <p className="text-xs uppercase tracking-widest font-bold mb-4" style={{ color: m.accent }}>
                 {t('home.meaning')}
@@ -621,9 +627,9 @@ const Home = () => {
                 {m.emoji} {m.text}
               </p>
             </div>
-          </div>
-        );
-      })()}
+          );
+        })() : null}
+      </div>
 
       {/* Features */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">

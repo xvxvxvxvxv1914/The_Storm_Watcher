@@ -54,9 +54,11 @@ const SplashAnimation = () => {
 
     prefetchCoreData();
 
+    const exitMs  = isNativePlatform ? 2500 : 600;
+    const doneMs  = isNativePlatform ? 3000 : 1100;
     const t1 = setTimeout(() => setPhase('show'), 60);
-    const t2 = setTimeout(() => setPhase('exit'), 2500);
-    const t3 = setTimeout(() => setPhase('done'), 3000);
+    const t2 = setTimeout(() => setPhase('exit'), exitMs);
+    const t3 = setTimeout(() => setPhase('done'), doneMs);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, []);
 

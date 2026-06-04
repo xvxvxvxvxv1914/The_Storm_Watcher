@@ -41,13 +41,7 @@ Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
   enabled: import.meta.env.PROD && !!import.meta.env.VITE_SENTRY_DSN,
   environment: import.meta.env.MODE,
-  integrations: [
-    Sentry.replayIntegration({
-      maskAllText: true,
-      blockAllMedia: true,
-      maskAllInputs: true,
-    }),
-  ],
+  integrations: [],
   tracesSampleRate: 0.1,
   replaysSessionSampleRate: 0.05,
   replaysOnErrorSampleRate: 1.0,
@@ -71,6 +65,20 @@ Sentry.init({
     return event;
   },
 });
+
+// Load Sentry Replay lazily so it doesn't bloat the initial JS parse.
+// replaysOnErrorSampleRate stays at 1.0 but only captures errors after load.
+if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
+  window.addEventListener('load', () => {
+    import('@sentry/react').then(({ replayIntegration }) => {
+      Sentry.addIntegration(replayIntegration({
+        maskAllText: true,
+        blockAllMedia: true,
+        maskAllInputs: true,
+      }));
+    });
+  }, { once: true });
+}
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
