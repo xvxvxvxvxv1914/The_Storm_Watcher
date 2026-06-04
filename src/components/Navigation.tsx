@@ -100,7 +100,7 @@ const Navigation = () => {
           : '0 4px 20px rgba(0,0,0,0.45), 0 1px 4px rgba(0,0,0,0.3)',
       }}>
         <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2.5">
-          <img src="/logos/icon.svg" alt="The Storm Watcher" className="w-10 h-10" style={{ filter: 'drop-shadow(0 0 8px rgba(249,115,22,0.5))' }} />
+          <img src="/logos/icon.svg" alt="The Storm Watcher" className="w-12 h-12" style={{ filter: 'drop-shadow(0 0 12px rgba(249,115,22,0.6))' }} />
           <span className="text-sm font-bold gradient-solar">The Storm Watcher</span>
         </Link>
         <div className="flex items-center gap-2">
@@ -129,10 +129,10 @@ const Navigation = () => {
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
             {theme === 'dark' ? (
-              <img src="/logos/logo-transparent.png" alt="The Storm Watcher" className="h-12 w-auto" style={{ filter: 'drop-shadow(0 0 10px rgba(249,115,22,0.4))' }} />
+              <img src="/logos/logo-transparent.png" alt="The Storm Watcher" className="h-14 w-auto" style={{ filter: 'drop-shadow(0 0 14px rgba(249,115,22,0.5))' }} />
             ) : (
               <>
-                <img src="/logos/icon.svg" alt="" className="w-11 h-11" />
+                <img src="/logos/icon.svg" alt="" className="w-12 h-12" />
                 <span className="hidden xl:inline text-xl font-bold text-slate-800 whitespace-nowrap">The Storm Watcher</span>
               </>
             )}
