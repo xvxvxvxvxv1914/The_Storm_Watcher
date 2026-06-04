@@ -60,7 +60,10 @@ export default function AvatarCropper({ imageSrc, onConfirm, onCancel }: Props) 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div
+      className="fixed inset-0 z-[200] flex items-center justify-center bg-black/85 backdrop-blur-sm p-4"
+      onClick={e => { if (e.target === e.currentTarget) onCancel(); }}
+    >
       <div className="bg-[#0f0f1f] border border-white/10 rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-white/8">
@@ -79,7 +82,7 @@ export default function AvatarCropper({ imageSrc, onConfirm, onCancel }: Props) 
         </div>
 
         {/* Cropper */}
-        <div className="relative w-full" style={{ height: 300 }}>
+        <div className="relative w-full" style={{ height: 320 }}>
           <Cropper
             image={imageSrc}
             crop={crop}
@@ -92,13 +95,18 @@ export default function AvatarCropper({ imageSrc, onConfirm, onCancel }: Props) 
             onCropComplete={onCropComplete}
             style={{
               containerStyle: { background: '#000' },
-              cropAreaStyle: { border: '2px solid #10b981', boxShadow: '0 0 0 9999px rgba(0,0,0,0.6)' },
+              cropAreaStyle: { border: '2px solid #10b981', boxShadow: '0 0 0 9999px rgba(0,0,0,0.7)' },
             }}
           />
         </div>
 
+        {/* Hint */}
+        <p className="text-center text-[#475569] text-[11px] pt-3 px-5">
+          Drag to reposition · Pinch or use slider to zoom
+        </p>
+
         {/* Zoom slider */}
-        <div className="flex items-center gap-3 px-5 py-4 border-t border-white/8">
+        <div className="flex items-center gap-3 px-5 py-4 border-t border-white/8 mt-3">
           <button onClick={() => setZoom(z => Math.max(1, z - 0.1))} className="text-slate-400 hover:text-white transition-colors">
             <ZoomOut size={16} />
           </button>
