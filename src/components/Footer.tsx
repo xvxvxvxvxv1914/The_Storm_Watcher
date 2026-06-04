@@ -1,4 +1,4 @@
-import { Mail, Sun } from 'lucide-react';
+import { Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -49,7 +49,7 @@ const Footer = () => {
         <div className="lg:hidden py-5">
           {/* Brand */}
           <div className="flex items-center gap-2 mb-4">
-            <Sun className="w-5 h-5 text-[#f97316] shrink-0" />
+            <img src="/logos/icon.svg" alt="The Storm Watcher" className="w-5 h-5 shrink-0" />
             <span className="text-white font-bold text-sm gradient-solar">The Storm Watcher</span>
           </div>
 
@@ -123,12 +123,8 @@ const Footer = () => {
         <div className="hidden lg:block py-12">
           <div className="grid grid-cols-5 gap-10 mb-10">
             <div className="col-span-2">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="relative">
-                  <Sun className="w-8 h-8 text-[#f97316]" />
-                  <div className="absolute inset-0 w-8 h-8 rounded-full bg-[#f97316] opacity-20 blur-lg" />
-                </div>
-                <h3 className="text-white font-bold text-lg gradient-solar">The Storm Watcher</h3>
+              <div className="flex items-center mb-4">
+                <img src="/logos/logo-transparent.png" alt="The Storm Watcher" className="h-9 w-auto" />
               </div>
               <p className="text-[#94a3b8] text-sm leading-relaxed mb-6">
                 {t('footer.description')}

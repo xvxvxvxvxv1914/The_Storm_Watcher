@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Sun, Globe, User, LogOut, ChevronDown, AlertTriangle, SlidersHorizontal } from 'lucide-react';
+import { Globe, User, LogOut, ChevronDown, AlertTriangle, SlidersHorizontal } from 'lucide-react';
 import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -100,10 +100,7 @@ const Navigation = () => {
           : '0 4px 20px rgba(0,0,0,0.45), 0 1px 4px rgba(0,0,0,0.3)',
       }}>
         <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2.5">
-          <div className="relative">
-            <Sun className="w-7 h-7 text-[#f97316]" />
-            <div className="absolute inset-0 rounded-full bg-[#f97316] opacity-20 blur-lg" />
-          </div>
+          <img src="/logos/icon.svg" alt="The Storm Watcher" className="w-7 h-7" />
           <span className="text-sm font-bold gradient-solar">The Storm Watcher</span>
         </Link>
         <div className="flex items-center gap-2">
@@ -131,11 +128,14 @@ const Navigation = () => {
             className="flex items-center gap-3 group"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
-            <div className="relative">
-              <Sun className="w-8 h-8 text-[#f97316] group-hover:text-[#fbbf24] transition-colors" />
-              <div className="absolute inset-0 w-8 h-8 rounded-full bg-[#f97316] opacity-20 blur-lg group-hover:opacity-40 transition-opacity" />
-            </div>
-            <span className="hidden xl:inline text-xl font-bold gradient-solar whitespace-nowrap">The Storm Watcher</span>
+            {theme === 'dark' ? (
+              <img src="/logos/logo-transparent.png" alt="The Storm Watcher" className="h-8 w-auto" />
+            ) : (
+              <>
+                <img src="/logos/icon.svg" alt="" className="w-8 h-8" />
+                <span className="hidden xl:inline text-xl font-bold text-slate-800 whitespace-nowrap">The Storm Watcher</span>
+              </>
+            )}
           </Link>
 
           {/* Desktop nav */}

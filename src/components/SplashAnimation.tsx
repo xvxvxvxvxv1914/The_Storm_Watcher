@@ -170,42 +170,26 @@ const SplashAnimation = () => {
           }}
         />
 
-        {/* Text */}
+        {/* Logo */}
         <div
           style={{
             position: 'absolute',
             bottom: '18%',
             left: 0,
             right: 0,
-            textAlign: 'center',
+            display: 'flex',
+            justifyContent: 'center',
             opacity: visible ? 1 : 0,
             transform: visible ? 'translateY(0)' : 'translateY(20px)',
             transition: 'opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s',
+            filter: 'drop-shadow(0 0 24px rgba(16,185,129,0.5))',
           }}
         >
-          <p
-            style={{
-              color: '#fff',
-              fontWeight: 700,
-              fontSize: '1.5rem',
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              textShadow: '0 0 32px rgba(16,185,129,0.8), 0 0 64px rgba(16,185,129,0.4)',
-            }}
-          >
-            The Storm Watcher
-          </p>
-          <p
-            style={{
-              color: 'rgba(255,255,255,0.4)',
-              fontSize: '0.7rem',
-              letterSpacing: '0.3em',
-              textTransform: 'uppercase',
-              marginTop: '0.5rem',
-            }}
-          >
-            Space Weather Monitor
-          </p>
+          <img
+            src="/logos/logo-transparent.png"
+            alt="The Storm Watcher"
+            style={{ height: '56px', width: 'auto' }}
+          />
         </div>
       </div>
     </>
