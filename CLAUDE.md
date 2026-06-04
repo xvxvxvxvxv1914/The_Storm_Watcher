@@ -110,6 +110,35 @@ watchOS companion app за The Storm Watcher. Данните вече са в Ap
 
 ## TODO / Pending Work
 
+### API Data Quality — остатък от одита (2026-06-04)
+
+Направено: `||` → `??` на Kp полета, guard в useKpLive, TTL cache за NIGGG/UV/Sky/ISS, dedup в Alerts.
+
+**Остава:**
+
+#### Medium приоритет
+1. **NIGGG re-fetch при смяна на регион** (`src/pages/Dashboard.tsx`)
+   - Проблем: ако `inNigggRegion` се промени (IP detection → GPS), `fetchNigggData()` не се извиква отново
+   - Fix: добави отделен `useEffect(() => { if (inNigggRegion) fetchData(); }, [inNigggRegion])`
+
+2. **Home.tsx — silent failure** (`src/pages/Home.tsx`)
+   - Проблем: ако `useKpLive()` върне `null` (network fail), Home показва "Kp 0.0 · Quiet" без грешка
+   - Fix: при `kpValue === null && !loading` → покажи retry бутон или error state вместо "0.0"
+
+3. **UV и SkyVisibility — spinner при грешка** (`src/pages/UV.tsx`, `src/pages/SkyVisibility.tsx`)
+   - Проблем: при грешка или липсваща локация показват безкраен spinner без retry
+   - Fix: добави error state + retry бутон (виж как Alerts.tsx го прави)
+
+#### Low приоритет
+4. **ISS — тиха грешка** (`src/pages/ISS.tsx`)
+   - При network error показва последната позиция без индикация
+   - Fix: добави "last updated" timestamp и/или error toast
+
+5. **Pull-to-refresh** — UV, SkyVisibility, ISS нямат pull-to-refresh (Dashboard го има)
+   - `usePullToRefresh` hook вече съществува — само трябва да се добави в тези страници
+
+
+
 ### Mobile App Payments (преди пускане в App Store / Play Store)
 IAP инфраструктурата е готова — остава само plugin install + конфигурация в магазините:
 
