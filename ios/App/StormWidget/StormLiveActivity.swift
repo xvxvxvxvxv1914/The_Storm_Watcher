@@ -2,28 +2,28 @@ import WidgetKit
 import SwiftUI
 import ActivityKit
 
-// Colors mirror the site's storm scale (aurora green → red).
+// Storm severity → brand colour. G5/G2 use one-off shades between the main
+// brand constants to keep the full gradient visually distinguishable.
 @available(iOS 16.2, *)
 private func gColor(_ g: Int) -> Color {
     switch g {
-    case 5: return Color(red: 0.86, green: 0.15, blue: 0.15)
-    case 4: return Color(red: 0.94, green: 0.27, blue: 0.27)
-    case 3: return Color(red: 0.98, green: 0.45, blue: 0.09)
-    case 2: return Color(red: 0.98, green: 0.57, blue: 0.10)
-    case 1: return Color(red: 0.98, green: 0.67, blue: 0.12)
-    default: return Color(red: 0.06, green: 0.72, blue: 0.51)
+    case 5: return Color(hex: "#dc2626") // extreme — deeper than brandRed
+    case 4: return .brandRed
+    case 3: return .brandOrange
+    case 2: return Color(hex: "#f59e0b") // moderate — between brandOrange and brandAmber
+    case 1: return .brandAmber
+    default: return .brandEmerald
     }
 }
 
-// Kp number color — matches the site's scale, changes with value. Solid color
-// (not a gradient) because gradient-on-text is unreliable in Live Activities.
+// Kp number colour — mirrors kpColor() in StormWidget.swift.
 @available(iOS 16.2, *)
 private func kpColor(_ kp: Double) -> Color {
     switch kp {
-    case 7...: return Color(red: 0.937, green: 0.267, blue: 0.267) // red
-    case 5...: return Color(red: 0.976, green: 0.451, blue: 0.086) // orange
-    case 4...: return Color(red: 0.918, green: 0.702, blue: 0.031) // yellow
-    default:   return Color(red: 0.063, green: 0.725, blue: 0.506) // aurora green
+    case 7...: return .brandRed
+    case 5...: return .brandOrange
+    case 4...: return .brandAmber
+    default:   return .brandEmerald
     }
 }
 
@@ -120,7 +120,7 @@ struct StormLiveActivity: Widget {
                     startPoint: .leading, endPoint: .trailing
                 )
             )
-            .activityBackgroundTint(Color(red: 0.05, green: 0.05, blue: 0.12))
+            .activityBackgroundTint(.brandNavy)
             .activitySystemActionForegroundColor(.white)
             // Tapping the lock-screen banner opens the alerts page (Dynamic Island
             // already had this; the lock-screen view was missing it).

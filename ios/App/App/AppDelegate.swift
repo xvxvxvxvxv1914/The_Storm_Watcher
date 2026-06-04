@@ -3,6 +3,7 @@ import Capacitor
 import WidgetKit
 import BackgroundTasks
 import UserNotifications
+import ActivityKit
 import Sentry
 
 @UIApplicationMain
@@ -129,5 +130,64 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             WidgetCenter.shared.reloadTimelines(ofKind: "StormWidget")
             completion?()
         }
+    }
+
+    // MARK: - UNUserNotificationCenterDelegate
+
+    // Show the banner even when the app is in the foreground (Capacitor won't
+    // automatically forward it to JS until the user interacts with it).
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification,
+                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.banner, .sound, .badge])
+    }
+
+    // Called when the user taps a notification (from background or killed state).
+    // If the payload carries a `kp` value ≥ G1 threshold, immediately start (or
+    // update) the storm Live Activity so the Dynamic Island is live before React
+    // finishes initialising.
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                didReceive response: UNNotificationResponse,
+                                withCompletionHandler completionHandler: @escaping () -> Void) {
+        let info = response.notification.request.content.userInfo
+        if let kp = info["kp"] as? Double {
+            startLiveActivityNative(kp: kp)
+        }
+        completionHandler()
+    }
+
+    // MARK: - Native Live Activity bootstrap
+
+    // Starts (or updates) the storm Live Activity directly from Swift, before
+    // the JS/React layer is ready. Called from push-notification tap handling.
+    // The JS hook (useStormLiveActivity) will take over once the web view loads.
+    private func startLiveActivityNative(kp: Double) {
+        guard kp >= 5.0 else { return }
+        if #available(iOS 16.2, *) {
+            guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
+            let state = StormActivityAttributes.ContentState(
+                kp: kp,
+                gLevel: kpToGLevel(kp),
+                auroraPct: nil,
+                updatedAt: Date().timeIntervalSince1970
+            )
+            let staleDate = Date().addingTimeInterval(45 * 60)
+            if let existing = Activity<StormActivityAttributes>.activities.first {
+                Task { await existing.update(ActivityContent(state: state, staleDate: staleDate)) }
+                return
+            }
+            let attrs = StormActivityAttributes(title: "Geomagnetic storm")
+            let content = ActivityContent(state: state, staleDate: staleDate)
+            try? Activity.request(attributes: attrs, content: content, pushType: .token)
+        }
+    }
+
+    private func kpToGLevel(_ kp: Double) -> Int {
+        if kp >= 9 { return 5 }
+        if kp >= 8 { return 4 }
+        if kp >= 7 { return 3 }
+        if kp >= 6 { return 2 }
+        if kp >= 5 { return 1 }
+        return 0
     }
 }

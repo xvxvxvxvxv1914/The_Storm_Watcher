@@ -6,6 +6,7 @@ import { buildAuroraICS, downloadICS } from '../utils/icalExport';
 import { Link } from 'react-router-dom';
 import { getKpForecast, getKpGradientStyle } from '../services/noaaApi';
 import { getNightsCloudCover, type NightForecast } from '../services/skyApi';
+import { calcAuroraVisibility } from '../utils/auroraVisibility';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import LocationPicker from '../components/LocationPicker';
@@ -21,6 +22,7 @@ interface ForecastItem {
 interface NightDetail extends NightForecast {
   hourlyKp: { hour: number; kp: number }[];
   dateLabel: string;
+  auroraChance: number | null; // % at user's lat/lon for this night's peak Kp
 }
 
 const NIGHT_START = 20;
@@ -87,6 +89,9 @@ export default function Calendar() {
       const combined: NightDetail[] = kpByNight.map((n, i) => {
         const cloud = cloudNights[i];
         const d = n.date;
+        const auroraChance = useLat !== null && useLon !== null
+          ? calcAuroraVisibility(useLat, useLon, n.maxKp)
+          : null;
         return {
           label: labels[i],
           date: n.date,
@@ -95,12 +100,17 @@ export default function Calendar() {
           isBest: false,
           hourlyKp: n.hourly,
           dateLabel: d.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' }),
+          auroraChance,
         };
       });
 
-      const scored = combined.map(n => ({
-        score: (n.maxKp / 9) * 60 + (n.cloudCoverAvg !== null ? (100 - n.cloudCoverAvg) / 100 * 40 : (n.maxKp / 9) * 40),
-      }));
+      // If we have location-aware aurora data, weight it 60% aurora + 40% sky;
+      // otherwise fall back to global Kp proxy.
+      const scored = combined.map(n => {
+        const aurora = n.auroraChance ?? (n.maxKp / 9) * 100;
+        const sky = n.cloudCoverAvg !== null ? (100 - n.cloudCoverAvg) : aurora * 0.7;
+        return { score: aurora * 0.6 + sky * 0.4 };
+      });
       const bestIdx = scored.reduce((bi, s, i) => s.score > scored[bi].score ? i : bi, 0);
       combined[bestIdx].isBest = true;
       setNights(combined);
@@ -281,6 +291,30 @@ export default function Calendar() {
                   <div className="flex items-center gap-2 pt-3 border-t border-white/5 text-xs text-[#475569]">
                     <Cloud className="w-4 h-4 flex-shrink-0" />
                     <span>{t('aurora.calendar.noLocation')}</span>
+                  </div>
+                )}
+
+                {/* Aurora chance at the user's location */}
+                {night.auroraChance !== null && (
+                  <div className="flex items-center gap-2 mt-2">
+                    <Sparkles className="w-4 h-4 text-[#10b981] flex-shrink-0" />
+                    <div className="flex-1">
+                      <div className="flex justify-between text-xs mb-1">
+                        <span className="text-[#94a3b8]">{t('sky.auroraChance')}</span>
+                        <span style={{ color: night.auroraChance >= 50 ? '#10b981' : night.auroraChance >= 20 ? '#eab308' : '#f97316' }}>
+                          {night.auroraChance}%
+                        </span>
+                      </div>
+                      <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
+                        <div
+                          className="h-full rounded-full transition-all"
+                          style={{
+                            width: `${night.auroraChance}%`,
+                            background: night.auroraChance >= 50 ? '#10b981' : night.auroraChance >= 20 ? '#eab308' : '#f97316',
+                          }}
+                        />
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>

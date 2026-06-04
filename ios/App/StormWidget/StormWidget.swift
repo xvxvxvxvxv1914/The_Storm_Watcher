@@ -2,7 +2,8 @@ import WidgetKit
 import SwiftUI
 
 // MARK: - Brand colours (from icon.svg / web design system)
-private extension Color {
+// Internal (not private) so StormLiveActivity.swift in the same target can use them.
+extension Color {
     init(hex: String) {
         let s = Scanner(string: hex.trimmingCharacters(in: CharacterSet(charactersIn: "#")))
         var int: UInt64 = 0
