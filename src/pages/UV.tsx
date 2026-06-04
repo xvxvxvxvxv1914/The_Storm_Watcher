@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
@@ -43,6 +44,12 @@ const UV = () => {
       .catch(() => loadForCoords(42.7, 23.3));
   }, [loadForCoords]);
 
+  const refresh = useCallback(() => {
+    if (currentLat === 0 && currentLon === 0) return;
+    return loadForCoords(currentLat, currentLon, locationName || undefined);
+  }, [loadForCoords, currentLat, currentLon, locationName]);
+  const { pulling, pullY } = usePullToRefresh(refresh);
+
   useEffect(() => {
     if (settings.preferredLat !== null && settings.preferredLon !== null) {
       loadForCoords(settings.preferredLat, settings.preferredLon, settings.preferredLocationName || undefined);
@@ -80,6 +87,14 @@ const UV = () => {
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16">
+      {pulling && (
+        <div
+          className="fixed top-16 left-1/2 -translate-x-1/2 z-[100] flex items-center justify-center w-9 h-9 rounded-full bg-[#fbbf24]/20 border border-[#fbbf24]/40 transition-transform"
+          style={{ transform: `translateX(-50%) translateY(${pullY}px)` }}
+        >
+          <div className="w-4 h-4 border-2 border-[#fbbf24] border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
       <PageMeta
         title="UV Index — The Storm Watcher"
         description="Real-time UV index and sun exposure forecast for your location. Know when to apply sunscreen."

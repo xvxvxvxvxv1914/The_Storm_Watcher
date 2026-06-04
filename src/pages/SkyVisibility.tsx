@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { Cloud, Eye, Droplets, Star } from 'lucide-react';
@@ -77,6 +78,12 @@ const SkyVisibility = () => {
       .catch(() => loadForCoords(42.7, 23.3));
   }, [loadForCoords]);
 
+  const refresh = useCallback(() => {
+    if (currentLat === 0 && currentLon === 0) return;
+    return loadForCoords(currentLat, currentLon, locationName || undefined);
+  }, [loadForCoords, currentLat, currentLon, locationName]);
+  const { pulling, pullY } = usePullToRefresh(refresh);
+
   useEffect(() => {
     if (settings.preferredLat !== null && settings.preferredLon !== null) {
       loadForCoords(settings.preferredLat, settings.preferredLon, settings.preferredLocationName || undefined);
@@ -108,6 +115,14 @@ const SkyVisibility = () => {
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16">
+      {pulling && (
+        <div
+          className="fixed top-16 left-1/2 -translate-x-1/2 z-[100] flex items-center justify-center w-9 h-9 rounded-full bg-[#7c3aed]/20 border border-[#7c3aed]/40 transition-transform"
+          style={{ transform: `translateX(-50%) translateY(${pullY}px)` }}
+        >
+          <div className="w-4 h-4 border-2 border-[#7c3aed] border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
       <PageMeta
         title="Sky Visibility Tonight — The Storm Watcher"
         description="Tonight's stargazing and aurora viewing conditions. Cloud cover, visibility and precipitation forecast for astronomers."

@@ -32,6 +32,7 @@ import { useSettings } from '../contexts/SettingsContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { reverseGeocode } from '../utils/reverseGeocode';
 import { getCurrentPosition } from '../utils/geolocation';
+import { usePullToRefresh } from '../hooks/usePullToRefresh';
 
 const ISS = () => {
   const { t } = useLanguage();
@@ -43,6 +44,8 @@ const ISS = () => {
   const [passes, setPasses] = useState<IssPass[]>([]);
   const [loadingPos, setLoadingPos] = useState(true);
   const [loadingPasses, setLoadingPasses] = useState(true);
+  const [posError, setPosError] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [locationName, setLocationName] = useState('');
   const [userCoords, setUserCoords] = useState<{ lat: number; lon: number } | null>(null);
   const [auroraData, setAuroraData] = useState<AuroraOvationPoint[]>([]);
@@ -67,21 +70,27 @@ const ISS = () => {
     getAuroraModel().then(setAuroraData).catch(() => {});
   }, []);
 
+  const fetchPos = useCallback(async () => {
+    try {
+      const pos = await getIssPosition();
+      setPosition(pos);
+      setPosError(false);
+      setLastUpdated(new Date());
+    } catch {
+      setPosError(true);
+    } finally {
+      setLoadingPos(false);
+    }
+  }, []);
+
   // Live ISS position — refresh every 5s
   useEffect(() => {
-    const fetchPos = async () => {
-      try {
-        const pos = await getIssPosition();
-        setPosition(pos);
-        setLoadingPos(false);
-      } catch {
-        setLoadingPos(false);
-      }
-    };
     fetchPos();
     const interval = setInterval(() => { if (document.visibilityState !== 'hidden') fetchPos(); }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [fetchPos]);
+
+  const { pulling, pullY } = usePullToRefresh(fetchPos);
 
   const defaultLocationLabel = t('uv.defaultLocation') || 'Sofia, Bulgaria (default)';
 
@@ -130,6 +139,14 @@ const ISS = () => {
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16">
+      {pulling && (
+        <div
+          className="fixed top-16 left-1/2 -translate-x-1/2 z-[100] flex items-center justify-center w-9 h-9 rounded-full bg-[#f97316]/20 border border-[#f97316]/40 transition-transform"
+          style={{ transform: `translateX(-50%) translateY(${pullY}px)` }}
+        >
+          <div className="w-4 h-4 border-2 border-[#f97316] border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
       <PageMeta
         title="ISS Tracker — The Storm Watcher"
         description="Track the International Space Station in real time. See live position, altitude, speed and next pass times over your location."
@@ -155,9 +172,14 @@ const ISS = () => {
         {/* Globe */}
         <div className="glass-surface rounded-3xl overflow-hidden border border-white/10 mb-8 flex flex-col items-center">
           <div className="flex items-center gap-3 w-full px-8 pt-6 pb-2">
-            <div className="w-3 h-3 rounded-full bg-[#10b981] animate-pulse" />
+            <div className={`w-3 h-3 rounded-full ${posError ? 'bg-[#ef4444]' : 'bg-[#10b981] animate-pulse'}`} />
             <h2 className="text-xl font-bold text-white uppercase tracking-wide">{t('iss.livePosition')}</h2>
-            <span className="text-[#64748b] text-xs">{t('iss.updates5s')}</span>
+            <span className="text-[#64748b] text-xs">
+              {posError ? (t('iss.signalLost') || 'Signal lost — last known position') : t('iss.updates5s')}
+            </span>
+            {lastUpdated && (
+              <span className="ml-auto text-xs text-[#475569]">{lastUpdated.toLocaleTimeString()}</span>
+            )}
           </div>
 
           <div ref={globeContainerRef} style={{ minHeight: Math.max(280, Math.round(globeWidth * 0.74)) }} className="w-full flex flex-col items-center justify-center relative">
