@@ -186,15 +186,6 @@ const SplashAnimation = () => {
             transition: 'opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s',
           }}
         >
-          <img
-            src="/logos/icon.svg"
-            alt=""
-            style={{
-              height: '140px',
-              width: 'auto',
-              filter: 'drop-shadow(0 0 32px rgba(249,115,22,0.6)) drop-shadow(0 0 64px rgba(16,185,129,0.4))',
-            }}
-          />
           <p
             style={{
               color: '#f8fafc',
