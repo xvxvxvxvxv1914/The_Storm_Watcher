@@ -91,9 +91,9 @@ export default function BlogPost() {
           "description": post.description,
           "datePublished": post.date,
           "author": { "@type": "Organization", "name": "The Storm Watcher", "url": "https://www.thestormwatcher.com" },
-          "publisher": { "@type": "Organization", "name": "The Storm Watcher", "logo": { "@type": "ImageObject", "url": "https://www.thestormwatcher.com/og-image.webp" } },
+          "publisher": { "@type": "Organization", "name": "The Storm Watcher", "logo": { "@type": "ImageObject", "url": "https://www.thestormwatcher.com/og-image.png" } },
           "mainEntityOfPage": { "@type": "WebPage", "@id": `https://www.thestormwatcher.com/blog/${post.slug}` },
-          "image": "https://www.thestormwatcher.com/og-image.webp"
+          "image": "https://www.thestormwatcher.com/og-image.png"
         })}</script>
       </PageMeta>
       <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Blog', path: '/blog' }, { name: post.title, path: `/blog/${post.slug}` }]} />

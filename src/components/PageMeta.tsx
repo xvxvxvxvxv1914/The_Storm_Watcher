@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 
 const BASE_URL = 'https://www.thestormwatcher.com';
-const DEFAULT_IMAGE = `${BASE_URL}/og-image.webp`;
+const DEFAULT_IMAGE = `${BASE_URL}/og-image.png`;
 
 const PAGE_SLUGS: Record<string, string> = {
   '/': 'home',

@@ -195,13 +195,13 @@ const Home = () => {
         <meta property="og:description" content={kpValue !== null ? `Current Kp index is ${kpValue.toFixed(1)}. Solar wind is at ${windSpeed?.toFixed(0) || '---'} km/s. See if a storm is coming!` : "Monitor solar activity and aurora forecasts with our professional-grade live dashboard."} />
         <meta name="twitter:title" content={kpValue !== null && kpValue >= 5 ? `⚠️ ALERT: Solar Storm Kp ${kpValue.toFixed(1)}` : "The Storm Watcher"} />
         <meta name="twitter:description" content={kpValue !== null ? `Current Kp index is ${kpValue.toFixed(1)}. Solar wind at ${windSpeed?.toFixed(0) || '---'} km/s.` : "Monitor solar activity and aurora forecasts with our live dashboard."} />
-        <meta property="og:image" content="https://thestormwatcher.com/og-image.webp" />
+        <meta property="og:image" content="https://thestormwatcher.com/og-image.png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:image:type" content="image/webp" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:image" content="https://thestormwatcher.com/og-image.webp" />
+        <meta name="twitter:image" content="https://thestormwatcher.com/og-image.png" />
         <script type="application/ld+json">
           {JSON.stringify([
             {
