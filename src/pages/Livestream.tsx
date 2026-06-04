@@ -1,7 +1,9 @@
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
-import { Video, ExternalLink, Globe, Youtube, CalendarClock } from 'lucide-react';
+import PlanGuard from '../components/PlanGuard';
+import { Video, ExternalLink, Globe, Youtube, CalendarClock, Radio, MapPin, Sparkles } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useKpLive } from '../hooks/useKpLive';
 
 type CameraKind = 'youtube' | 'webcam';
 
@@ -20,7 +22,7 @@ interface Camera {
 }
 
 const CAMERAS: Camera[] = [
-  // ─── YouTube live channels (open in YouTube, no broken iframes) ───
+  // ─── YouTube live channels ───
   {
     id: 'auroramax_yt',
     name: 'AuroraMAX',
@@ -43,7 +45,7 @@ const CAMERAS: Camera[] = [
     flag: '🇨🇦',
     url: 'https://www.youtube.com/@exploreorg/streams',
     kind: 'youtube',
-    description: 'Multi-camera Arctic feeds from explore.org — Hudson Bay, Manitoba. Polar bears by day, aurora by night.',
+    description: 'Multi-camera Arctic feeds — Hudson Bay, Manitoba. Polar bears by day, aurora by night.',
     tags: ['Multi-cam', '24/7'],
   },
   {
@@ -59,8 +61,33 @@ const CAMERAS: Camera[] = [
     tags: ['HD', 'Sweden'],
     seasonal: 'Sep–Mar',
   },
+  {
+    id: 'aurora_zone_yt',
+    name: 'The Aurora Zone',
+    org: 'The Aurora Zone',
+    location: 'Lapland / Norway',
+    country: 'UK/Nordics',
+    flag: '🇬🇧',
+    url: 'https://www.youtube.com/@theaurorazone',
+    kind: 'youtube',
+    description: 'Aurora travel specialists with frequent live broadcasts from Finnish and Norwegian Lapland.',
+    tags: ['Travel', 'Live Events'],
+    seasonal: 'Oct–Mar',
+  },
+  {
+    id: 'spaceweathertv_yt',
+    name: 'Space Weather TV',
+    org: 'Space Weather TV',
+    location: 'USA',
+    country: 'USA',
+    flag: '🇺🇸',
+    url: 'https://www.youtube.com/@SpaceWeatherTV',
+    kind: 'youtube',
+    description: 'Space weather analysis and aurora event coverage — livestreams during major geomagnetic storms.',
+    tags: ['Space Weather', 'Storms'],
+  },
 
-  // ─── External webcams (open in a new tab) ───
+  // ─── External webcams ───
   {
     id: 'explore_arviat',
     name: 'Northern Lights Cam — Arviat',
@@ -106,10 +133,44 @@ const CAMERAS: Camera[] = [
     flag: '🇫🇮',
     url: 'https://www.sgo.fi/Data/RealTime/realtime.php',
     kind: 'webcam',
-    description: 'Real-time all-sky camera from the Sodankylä Geophysical Observatory. Refreshing JPG image.',
+    description: 'Real-time all-sky camera from the Sodankylä Geophysical Observatory.',
     tags: ['All-Sky', 'Scientific'],
   },
+  {
+    id: 'kho_svalbard',
+    name: 'Kjell Henriksen Observatory',
+    org: 'UNIS / Univ. Centre in Svalbard',
+    location: 'Svalbard',
+    country: 'Norway',
+    flag: '🇳🇴',
+    url: 'https://kho.unis.no/kho/',
+    kind: 'webcam',
+    description: 'Arctic all-sky cameras from 78°N — one of the northernmost aurora observatories in the world.',
+    tags: ['All-Sky', '78°N', 'Scientific'],
+    seasonal: 'Aug–Apr',
+  },
+  {
+    id: 'swl_cams',
+    name: 'Space Weather Live Cams',
+    org: 'SpaceWeatherLive.com',
+    location: 'Europe / Canada',
+    country: 'Multi',
+    flag: '🌍',
+    url: 'https://www.spaceweatherlive.com/en/auroras/aurora-live-cameras.html',
+    kind: 'webcam',
+    description: 'Curated list of live aurora cameras updated by the Space Weather Live team — great starting point.',
+    tags: ['Aggregator', 'Curated'],
+  },
 ];
+
+function kpCondition(kp: number | null): { label: string; color: string; dot: string } {
+  if (kp === null) return { label: 'Loading…', color: 'text-[#64748b]', dot: 'bg-[#475569]' };
+  if (kp >= 7)  return { label: 'Geomagnetic storm — excellent aurora visibility', color: 'text-emerald-300', dot: 'bg-emerald-400' };
+  if (kp >= 5)  return { label: 'Active — good aurora at high latitudes', color: 'text-emerald-400', dot: 'bg-emerald-500' };
+  if (kp >= 3)  return { label: 'Moderate — possible in Norway, Iceland, Finland', color: 'text-amber-300', dot: 'bg-amber-400' };
+  if (kp >= 1)  return { label: 'Low — visible only at very high latitudes', color: 'text-orange-400', dot: 'bg-orange-500' };
+  return { label: 'Very low — unlikely to see aurora now', color: 'text-red-400', dot: 'bg-red-500' };
+}
 
 const KindBadge = ({ kind }: { kind: CameraKind }) => {
   if (kind === 'youtube') {
@@ -147,7 +208,7 @@ const CameraCard = ({ cam, t }: { cam: Camera; t: (k: string) => string }) => {
       <p className="text-white font-semibold text-sm mb-0.5 leading-tight">{cam.name}</p>
       <p className="text-[#64748b] text-xs mb-1">{cam.org}</p>
       <p className="text-[#94a3b8] text-xs mb-2 flex items-center gap-1">
-        <Globe className="w-3 h-3 flex-shrink-0" />
+        <MapPin className="w-3 h-3 flex-shrink-0" />
         {cam.location}, {cam.country}
       </p>
       <p className="text-[#475569] text-xs leading-relaxed flex-1">{cam.description}</p>
@@ -178,6 +239,8 @@ const CameraCard = ({ cam, t }: { cam: Camera; t: (k: string) => string }) => {
 
 export default function Livestream() {
   const { t } = useLanguage();
+  const kp = useKpLive();
+  const condition = kpCondition(kp);
   const youtubeCams = CAMERAS.filter(c => c.kind === 'youtube');
   const webcams = CAMERAS.filter(c => c.kind === 'webcam');
 
@@ -190,6 +253,7 @@ export default function Livestream() {
       />
       <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Livestream', path: '/livestream' }]} />
 
+      {/* Header */}
       <div className="flex items-center gap-4 mb-3">
         <div className="w-14 h-14 bg-gradient-to-br from-[#ec4899] to-[#be185d] rounded-2xl flex items-center justify-center flex-shrink-0">
           <Video className="w-7 h-7 text-white" />
@@ -198,6 +262,16 @@ export default function Livestream() {
           <h1 className="text-3xl font-bold text-white">{t('livestream.title') || 'Aurora Livestream'}</h1>
           <p className="text-[#94a3b8] mt-0.5">{t('livestream.subtitle') || 'Live cameras from the aurora zone'}</p>
         </div>
+      </div>
+
+      {/* Kp viewing conditions banner */}
+      <div className="flex items-center gap-3 mb-6 glass-surface rounded-xl px-4 py-3 border border-white/10">
+        <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 animate-pulse ${condition.dot}`} />
+        <span className="text-xs text-[#64748b]">Current viewing conditions:</span>
+        <span className={`text-xs font-semibold ${condition.color}`}>
+          {kp !== null && <span className="mr-1">Kp {kp.toFixed(1)} —</span>}
+          {condition.label}
+        </span>
       </div>
 
       <p className="text-[#64748b] text-sm mb-8">
@@ -209,7 +283,7 @@ export default function Livestream() {
         <section className="mb-10">
           <div className="flex items-center gap-2 mb-4">
             <Youtube className="w-5 h-5 text-red-400" />
-            <h2 className="text-lg font-bold text-white">{t('livestream.sectionYouTube')}</h2>
+            <h2 className="text-lg font-bold text-white">{t('livestream.sectionYouTube') || 'YouTube Channels'}</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {youtubeCams.map(cam => <CameraCard key={cam.id} cam={cam} t={t} />)}
@@ -219,10 +293,10 @@ export default function Livestream() {
 
       {/* Webcams section */}
       {webcams.length > 0 && (
-        <section className="mb-8">
+        <section className="mb-10">
           <div className="flex items-center gap-2 mb-4">
             <Globe className="w-5 h-5 text-blue-300" />
-            <h2 className="text-lg font-bold text-white">{t('livestream.sectionWebcams')}</h2>
+            <h2 className="text-lg font-bold text-white">{t('livestream.sectionWebcams') || 'Live Webcams'}</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {webcams.map(cam => <CameraCard key={cam.id} cam={cam} t={t} />)}
@@ -230,6 +304,44 @@ export default function Livestream() {
         </section>
       )}
 
+      {/* Community streams — subscriber feature */}
+      <section className="mb-8">
+        <div className="flex items-center gap-2 mb-4">
+          <Radio className="w-5 h-5 text-emerald-400" />
+          <h2 className="text-lg font-bold text-white">Community Streams</h2>
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 ml-1">Pro</span>
+        </div>
+
+        <PlanGuard requiredPlan="pro">
+          <div className="glass-surface rounded-2xl p-8 border border-emerald-500/20 text-center">
+            <div className="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <Sparkles className="w-6 h-6 text-emerald-400" />
+            </div>
+            <h3 className="text-white font-bold text-lg mb-2">Share your aurora stream</h3>
+            <p className="text-[#64748b] text-sm mb-6 max-w-md mx-auto">
+              Are you streaming aurora from your location? Share your YouTube live link or webcam URL with the community.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
+              <input
+                type="url"
+                placeholder="YouTube or webcam URL…"
+                className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-[#475569] focus:outline-none focus:border-emerald-500/50"
+                disabled
+              />
+              <button
+                disabled
+                className="px-5 py-2.5 rounded-xl bg-emerald-500/20 text-emerald-400 text-sm font-semibold border border-emerald-500/30 flex items-center gap-2 cursor-not-allowed"
+              >
+                <MapPin className="w-4 h-4" />
+                Submit stream
+              </button>
+            </div>
+            <p className="text-[#475569] text-xs mt-4">Feature coming soon — community streams will appear here in real time.</p>
+          </div>
+        </PlanGuard>
+      </section>
+
+      {/* Tip */}
       <div className="glass-surface rounded-2xl p-5 border border-white/10 text-center">
         <p className="text-[#64748b] text-sm">
           <span className="font-semibold text-[#94a3b8]">{t('livestream.tipTitle') || 'Tip:'}</span>{' '}
