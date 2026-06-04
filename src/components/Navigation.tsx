@@ -135,7 +135,7 @@ const Navigation = () => {
                 className="w-14 h-14"
                 style={{ filter: 'drop-shadow(0 0 14px rgba(249,115,22,0.6)) drop-shadow(0 0 28px rgba(16,185,129,0.3))' }}
               />
-              <span className={`hidden xl:inline text-xl font-bold whitespace-nowrap ${theme === 'dark' ? 'gradient-solar' : 'text-slate-800'}`}>
+              <span className={`hidden xl:inline text-sm font-bold whitespace-nowrap ${theme === 'dark' ? 'gradient-solar' : 'text-slate-800'}`}>
                 The Storm Watcher
               </span>
             </>
