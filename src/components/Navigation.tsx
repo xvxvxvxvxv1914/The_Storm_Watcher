@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Globe, User, LogOut, ChevronDown, AlertTriangle, SlidersHorizontal } from 'lucide-react';
+import { Globe, User, LogOut, ChevronDown, AlertTriangle, SlidersHorizontal, Sun } from 'lucide-react';
 import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -100,7 +100,10 @@ const Navigation = () => {
           : '0 4px 20px rgba(0,0,0,0.45), 0 1px 4px rgba(0,0,0,0.3)',
       }}>
         <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2.5">
-          <img src="/logos/icon.svg" alt="The Storm Watcher" className="w-12 h-12" style={{ filter: 'drop-shadow(0 0 12px rgba(249,115,22,0.6))' }} />
+          <div className="relative">
+            <Sun className="w-7 h-7 text-[#f97316]" />
+            <div className="absolute inset-0 rounded-full bg-[#f97316] opacity-20 blur-lg" />
+          </div>
           <span className="text-sm font-bold gradient-solar">The Storm Watcher</span>
         </Link>
         <div className="flex items-center gap-2">
