@@ -57,10 +57,6 @@
       "destination": "https://kauai.ccmc.gsfc.nasa.gov/DONKI/WS/get/:path*"
     },
     {
-      "source": "/api/gfz/:path*",
-      "destination": "https://kp.gfz.de/:path*"
-    },
-    {
       "source": "/sitemap.xml",
       "destination": "/sitemap.xml"
     },

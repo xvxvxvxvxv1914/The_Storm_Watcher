@@ -88,11 +88,9 @@ export interface Alert {
 const TTL_1M = 60_000;      // 1-min feeds
 const TTL_5M = 300_000;     // slower-changing data (history, alerts)
 const TTL_FORECAST = 900_000; // 15 min — forecast updates every ~3 hours
-// Web goes through the Vercel/Vite `/api/gfz` rewrite (CORS); native has no such
-// proxy, so call GFZ directly — CapacitorHttp bypasses WKWebView CORS. Without
-// this, GFZ silently failed on device and the Kp index fell back to NOAA's
-// real-time estimate (which can read 0 during quiet minutes), showing a wrong 0.
-const GFZ_BASE = isNative() ? 'https://kp.gfz.de/app/json/' : '/api/gfz/app/json/';
+// Native calls GFZ directly (CapacitorHttp bypasses WKWebView CORS).
+// Web uses the /api/gfz serverless function — simple rewrite was blocked by GFZ.
+const GFZ_BASE = isNative() ? 'https://kp.gfz.de/app/json/' : '/api/gfz';
 
 interface GfzResponse {
   datetime: string[];

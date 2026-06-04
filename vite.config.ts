@@ -76,7 +76,7 @@ export default defineConfig(({ command }) => ({
       '/api/gfz': {
         target: 'https://kp.gfz.de',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/gfz/, ''),
+        rewrite: (path) => path.replace(/^\/api\/gfz/, '/app/json/'),
       },
       '/api/stripe': {
         target: 'http://localhost:3001',
