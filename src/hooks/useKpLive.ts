@@ -15,8 +15,9 @@ async function poll() {
   if (document.visibilityState === 'hidden') return;
   try {
     const data = await getKpIndex();
+    if (!data.length) { notify(null); return; }
     const latest = data.at(-1);
-    const kp = latest?.estimated_kp ?? latest?.kp_index ?? null;
+    const kp = latest?.kp_index ?? latest?.estimated_kp ?? null;
     notify(typeof kp === 'number' ? kp : null);
   } catch {
     // keep previous value on error

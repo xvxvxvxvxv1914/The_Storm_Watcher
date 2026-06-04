@@ -63,7 +63,7 @@ const Forecast = () => {
         return {
           time: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
           fullTime: date.toLocaleString(),
-          kp: item.kp_index || item.estimated_kp || 0,
+          kp: item.kp_index ?? item.estimated_kp ?? 0,
           date: date,
         };
       });

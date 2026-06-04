@@ -193,7 +193,7 @@ const Dashboard = () => {
 
       if (kpData && kpData.length > 0) {
         const latest = kpData[kpData.length - 1];
-        setKpValue(latest.kp_index || latest.estimated_kp || 0);
+        setKpValue(latest.kp_index ?? latest.estimated_kp ?? 0);
       } else {
         setKpValue(0);
       }

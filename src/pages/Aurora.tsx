@@ -155,7 +155,7 @@ const Aurora = () => {
       const data = await getKpIndex();
       if (data && data.length > 0) {
         const latest = data[data.length - 1];
-        setKpValue(latest.kp_index || latest.estimated_kp || 0);
+        setKpValue(latest.kp_index ?? latest.estimated_kp ?? 0);
       } else {
         setKpValue(0);
       }
