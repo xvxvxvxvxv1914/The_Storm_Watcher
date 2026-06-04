@@ -44,3 +44,4 @@ playwright-report
 playwright/.cache
 .vercel
 .env.test
+the stormwatcher/
