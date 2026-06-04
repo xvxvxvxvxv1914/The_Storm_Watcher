@@ -1,4 +1,8 @@
 import { logError } from '../utils/logger';
+import { cached } from '../utils/apiCache';
+
+const TTL_UV  = 30 * 60 * 1000; // 30 min
+const TTL_SUN = 60 * 60 * 1000; // 60 min — sunrise/sunset barely changes
 
 const fetchJson = async <T,>(url: string, timeoutMs = 10000): Promise<T> => {
   const ctrl = new AbortController();
@@ -25,7 +29,8 @@ export interface UvData {
   timezone: string;
 }
 
-export const getUvIndex = async (lat: number, lon: number): Promise<UvData> => {
+export const getUvIndex = (lat: number, lon: number): Promise<UvData> =>
+  cached(`uv-${lat.toFixed(1)}-${lon.toFixed(1)}`, TTL_UV, async () => {
   try {
     const params = new URLSearchParams({
       latitude: String(lat),
@@ -60,7 +65,7 @@ export const getUvIndex = async (lat: number, lon: number): Promise<UvData> => {
     logError('Error fetching UV Index:', error);
     return { current: 0, max: 0, hourly: [], timezone: 'UTC' };
   }
-};
+});
 
 export interface SunDay {
   date: string;
@@ -71,7 +76,8 @@ export interface SunDay {
   goldenEveningStart: string;
 }
 
-export const getSunData = async (lat: number, lon: number): Promise<SunDay[]> => {
+export const getSunData = (lat: number, lon: number): Promise<SunDay[]> =>
+  cached(`sun-${lat.toFixed(1)}-${lon.toFixed(1)}`, TTL_SUN, async () => {
   try {
     const params = new URLSearchParams({
       latitude: String(lat),
@@ -106,7 +112,7 @@ export const getSunData = async (lat: number, lon: number): Promise<SunDay[]> =>
     logError('Error fetching Sun Data:', error);
     return [];
   }
-};
+});
 
 export const getUvLevel = (uv: number): { label: string; labelKey: string; color: string; bg: string; advice: string; adviceKey: string } => {
   if (uv < 3) return { label: 'Low', labelKey: 'uv.level.low.label', color: '#10b981', bg: 'from-[#10b981] to-[#059669]', advice: 'No protection needed. Safe to be outside.', adviceKey: 'uv.level.low.advice' };

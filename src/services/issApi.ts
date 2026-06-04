@@ -1,5 +1,9 @@
 import * as satellite from 'satellite.js';
 import { logError } from '../utils/logger';
+import { cached } from '../utils/apiCache';
+
+const TTL_TLE    = 6 * 60 * 60 * 1000;  // 6 h — orbital elements change slowly
+const TTL_PASSES = 60 * 60 * 1000;       // 1 h
 
 const fetchJson = async <T,>(url: string, timeoutMs = 10000): Promise<T> => {
   const ctrl = new AbortController();
@@ -45,19 +49,21 @@ export const getIssPosition = async (): Promise<IssPosition> => {
   }
 };
 
-const getTle = async (): Promise<{ line1: string; line2: string }> => {
-  try {
-    const data = await fetchJson<{ line1: string; line2: string; [k: string]: string }>('https://tle.ivanstanojevic.me/api/tle/25544');
-    return { line1: data.line1, line2: data.line2 };
-  } catch (error) {
-    logError('Error fetching ISS TLE:', error);
-    return { line1: '', line2: '' };
-  }
-};
+const getTle = (): Promise<{ line1: string; line2: string }> =>
+  cached('iss-tle', TTL_TLE, async () => {
+    try {
+      const data = await fetchJson<{ line1: string; line2: string; [k: string]: string }>('https://tle.ivanstanojevic.me/api/tle/25544');
+      return { line1: data.line1, line2: data.line2 };
+    } catch (error) {
+      logError('Error fetching ISS TLE:', error);
+      return { line1: '', line2: '' };
+    }
+  });
 
 const toDeg = (rad: number) => (rad * 180) / Math.PI;
 
-export const getIssPasses = async (lat: number, lon: number, altMeters = 0): Promise<IssPass[]> => {
+export const getIssPasses = (lat: number, lon: number, altMeters = 0): Promise<IssPass[]> =>
+  cached(`iss-passes-${lat.toFixed(1)}-${lon.toFixed(1)}`, TTL_PASSES, async () => {
   try {
     const { line1, line2 } = await getTle();
     if (!line1 || !line2) return [];
@@ -126,4 +132,4 @@ export const getIssPasses = async (lat: number, lon: number, altMeters = 0): Pro
     logError('Error fetching ISS passes:', error);
     return [];
   }
-};
+});

@@ -396,11 +396,16 @@ const Alerts = () => {
   }, [fetchAlerts]);
 
   const feed = useMemo((): FeedItem[] => {
+    const seen = new Set<string>();
     const items: FeedItem[] = [
       ...alerts.map(a => buildNoaaItem(a, t)),
       ...cmeEvents.map(c => buildCmeItem(c, t)),
       ...flareEvents.map(f => buildFlareItem(f, t)),
-    ];
+    ].filter(item => {
+      if (seen.has(item.id)) return false;
+      seen.add(item.id);
+      return true;
+    });
     return items.sort((a, b) => a.priority - b.priority || new Date(b.dateStr).getTime() - new Date(a.dateStr).getTime());
   }, [alerts, cmeEvents, flareEvents, t]);
 

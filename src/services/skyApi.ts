@@ -1,4 +1,7 @@
 import { logError } from '../utils/logger';
+import { cached } from '../utils/apiCache';
+
+const TTL_SKY = 30 * 60 * 1000; // 30 min
 
 export interface NightForecast {
   label: 'tonight' | 'tomorrow' | 'nightAfter';
@@ -44,10 +47,11 @@ export interface SkyData {
 
 // Returns avg cloud cover % for nighttime hours across 3 nights (null per night if data missing).
 // kpByHour: map of ISO-hour-string → kp value from the NOAA forecast.
-export async function getNightsCloudCover(
+export function getNightsCloudCover(
   lat: number,
   lon: number,
 ): Promise<{ date: Date; cloudCoverAvg: number }[]> {
+  return cached(`nights-cloud-${lat.toFixed(1)}-${lon.toFixed(1)}`, TTL_SKY, async () => {
   const params = new URLSearchParams({
     latitude: String(lat),
     longitude: String(lon),
@@ -75,9 +79,11 @@ export async function getNightsCloudCover(
     nights.push({ date: new Date(daily.time[i]), cloudCoverAvg: avg });
   }
   return nights;
+  });
 }
 
-export const getSkyVisibility = async (lat: number, lon: number, kp: number): Promise<SkyData> => {
+export const getSkyVisibility = (lat: number, lon: number, kp: number): Promise<SkyData> =>
+  cached(`sky-${lat.toFixed(1)}-${lon.toFixed(1)}`, TTL_SKY, async () => {
   try {
     const params = new URLSearchParams({
       latitude: String(lat),
@@ -167,4 +173,4 @@ export const getSkyVisibility = async (lat: number, lon: number, kp: number): Pr
       sunrise: '-',
     };
   }
-};
+});

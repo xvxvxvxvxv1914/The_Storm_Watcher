@@ -1,6 +1,7 @@
 import { logWarning } from '../utils/logger';
 import { isNative as getNative } from '../utils/platform';
 import { persistGet, persistSet } from '../utils/offlineCache';
+import { cached } from '../utils/apiCache';
 
 export interface NigggDataPoint {
   time: number;
@@ -64,7 +65,10 @@ const NIGGG_BASE = getNative()
   ? 'https://pagmag.ngic.bg/assets/php/datacalendar26.php'
   : '/api/niggg';
 
-export const fetchNigggData = async (): Promise<NigggDataSet> => {
+const TTL_NIGGG = 10 * 60 * 1000; // 10 min
+
+export const fetchNigggData = (): Promise<NigggDataSet> =>
+  cached('niggg', TTL_NIGGG, async () => {
   try {
     const today = new Date();
     const threeDaysAgo = new Date(today);
@@ -133,7 +137,7 @@ export const fetchNigggData = async (): Promise<NigggDataSet> => {
     // External NIGGG endpoint is intermittently flaky (404/timeout); this is
     // handled (falls back to cached/empty) so report at warning level, not error.
     logWarning('Error fetching NIGGG data:', error);
-    const cached = await persistGet<NigggDataSet>('offline_niggg');
-    return cached ?? { hComponent: [], fComponent: [] };
+    const offline = await persistGet<NigggDataSet>('offline_niggg');
+    return offline ?? { hComponent: [], fComponent: [] };
   }
-};
+});
