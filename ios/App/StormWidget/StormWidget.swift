@@ -1,6 +1,25 @@
 import WidgetKit
 import SwiftUI
 
+// MARK: - Brand colours (from icon.svg / web design system)
+private extension Color {
+    init(hex: String) {
+        let s = Scanner(string: hex.trimmingCharacters(in: CharacterSet(charactersIn: "#")))
+        var int: UInt64 = 0
+        s.scanHexInt64(&int)
+        self.init(
+            red:   Double((int >> 16) & 0xFF) / 255,
+            green: Double((int >>  8) & 0xFF) / 255,
+            blue:  Double( int        & 0xFF) / 255
+        )
+    }
+    static let brandEmerald = Color(hex: "#10b981") // aurora / quiet Kp
+    static let brandAmber   = Color(hex: "#eab308") // unsettled Kp 4+
+    static let brandOrange  = Color(hex: "#f97316") // solar / storm Kp 5+
+    static let brandRed     = Color(hex: "#ef4444") // severe storm Kp 7+
+    static let brandNavy    = Color(hex: "#0a0e27") // deep space background
+}
+
 private let appGroupID = "group.com.stormwatcher.app"
 private let sharedDataMaxAge: TimeInterval = 300 // 5 minutes — BGAppRefresh fires at most every 15 min
 
@@ -141,12 +160,10 @@ private struct WL {
 
 private func kpColor(_ kp: Double) -> Color {
     switch kp {
-    case 9...: return .purple
-    case 8...: return Color(red: 0.8, green: 0, blue: 0.8)
-    case 7...: return .red
-    case 6...: return .orange
-    case 5...: return Color(red: 1, green: 0.6, blue: 0)
-    default:   return .green
+    case 7...: return .brandRed
+    case 5...: return .brandOrange
+    case 4...: return .brandAmber
+    default:   return .brandEmerald
     }
 }
 
@@ -305,11 +322,11 @@ struct ForecastBarsView: View {
                     p.addLine(to: CGPoint(x: geo.size.width, y: thresholdY))
                 }
                 .stroke(style: StrokeStyle(lineWidth: 1, dash: [3, 3]))
-                .foregroundColor(Color.orange.opacity(0.5))
+                .foregroundColor(Color.brandOrange.opacity(0.5))
 
                 Text("G1")
                     .font(.system(size: 6, weight: .bold))
-                    .foregroundColor(.orange.opacity(0.7))
+                    .foregroundColor(.brandOrange.opacity(0.7))
                     .position(x: 9, y: thresholdY - 5)
             }
         }
@@ -440,7 +457,7 @@ struct StormWidgetMediumView: View {
                 VStack(alignment: .leading, spacing: 5) {
                     Label("\(entry.windSpeed) km/s", systemImage: "wind")
                         .font(.system(size: 10, weight: .medium))
-                        .foregroundColor(.cyan.opacity(0.8))
+                        .foregroundColor(.brandEmerald.opacity(0.75))
                     Label(entry.lastUpdated, systemImage: "clock")
                         .font(.system(size: 10))
                         .foregroundColor(Color.white.opacity(0.3))
@@ -546,7 +563,7 @@ struct StormWidgetLargeView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         Label("\(entry.windSpeed) km/s", systemImage: "wind")
                             .font(.system(size: 12, weight: .medium))
-                            .foregroundColor(.cyan.opacity(0.85))
+                            .foregroundColor(.brandEmerald.opacity(0.75))
                         Label(WL.kpIndex, systemImage: "waveform.path.ecg")
                             .font(.system(size: 11))
                             .foregroundColor(Color.white.opacity(0.35))
@@ -565,14 +582,14 @@ struct StormWidgetLargeView: View {
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
                         LinearGradient(
-                            colors: [.green, .yellow, .orange, .red, .purple],
+                            colors: [.brandEmerald, .brandAmber, .brandOrange, .brandRed, Color(hex: "#7c3aed")],
                             startPoint: .leading, endPoint: .trailing
                         )
                         .frame(height: 6)
                         .clipShape(Capsule())
                         .opacity(0.4)
                         LinearGradient(
-                            colors: [.green, .yellow, .orange, .red, .purple],
+                            colors: [.brandEmerald, .brandAmber, .brandOrange, .brandRed, Color(hex: "#7c3aed")],
                             startPoint: .leading, endPoint: .trailing
                         )
                         .frame(width: geo.size.width * CGFloat(kpFraction), height: 6)
@@ -587,9 +604,9 @@ struct StormWidgetLargeView: View {
                 HStack {
                     Text("0").font(.system(size: 8)).foregroundColor(Color.white.opacity(0.2))
                     Spacer()
-                    Text("G1").font(.system(size: 8)).foregroundColor(.orange.opacity(0.6))
+                    Text("G1").font(.system(size: 8)).foregroundColor(.brandOrange.opacity(0.7))
                     Spacer()
-                    Text("G3").font(.system(size: 8)).foregroundColor(.red.opacity(0.6))
+                    Text("G3").font(.system(size: 8)).foregroundColor(.brandRed.opacity(0.7))
                     Spacer()
                     Text("9").font(.system(size: 8)).foregroundColor(Color.white.opacity(0.2))
                 }
@@ -740,7 +757,7 @@ struct StormWidgetEntryView: View {
                 }
             }
         }
-        .widgetBackground(Color(red: 0.05, green: 0.05, blue: 0.12))
+        .widgetBackground(.brandNavy)
         .widgetURL(deepLink)
     }
 }
