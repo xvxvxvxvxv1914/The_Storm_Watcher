@@ -1,0 +1,34 @@
+# The Storm Watcher
+
+> Real-time space weather monitoring — Kp index, solar wind, aurora forecast and geomagnetic storm alerts.
+
+The Storm Watcher is a free PWA and mobile app (iOS/Android) for tracking space weather. It shows live geomagnetic storm data, aurora visibility forecasts, solar wind speed, X-ray flare class, UV index, cloud cover, and ISS position. Data comes from NOAA SWPC, NASA DONKI, GFZ Potsdam, and Open-Meteo.
+
+## Pages
+
+- [Home](https://www.thestormwatcher.com/): Live Kp index, storm score, solar wind speed, and real-time space weather status
+- [Dashboard](https://www.thestormwatcher.com/dashboard): Full space weather dashboard with Kp history, solar wind, mag field, and forecasts
+- [Forecast](https://www.thestormwatcher.com/forecast): 7-day Kp forecast and solar activity outlook from NOAA
+- [Aurora](https://www.thestormwatcher.com/aurora): Aurora visibility forecast and OVATION 3D globe model
+- [Alerts](https://www.thestormwatcher.com/alerts): Real-time CME and solar flare alerts from NASA DONKI
+- [Aurora Map](https://www.thestormwatcher.com/aurora-map): Interactive aurora oval map with live Kp overlay
+- [UV Index](https://www.thestormwatcher.com/uv): Real-time UV index by location from Open-Meteo
+- [Sky Visibility](https://www.thestormwatcher.com/sky): Cloud cover and astronomical seeing conditions
+- [ISS Tracker](https://www.thestormwatcher.com/iss): Real-time International Space Station position and pass predictions
+- [Sun Times](https://www.thestormwatcher.com/sun): Sunrise, sunset, golden hour, and astronomical twilight times
+- [Storm Calendar](https://www.thestormwatcher.com/calendar): Historical geomagnetic storm calendar
+- [Community Mood](https://www.thestormwatcher.com/mood): Community reports of how geomagnetic storms affect wellbeing
+- [Magnetic Effects](https://www.thestormwatcher.com/magnetic-effects): How geomagnetic storms affect humans and technology
+- [FAQ](https://www.thestormwatcher.com/faq): Frequently asked questions about space weather and the Kp index
+- [Blog](https://www.thestormwatcher.com/blog): Space weather articles and educational content
+- [About](https://www.thestormwatcher.com/about): About The Storm Watcher and its data sources
+- [Pricing](https://www.thestormwatcher.com/pricing): Free, Pro (€3.99/mo), and Premium (€7.99/mo) plans
+
+## Data Sources
+
+- NOAA SWPC — Kp index, solar wind, X-ray flux, aurora OVATION model, 3-day forecast
+- NASA DONKI — CME and solar flare alerts
+- GFZ Potsdam — Official definitive Kp index
+- Open-Meteo — UV index and cloud cover by coordinates
+- Where The ISS At — Real-time ISS position
+- NIGGG Bulgaria — Local geomagnetic field (H/F components)
