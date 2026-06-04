@@ -49,7 +49,7 @@ const Footer = () => {
         <div className="lg:hidden py-5">
           {/* Brand */}
           <div className="flex items-center gap-2 mb-4">
-            <img src="/logos/icon.svg" alt="The Storm Watcher" className="w-5 h-5 shrink-0" />
+            <img src="/logos/icon.svg" alt="The Storm Watcher" className="w-7 h-7 shrink-0" />
             <span className="text-white font-bold text-sm gradient-solar">The Storm Watcher</span>
           </div>
 
@@ -124,7 +124,7 @@ const Footer = () => {
           <div className="grid grid-cols-5 gap-10 mb-10">
             <div className="col-span-2">
               <div className="flex items-center mb-4">
-                <img src="/logos/logo-transparent.png" alt="The Storm Watcher" className="h-9 w-auto" />
+                <img src="/logos/logo-transparent.png" alt="The Storm Watcher" className="h-12 w-auto" />
               </div>
               <p className="text-[#94a3b8] text-sm leading-relaxed mb-6">
                 {t('footer.description')}

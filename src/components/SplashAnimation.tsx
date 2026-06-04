@@ -188,7 +188,7 @@ const SplashAnimation = () => {
           <img
             src="/logos/logo-transparent.png"
             alt="The Storm Watcher"
-            style={{ height: '56px', width: 'auto' }}
+            style={{ height: '88px', width: 'auto' }}
           />
         </div>
       </div>
