@@ -717,7 +717,7 @@ const Home = () => {
               { name: 'NIGGG', sub: 'Bulgaria Geophysics Institute', flag: 'bg' },
             ].map(source => (
               <div key={source.name} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '16px 24px' }} className="relative text-left">
-                <img src={`https://flagcdn.com/32x24/${source.flag}.png`} alt={source.flag} className="absolute top-3 right-3 rounded-sm shadow-sm" style={{ opacity: 0.8 }} width={32} height={24} />
+                <img src={`https://flagcdn.com/32x24/${source.flag}.png`} alt={`${source.name} flag`} className="absolute top-3 right-3 rounded-sm shadow-sm" style={{ opacity: 0.8 }} width={32} height={24} />
                 <div className="text-xl font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.9)' }}>
                   {source.name}
                 </div>

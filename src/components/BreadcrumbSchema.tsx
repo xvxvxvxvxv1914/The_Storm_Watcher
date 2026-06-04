@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 
-const BASE_URL = 'https://thestormwatcher.com';
+const BASE_URL = 'https://www.thestormwatcher.com';
 
 interface Crumb {
   name: string;

@@ -219,10 +219,31 @@ export default function Pricing() {
       >
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "Product",
-          "name": "The Storm Watcher Pro",
-          "url": "https://thestormwatcher.com/pricing",
-          "offers": { "@type": "Offer", "priceCurrency": "EUR", "availability": "https://schema.org/InStock" }
+          "@type": "SoftwareApplication",
+          "name": "The Storm Watcher",
+          "url": "https://www.thestormwatcher.com/pricing",
+          "operatingSystem": "Web, iOS, Android",
+          "applicationCategory": "WeatherApplication",
+          "offers": [
+            {
+              "@type": "Offer",
+              "name": "Pro",
+              "price": "3.99",
+              "priceCurrency": "EUR",
+              "priceValidUntil": "2027-01-01",
+              "availability": "https://schema.org/InStock",
+              "url": "https://www.thestormwatcher.com/pricing"
+            },
+            {
+              "@type": "Offer",
+              "name": "Premium",
+              "price": "7.99",
+              "priceCurrency": "EUR",
+              "priceValidUntil": "2027-01-01",
+              "availability": "https://schema.org/InStock",
+              "url": "https://www.thestormwatcher.com/pricing"
+            }
+          ]
         })}</script>
       </PageMeta>
       <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Pricing', path: '/pricing' }]} />
