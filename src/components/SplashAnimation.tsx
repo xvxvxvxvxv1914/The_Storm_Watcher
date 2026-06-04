@@ -170,26 +170,55 @@ const SplashAnimation = () => {
           }}
         />
 
-        {/* Logo */}
+        {/* Logo icon + name — stacked */}
         <div
           style={{
             position: 'absolute',
-            bottom: '18%',
+            bottom: '12%',
             left: 0,
             right: 0,
             display: 'flex',
-            justifyContent: 'center',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '16px',
             opacity: visible ? 1 : 0,
-            transform: visible ? 'translateY(0)' : 'translateY(20px)',
+            transform: visible ? 'translateY(0)' : 'translateY(24px)',
             transition: 'opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s',
-            filter: 'drop-shadow(0 0 24px rgba(16,185,129,0.5))',
           }}
         >
           <img
-            src="/logos/logo-transparent.png"
-            alt="The Storm Watcher"
-            style={{ height: '88px', width: 'auto' }}
+            src="/logos/icon.svg"
+            alt=""
+            style={{
+              height: '140px',
+              width: 'auto',
+              filter: 'drop-shadow(0 0 32px rgba(249,115,22,0.6)) drop-shadow(0 0 64px rgba(16,185,129,0.4))',
+            }}
           />
+          <p
+            style={{
+              color: '#f8fafc',
+              fontWeight: 700,
+              fontSize: '1.6rem',
+              letterSpacing: '0.15em',
+              textTransform: 'uppercase',
+              textShadow: '0 0 32px rgba(16,185,129,0.7), 0 0 64px rgba(16,185,129,0.3)',
+              margin: 0,
+            }}
+          >
+            The Storm Watcher
+          </p>
+          <p
+            style={{
+              color: 'rgba(255,255,255,0.35)',
+              fontSize: '0.65rem',
+              letterSpacing: '0.35em',
+              textTransform: 'uppercase',
+              margin: 0,
+            }}
+          >
+            Space Weather Monitor
+          </p>
         </div>
       </div>
     </>
