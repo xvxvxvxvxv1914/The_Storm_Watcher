@@ -128,14 +128,17 @@ const Navigation = () => {
             className="flex items-center gap-3 group"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
-            {theme === 'dark' ? (
-              <img src="/logos/logo-transparent.png" alt="The Storm Watcher" className="h-14 w-auto" style={{ filter: 'drop-shadow(0 0 14px rgba(249,115,22,0.5))' }} />
-            ) : (
-              <>
-                <img src="/logos/icon.svg" alt="" className="w-12 h-12" />
-                <span className="hidden xl:inline text-xl font-bold text-slate-800 whitespace-nowrap">The Storm Watcher</span>
-              </>
-            )}
+            <>
+              <img
+                src="/logos/icon.svg"
+                alt=""
+                className="w-14 h-14"
+                style={{ filter: 'drop-shadow(0 0 14px rgba(249,115,22,0.6)) drop-shadow(0 0 28px rgba(16,185,129,0.3))' }}
+              />
+              <span className={`hidden xl:inline text-xl font-bold whitespace-nowrap ${theme === 'dark' ? 'gradient-solar' : 'text-slate-800'}`}>
+                The Storm Watcher
+              </span>
+            </>
           </Link>
 
           {/* Desktop nav */}
