@@ -86,7 +86,7 @@ const About = () => {
                 <p className="text-[#94a3b8] leading-relaxed mb-5">
                   {t('about.dataText')}
                 </p>
-                <div className="bg-[#0a0015] rounded-xl p-5 border border-white/5">
+                <div className="bg-[var(--tsw-surface-bg)] rounded-xl p-5 border border-white/5">
                   <p className="text-[#64748b] text-xs uppercase tracking-widest mb-3 font-semibold">
                     {t('about.dataSources')}
                   </p>

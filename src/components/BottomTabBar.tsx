@@ -170,7 +170,7 @@ const BottomTabBar = () => {
             }}
           >
             <div className="flex justify-center pt-3 pb-2 cursor-grab active:cursor-grabbing">
-              <div className="w-9 h-1 rounded-full bg-white/25" />
+              <div className={`w-9 h-1 rounded-full ${theme === 'light' ? 'bg-black/20' : 'bg-white/25'}`} />
             </div>
 
             <div className="flex items-center justify-between px-5 pb-3">

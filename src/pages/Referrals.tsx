@@ -59,7 +59,7 @@ export default function Referrals() {
     : null;
 
   return (
-    <div className="min-h-screen bg-[#0a0a1a] text-white pt-20 pb-24">
+    <div className="min-h-screen bg-[var(--tsw-bg)] text-white pt-20 pb-24">
       <PageMeta title={`${t('referrals.title')} — The Storm Watcher`} description={t('referrals.subtitle')} path="/referrals" />
 
       <div className="max-w-2xl mx-auto px-4">
@@ -89,7 +89,7 @@ export default function Referrals() {
                   readOnly
                   value={link}
                   onFocus={e => e.target.select()}
-                  className="flex-1 min-w-0 rounded-xl bg-[#0a0a1a] border border-white/10 px-3 py-2.5 text-sm text-[#cbd5e1] font-mono"
+                  className="flex-1 min-w-0 rounded-xl bg-[var(--tsw-surface-bg)] border border-white/10 px-3 py-2.5 text-sm text-[var(--tsw-fg-muted)] font-mono"
                 />
                 <div className="flex gap-2">
                   <button onClick={copy} className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-sm font-semibold transition-colors">

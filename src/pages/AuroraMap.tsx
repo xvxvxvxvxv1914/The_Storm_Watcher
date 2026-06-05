@@ -43,7 +43,7 @@ export default function AuroraMap() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0a0a1a] text-white pt-20 pb-24">
+    <div className="min-h-screen bg-[var(--tsw-bg)] text-white pt-20 pb-24">
       <PageMeta
         title={t('auroraMap.meta.title') || 'Aurora Visibility Map — The Storm Watcher'}
         description={t('auroraMap.meta.description') || 'Live world map showing aurora visibility zones based on the current Kp index.'}

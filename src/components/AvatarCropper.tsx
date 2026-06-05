@@ -64,7 +64,7 @@ export default function AvatarCropper({ imageSrc, onConfirm, onCancel }: Props) 
       className="fixed inset-0 z-[200] flex items-center justify-center bg-black/85 backdrop-blur-sm p-4"
       onClick={e => { if (e.target === e.currentTarget) onCancel(); }}
     >
-      <div className="bg-[#0f0f1f] border border-white/10 rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl">
+      <div className="bg-[var(--tsw-surface-bg)] border border-black/10 rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-white/8">
           <button onClick={onCancel} className="p-1.5 rounded-lg hover:bg-white/8 transition-colors text-slate-400 hover:text-white">

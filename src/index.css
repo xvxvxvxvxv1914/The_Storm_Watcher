@@ -17,12 +17,12 @@ html {
 }
 
 html.light {
-  --tsw-bg:            #f1f5f9;
+  --tsw-bg:            #eef2f8;
   --tsw-fg:            #0f172a;
   --tsw-fg-muted:      #64748b;
   --tsw-fg-subtle:     #94a3b8;
-  --tsw-surface-bg:    rgba(255, 255, 255, 0.88);
-  --tsw-surface-border:rgba(0, 0, 0, 0.09);
+  --tsw-surface-bg:    #ffffff;
+  --tsw-surface-border:rgba(16, 185, 129, 0.12);
   color-scheme: light;
 }
 
@@ -92,6 +92,16 @@ html.light {
     }
   }
 
+  html.light .glass-surface {
+    background: var(--tsw-surface-bg);
+    border-color: var(--tsw-surface-border);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.07),
+      0 4px 16px rgba(0, 0, 0, 0.05);
+  }
+
   .glow-orange {
     box-shadow: 0 0 25px rgba(249, 115, 22, 0.2);
   }
@@ -139,7 +149,7 @@ html.light .skeleton {
   background: linear-gradient(
     90deg,
     #e2e8f0 25%,
-    #f1f5f9 50%,
+    #f8fafc 50%,
     #e2e8f0 75%
   );
   background-size: 200% 100%;
@@ -286,6 +296,36 @@ html.light .star {
 html.light .solar-particle {
   display: none;
 }
+
+/* ── Light mode: bg-white/* → dark-tint equivalents ── */
+html.light .bg-white\/3   { background-color: rgba(0, 0, 0, 0.02) !important; }
+html.light .bg-white\/4   { background-color: rgba(0, 0, 0, 0.03) !important; }
+html.light .bg-white\/5   { background-color: rgba(0, 0, 0, 0.04) !important; }
+html.light .bg-white\/8   { background-color: rgba(0, 0, 0, 0.05) !important; }
+html.light .bg-white\/10  { background-color: rgba(0, 0, 0, 0.06) !important; }
+html.light .bg-white\/12  { background-color: rgba(0, 0, 0, 0.07) !important; }
+html.light .bg-white\/15  { background-color: rgba(0, 0, 0, 0.08) !important; }
+html.light .bg-white\/20  { background-color: rgba(0, 0, 0, 0.09) !important; }
+html.light .bg-white\/25  { background-color: rgba(0, 0, 0, 0.11) !important; }
+
+/* ── Light mode: border-white/* → dark-tint equivalents ── */
+html.light .border-white\/5  { border-color: rgba(0, 0, 0, 0.07) !important; }
+html.light .border-white\/6  { border-color: rgba(0, 0, 0, 0.08) !important; }
+html.light .border-white\/8  { border-color: rgba(0, 0, 0, 0.09) !important; }
+/* border-white/10 already defined above */
+html.light .border-white\/20 { border-color: rgba(0, 0, 0, 0.14) !important; }
+html.light .border-white\/25 { border-color: rgba(0, 0, 0, 0.15) !important; }
+html.light .border-white\/30 { border-color: rgba(0, 0, 0, 0.18) !important; }
+html.light .border-white\/40 { border-color: rgba(0, 0, 0, 0.22) !important; }
+
+/* ── Light mode: hover:bg-white/* → dark-tint equivalents ── */
+html.light .hover\:bg-white\/3:hover   { background-color: rgba(0, 0, 0, 0.03) !important; }
+html.light .hover\:bg-white\/5:hover   { background-color: rgba(0, 0, 0, 0.05) !important; }
+html.light .hover\:bg-white\/8:hover   { background-color: rgba(0, 0, 0, 0.06) !important; }
+html.light .hover\:bg-white\/10:hover  { background-color: rgba(0, 0, 0, 0.07) !important; }
+html.light .hover\:bg-white\/12:hover  { background-color: rgba(0, 0, 0, 0.08) !important; }
+html.light .hover\:bg-white\/15:hover  { background-color: rgba(0, 0, 0, 0.09) !important; }
+html.light .hover\:bg-white\/20:hover  { background-color: rgba(0, 0, 0, 0.11) !important; }
 
 /* H21 — Accessibility: focus rings */
 *:focus-visible {

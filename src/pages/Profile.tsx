@@ -172,7 +172,7 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#0a0a1a]">
+      <div className="flex items-center justify-center min-h-screen bg-[var(--tsw-bg)]">
         <div className="w-8 h-8 border-2 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin" />
       </div>
     );
@@ -182,7 +182,7 @@ export default function Profile() {
     <>
       {cropSrc && <AvatarCropper imageSrc={cropSrc} onConfirm={handleCropConfirm} onCancel={() => setCropSrc(null)} />}
 
-      <div className="min-h-screen bg-[#0a0a1a] pb-28 relative">
+      <div className="min-h-screen bg-[var(--tsw-bg)] pb-28 relative">
         <PageMeta title="Profile — The Storm Watcher" description="Manage your profile and subscription." path="/profile" noindex />
 
         <StarField />
@@ -190,7 +190,7 @@ export default function Profile() {
         <div className="magnetic-orb" style={{ top: '40%', left: '-250px' }} />
 
         {/* ── Top nav ── */}
-        <div className="sticky top-0 z-20 bg-[#0a0a1a]/80 backdrop-blur-md border-b border-white/5 h-14">
+        <div className="sticky top-0 z-20 bg-[var(--tsw-bg)]/80 backdrop-blur-md border-b border-white/5 h-14">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center relative">
             <Link to="/dashboard" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm">
               <ArrowLeft className="w-4 h-4" />
