@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Haptics, NotificationType } from '@capacitor/haptics';
 import { getKpIndex } from '../services/noaaApi';
 import { useSettings } from '../contexts/SettingsContext';
+import { calcAuroraVisibility } from '../utils/auroraVisibility';
 
 const POLL_MS = 5 * 60 * 1000; // 5 minutes
 const COOLDOWN_MS = 2 * 60 * 60 * 1000; // 2 hours between alerts
@@ -13,10 +14,14 @@ const isWebNotificationSupported = typeof window !== 'undefined' && 'Notificatio
 export function useKpAlert() {
   const { settings } = useSettings();
   const thresholdRef = useRef(settings.kpThreshold);
+  const latRef = useRef(settings.preferredLat);
+  const lonRef = useRef(settings.preferredLon);
 
   useEffect(() => {
     thresholdRef.current = settings.kpThreshold;
-  }, [settings.kpThreshold]);
+    latRef.current = settings.preferredLat;
+    lonRef.current = settings.preferredLon;
+  }, [settings.kpThreshold, settings.preferredLat, settings.preferredLon]);
 
   useEffect(() => {
     if (!isWebNotificationSupported) return;
@@ -31,6 +36,11 @@ export function useKpAlert() {
         if (!entries.length) return;
         const kp = entries[entries.length - 1].kp_index ?? 0;
         if (kp < thresholdRef.current) return;
+
+        // Skip if aurora has 0% visibility at the user's saved location
+        const lat = latRef.current;
+        const lon = lonRef.current;
+        if (lat !== null && lon !== null && calcAuroraVisibility(lat, lon, kp) === 0) return;
 
         const gLevel = kp >= 9 ? 5 : kp >= 8 ? 4 : kp >= 7 ? 3 : kp >= 6 ? 2 : 1;
         new Notification(`🌌 Geomagnetic Storm — G${gLevel} (Kp ${kp.toFixed(1)})`, {

@@ -16,6 +16,8 @@ interface PushSub {
   p256dh: string;
   auth: string;
   threshold_kp: number;
+  lat: number | null;
+  lon: number | null;
 }
 
 interface DeviceToken {
@@ -24,6 +26,21 @@ interface DeviceToken {
   platform: 'ios' | 'android';
   threshold_kp: number;
   last_notified_at: string | null;
+  lat: number | null;
+  lon: number | null;
+}
+
+// Dipole-approximation aurora visibility (mirrors src/utils/auroraVisibility.ts).
+// Returns 0 if aurora is not expected at this lat/lon for the given Kp.
+function calcAuroraVisibility(lat: number, lon: number, kp: number): number {
+  const POLE_LAT = 80.7 * (Math.PI / 180);
+  const POLE_LON = -72.2 * (Math.PI / 180);
+  const latR = lat * (Math.PI / 180);
+  const lonR = lon * (Math.PI / 180);
+  const sinGm = Math.sin(latR) * Math.sin(POLE_LAT) + Math.cos(latR) * Math.cos(POLE_LAT) * Math.cos(lonR - POLE_LON);
+  const gmlat = Math.asin(Math.max(-1, Math.min(1, sinGm))) * (180 / Math.PI);
+  const margin = gmlat - (67.0 - 5.3 * kp);
+  return Math.round(Math.min(100, Math.max(0, (margin / 15) * 100)));
 }
 
 // ── APNs JWT helpers ─────────────────────────────────────────────────────────
@@ -199,7 +216,7 @@ Deno.serve(async (req: Request) => {
   // Trialing users are also included (trialing = pro access).
   const { data: subs, error: subsError } = await supabase
     .from('push_subscriptions')
-    .select('id, endpoint, p256dh, auth, threshold_kp, profiles!inner(plan, subscription_status)')
+    .select('id, endpoint, p256dh, auth, threshold_kp, lat, lon, profiles!inner(plan, subscription_status)')
     .lte('threshold_kp', currentKp)
     .or(`last_notified_at.is.null,last_notified_at.lt.${cooldownCutoff}`)
     .or('profiles.plan.in.(pro,premium),profiles.subscription_status.eq.trialing', { referencedTable: 'profiles' });
@@ -210,7 +227,12 @@ Deno.serve(async (req: Request) => {
     const expiredIds: string[] = [];
 
     await Promise.allSettled(
-      (subs as PushSub[]).map(async (sub) => {
+      (subs as PushSub[]).filter(sub => {
+        if (sub.lat !== null && sub.lon !== null) {
+          return calcAuroraVisibility(sub.lat, sub.lon, currentKp) > 0;
+        }
+        return true; // unknown location → send
+      }).map(async (sub) => {
         try {
           await webpush.sendNotification(
             { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
@@ -246,7 +268,7 @@ Deno.serve(async (req: Request) => {
   if (apnsEnabled) {
     const { data: tokens, error: tokensError } = await supabase
       .from('device_push_tokens')
-      .select('id, token, platform, threshold_kp, last_notified_at, profiles!inner(plan, subscription_status)')
+      .select('id, token, platform, threshold_kp, last_notified_at, lat, lon, profiles!inner(plan, subscription_status)')
       .lte('threshold_kp', currentKp)
       .or(`last_notified_at.is.null,last_notified_at.lt.${cooldownCutoff}`)
       .or('profiles.plan.in.(pro,premium),profiles.subscription_status.eq.trialing', { referencedTable: 'profiles' });
@@ -258,7 +280,13 @@ Deno.serve(async (req: Request) => {
       const expiredTokenIds: string[] = [];
 
       await Promise.allSettled(
-        (tokens as DeviceToken[]).filter(t => t.platform === 'ios').map(async (t) => {
+        (tokens as DeviceToken[]).filter(t => {
+          if (t.platform !== 'ios') return false;
+          if (t.lat !== null && t.lon !== null) {
+            return calcAuroraVisibility(t.lat, t.lon, currentKp) > 0;
+          }
+          return true; // unknown location → send
+        }).map(async (t) => {
           const { ok, gone } = await sendApns(
             t.token,
             apnsJWT,

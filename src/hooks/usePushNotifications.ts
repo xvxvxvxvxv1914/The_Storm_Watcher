@@ -7,11 +7,14 @@ import { useSettings } from '../contexts/SettingsContext';
 import { usePaymentGate } from './usePaymentGate';
 import { logError } from '../utils/logger';
 
-async function saveToken(userId: string, token: string, platform: string, thresholdKp: number) {
+async function saveToken(
+  userId: string, token: string, platform: string,
+  thresholdKp: number, lat: number | null, lon: number | null,
+) {
   const { error } = await supabase
     .from('device_push_tokens')
     .upsert(
-      { user_id: userId, token, platform, threshold_kp: thresholdKp, updated_at: new Date().toISOString() },
+      { user_id: userId, token, platform, threshold_kp: thresholdKp, lat, lon, updated_at: new Date().toISOString() },
       { onConflict: 'user_id,token' }
     );
   if (error) logError('Failed to save push token', error);
@@ -45,7 +48,7 @@ export function usePushNotifications() {
     const tokenListener = PushNotifications.addListener('registration', async ({ value: token }) => {
       if (!user?.id) return;
       const platform = /iphone|ipad|ipod/i.test(navigator.userAgent) ? 'ios' : 'android';
-      await saveToken(user.id, token, platform, settings.kpThreshold);
+      await saveToken(user.id, token, platform, settings.kpThreshold, settings.preferredLat, settings.preferredLon);
     });
 
     const errorListener = PushNotifications.addListener('registrationError', ({ error }) => {
@@ -76,13 +79,18 @@ export function usePushNotifications() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id, hasPro]);
 
-  // Sync threshold change to all existing device tokens in DB
+  // Sync threshold + location changes to all existing device tokens in DB
   useEffect(() => {
     if (!isIos() || !user?.id) return;
     supabase
       .from('device_push_tokens')
-      .update({ threshold_kp: settings.kpThreshold, updated_at: new Date().toISOString() })
+      .update({
+        threshold_kp: settings.kpThreshold,
+        lat: settings.preferredLat,
+        lon: settings.preferredLon,
+        updated_at: new Date().toISOString(),
+      })
       .eq('user_id', user.id)
-      .then(({ error }) => { if (error) logError('Failed to sync push threshold', error); });
-  }, [user?.id, settings.kpThreshold]);
+      .then(({ error }) => { if (error) logError('Failed to sync push settings', error); });
+  }, [user?.id, settings.kpThreshold, settings.preferredLat, settings.preferredLon]);
 }
