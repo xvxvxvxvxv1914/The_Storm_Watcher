@@ -170,7 +170,7 @@ const SplashAnimation = () => {
           }}
         />
 
-        {/* Logo icon + name — stacked */}
+        {/* Logo + name — stacked */}
         <div
           style={{
             position: 'absolute',
@@ -186,19 +186,15 @@ const SplashAnimation = () => {
             transition: 'opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s',
           }}
         >
-          <p
+          <img
+            src="/logos/logo-transparent.png"
+            alt="The Storm Watcher"
             style={{
-              color: '#f8fafc',
-              fontWeight: 700,
-              fontSize: '1.6rem',
-              letterSpacing: '0.15em',
-              textTransform: 'uppercase',
-              textShadow: '0 0 32px rgba(16,185,129,0.7), 0 0 64px rgba(16,185,129,0.3)',
-              margin: 0,
+              height: '72px',
+              width: 'auto',
+              filter: 'drop-shadow(0 0 18px rgba(16,185,129,0.65)) drop-shadow(0 0 40px rgba(16,185,129,0.3))',
             }}
-          >
-            The Storm Watcher
-          </p>
+          />
           <p
             style={{
               color: 'rgba(255,255,255,0.35)',
