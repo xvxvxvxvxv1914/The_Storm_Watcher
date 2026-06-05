@@ -7,6 +7,7 @@ import { useKpLive } from '../hooks/useKpLive';
 import { getStormStatus } from '../services/noaaApi';
 import { calcAuroraVisibility } from '../utils/auroraVisibility';
 import { usePaymentGate } from '../hooks/usePaymentGate';
+import { useTheme } from '../contexts/ThemeContext';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 
@@ -19,6 +20,8 @@ export default function AuroraMap() {
   const kpVal = kp ?? 0;
   const storm = kp !== null ? getStormStatus(kp) : null;
   const { hasPro } = usePaymentGate();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   const userLat = settings.preferredLat ?? undefined;
   const userLon = settings.preferredLon ?? undefined;
@@ -43,7 +46,7 @@ export default function AuroraMap() {
   ];
 
   return (
-    <div className="min-h-screen text-white pt-20 pb-24" style={{ background: 'var(--tsw-bg)' }}>
+    <div className="min-h-screen text-white pt-20 pb-24" style={{ background: isDark ? '#000008' : '#eef2f8' }}>
       <PageMeta
         title={t('auroraMap.meta.title') || 'Aurora Visibility Map — The Storm Watcher'}
         description={t('auroraMap.meta.description') || 'Live world map showing aurora visibility zones based on the current Kp index.'}

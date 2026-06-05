@@ -175,7 +175,7 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen" style={{ background: 'var(--tsw-bg)' }}>
+      <div className="flex items-center justify-center min-h-screen" style={{ background: isDark ? '#000008' : '#eef2f8' }}>
         <div className="w-8 h-8 border-2 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin" />
       </div>
     );
@@ -185,7 +185,7 @@ export default function Profile() {
     <>
       {cropSrc && <AvatarCropper imageSrc={cropSrc} onConfirm={handleCropConfirm} onCancel={() => setCropSrc(null)} />}
 
-      <div className="min-h-screen pb-28 relative" style={{ background: 'var(--tsw-bg)' }}>
+      <div className="min-h-screen pb-28 relative" style={{ background: isDark ? '#000008' : '#eef2f8' }}>
         <PageMeta title="Profile — The Storm Watcher" description="Manage your profile and subscription." path="/profile" noindex />
 
         <StarField />

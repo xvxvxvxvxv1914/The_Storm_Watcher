@@ -6,7 +6,7 @@ import { BrowserRouter as Router, useNavigate } from 'react-router-dom';
 import { App as CapApp } from '@capacitor/app';
 import * as Sentry from '@sentry/react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { ThemeProvider } from './contexts/ThemeContext';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import { useLanguage } from './contexts/LanguageContext';
 import { SettingsProvider } from './contexts/SettingsContext';
 import { useSwipeNavigation } from './hooks/useSwipeNavigation';
@@ -42,6 +42,7 @@ const LoadingFallback = () => {
 
 function AppRoutes() {
   const { user, profile } = useAuth();
+  const { theme } = useTheme();
   const navigate = useNavigate();
   const shouldShowLocationPrompt = useLocationPromptVisible();
   const [locationPromptDone, setLocationPromptDone] = useState(false);
@@ -120,7 +121,7 @@ function AppRoutes() {
   }, []);
 
   return (
-    <div className="min-h-screen" style={{ background: 'var(--tsw-bg)' }}>
+    <div className="min-h-screen" style={{ background: theme === 'light' ? '#eef2f8' : '#000008' }}>
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-[#f97316] focus:text-white focus:rounded-lg focus:font-semibold"
