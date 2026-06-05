@@ -35,6 +35,7 @@ const AuroraMap = lazyWithRetry(() => import('../pages/AuroraMap'));
 const Blog = lazyWithRetry(() => import('../pages/Blog'));
 const BlogPost = lazyWithRetry(() => import('../pages/BlogPost'));
 const Referrals = lazyWithRetry(() => import('../pages/Referrals'));
+const Contact = lazyWithRetry(() => import('../pages/Contact'));
 
 export const AnimatedRoutes = () => {
   const location = useLocation();
@@ -72,6 +73,7 @@ export const AnimatedRoutes = () => {
         <Route path="/blog" element={<AnimatedPage><Blog /></AnimatedPage>} />
         <Route path="/blog/:slug" element={<AnimatedPage><BlogPost /></AnimatedPage>} />
         <Route path="/referrals" element={<AnimatedPage><Referrals /></AnimatedPage>} />
+        <Route path="/contact" element={<AnimatedPage><Contact /></AnimatedPage>} />
         <Route path="*" element={<AnimatedPage><NotFound /></AnimatedPage>} />
       </Routes>
     </AnimatePresence>

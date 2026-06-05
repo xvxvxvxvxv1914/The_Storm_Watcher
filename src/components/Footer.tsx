@@ -1,4 +1,4 @@
-import { Mail } from 'lucide-react';
+import { Mail, MessageSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -37,6 +37,7 @@ const Footer = () => {
         { to: '/magnetic-effects', label: t('nav.magneticEffects') },
         { to: '/faq',              label: t('nav.faq') },
         { to: '/about',            label: t('nav.about') },
+        { to: '/contact',          label: t('footer.contact') || 'Contact' },
       ],
     },
   ];
@@ -91,6 +92,7 @@ const Footer = () => {
                   { to: '/magnetic-effects', label: t('nav.magneticEffectsShort') },
                   { to: '/faq',              label: t('nav.faq') },
                   { to: '/about',            label: t('nav.about') },
+                  { to: '/contact',          label: t('footer.contact') || 'Contact' },
                 ].map(l => (
                   <li key={l.to}>
                     <Link to={l.to} className="text-[#64748b] text-xs hover:text-white transition-colors">
@@ -130,6 +132,13 @@ const Footer = () => {
                 {t('footer.description')}
               </p>
               <div className="space-y-2">
+                <Link
+                  to="/contact"
+                  className="flex items-center gap-2 text-[#10b981] text-sm font-semibold hover:text-[#34d399] transition-colors"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  {t('footer.contact') || 'Contact us'}
+                </Link>
                 <a
                   href="mailto:contact@thestormwatcher.com"
                   className="flex items-center gap-2 text-[#94a3b8] text-sm hover:text-white transition-colors"
