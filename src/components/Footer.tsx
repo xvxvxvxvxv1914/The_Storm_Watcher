@@ -22,6 +22,7 @@ const Footer = () => {
         { to: '/aurora-map',      label: t('nav.auroraMap') || 'Aurora Map' },
         { to: '/iss',             label: t('nav.iss') },
         { to: '/calendar',        label: t('nav.calendar') },
+        { to: '/log',             label: 'Aurora Log' },
         { to: '/sky',             label: t('nav.sky') },
         { to: '/sun',             label: t('nav.sun') },
         { to: '/uv',              label: t('nav.uv') },
