@@ -33,6 +33,7 @@ interface Props {
   yMax?: number;
   compareData?: TsPoint[];
   compareLabel?: string;
+  ariaLabel?: string;
 }
 
 export default function TimeSeriesChart({
@@ -45,6 +46,7 @@ export default function TimeSeriesChart({
   yMax,
   compareData,
   compareLabel = 'Yesterday',
+  ariaLabel = 'Time series chart',
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
@@ -189,5 +191,5 @@ export default function TimeSeriesChart({
     };
   }, [data, color, type, height, isDark, compareData, refLines, yMin, yMax, compareLabel]);
 
-  return <div ref={containerRef} />;
+  return <div ref={containerRef} role="img" aria-label={ariaLabel} />;
 }

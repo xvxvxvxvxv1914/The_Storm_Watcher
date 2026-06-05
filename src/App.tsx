@@ -1,4 +1,5 @@
 import { Suspense, useEffect, useState } from 'react';
+import { MotionConfig } from 'framer-motion';
 import { HelmetProvider } from 'react-helmet-async';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
@@ -155,6 +156,7 @@ function AppRoutes() {
 
 function App() {
   return (
+    <MotionConfig reducedMotion="user">
     <HelmetProvider>
       <Router>
         <ThemeProvider>
@@ -168,6 +170,7 @@ function App() {
         <SpeedInsights />
       </Router>
     </HelmetProvider>
+    </MotionConfig>
   );
 }
 

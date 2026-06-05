@@ -37,17 +37,18 @@ ROUTES = [
 ]
 
 # Blog posts (English only — no hreflang variants until translations are merged)
-BLOG_SLUGS = [
-    'what-is-kp-index',
-    'what-is-geomagnetic-storm',
-    'how-to-see-northern-lights',
-    'what-is-solar-wind',
-    'g1-to-g5-storm-levels',
-    'best-places-aurora-europe',
-    'what-is-solar-flare',
-    'aurora-forecast-explained',
-    'space-weather-effects-on-earth',
-    'what-is-iss',
+# tuple: (slug, publication_date) — use actual publication date so Google tracks freshness correctly
+BLOG_POSTS = [
+    ('what-is-kp-index',             '2026-02-15'),
+    ('what-is-geomagnetic-storm',    '2026-02-22'),
+    ('how-to-see-northern-lights',   '2026-03-05'),
+    ('what-is-solar-wind',           '2026-03-12'),
+    ('g1-to-g5-storm-levels',        '2026-03-20'),
+    ('best-places-aurora-europe',    '2026-03-28'),
+    ('what-is-solar-flare',          '2026-04-08'),
+    ('aurora-forecast-explained',    '2026-04-15'),
+    ('space-weather-effects-on-earth','2026-04-24'),
+    ('what-is-iss-how-to-track',     '2026-05-06'),
 ]
 
 LASTMOD = date.today().isoformat()
@@ -90,13 +91,13 @@ def url_block(path: str, changefreq: str, priority: str) -> str:
     return '\n'.join(lines)
 
 
-def blog_url_block(slug: str) -> str:
+def blog_url_block(slug: str, pub_date: str) -> str:
     path = f'/blog/{slug}'
     full = f'{BASE}{path}'
     return '\n'.join([
         '  <url>',
         f'    <loc>{full}</loc>',
-        f'    <lastmod>{LASTMOD}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority>',
+        f'    <lastmod>{pub_date}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority>',
         '  </url>',
     ])
 
@@ -117,14 +118,14 @@ def main():
         '  </url>',
     ]))
     # Blog posts
-    for slug in BLOG_SLUGS:
-        parts.append(blog_url_block(slug))
+    for slug, pub_date in BLOG_POSTS:
+        parts.append(blog_url_block(slug, pub_date))
     parts.append('</urlset>')
 
     out = os.path.join(os.path.dirname(__file__), '..', 'public', 'sitemap.xml')
     with open(out, 'w', encoding='utf-8') as f:
         f.write('\n'.join(parts) + '\n')
-    print(f'Generated sitemap.xml: {len(ROUTES)} routes × {len(LANGUAGES)} languages + {len(BLOG_SLUGS) + 1} blog pages')
+    print(f'Generated sitemap.xml: {len(ROUTES)} routes x {len(LANGUAGES)} languages + {len(BLOG_POSTS) + 1} blog pages')
 
 
 if __name__ == '__main__':

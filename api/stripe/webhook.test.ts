@@ -239,6 +239,57 @@ describe('Stripe webhook handler', () => {
     });
   });
 
+  describe('customer.subscription.trial_will_end', () => {
+    it('sends trial ending email with correct days remaining', async () => {
+      const { sendEmail } = await import('../lib/resend');
+      const trialEnd = Math.floor((Date.now() + 3 * 86_400_000) / 1000); // 3 days from now
+      const sub = {
+        id: 'sub_trial',
+        trial_end: trialEnd,
+        metadata: { supabase_user_id: 'user-trial' },
+      };
+      const event = makeEvent('customer.subscription.trial_will_end', sub);
+      mockConstructEvent.mockReturnValue(event);
+      mockGetUserById.mockResolvedValue({ data: { user: { email: 'trial@example.com' } } });
+
+      const res = makeRes();
+      await handler(makeReq(RAW), res);
+
+      expect(mockGetUserById).toHaveBeenCalledWith('user-trial');
+      expect(sendEmail).toHaveBeenCalledWith(expect.objectContaining({
+        to: 'trial@example.com',
+        subject: expect.stringMatching(/trial ends in \d+ day/i),
+      }));
+      expect(res._status).toBe(200);
+    });
+
+    it('skips email when userId is missing from metadata', async () => {
+      const { sendEmail } = await import('../lib/resend');
+      const sub = { id: 'sub_no_meta', trial_end: null, metadata: {} };
+      const event = makeEvent('customer.subscription.trial_will_end', sub);
+      mockConstructEvent.mockReturnValue(event);
+
+      const res = makeRes();
+      await handler(makeReq(RAW), res);
+
+      expect(sendEmail).not.toHaveBeenCalled();
+      expect(res._status).toBe(200);
+    });
+
+    it('skips email when user has no email address', async () => {
+      const { sendEmail } = await import('../lib/resend');
+      const sub = { id: 'sub_no_email', trial_end: null, metadata: { supabase_user_id: 'user-noemail' } };
+      const event = makeEvent('customer.subscription.trial_will_end', sub);
+      mockConstructEvent.mockReturnValue(event);
+      mockGetUserById.mockResolvedValue({ data: { user: { email: null } } });
+
+      const res = makeRes();
+      await handler(makeReq(RAW), res);
+
+      expect(sendEmail).not.toHaveBeenCalled();
+    });
+  });
+
   describe('invoice.payment_failed', () => {
     it('updates subscription_status to past_due', async () => {
       const sub = {

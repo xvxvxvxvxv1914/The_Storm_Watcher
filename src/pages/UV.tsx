@@ -176,6 +176,7 @@ const UV = () => {
               { value: 6, color: '#eab308', label: t('uv.mod6') || 'Moderate 6' },
               { value: 8, color: '#f97316', label: t('uv.high8') || 'High 8' },
             ]}
+            ariaLabel="UV index today — hourly"
           />
         </div>
 

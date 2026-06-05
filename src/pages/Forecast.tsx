@@ -377,6 +377,7 @@ const Forecast = () => {
               ]}
               compareData={yesterdayForecastChart.length > 0 ? yesterdayForecastChart : undefined}
               compareLabel={t('dashboard.yesterday')}
+              ariaLabel="Kp forecast — next 3 days"
             />
           ) : (
             <div className="h-64 flex items-center justify-center text-[#94a3b8]">{t('dashboard.noData')}</div>

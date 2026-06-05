@@ -563,6 +563,7 @@ const Dashboard = () => {
               yMax={9}
               compareData={yesterdayKpChart.length > 0 ? yesterdayKpChart : undefined}
               compareLabel={t('dashboard.yesterday')}
+              ariaLabel="Kp index history — last 24 hours"
             />
           ) : (
             <div className="h-[300px] flex items-center justify-center text-[#94a3b8]">
@@ -586,6 +587,7 @@ const Dashboard = () => {
                 { value: 400, color: '#f97316', label: '400 km/s' },
                 { value: 600, color: '#ef4444', label: '600 km/s' },
               ]}
+              ariaLabel="Solar wind speed history — last 24 hours"
             />
           ) : (
             <div className="h-[300px] flex items-center justify-center text-[#94a3b8]">
@@ -625,6 +627,7 @@ const Dashboard = () => {
                   { value: -30, color: '#f9731660', label: '-30 nT' },
                   { value: -100, color: '#ef444460', label: '-100 nT' },
                 ]}
+                ariaLabel="Local geomagnetic field (H component) — last 24 hours"
               />
             </>
           ) : (
@@ -691,6 +694,7 @@ const Dashboard = () => {
               height={barH}
               maxValue={9}
               formatValue={v => `Kp ${v}`}
+              ariaLabel="Daily maximum Kp index — last 7 days"
               bars={dailyKp.map(d => ({
                 label: d.day,
                 value: d.max,

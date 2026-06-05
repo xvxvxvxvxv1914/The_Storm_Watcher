@@ -78,12 +78,15 @@ export default function BlogPost() {
   const cat = CATEGORY_CONFIG[post.category] ?? CATEGORY_CONFIG['guide'];
   const otherPosts = getLocalizedBlogList(language).filter((p) => p.slug !== post.slug).slice(0, 3);
 
+  const ogImage = `https://www.thestormwatcher.com/api/og?type=blog&title=${encodeURIComponent(post.title)}&emoji=${encodeURIComponent(post.coverEmoji)}&category=${post.category}`;
+
   return (
     <AnimatedPage>
       <PageMeta
         title={`${post.title} — The Storm Watcher`}
         description={post.description}
         path={`/blog/${post.slug}`}
+        image={ogImage}
       >
         <meta property="og:type" content="article" />
         <meta property="article:published_time" content={post.date} />

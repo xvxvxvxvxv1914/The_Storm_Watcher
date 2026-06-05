@@ -848,6 +848,7 @@ const Mood = () => {
                 <SvgDonut
                   size={140}
                   thickness={26}
+                  ariaLabel="Community mood distribution today"
                   slices={stats.map((s) => ({
                     label: t(getMoodInfo(s.mood_type)?.labelKey ?? s.mood_type),
                     value: s.count,

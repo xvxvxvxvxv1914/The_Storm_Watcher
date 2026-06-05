@@ -9,9 +9,10 @@ interface Props {
   height?: number;
   maxValue?: number;
   formatValue?: (v: number) => string;
+  ariaLabel?: string;
 }
 
-export default function SvgBarChart({ bars, height = 220, maxValue, formatValue }: Props) {
+export default function SvgBarChart({ bars, height = 220, maxValue, formatValue, ariaLabel = 'Bar chart' }: Props) {
   if (bars.length === 0) return null;
   const max = maxValue ?? Math.max(...bars.map(b => b.value), 1);
   const barW = 68;
@@ -23,7 +24,7 @@ export default function SvgBarChart({ bars, height = 220, maxValue, formatValue 
   const totalW = bars.length * (barW + gap) - gap + padX * 2;
 
   return (
-    <svg viewBox={`0 0 ${totalW} ${height}`} className="w-full" style={{ height }}>
+    <svg viewBox={`0 0 ${totalW} ${height}`} className="w-full" style={{ height }} role="img" aria-label={ariaLabel}>
       {/* Horizontal guide lines */}
       {[0.25, 0.5, 0.75, 1].map(t => {
         const y = padTop + (chartH - padTop) * (1 - t);

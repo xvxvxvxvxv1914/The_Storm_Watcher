@@ -18,9 +18,13 @@ The Storm Watcher is a free PWA and mobile app (iOS/Android) for tracking space 
 - [Sun Times](https://www.thestormwatcher.com/sun): Sunrise, sunset, golden hour, and astronomical twilight times
 - [Storm Calendar](https://www.thestormwatcher.com/calendar): Historical geomagnetic storm calendar
 - [Community Mood](https://www.thestormwatcher.com/mood): Community reports of how geomagnetic storms affect wellbeing
+- [Aurora Gallery](https://www.thestormwatcher.com/gallery): Community aurora photos from around the world
+- [Aurora Hunt](https://www.thestormwatcher.com/hunt): Earn badges and points for spotting auroras
+- [Aurora Livestream](https://www.thestormwatcher.com/livestream): Live aurora webcam streams from Norway and Iceland
 - [Magnetic Effects](https://www.thestormwatcher.com/magnetic-effects): How geomagnetic storms affect humans and technology
 - [FAQ](https://www.thestormwatcher.com/faq): Frequently asked questions about space weather and the Kp index
 - [Blog](https://www.thestormwatcher.com/blog): Space weather articles and educational content
+- [Refer & Earn](https://www.thestormwatcher.com/referrals): Referral program — earn rewards by inviting friends
 - [About](https://www.thestormwatcher.com/about): About The Storm Watcher and its data sources
 - [Pricing](https://www.thestormwatcher.com/pricing): Free, Pro (€3.99/mo), and Premium (€7.99/mo) plans
 

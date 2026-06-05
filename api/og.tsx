@@ -12,11 +12,48 @@ const G_LEVEL = (kp: number) =>
 
 const h = React.createElement;
 
+const BLOG_ACCENTS: Record<string, string> = {
+  aurora: '#10b981',
+  solar: '#f97316',
+  'space-weather': '#3b82f6',
+  guide: '#a855f7',
+};
+
 export default async function handler(req: Request) {
   const { searchParams } = new URL(req.url, 'https://www.thestormwatcher.com');
+  const type = searchParams.get('type') ?? '';
   const page = searchParams.get('page') ?? 'home';
   const kpRaw = parseFloat(searchParams.get('kp') ?? '0');
   const kp = isNaN(kpRaw) ? 0 : Math.min(9, Math.max(0, kpRaw));
+
+  if (type === 'blog') {
+    const title = (searchParams.get('title') ?? '').slice(0, 120);
+    const emoji = searchParams.get('emoji') ?? '🌌';
+    const category = searchParams.get('category') ?? '';
+    const accent = BLOG_ACCENTS[category] ?? '#10b981';
+
+    return new ImageResponse(
+      h('div', {
+        style: {
+          width: '1200px', height: '630px',
+          background: 'linear-gradient(135deg, #0a0a1a 0%, #0f172a 50%, #0a0a1a 100%)',
+          display: 'flex', flexDirection: 'column', justifyContent: 'center',
+          padding: '64px', fontFamily: 'sans-serif', position: 'relative', overflow: 'hidden',
+        },
+      },
+        h('div', { style: { position: 'absolute', top: '-80px', right: '-80px', width: '480px', height: '480px', borderRadius: '50%', background: `radial-gradient(circle, ${accent}22 0%, transparent 70%)` } }),
+        h('div', { style: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '36px' } },
+          h('span', { style: { color: '#64748b', fontSize: '18px', fontWeight: 600, letterSpacing: '0.05em' } }, 'thestormwatcher.com · Blog'),
+        ),
+        h('div', { style: { fontSize: '72px', marginBottom: '28px', lineHeight: 1 } }, emoji),
+        h('div', { style: { fontSize: title.length > 60 ? '44px' : '56px', fontWeight: 800, color: 'white', lineHeight: 1.15, marginBottom: '28px', letterSpacing: '-0.02em', maxWidth: '900px' } }, title),
+        h('div', { style: { display: 'flex', alignItems: 'center', gap: '10px', background: `${accent}18`, border: `1px solid ${accent}44`, borderRadius: '10px', padding: '10px 20px', width: 'fit-content' } },
+          h('span', { style: { color: accent, fontSize: '16px', fontWeight: 600 } }, 'Read article →'),
+        ),
+      ),
+      { width: 1200, height: 630 },
+    );
+  }
 
   const pages: Record<string, { title: string; subtitle: string; accent: string }> = {
     home:      { title: 'The Storm Watcher',   subtitle: 'Real-time space weather & aurora forecasts',  accent: '#f97316' },

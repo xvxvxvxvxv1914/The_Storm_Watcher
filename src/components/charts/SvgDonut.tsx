@@ -8,9 +8,10 @@ interface Props {
   slices: Slice[];
   size?: number;
   thickness?: number;
+  ariaLabel?: string;
 }
 
-export default function SvgDonut({ slices, size = 180, thickness = 36 }: Props) {
+export default function SvgDonut({ slices, size = 180, thickness = 36, ariaLabel = 'Donut chart' }: Props) {
   const total = slices.reduce((s, sl) => s + sl.value, 0);
   if (total === 0) return null;
 
@@ -31,7 +32,7 @@ export default function SvgDonut({ slices, size = 180, thickness = 36 }: Props) 
   const rotate = -90;
 
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} role="img" aria-label={ariaLabel}>
       {segments.map((seg, i) => (
         <circle
           key={i}

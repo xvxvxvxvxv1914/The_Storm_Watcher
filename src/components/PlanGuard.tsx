@@ -3,6 +3,7 @@ import { Lock, Sparkles, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { isNative } from '../utils/platform';
+import { hasPlanAccess } from '../utils/planAccess';
 import StarField from './StarField';
 
 type Plan = 'free' | 'pro' | 'premium';
@@ -15,8 +16,6 @@ interface PlanGuardProps {
   fullPage?: boolean;
 }
 
-const PLAN_RANK: Record<Plan, number> = { free: 0, pro: 1, premium: 2 };
-
 const PlanGuard = ({ requiredPlan, children, fullPage = false }: PlanGuardProps) => {
   const { user, profile } = useAuth();
   const { t } = useLanguage();
@@ -25,13 +24,14 @@ const PlanGuard = ({ requiredPlan, children, fullPage = false }: PlanGuardProps)
 
   const paymentsEnabled = import.meta.env.VITE_PAYMENTS_ENABLED === 'true';
   const userPlan: Plan = profile?.plan ?? 'free';
-  const isTrialing = profile?.subscription_status === 'trialing';
-  // Free Pro earned via the referral program (granted server-side, plan stays 'free').
-  const hasReferralPro = !!profile?.referral_pro_until && new Date(profile.referral_pro_until) > new Date();
-  // Anything that grants Pro lifts a sub-Pro plan up to Pro (never above).
-  const effectivePlan: Plan =
-    ((isTrialing || hasReferralPro) && PLAN_RANK[userPlan] < PLAN_RANK['pro']) ? 'pro' : userPlan;
-  const hasAccess = isNative() || !paymentsEnabled || PLAN_RANK[effectivePlan] >= PLAN_RANK[requiredPlan];
+  const hasAccess = hasPlanAccess({
+    requiredPlan,
+    userPlan,
+    subscriptionStatus: profile?.subscription_status,
+    referralProUntil: profile?.referral_pro_until,
+    paymentsEnabled,
+    native: isNative(),
+  });
 
   if (hasAccess) return <>{children}</>;
 

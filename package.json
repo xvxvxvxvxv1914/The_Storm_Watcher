@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/prerender-meta.mjs",
+    "build": "python3 scripts/generate_sitemap.py && vite build && node scripts/prerender-meta.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p api/tsconfig.json",
@@ -80,6 +80,9 @@
     "@eslint/js": "^9.9.1",
     "@playwright/test": "^1.59.1",
     "@sentry/vite-plugin": "^5.3.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@vercel/node": "^5.8.2",
