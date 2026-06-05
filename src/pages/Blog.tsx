@@ -6,6 +6,7 @@ import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { AnimatedPage } from '../components/AnimatedPage';
 import { useLanguage } from '../contexts/LanguageContext';
 import StarField from '../components/StarField';
+import { useTheme } from '../contexts/ThemeContext';
 
 const CATEGORY_CONFIG: Record<string, { text: string; bg: string; glow: string; border: string }> = {
   'space-weather': { text: 'text-blue-300',   bg: 'bg-blue-500/10',    glow: '#3b82f6', border: 'border-blue-500/30' },
@@ -16,6 +17,8 @@ const CATEGORY_CONFIG: Record<string, { text: string; bg: string; glow: string; 
 
 export default function Blog() {
   const { language } = useLanguage();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const posts = getLocalizedBlogList(language);
 
   return (
@@ -29,7 +32,7 @@ export default function Blog() {
       </PageMeta>
       <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Blog', path: '/blog' }]} />
 
-      <div className="min-h-screen bg-[#050510] relative overflow-hidden pt-20 pb-24 px-4">
+      <div className="min-h-screen relative overflow-hidden pt-20 pb-24 px-4" style={{ background: isDark ? '#050510' : '#eef2f8' }}>
         <StarField />
         <div className="solar-orb" style={{ top: '-10%', right: '-5%', opacity: 0.25 }} />
         <div className="magnetic-orb" style={{ bottom: '10%', left: '-8%', opacity: 0.2 }} />
