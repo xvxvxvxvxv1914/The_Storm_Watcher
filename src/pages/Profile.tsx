@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { supabase } from '../lib/supabase';
 import AvatarCropper from '../components/AvatarCropper';
 import StarField from '../components/StarField';
@@ -67,6 +68,8 @@ export default function Profile() {
   const { user, profile, updateProfile, loading } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [fullName, setFullName] = useState('');
@@ -207,7 +210,7 @@ export default function Profile() {
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
               <div className={`absolute -top-32 -left-20 w-72 h-72 lg:w-[28rem] lg:h-[28rem] rounded-full opacity-40 blur-3xl bg-gradient-to-br ${cfg.bgGradient}`} />
               <div className="absolute -bottom-20 -right-10 w-56 h-56 lg:w-80 lg:h-80 rounded-full opacity-25 blur-3xl" style={{ background: cfg.color }} />
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0a0a1a]/40" />
+              <div className={`absolute inset-0 bg-gradient-to-b from-transparent via-transparent ${isDark ? 'to-[#0a0a1a]/40' : 'to-black/5'}`} />
             </div>
 
             <div className="relative p-6 lg:p-8">
@@ -220,9 +223,9 @@ export default function Profile() {
                     disabled={uploadingAvatar}
                     className="relative flex-shrink-0 w-24 h-24 lg:w-32 lg:h-32 rounded-full focus:outline-none group overflow-hidden flex items-center justify-center"
                     style={{
-                      background: '#0f0f1f',
+                      background: isDark ? '#0f0f1f' : 'var(--tsw-surface-bg)',
                       border: `2px solid ${cfg.ring}`,
-                      boxShadow: `0 0 32px ${cfg.ring}45`,
+                      boxShadow: `0 0 20px ${cfg.ring}40`,
                     }}
                   >
                     {profile?.avatar_url ? (
@@ -262,7 +265,7 @@ export default function Profile() {
                     </div>
 
                     {/* Plan switcher pills */}
-                    <div className="inline-flex mt-4 p-1 rounded-full bg-white/[0.03] border border-white/8">
+                    <div className={`inline-flex mt-4 p-1 rounded-full border ${isDark ? 'bg-white/[0.03] border-white/8' : 'bg-black/[0.04] border-black/10'}`}>
                       {PLAN_PILLS.map(({ key, label }) => {
                         const active = plan === key;
                         return active ? (
@@ -270,8 +273,8 @@ export default function Profile() {
                             key={key}
                             className="px-4 py-1.5 rounded-full text-[11px] font-bold tracking-wider text-white"
                             style={{
-                              background: 'rgba(255,255,255,0.06)',
-                              border: '1px solid rgba(255,255,255,0.10)',
+                              background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)',
+                              border: isDark ? '1px solid rgba(255,255,255,0.10)' : '1px solid rgba(0,0,0,0.12)',
                               boxShadow: `0 2px 14px ${cfg.color}40, inset 0 0 0 1px ${cfg.color}25`,
                             }}
                           >
@@ -366,7 +369,7 @@ export default function Profile() {
                       value={fullName}
                       onChange={e => setFullName(e.target.value)}
                       maxLength={80}
-                      className="w-full px-4 py-3.5 bg-white/[0.04] border border-white/10 rounded-xl text-white text-sm placeholder-slate-700 focus:outline-none focus:border-emerald-500/40 focus:bg-white/[0.06] transition-colors"
+                      className={`w-full px-4 py-3.5 rounded-xl text-sm focus:outline-none focus:border-emerald-500/40 transition-colors ${isDark ? 'bg-white/[0.04] border border-white/10 text-white placeholder-slate-700 focus:bg-white/[0.06]' : 'bg-black/[0.04] border border-black/10 text-slate-800 placeholder-slate-400 focus:bg-black/[0.06]'}`}
                       placeholder="Your name"
                     />
                   </div>
@@ -376,7 +379,7 @@ export default function Profile() {
                       type="email"
                       value={user?.email || ''}
                       disabled
-                      className="w-full px-4 py-3.5 bg-white/[0.02] border border-white/6 rounded-xl text-[#64748b] text-sm cursor-not-allowed"
+                      className={`w-full px-4 py-3.5 rounded-xl text-[#64748b] text-sm cursor-not-allowed ${isDark ? 'bg-white/[0.02] border border-white/6' : 'bg-black/[0.02] border border-black/8'}`}
                     />
                   </div>
                   {formError && (
@@ -506,7 +509,7 @@ export default function Profile() {
                         value={deleteEmailInput}
                         onChange={e => setDeleteEmailInput(e.target.value)}
                         placeholder={user?.email || ''}
-                        className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/10 text-white text-sm placeholder-slate-700 focus:outline-none focus:border-red-500/40"
+                        className={`w-full px-4 py-3 rounded-xl text-sm focus:outline-none focus:border-red-500/40 ${isDark ? 'bg-white/[0.04] border border-white/10 text-white placeholder-slate-700' : 'bg-black/[0.04] border border-black/10 text-slate-800 placeholder-slate-400'}`}
                       />
                       <div className="flex flex-col gap-2">
                         <button
@@ -537,7 +540,7 @@ export default function Profile() {
                         </button>
                         <button
                           onClick={() => setConfirmDelete(false)}
-                          className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/10 text-slate-300 text-sm font-medium hover:bg-white/[0.08] transition-colors"
+                          className={`w-full px-4 py-3 rounded-xl text-sm font-medium transition-colors ${isDark ? 'bg-white/[0.04] border border-white/10 text-slate-300 hover:bg-white/[0.08]' : 'bg-black/[0.04] border border-black/10 text-slate-600 hover:bg-black/[0.07]'}`}
                         >
                           Cancel
                         </button>

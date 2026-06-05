@@ -26,7 +26,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     }
     // Sync native status bar with theme (no-op on web)
     StatusBar.setStyle({ style: theme === 'light' ? Style.Light : Style.Dark }).catch(() => {});
-    StatusBar.setBackgroundColor({ color: theme === 'light' ? '#f1f5f9' : '#0a0a1a' }).catch(() => {});
+    StatusBar.setBackgroundColor({ color: theme === 'light' ? '#eef2f8' : '#0a0a1a' }).catch(() => {});
   }, [theme]);
 
   const toggleTheme = () => setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));

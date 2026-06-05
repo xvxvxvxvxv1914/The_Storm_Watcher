@@ -297,6 +297,15 @@ html.light .solar-particle {
   display: none;
 }
 
+/* ── Light mode: bg-white/[bracket] → dark-tint equivalents ── */
+html.light .bg-white\/\[0\.02\] { background-color: rgba(0, 0, 0, 0.02) !important; }
+html.light .bg-white\/\[0\.03\] { background-color: rgba(0, 0, 0, 0.02) !important; }
+html.light .bg-white\/\[0\.04\] { background-color: rgba(0, 0, 0, 0.03) !important; }
+html.light .bg-white\/\[0\.06\] { background-color: rgba(0, 0, 0, 0.04) !important; }
+html.light .bg-white\/\[0\.08\] { background-color: rgba(0, 0, 0, 0.05) !important; }
+html.light .hover\:bg-white\/\[0\.08\]:hover { background-color: rgba(0, 0, 0, 0.06) !important; }
+html.light .focus\:bg-white\/\[0\.06\]:focus  { background-color: rgba(0, 0, 0, 0.04) !important; }
+
 /* ── Light mode: bg-white/* → dark-tint equivalents ── */
 html.light .bg-white\/3   { background-color: rgba(0, 0, 0, 0.02) !important; }
 html.light .bg-white\/4   { background-color: rgba(0, 0, 0, 0.03) !important; }
