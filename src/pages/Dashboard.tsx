@@ -10,7 +10,8 @@ import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
 import SvgBarChart from '../components/charts/SvgBarChart';
-import { Activity, Wind, Compass, Sun, Radio, MapPin, Download } from 'lucide-react';
+import { Activity, Wind, Compass, Sun, Radio, MapPin, Download, Share2 } from 'lucide-react';
+import { generateStormScoreImage } from '../utils/generateStormImage';
 import { getKpIndex, getSolarWind, getMagField, getXrayFlux, getKpHistory3Day, getKpForecast, getStormStatus, getXrayClass, getKpGradientStyle } from '../services/noaaApi';
 import PlanGuard from '../components/PlanGuard';
 import { fetchNigggData, toDeltaSeries, getNigggStormStatus, type NigggDataPoint } from '../services/nigggApi';
@@ -112,6 +113,7 @@ const Dashboard = () => {
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [sharing, setSharing] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -335,6 +337,41 @@ const Dashboard = () => {
     return events.reverse().slice(0, 4);
   }, [kpHistoryRaw]);
 
+  const stormScore = Math.min(100, Math.round((kpValue / 9) * 100));
+  const statusLabel = kpValue < 4 ? 'Quiet' : kpValue < 5 ? 'Unsettled' : kpValue < 6 ? 'G1 Storm' : kpValue < 7 ? 'G2 Storm' : 'G3+ Storm';
+
+  const handleShare = useCallback(async () => {
+    setSharing(true);
+    try {
+      const blob = await generateStormScoreImage({
+        score: stormScore,
+        status: statusLabel,
+        kp: kpValue,
+        windSpeed: solarWindSpeed || null,
+        xrayClass: xrayClass || null,
+      });
+      const file = new File([blob], 'storm-score.png', { type: 'image/png' });
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: `Space Weather: ${statusLabel} (Kp ${kpValue.toFixed(1)})`,
+          url: 'https://www.thestormwatcher.com/dashboard',
+        });
+      } else {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'storm-score.png';
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+    } catch {
+      // User cancelled or share unsupported — silent
+    } finally {
+      setSharing(false);
+    }
+  }, [stormScore, statusLabel, kpValue, solarWindSpeed, xrayClass]);
+
   if (!loading && error && kpChartData.length === 0) {
     return (
       <div className="min-h-screen pt-24 md:pt-20 pb-16 relative">
@@ -428,21 +465,33 @@ const Dashboard = () => {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ProTrialNudge />
-        <div className="mb-3 md:mb-12">
-          <h1 className="text-3xl sm:text-5xl font-bold gradient-emerald mb-2 sm:mb-3 uppercase tracking-tight">
-            {t('dashboard.title')}
-          </h1>
-          <p className="text-[#94a3b8] text-lg flex items-center gap-3">
-            {t('dashboard.lastUpdated')}: {lastUpdated.toLocaleTimeString()}
-            <span className="inline-flex items-center gap-1.5 text-xs text-[#10b981] font-bold uppercase tracking-wider">
-              <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse" />
-              {t('dashboard.live')}
-            </span>
-          </p>
-          <p className="text-[#64748b] text-sm mt-1">
-            {t('dashboard.nextUpdate')}{' '}
-            <UpdateCountdown />
-          </p>
+        <div className="mb-3 md:mb-12 flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl sm:text-5xl font-bold gradient-emerald mb-2 sm:mb-3 uppercase tracking-tight">
+              {t('dashboard.title')}
+            </h1>
+            <p className="text-[#94a3b8] text-lg flex items-center gap-3">
+              {t('dashboard.lastUpdated')}: {lastUpdated.toLocaleTimeString()}
+              <span className="inline-flex items-center gap-1.5 text-xs text-[#10b981] font-bold uppercase tracking-wider">
+                <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse" />
+                {t('dashboard.live')}
+              </span>
+            </p>
+            <p className="text-[#64748b] text-sm mt-1">
+              {t('dashboard.nextUpdate')}{' '}
+              <UpdateCountdown />
+            </p>
+          </div>
+          <button
+            onClick={handleShare}
+            disabled={sharing}
+            aria-label="Share storm score card"
+            className="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 disabled:opacity-50 mt-1"
+            style={{ background: 'linear-gradient(to right, #10b981, #059669)' }}
+          >
+            <Share2 className="w-4 h-4" />
+            <span className="hidden sm:inline">{sharing ? '…' : t('dashboard.share') || 'Share'}</span>
+          </button>
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6 mb-4 md:mb-12">
