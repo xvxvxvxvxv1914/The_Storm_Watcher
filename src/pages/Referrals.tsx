@@ -59,7 +59,7 @@ export default function Referrals() {
     : null;
 
   return (
-    <div className="min-h-screen bg-[var(--tsw-bg)] text-white pt-20 pb-24">
+    <div className="min-h-screen text-white pt-20 pb-24" style={{ background: 'var(--tsw-bg)' }}>
       <PageMeta title={`${t('referrals.title')} — The Storm Watcher`} description={t('referrals.subtitle')} path="/referrals" />
 
       <div className="max-w-2xl mx-auto px-4">
