@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import PageMeta from '../components/PageMeta';
+import StarField from '../components/StarField';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { CalendarDays, Cloud, Sparkles, Download } from 'lucide-react';
 import { buildAuroraICS, downloadICS } from '../utils/icalExport';
@@ -144,7 +145,8 @@ export default function Calendar() {
     t('aurora.calendar.nightAfter');
 
   return (
-    <div className="min-h-screen px-4 pt-20 pb-24 max-w-5xl mx-auto">
+    <div className="min-h-screen px-4 pt-20 pb-24 max-w-5xl mx-auto relative">
+      <StarField />
       <PageMeta
         title="Aurora Calendar — The Storm Watcher"
         description="3-night aurora viewing outlook with Kp forecast and cloud cover. Find your best night to watch the northern lights."

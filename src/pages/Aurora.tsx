@@ -268,6 +268,14 @@ const Aurora = () => {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-6 md:mb-12">
+          <div className="flex justify-center md:justify-start mb-4 md:mb-5">
+            <img
+              src="/logos/logo-transparent.png"
+              alt="The Storm Watcher"
+              className="h-16 md:h-20 w-auto"
+              style={{ filter: 'drop-shadow(0 0 16px rgba(16,185,129,0.55)) drop-shadow(0 0 36px rgba(16,185,129,0.25))', animation: 'twinkle 4s ease-in-out infinite' }}
+            />
+          </div>
           <h1 className="text-3xl md:text-5xl font-bold gradient-emerald mb-3 uppercase tracking-tight">
             {t('aurora.title')}
           </h1>

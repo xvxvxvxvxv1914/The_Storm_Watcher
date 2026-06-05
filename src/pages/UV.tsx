@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
+import StarField from '../components/StarField';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
@@ -86,7 +87,8 @@ const UV = () => {
   };
 
   return (
-    <div className="min-h-screen pt-24 md:pt-20 pb-16">
+    <div className="min-h-screen pt-24 md:pt-20 pb-16 relative">
+      <StarField />
       {pulling && (
         <div
           className="fixed top-16 left-1/2 -translate-x-1/2 z-[100] flex items-center justify-center w-9 h-9 rounded-full bg-[#fbbf24]/20 border border-[#fbbf24]/40 transition-transform"

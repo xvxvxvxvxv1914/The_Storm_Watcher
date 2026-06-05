@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import PageMeta from '../components/PageMeta';
+import StarField from '../components/StarField';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import {
   Flame, Wind, Info, Eye, CheckCircle2,
@@ -484,7 +485,8 @@ const Alerts = () => {
   };
 
   return (
-    <div className={`min-h-screen pt-20 pb-24 md:pt-24 ${theme === 'light' ? 'bg-white' : ''}`}>
+    <div className={`min-h-screen pt-20 pb-24 md:pt-24 relative ${theme === 'light' ? 'bg-white' : ''}`}>
+      <StarField />
       <PageMeta title="Space Weather Alerts — The Storm Watcher" description="Real-time NOAA space weather alerts, CMEs and solar flares in plain language." path="/alerts" />
       <div className="max-w-2xl mx-auto px-4 sm:px-6">
 

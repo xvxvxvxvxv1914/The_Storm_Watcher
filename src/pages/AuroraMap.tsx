@@ -1,5 +1,6 @@
 import { lazy, Suspense, useState } from 'react';
 import { Link } from 'react-router-dom';
+import StarField from '../components/StarField';
 import { Map, Sparkles, MapPin, Lightbulb } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
@@ -47,7 +48,8 @@ export default function AuroraMap() {
   ];
 
   return (
-    <div className="min-h-screen text-white pt-20 pb-24" style={{ background: isDark ? '#000008' : '#eef2f8' }}>
+    <div className="min-h-screen text-white pt-20 pb-24 relative" style={{ background: isDark ? '#000008' : '#eef2f8' }}>
+      <StarField />
       <PageMeta
         title={t('auroraMap.meta.title') || 'Aurora Visibility Map — The Storm Watcher'}
         description={t('auroraMap.meta.description') || 'Live world map showing aurora visibility zones based on the current Kp index.'}

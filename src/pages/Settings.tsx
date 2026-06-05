@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import PageMeta from '../components/PageMeta';
+import StarField from '../components/StarField';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, MapPin, Bell, Ruler, Globe, Check, Loader2, X, HelpCircle, Lock, Mail } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
@@ -82,7 +83,8 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen pt-20 pb-16 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen pt-20 pb-16 px-4 sm:px-6 lg:px-8 relative">
+      <StarField />
       <PageMeta
         title="Settings — The Storm Watcher"
         description="Configure your location, notification threshold, units and language preferences."

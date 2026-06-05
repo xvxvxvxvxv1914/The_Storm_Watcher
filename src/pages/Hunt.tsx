@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import PageMeta from '../components/PageMeta';
+import StarField from '../components/StarField';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import SwipeToDelete from '../components/SwipeToDelete';
 import { Trophy, MapPin, Star, ChevronDown, ChevronUp, Target, Share2 } from 'lucide-react';
@@ -227,7 +228,8 @@ export default function Hunt() {
   const myRank = leaderboard.findIndex(e => e.user_id === user?.id) + 1;
 
   return (
-    <div className="min-h-screen px-4 pt-20 pb-24 max-w-4xl mx-auto">
+    <div className="min-h-screen px-4 pt-20 pb-24 max-w-4xl mx-auto relative">
+      <StarField />
       <PageMeta
         title="Aurora Hunt — The Storm Watcher"
         description="Report aurora sightings, earn badges and compete on the leaderboard with other aurora hunters."

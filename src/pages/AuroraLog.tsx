@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Plus, Trash2, MapPin, Star, BookOpen } from 'lucide-react';
 import PageMeta from '../components/PageMeta';
+import StarField from '../components/StarField';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
@@ -142,7 +143,8 @@ const AuroraLog = () => {
   }
 
   return (
-    <div className="min-h-screen pt-24 md:pt-20 pb-16">
+    <div className="min-h-screen pt-24 md:pt-20 pb-16 relative">
+      <StarField />
       <PageMeta
         title="Aurora Log — The Storm Watcher"
         description="Personal diary of your aurora sightings. Log intensity, location, notes and Kp index."

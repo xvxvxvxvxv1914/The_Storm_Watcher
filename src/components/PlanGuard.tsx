@@ -120,7 +120,6 @@ const PlanGuard = ({ requiredPlan, children, fullPage = false }: PlanGuardProps)
     return (
       <div
         className="min-h-screen flex flex-col items-center justify-center px-4 relative"
-        style={{ background: 'radial-gradient(ellipse at top, #0d1b2a 0%, #0a0a1a 70%)' }}
       >
         <StarField />
         <div className="relative z-10">
@@ -138,7 +137,7 @@ const PlanGuard = ({ requiredPlan, children, fullPage = false }: PlanGuardProps)
       </div>
       <div
         className="absolute inset-0 flex items-center justify-center z-10"
-        style={{ background: 'rgba(10,10,26,0.88)' }}
+        style={{ background: 'rgba(0,0,8,0.92)' }}
       >
         <div className="flex flex-col sm:flex-row items-center gap-4 px-6 py-4 text-center sm:text-left">
           <div

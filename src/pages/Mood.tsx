@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import StarField from '../components/StarField';
 import { logError } from '../utils/logger';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import PageMeta from '../components/PageMeta';
@@ -503,6 +504,7 @@ const Mood = () => {
         path="/mood"
       />
       <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Mood', path: '/mood' }]} />
+      <StarField />
 
       {/* Background ambient gradient */}
       <div className="absolute inset-0 pointer-events-none -z-10"
