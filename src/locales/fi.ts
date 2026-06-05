@@ -28,6 +28,8 @@ const fi: Record<string, string> = {
   'auroraMap.proCta.title': 'Haluatko täyden 3D-revontuligloben?',
   'auroraMap.proCta.desc': 'Pro sisältää reaaliaikaisen OVATION-revontulimallin interaktiivisessa 3D-globissa, sähköposti-ilmoitukset ja paljon muuta.',
   'auroraMap.proCta.cta': 'Päivitä Pro-versioon',
+  'auroraMap.lightPollution': 'Valosaaste',
+  'auroraMap.lightPollutionToggle': 'Vaihda valosaastekerrosta (NASA VIIRS yövalot)',
   'auroraMap.noLocation': 'Sijaintia ei asetettu',
   'auroraMap.setLocation': 'Aseta sijaintisi nähdäksesi paikallisen näkyvyyden →',
   'auroraMap.keyLocations': 'Tärkeät sijainnit',
@@ -979,6 +981,14 @@ const fi: Record<string, string> = {
   'referrals.proActiveUntil': 'Ilmainen Pro voimassa',
   'referrals.signInPrompt': 'Kirjaudu sisään saadaksesi suosittelulinkkisi ja ansaitaksesi ilmaista Pro.',
   'referrals.signIn': 'Kirjaudu',
+
+  // Weekly digest
+  'settings.digest': 'Viikoittainen avaruussää-yhteenveto',
+  'settings.digestDesc': 'Vastaanota viikoittainen sähköpostiyhteenveto aurinkoaktiivisuudesta, Kp-huipuista ja geomagneettisista myrskyistä.',
+  'settings.digestToggle': 'Lähetä minulle viikoittainen yhteenveto',
+  'settings.digestSignIn': 'Kirjaudu sisaan',
+  'settings.digestSignInSuffix': ' tilataksesi viikoittaisen yhteenvedon.',
+  'settings.saving': 'Tallennetaan…',
 };
 
 export default fi;

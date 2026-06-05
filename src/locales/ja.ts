@@ -527,6 +527,8 @@ const ja: Record<string, string> = {
   'auroraMap.proCta.title': '完全な3Dオーロラグローブを使いたいですか？',
   'auroraMap.proCta.desc': 'ProはリアルタイムのOVATIONオーロラモデルをインタラクティブな3Dグローブで提供します。',
   'auroraMap.proCta.cta': 'Proにアップグレード',
+  'auroraMap.lightPollution': '光害',
+  'auroraMap.lightPollutionToggle': '光害オーバーレイを切り替え（NASA VIIRS夜間光）',
   'auroraMap.noLocation': '場所が設定されていません',
   'auroraMap.setLocation': '場所を設定してローカルの視認性を確認 →',
   'auroraMap.keyLocations': '主要な場所',
@@ -987,6 +989,14 @@ const ja: Record<string, string> = {
   'referrals.proActiveUntil': '無料Proの有効期限',
   'referrals.signInPrompt': 'ログインして紹介リンクを取得し、無料Proを獲得しましょう。',
   'referrals.signIn': 'ログイン',
+
+  // Weekly digest
+  'settings.digest': '毎週の宇宙天気ダイジェスト',
+  'settings.digestDesc': '太陽活動、Kpピーク、地磁気嵐の週次メールサマリーを受け取ります。',
+  'settings.digestToggle': '週次ダイジェストメールを送る',
+  'settings.digestSignIn': 'ログイン',
+  'settings.digestSignInSuffix': 'して週次ダイジェストを購読する。',
+  'settings.saving': '保存中…',
 };
 
 export default ja;

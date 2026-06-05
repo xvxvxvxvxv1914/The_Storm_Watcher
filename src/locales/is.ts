@@ -28,6 +28,8 @@ const is_: Record<string, string> = {
   'auroraMap.proCta.title': 'Viltu fulla 3D norðurljósahnöttinn?',
   'auroraMap.proCta.desc': 'Pro inniheldur OVATION norðurljósalíkan í rauntíma á gagnvirkum 3D hnetti, tölvupóstvísbendingar og fleira.',
   'auroraMap.proCta.cta': 'Uppfæra í Pro',
+  'auroraMap.lightPollution': 'Ljósmengun',
+  'auroraMap.lightPollutionToggle': 'Kveikja á ljósmengunarlagi (NASA VIIRS næturlýsing)',
   'auroraMap.noLocation': 'Engin staðsetning stillt',
   'auroraMap.setLocation': 'Stilltu staðsetningu þína til að sjá staðbundinn sýnileika →',
   'auroraMap.keyLocations': 'Lykilstaðsetningar',
@@ -979,6 +981,14 @@ const is_: Record<string, string> = {
   'referrals.proActiveUntil': 'Frítt Pro virkt til',
   'referrals.signInPrompt': 'Skráðu þig inn til að fá tilvísunarhlekkinn þinn og byrja að vinna þér inn frítt Pro.',
   'referrals.signIn': 'Skrá inn',
+
+  // Weekly digest
+  'settings.digest': 'Vikulegur geimveðurssamantekt',
+  'settings.digestDesc': 'Fáðu vikulega tölvupóstsamantekt af pálsvirknni, Kp-hámæðum og segölum óveðrum.',
+  'settings.digestToggle': 'Senda mér vikulegan samantekt',
+  'settings.digestSignIn': 'Skrá inn',
+  'settings.digestSignInSuffix': ' til að gerast áskrifandi að vikulegum samantekt.',
+  'settings.saving': 'Vista…',
 };
 
 export default is_;

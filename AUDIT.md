@@ -68,38 +68,35 @@
 
 ## Приоритет 5 — Нови функции (по стойност)
 
-- [ ] **Location-based aurora alerts**
-  - Идея: Alert само ако от потребителската локация има > N% шанс за аврора
-  - Infrastructure: `auroraVisibility.ts` вече съществува — добави location filter в push alert logic
-  - Файлове: `supabase/functions/send-kp-alerts/`, `src/hooks/usePushNotifications.ts`
+- [x] **Location-based aurora alerts** ✓
+  - `supabase/functions/send-kp-alerts/` + `src/hooks/usePushNotifications.ts` обновени
+  - DB migration: `push_subscriptions` + `favorite_locations` с lat/lon columns
 
-- [ ] **Storm Event Share Card**
-  - Идея: "Сподели тази буря" бутон в Dashboard → генерира card за Twitter/Instagram
-  - Infrastructure: `src/utils/generateStormImage.ts` вече съществува
-  - Fix: Добави Share бутон в Dashboard header, използвай Web Share API
+- [x] **Storm Event Share Card** ✓
+  - Share бутон в Dashboard header, Web Share API + canvas fallback
 
-- [ ] **Aurora Personal Log / Diary**
-  - Идея: Потребителят отбелязва кога е видял аврора + снимка + бележки
-  - Storage: Нова Supabase таблица `aurora_sightings`
-  - UI: Нова страница `/log` или разширение на Calendar
+- [x] **Aurora Personal Log / Diary** ✓
+  - Нова страница `/log`, Supabase таблица `aurora_sightings`
 
-- [ ] **Седмичен email digest (Space Weather)**
-  - Идея: Opt-in от Settings → седмичен email с Kp summary, upcoming events
-  - Infrastructure: Resend вече е настроен за billing emails
-  - Fix: Нова Supabase Edge Function + Settings toggle
+- [x] **Contact форма страница** ✓
+  - `/contact` с форма → Supabase backend
 
-- [ ] **Dark Sky overlay в Aurora Map**
-  - Идея: Light pollution слой върху Leaflet картата в `/aurora-map`
-  - Source: OpenLayers light pollution dataset (безплатен)
-  - Файл: `src/pages/AuroraMap.tsx`
+- [x] **Седмичен email digest (Space Weather)** ✓
+  - `supabase/functions/send-weekly-digest/index.ts` — Resend, NOAA 3-day Kp, weekly HTML email
+  - `profiles.weekly_digest` column (migration 20260605000001)
+  - Settings.tsx — toggle (auth-aware), всички 16 локала
+  - Cron migration 20260605000002 (MANUAL) — Monday 08:00 UTC
 
-- [ ] **Dashboard widget персонализация**
-  - Идея: Drag-and-drop на cards (Kp, Solar Wind, UV, ISS) + localStorage persistence
-  - Файл: `src/pages/Dashboard.tsx`
+- [x] **Light pollution overlay в Aurora Map** ✓
+  - Toggle бутон в AuroraMap.tsx + `showLightPollution` prop на AuroraHeatmap
+  - NASA GIBS VIIRS Black Marble tile layer (безплатен, CORS-enabled)
+  - Всички 16 локала обновени
 
-- [ ] **Contact форма страница**
-  - Проблем: Footer сочи само към mailto — загубени leads
-  - Fix: Нова `/contact` страница с форма → Supabase или Resend
+- [x] **Dashboard widget персонализация** ✓
+  - HTML5 drag-and-drop на 4-те stat cards (Kp, Wind, Bz, X-ray)
+  - localStorage persistence (`tsw_dashboard_order`)
+  - GripVertical handle (hover) + ring highlight на drop target
+
 
 ---
 

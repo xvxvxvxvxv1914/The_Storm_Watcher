@@ -10,7 +10,7 @@ import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
 import SvgBarChart from '../components/charts/SvgBarChart';
-import { Activity, Wind, Compass, Sun, Radio, MapPin, Download, Share2 } from 'lucide-react';
+import { Activity, Wind, Compass, Sun, Radio, MapPin, Download, Share2, GripVertical } from 'lucide-react';
 import { generateStormScoreImage } from '../utils/generateStormImage';
 import { getKpIndex, getSolarWind, getMagField, getXrayFlux, getKpHistory3Day, getKpForecast, getStormStatus, getXrayClass, getKpGradientStyle } from '../services/noaaApi';
 import PlanGuard from '../components/PlanGuard';
@@ -88,6 +88,25 @@ const UpdateCountdown = React.memo(function UpdateCountdown() {
 
 const NIGGG_COUNTRIES = new Set(['BG', 'RO', 'RS', 'MK', 'GR', 'TR', 'AL', 'ME', 'HR', 'HU', 'MD']);
 
+const CARD_IDS = ['kp', 'wind', 'bz', 'xray'] as const;
+type CardId = (typeof CARD_IDS)[number];
+const DASHBOARD_ORDER_KEY = 'tsw_dashboard_order';
+
+function loadCardOrder(): CardId[] {
+  try {
+    const saved = localStorage.getItem(DASHBOARD_ORDER_KEY);
+    if (saved) {
+      const parsed: unknown = JSON.parse(saved);
+      if (
+        Array.isArray(parsed) &&
+        parsed.length === CARD_IDS.length &&
+        (parsed as string[]).every(id => (CARD_IDS as readonly string[]).includes(id))
+      ) return parsed as CardId[];
+    }
+  } catch { /* ignore */ }
+  return [...CARD_IDS];
+}
+
 // Bounding box covering NIGGG_COUNTRIES region (roughly SE Europe + Turkey)
 const isInNigggBbox = (lat: number, lon: number) =>
   lat >= 35 && lat <= 48 && lon >= 14 && lon <= 42;
@@ -114,6 +133,25 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [sharing, setSharing] = useState(false);
+
+  const [cardOrder, setCardOrder] = useState<CardId[]>(loadCardOrder);
+  const [dragOverIdx, setDragOverIdx] = useState<number>(-1);
+  const dragSrcIdx = useRef<number>(-1);
+
+  const handleCardDragStart = (idx: number) => { dragSrcIdx.current = idx; };
+  const handleCardDragOver  = (e: React.DragEvent, idx: number) => { e.preventDefault(); setDragOverIdx(idx); };
+  const handleCardDragLeave = () => setDragOverIdx(-1);
+  const handleCardDrop = (targetIdx: number) => {
+    setDragOverIdx(-1);
+    const from = dragSrcIdx.current;
+    if (from < 0 || from === targetIdx) return;
+    const next = [...cardOrder];
+    const [moved] = next.splice(from, 1);
+    next.splice(targetIdx, 0, moved);
+    setCardOrder(next);
+    try { localStorage.setItem(DASHBOARD_ORDER_KEY, JSON.stringify(next)); } catch { /* storage full */ }
+    dragSrcIdx.current = -1;
+  };
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -495,77 +533,106 @@ const Dashboard = () => {
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6 mb-4 md:mb-12">
-          <div data-tour="kp-card" className={`relative glass-surface rounded-2xl p-3 sm:p-6 ${
-            kpValue >= 5 ? 'glow-red' : kpValue >= 4 ? 'glow-orange' : 'glow-green'
-          } hover:scale-105 transition-transform`}>
-            <InfoTooltip text={t('dashboard.tooltip.kp')} />
-            <div className="flex items-center gap-2 mb-2 sm:mb-4">
-              <div className={`w-8 h-8 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center ${
-                kpValue >= 5 ? 'bg-gradient-to-br from-[#ef4444] to-[#dc2626]' :
-                kpValue >= 4 ? 'bg-gradient-to-br from-[#f97316] to-[#ea580c]' :
-                kpValue >= 2 ? 'bg-gradient-to-br from-[#eab308] to-[#10b981]' :
-                'bg-gradient-to-br from-[#10b981] to-[#059669]'
-              }`}>
-                <Activity className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
+          {cardOrder.map((id, idx) => {
+            const isDropTarget = dragOverIdx === idx;
+            const dragProps = {
+              draggable: true as const,
+              onDragStart: () => handleCardDragStart(idx),
+              onDragOver: (e: React.DragEvent) => handleCardDragOver(e, idx),
+              onDragLeave: handleCardDragLeave,
+              onDrop: () => handleCardDrop(idx),
+            };
+            const dragHandle = (
+              <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-30 hover:!opacity-60 transition-opacity cursor-grab active:cursor-grabbing z-10 touch-none">
+                <GripVertical className="w-3.5 h-3.5 text-white" />
               </div>
-              <h3 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
-                {t('dashboard.kpIndex')}
-              </h3>
-            </div>
-            <div className="text-[1.4rem] sm:text-6xl font-bold mb-2 sm:mb-3" style={getKpGradientStyle(kpValue)}>{kpDisplay.toFixed(1)}</div>
-            <div className={`inline-block px-2 py-1 sm:px-4 sm:py-2 rounded-lg text-[0.6rem] sm:text-xs font-bold uppercase tracking-wider ${
-              kpValue >= 7 ? 'bg-gradient-to-r from-[#ef4444] to-[#dc2626] text-white' :
-              kpValue >= 5 ? 'bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white' :
-              kpValue >= 4 ? 'bg-gradient-to-r from-[#eab308] to-[#ca8a04] text-white' :
-              'bg-gradient-to-r from-[#10b981] to-[#059669] text-white'
-            }`}>
-              {t(stormStatus.statusKey)}
-            </div>
-          </div>
+            );
+            const dropRing = isDropTarget ? 'ring-2 ring-[#10b981]/60' : '';
 
-          <div data-tour="wind-card" className="relative glass-surface rounded-2xl p-3 sm:p-6 hover:glow-purple transition-all hover:scale-105">
-            <InfoTooltip text={t('dashboard.tooltip.wind')} />
-            <div className="flex items-center gap-2 mb-2 sm:mb-4">
-              <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-[#7c3aed] to-[#6d28d9] rounded-xl flex items-center justify-center">
-                <Wind className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
+            if (id === 'kp') return (
+              <div key="kp" {...dragProps} data-tour="kp-card" className={`group relative glass-surface rounded-2xl p-3 sm:p-6 ${
+                kpValue >= 5 ? 'glow-red' : kpValue >= 4 ? 'glow-orange' : 'glow-green'
+              } hover:scale-105 transition-transform ${dropRing}`}>
+                {dragHandle}
+                <InfoTooltip text={t('dashboard.tooltip.kp')} />
+                <div className="flex items-center gap-2 mb-2 sm:mb-4">
+                  <div className={`w-8 h-8 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center ${
+                    kpValue >= 5 ? 'bg-gradient-to-br from-[#ef4444] to-[#dc2626]' :
+                    kpValue >= 4 ? 'bg-gradient-to-br from-[#f97316] to-[#ea580c]' :
+                    kpValue >= 2 ? 'bg-gradient-to-br from-[#eab308] to-[#10b981]' :
+                    'bg-gradient-to-br from-[#10b981] to-[#059669]'
+                  }`}>
+                    <Activity className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
+                  </div>
+                  <h3 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
+                    {t('dashboard.kpIndex')}
+                  </h3>
+                </div>
+                <div className="text-[1.4rem] sm:text-6xl font-bold mb-2 sm:mb-3" style={getKpGradientStyle(kpValue)}>{kpDisplay.toFixed(1)}</div>
+                <div className={`inline-block px-2 py-1 sm:px-4 sm:py-2 rounded-lg text-[0.6rem] sm:text-xs font-bold uppercase tracking-wider ${
+                  kpValue >= 7 ? 'bg-gradient-to-r from-[#ef4444] to-[#dc2626] text-white' :
+                  kpValue >= 5 ? 'bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white' :
+                  kpValue >= 4 ? 'bg-gradient-to-r from-[#eab308] to-[#ca8a04] text-white' :
+                  'bg-gradient-to-r from-[#10b981] to-[#059669] text-white'
+                }`}>
+                  {t(stormStatus.statusKey)}
+                </div>
               </div>
-              <h3 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
-                {t('dashboard.solarWind')}
-              </h3>
-            </div>
-            <div className="text-[1.4rem] sm:text-6xl font-bold text-white mb-2 sm:mb-3">{windDisplay.toFixed(0)}</div>
-            <div className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider">{t('dashboard.kms')}</div>
-          </div>
+            );
 
-          <div className="relative glass-surface rounded-2xl p-3 sm:p-6 hover:glow-green transition-all hover:scale-105">
-            <InfoTooltip text={t('dashboard.tooltip.bz')} />
-            <div className="flex items-center gap-2 mb-2 sm:mb-4">
-              <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-[#06b6d4] to-[#0891b2] rounded-xl flex items-center justify-center">
-                <Compass className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
+            if (id === 'wind') return (
+              <div key="wind" {...dragProps} data-tour="wind-card" className={`group relative glass-surface rounded-2xl p-3 sm:p-6 hover:glow-purple transition-all hover:scale-105 ${dropRing}`}>
+                {dragHandle}
+                <InfoTooltip text={t('dashboard.tooltip.wind')} />
+                <div className="flex items-center gap-2 mb-2 sm:mb-4">
+                  <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-[#7c3aed] to-[#6d28d9] rounded-xl flex items-center justify-center">
+                    <Wind className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
+                  </div>
+                  <h3 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
+                    {t('dashboard.solarWind')}
+                  </h3>
+                </div>
+                <div className="text-[1.4rem] sm:text-6xl font-bold text-white mb-2 sm:mb-3">{windDisplay.toFixed(0)}</div>
+                <div className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider">{t('dashboard.kms')}</div>
               </div>
-              <h3 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
-                {t('dashboard.bz')}
-              </h3>
-            </div>
-            <div className={`text-[1.4rem] sm:text-6xl font-bold mb-2 sm:mb-3 ${bz < 0 ? 'text-[#ef4444]' : 'text-[#10b981]'}`}>
-              {bzDisplay.toFixed(1)}
-            </div>
-            <div className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider">{t('dashboard.nt')}</div>
-          </div>
+            );
 
-          <div className="relative glass-surface rounded-2xl p-3 sm:p-6 hover:glow-green transition-all hover:scale-105">
-            <InfoTooltip text={t('dashboard.tooltip.xray')} />
-            <div className="flex items-center gap-2 mb-2 sm:mb-4">
-              <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-[#fbbf24] to-[#f59e0b] rounded-xl flex items-center justify-center">
-                <Sun className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
+            if (id === 'bz') return (
+              <div key="bz" {...dragProps} className={`group relative glass-surface rounded-2xl p-3 sm:p-6 hover:glow-green transition-all hover:scale-105 ${dropRing}`}>
+                {dragHandle}
+                <InfoTooltip text={t('dashboard.tooltip.bz')} />
+                <div className="flex items-center gap-2 mb-2 sm:mb-4">
+                  <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-[#06b6d4] to-[#0891b2] rounded-xl flex items-center justify-center">
+                    <Compass className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
+                  </div>
+                  <h3 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
+                    {t('dashboard.bz')}
+                  </h3>
+                </div>
+                <div className={`text-[1.4rem] sm:text-6xl font-bold mb-2 sm:mb-3 ${bz < 0 ? 'text-[#ef4444]' : 'text-[#10b981]'}`}>
+                  {bzDisplay.toFixed(1)}
+                </div>
+                <div className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider">{t('dashboard.nt')}</div>
               </div>
-              <h3 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
-                {t('dashboard.xray')}
-              </h3>
-            </div>
-            <div className="text-[1.4rem] sm:text-6xl font-bold gradient-solar mb-2 sm:mb-3">{xrayClass}</div>
-            <div className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider">{t('dashboard.classTxt')}</div>
-          </div>
+            );
+
+            return (
+              <div key="xray" {...dragProps} className={`group relative glass-surface rounded-2xl p-3 sm:p-6 hover:glow-green transition-all hover:scale-105 ${dropRing}`}>
+                {dragHandle}
+                <InfoTooltip text={t('dashboard.tooltip.xray')} />
+                <div className="flex items-center gap-2 mb-2 sm:mb-4">
+                  <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-[#fbbf24] to-[#f59e0b] rounded-xl flex items-center justify-center">
+                    <Sun className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
+                  </div>
+                  <h3 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
+                    {t('dashboard.xray')}
+                  </h3>
+                </div>
+                <div className="text-[1.4rem] sm:text-6xl font-bold gradient-solar mb-2 sm:mb-3">{xrayClass}</div>
+                <div className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider">{t('dashboard.classTxt')}</div>
+              </div>
+            );
+          })}
         </div>
 
         <div className="glass-surface rounded-2xl p-4 sm:p-8 mb-4 sm:mb-8">

@@ -29,6 +29,8 @@ const ko: Record<string, string> = {
   'auroraMap.proCta.title': '전체 3D 오로라 글로브를 원하시나요?',
   'auroraMap.proCta.desc': 'Pro에는 인터랙티브 3D 글로브의 실시간 OVATION 오로라 모델, 이메일 알림 등이 포함됩니다.',
   'auroraMap.proCta.cta': 'Pro로 업그레이드',
+  'auroraMap.lightPollution': '빛 공해',
+  'auroraMap.lightPollutionToggle': '빛 공해 오버레이 전환 (NASA VIIRS 야간 조명)',
   'auroraMap.noLocation': '위치가 설정되지 않음',
   'auroraMap.setLocation': '로컬 가시성을 보려면 위치를 설정하세요 →',
   'auroraMap.keyLocations': '주요 위치',
@@ -1017,6 +1019,14 @@ const ko: Record<string, string> = {
   'referrals.proActiveUntil': '무료 Pro 사용 가능 기한',
   'referrals.signInPrompt': '로그인하여 추천 링크를 받고 무료 Pro를 받으세요.',
   'referrals.signIn': '로그인',
+
+  // Weekly digest
+  'settings.digest': '주간 우주 날씨 다이제스트',
+  'settings.digestDesc': '태양 활동, Kp 최댓값, 지자기 폭풍의 주간 이메일 요약을 받아보세요.',
+  'settings.digestToggle': '주간 다이제스트 이메일 수신',
+  'settings.digestSignIn': '로그인',
+  'settings.digestSignInSuffix': '하여 주간 다이제스트를 구독하세요.',
+  'settings.saving': '저장 중…',
 };
 
 export default ko;

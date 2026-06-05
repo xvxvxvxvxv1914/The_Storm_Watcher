@@ -4,6 +4,11 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { calcAuroraVisibility } from '../utils/auroraVisibility';
 
+// NASA GIBS VIIRS Black Marble annual composite (2023). Bright patches = artificial lighting = light pollution.
+// CORS is enabled on NASA GIBS by default for public access.
+const LP_TILE_URL =
+  'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_Black_Marble_UT/default/2023-01-01/GoogleMapsCompatible/{z}/{y}/{x}.jpg';
+
 const CANVAS_W = 720;
 const CANVAS_H = 360;
 
@@ -92,9 +97,10 @@ interface Props {
   kp: number;
   userLat?: number;
   userLon?: number;
+  showLightPollution?: boolean;
 }
 
-export default function AuroraHeatmap({ kp, userLat, userLon }: Props) {
+export default function AuroraHeatmap({ kp, userLat, userLon, showLightPollution = false }: Props) {
   const userVis = userLat !== undefined && userLon !== undefined
     ? calcAuroraVisibility(userLat, userLon, kp)
     : undefined;
@@ -122,6 +128,14 @@ export default function AuroraHeatmap({ kp, userLat, userLon }: Props) {
           subdomains="abcd"
           maxZoom={19}
         />
+        {showLightPollution && (
+          <TileLayer
+            url={LP_TILE_URL}
+            attribution='&copy; <a href="https://earthdata.nasa.gov/">NASA GIBS</a>'
+            opacity={0.45}
+            maxZoom={8}
+          />
+        )}
         <HeatOverlay kp={kp} />
         {userLat !== undefined && userLon !== undefined && userVis !== undefined && (
           <LocationMarker lat={userLat} lon={userLon} vis={userVis} />

@@ -12,6 +12,7 @@ interface Profile {
   avatar_url?: string;
   plan: 'free' | 'pro' | 'premium';
   is_beta: boolean;
+  weekly_digest: boolean;
   stripe_customer_id?: string;
   subscription_status?: string;
   subscription_period_end?: string | null;
@@ -97,7 +98,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, email, full_name, avatar_url, plan, is_beta, subscription_status, subscription_period_end, referral_code, referred_by, referral_pro_until, created_at, updated_at')
+        .select('id, email, full_name, avatar_url, plan, is_beta, weekly_digest, subscription_status, subscription_period_end, referral_code, referred_by, referral_pro_until, created_at, updated_at')
         .eq('id', userId)
         .maybeSingle();
 
@@ -195,10 +196,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     try {
       // Allowlist: only permit safe fields to be updated by the client
-      const { full_name, avatar_url } = updates;
+      const { full_name, avatar_url, weekly_digest } = updates;
       const safeUpdates: Record<string, unknown> = {};
       if (full_name !== undefined) safeUpdates.full_name = full_name;
       if (avatar_url !== undefined) safeUpdates.avatar_url = avatar_url;
+      if (weekly_digest !== undefined) safeUpdates.weekly_digest = weekly_digest;
 
       if (Object.keys(safeUpdates).length === 0) {
         return { error: new Error('No valid fields to update') };

@@ -29,6 +29,8 @@ const bg: Record<string, string> = {
   'auroraMap.proCta.title': 'Искате ли пълния 3D глобус на аврората?',
   'auroraMap.proCta.desc': 'Pro включва OVATION модел в реално време на интерактивен 3D глобус, имейл известия и още.',
   'auroraMap.proCta.cta': 'Надградете до Pro',
+  'auroraMap.lightPollution': 'Светлинно замърсяване',
+  'auroraMap.lightPollutionToggle': 'Превключи слоя за светлинно замърсяване (NASA VIIRS нощни светлини)',
   'auroraMap.noLocation': 'Няма зададена локация',
   'auroraMap.setLocation': 'Задайте вашата локация, за да видите местната видимост →',
   'auroraMap.keyLocations': 'Ключови локации',
@@ -1012,6 +1014,14 @@ const bg: Record<string, string> = {
   'referrals.proActiveUntil': 'Безплатен Pro до',
   'referrals.signInPrompt': 'Влез, за да получиш реферален линк и да печелиш безплатен Pro.',
   'referrals.signIn': 'Вход',
+
+  // Weekly digest
+  'settings.digest': 'Седмичен дайджест за космическото време',
+  'settings.digestDesc': 'Получавай седмичен имейл с резюме на слънчевата активност, Kp пикове и геомагнитни бури.',
+  'settings.digestToggle': 'Изпращай ми седмичен дайджест',
+  'settings.digestSignIn': 'Влез',
+  'settings.digestSignInSuffix': ', за да се абонираш за седмичния дайджест.',
+  'settings.saving': 'Записване…',
 };
 
 export default bg;

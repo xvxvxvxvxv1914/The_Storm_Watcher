@@ -28,6 +28,8 @@ const no: Record<string, string> = {
   'auroraMap.proCta.title': 'Vil du ha den fulle 3D aurora-globusen?',
   'auroraMap.proCta.desc': 'Pro inkluderer sanntids OVATION aurora-modell på en interaktiv 3D-globus, e-postvarsler og mer.',
   'auroraMap.proCta.cta': 'Oppgrader til Pro',
+  'auroraMap.lightPollution': 'Lysforurensning',
+  'auroraMap.lightPollutionToggle': 'Slå på lysforurensningslag (NASA VIIRS nattlys)',
   'auroraMap.noLocation': 'Ingen plassering angitt',
   'auroraMap.setLocation': 'Angi plasseringen din for å se lokal synlighet →',
   'auroraMap.keyLocations': 'Nøkkelsteder',
@@ -979,6 +981,14 @@ const no: Record<string, string> = {
   'referrals.proActiveUntil': 'Gratis Pro aktiv til',
   'referrals.signInPrompt': 'Logg inn for å få vervelenken din og begynne å tjene gratis Pro.',
   'referrals.signIn': 'Logg inn',
+
+  // Weekly digest
+  'settings.digest': 'Ukentlig romvær-sammendrag',
+  'settings.digestDesc': 'Motta et ukentlig e-postsammendrag av solaktivitet, Kp-topper og geomagnetiske stormer.',
+  'settings.digestToggle': 'Send meg ukentlige sammendrag',
+  'settings.digestSignIn': 'Logg inn',
+  'settings.digestSignInSuffix': ' for å abonnere på det ukentlige sammendraget.',
+  'settings.saving': 'Lagrer…',
 };
 
 export default no;

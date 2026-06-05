@@ -527,6 +527,8 @@ const es: Record<string, string> = {
   'auroraMap.proCta.title': '¿Quieres el globo 3D completo de la aurora?',
   'auroraMap.proCta.desc': 'Pro incluye modelo OVATION de aurora en tiempo real en un globo 3D interactivo, alertas por correo y más.',
   'auroraMap.proCta.cta': 'Actualizar a Pro',
+  'auroraMap.lightPollution': 'Contaminación lumínica',
+  'auroraMap.lightPollutionToggle': 'Alternar superposición de contaminación lumínica (NASA VIIRS luces nocturnas)',
   'auroraMap.noLocation': 'Sin ubicación establecida',
   'auroraMap.setLocation': 'Establece tu ubicación para ver la visibilidad local →',
   'auroraMap.keyLocations': 'Ubicaciones clave',
@@ -987,6 +989,14 @@ const es: Record<string, string> = {
   'referrals.proActiveUntil': 'Pro gratis activo hasta',
   'referrals.signInPrompt': 'Inicia sesión para obtener tu enlace de referido y empezar a ganar Pro gratis.',
   'referrals.signIn': 'Iniciar sesión',
+
+  // Weekly digest
+  'settings.digest': 'Resumen semanal del clima espacial',
+  'settings.digestDesc': 'Recibe un resumen semanal por correo de la actividad solar, picos de Kp y tormentas geomagnéticas.',
+  'settings.digestToggle': 'Enviarme resúmenes semanales',
+  'settings.digestSignIn': 'Inicia sesión',
+  'settings.digestSignInSuffix': ' para suscribirte al resumen semanal.',
+  'settings.saving': 'Guardando…',
 };
 
 export default es;

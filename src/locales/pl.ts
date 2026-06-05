@@ -28,6 +28,8 @@ const pl: Record<string, string> = {
   'auroraMap.proCta.title': 'Chcesz pełny globus 3D zorzy?',
   'auroraMap.proCta.desc': 'Pro zawiera model OVATION zorzy w czasie rzeczywistym na interaktywnym globusie 3D, alerty e-mail i więcej.',
   'auroraMap.proCta.cta': 'Przejdź na Pro',
+  'auroraMap.lightPollution': 'Zanieczyszczenie świetlne',
+  'auroraMap.lightPollutionToggle': 'Przełącz warstwę zanieczyszczenia świetlnego (NASA VIIRS nocne światła)',
   'auroraMap.noLocation': 'Brak ustawionej lokalizacji',
   'auroraMap.setLocation': 'Ustaw swoją lokalizację, aby zobaczyć lokalną widoczność →',
   'auroraMap.keyLocations': 'Kluczowe lokalizacje',
@@ -979,6 +981,14 @@ const pl: Record<string, string> = {
   'referrals.proActiveUntil': 'Darmowe Pro aktywne do',
   'referrals.signInPrompt': 'Zaloguj się, aby otrzymać link polecający i zdobywać darmowe Pro.',
   'referrals.signIn': 'Zaloguj się',
+
+  // Weekly digest
+  'settings.digest': 'Tygodniowy przegląd pogody kosmicznej',
+  'settings.digestDesc': 'Otrzymuj tygodniowe podsumowanie e-mail aktywności słonecznej, szczytów Kp i burz geomagnetycznych.',
+  'settings.digestToggle': 'Wysyłaj mi tygodniowy przegląd',
+  'settings.digestSignIn': 'Zaloguj się',
+  'settings.digestSignInSuffix': ', aby zasubskrybować tygodniowy przegląd.',
+  'settings.saving': 'Zapisywanie…',
 };
 
 export default pl;

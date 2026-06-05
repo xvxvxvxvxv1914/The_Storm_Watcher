@@ -527,6 +527,8 @@ const ru: Record<string, string> = {
   'auroraMap.proCta.title': 'Хотите полный 3D-глобус авроры?',
   'auroraMap.proCta.desc': 'Pro включает модель OVATION в реальном времени на интерактивном 3D-глобусе, email-оповещения и многое другое.',
   'auroraMap.proCta.cta': 'Перейти на Pro',
+  'auroraMap.lightPollution': 'Световое загрязнение',
+  'auroraMap.lightPollutionToggle': 'Переключить слой светового загрязнения (ночные огни NASA VIIRS)',
   'auroraMap.noLocation': 'Местоположение не задано',
   'auroraMap.setLocation': 'Задайте местоположение для просмотра местной видимости →',
   'auroraMap.keyLocations': 'Ключевые места',
@@ -987,6 +989,14 @@ const ru: Record<string, string> = {
   'referrals.proActiveUntil': 'Бесплатный Pro активен до',
   'referrals.signInPrompt': 'Войдите, чтобы получить реферальную ссылку и зарабатывать бесплатный Pro.',
   'referrals.signIn': 'Войти',
+
+  // Weekly digest
+  'settings.digest': 'Еженедельный дайджест космической погоды',
+  'settings.digestDesc': 'Получайте еженедельное письмо с обзором солнечной активности, пиков Kp и геомагнитных бурь.',
+  'settings.digestToggle': 'Присылать мне еженедельный дайджест',
+  'settings.digestSignIn': 'Войдите',
+  'settings.digestSignInSuffix': ', чтобы подписаться на еженедельный дайджест.',
+  'settings.saving': 'Сохранение…',
 };
 
 export default ru;

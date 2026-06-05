@@ -28,6 +28,8 @@ const uk: Record<string, string> = {
   'auroraMap.proCta.title': 'Хочете повний 3D-глобус авроры?',
   'auroraMap.proCta.desc': 'Pro включає модель OVATION у реальному часі на інтерактивному 3D-глобусі, сповіщення електронною поштою та більше.',
   'auroraMap.proCta.cta': 'Перейти на Pro',
+  'auroraMap.lightPollution': 'Світлове забруднення',
+  'auroraMap.lightPollutionToggle': 'Увімкнути шар світлового забруднення (нічні вогні NASA VIIRS)',
   'auroraMap.noLocation': 'Місцезнаходження не задано',
   'auroraMap.setLocation': 'Задайте ваше місцезнаходження для перегляду місцевої видимості →',
   'auroraMap.keyLocations': 'Ключові місця',
@@ -979,6 +981,14 @@ const uk: Record<string, string> = {
   'referrals.proActiveUntil': 'Безкоштовний Pro активний до',
   'referrals.signInPrompt': 'Увійдіть, щоб отримати реферальне посилання та заробляти безкоштовний Pro.',
   'referrals.signIn': 'Увійти',
+
+  // Weekly digest
+  'settings.digest': 'Щотижневий дайджест космічної погоди',
+  'settings.digestDesc': 'Отримуйте щотижневий лист з оглядом сонячної активності, піків Kp та геомагнітних бурь.',
+  'settings.digestToggle': 'Надсилати мені щотижневий дайджест',
+  'settings.digestSignIn': 'Увійдіть',
+  'settings.digestSignInSuffix': ', щоб підписатись на щотижневий дайджест.',
+  'settings.saving': 'Збереження…',
 };
 
 export default uk;

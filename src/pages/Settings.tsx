@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import PageMeta from '../components/PageMeta';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Bell, Ruler, Globe, Check, Loader2, X, HelpCircle, Lock } from 'lucide-react';
+import { ArrowLeft, MapPin, Bell, Ruler, Globe, Check, Loader2, X, HelpCircle, Lock, Mail } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
 import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useOnboarding } from '../hooks/useOnboarding';
@@ -18,8 +18,17 @@ export default function Settings() {
   const { reset: resetOnboarding } = useOnboarding();
   const navigate = useNavigate();
   const { hasPro, hasPremium } = usePaymentGate();
-  const { profile } = useAuth();
+  const { profile, updateProfile } = useAuth();
   const isBeta = profile?.is_beta === true;
+
+  const [digestSaving, setDigestSaving] = useState(false);
+
+  const handleDigestToggle = async () => {
+    if (!profile) return;
+    setDigestSaving(true);
+    await updateProfile({ weekly_digest: !profile.weekly_digest });
+    setDigestSaving(false);
+  };
 
   const [saved, setSaved] = useState(false);
   const [locating, setLocating] = useState(false);
@@ -197,6 +206,49 @@ export default function Settings() {
             <p className="text-xs text-[#64748b]">
               {t('settings.kpThresholdNote') || 'Push notifications require enabling them first via the bell icon in the navigation bar.'}
             </p>
+          </section>
+
+          {/* Weekly Digest */}
+          <section className="glass-surface rounded-2xl p-4 sm:p-6 border border-white/10">
+            <div className="flex items-center gap-3 mb-1">
+              <Mail className="w-5 h-5 text-[#f97316]" />
+              <h2 className="text-lg font-semibold text-white">{t('settings.digest') || 'Weekly Space Weather Digest'}</h2>
+            </div>
+            <p className="text-sm text-[#94a3b8] mb-5">
+              {t('settings.digestDesc') || 'Receive a weekly email summary of solar activity, Kp peaks, and geomagnetic storm events.'}
+            </p>
+
+            {profile ? (
+              <button
+                onClick={handleDigestToggle}
+                disabled={digestSaving}
+                className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl border transition-colors text-left ${
+                  profile.weekly_digest
+                    ? 'border-[#10b981]/40 bg-[#10b981]/10 text-[#10b981]'
+                    : 'border-white/10 text-[#94a3b8] hover:border-white/30 hover:text-white'
+                }`}
+              >
+                <div className={`w-9 h-5 rounded-full flex-shrink-0 transition-colors relative ${
+                  profile.weekly_digest ? 'bg-[#10b981]' : 'bg-[#334155]'
+                }`}>
+                  <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${
+                    profile.weekly_digest ? 'translate-x-4' : 'translate-x-0.5'
+                  }`} />
+                </div>
+                <span className="text-sm font-medium">
+                  {digestSaving
+                    ? (t('settings.saving') || 'Saving…')
+                    : (t('settings.digestToggle') || 'Send me weekly digest emails')}
+                </span>
+              </button>
+            ) : (
+              <p className="text-sm text-[#64748b]">
+                <Link to="/auth" className="text-[#f97316] underline hover:text-[#fb923c] transition-colors">
+                  {t('settings.digestSignIn') || 'Sign in'}
+                </Link>
+                {' '}{t('settings.digestSignInSuffix') || 'to subscribe to the weekly digest.'}
+              </p>
+            )}
           </section>
 
           {/* Units */}

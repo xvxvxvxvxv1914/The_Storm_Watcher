@@ -527,6 +527,8 @@ const zh: Record<string, string> = {
   'auroraMap.proCta.title': '想要完整的3D极光地球仪？',
   'auroraMap.proCta.desc': 'Pro版包含实时OVATION极光模型的交互式3D地球仪、邮件提醒等功能。',
   'auroraMap.proCta.cta': '升级到Pro',
+  'auroraMap.lightPollution': '光污染',
+  'auroraMap.lightPollutionToggle': '切换光污染图层（NASA VIIRS夜间灯光）',
   'auroraMap.noLocation': '未设置位置',
   'auroraMap.setLocation': '设置您的位置以查看本地可见度 →',
   'auroraMap.keyLocations': '关键地点',
@@ -987,6 +989,14 @@ const zh: Record<string, string> = {
   'referrals.proActiveUntil': '免费 Pro 有效期至',
   'referrals.signInPrompt': '登录以获取你的推荐链接并开始赚取免费 Pro。',
   'referrals.signIn': '登录',
+
+  // Weekly digest
+  'settings.digest': '每周太空天气摘要',
+  'settings.digestDesc': '接收包含太阳活动、Kp峰值和地磁暴的每周电子邮件摘要。',
+  'settings.digestToggle': '发送每周摘要邮件',
+  'settings.digestSignIn': '登录',
+  'settings.digestSignInSuffix': '以订阅每周摘要。',
+  'settings.saving': '保存中…',
 };
 
 export default zh;

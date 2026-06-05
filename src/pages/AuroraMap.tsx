@@ -1,6 +1,6 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Map, Sparkles, MapPin } from 'lucide-react';
+import { Map, Sparkles, MapPin, Lightbulb } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { useKpLive } from '../hooks/useKpLive';
@@ -22,6 +22,7 @@ export default function AuroraMap() {
   const { hasPro } = usePaymentGate();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  const [showLightPollution, setShowLightPollution] = useState(false);
 
   const userLat = settings.preferredLat ?? undefined;
   const userLon = settings.preferredLon ?? undefined;
@@ -122,17 +123,29 @@ export default function AuroraMap() {
             </div>
           }
         >
-          <AuroraHeatmap kp={kpVal} userLat={userLat} userLon={userLon} />
+          <AuroraHeatmap kp={kpVal} userLat={userLat} userLon={userLon} showLightPollution={showLightPollution} />
         </Suspense>
 
-        {/* Legend */}
-        <div className="mt-4 flex flex-wrap gap-3">
+        {/* Legend + Light Pollution toggle */}
+        <div className="mt-4 flex flex-wrap items-center gap-3">
           {legend.map(({ label, color }) => (
             <div key={label} className="flex items-center gap-1.5 text-xs text-[#94a3b8]">
               <span className="w-3 h-3 rounded-sm flex-shrink-0" style={{ background: color }} />
               {label}
             </div>
           ))}
+          <button
+            onClick={() => setShowLightPollution(v => !v)}
+            title={t('auroraMap.lightPollutionToggle') || 'Toggle light pollution overlay'}
+            className={`ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${
+              showLightPollution
+                ? 'border-[#f97316]/50 bg-[#f97316]/10 text-[#f97316]'
+                : 'border-white/10 text-[#64748b] hover:border-white/20 hover:text-[#94a3b8]'
+            }`}
+          >
+            <Lightbulb className="w-3.5 h-3.5" />
+            {t('auroraMap.lightPollution') || 'Light Pollution'}
+          </button>
         </div>
 
         {/* Key aurora locations */}

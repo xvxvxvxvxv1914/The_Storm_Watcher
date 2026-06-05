@@ -527,6 +527,8 @@ const fr: Record<string, string> = {
   'auroraMap.proCta.title': 'Voulez-vous le globe 3D Aurora complet ?',
   'auroraMap.proCta.desc': 'Pro inclut le modèle aurora OVATION en temps réel sur un globe 3D interactif, des alertes par e-mail et plus encore.',
   'auroraMap.proCta.cta': 'Passer à Pro',
+  'auroraMap.lightPollution': 'Pollution lumineuse',
+  'auroraMap.lightPollutionToggle': 'Activer la couche de pollution lumineuse (NASA VIIRS lumières nocturnes)',
   'auroraMap.noLocation': 'Aucun emplacement défini',
   'auroraMap.setLocation': 'Définissez votre emplacement pour voir la visibilité locale →',
   'auroraMap.keyLocations': 'Emplacements clés',
@@ -987,6 +989,14 @@ const fr: Record<string, string> = {
   'referrals.proActiveUntil': 'Pro gratuit actif jusqu\'au',
   'referrals.signInPrompt': 'Connectez-vous pour obtenir votre lien de parrainage et gagner du Pro gratuit.',
   'referrals.signIn': 'Se connecter',
+
+  // Weekly digest
+  'settings.digest': 'Digest hebdomadaire météo spatiale',
+  'settings.digestDesc': "Recevez chaque semaine un résumé par e-mail de l'activité solaire, des pics Kp et des tempêtes géomagnétiques.",
+  'settings.digestToggle': "M'envoyer le digest hebdomadaire",
+  'settings.digestSignIn': 'Connectez-vous',
+  'settings.digestSignInSuffix': ' pour vous abonner au digest hebdomadaire.',
+  'settings.saving': 'Enregistrement…',
 };
 
 export default fr;
