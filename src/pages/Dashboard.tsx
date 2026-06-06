@@ -528,7 +528,7 @@ const Dashboard = () => {
             style={{ background: 'linear-gradient(to right, #10b981, #059669)' }}
           >
             <Share2 className="w-4 h-4" />
-            <span className="hidden sm:inline">{sharing ? '…' : t('dashboard.share') || 'Share'}</span>
+            <span className="hidden sm:inline">{sharing ? '…' : t('home.stormScore.share')}</span>
           </button>
         </div>
 
