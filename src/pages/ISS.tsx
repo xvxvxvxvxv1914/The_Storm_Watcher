@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback, Suspense, Component, type ReactNode, lazy } from 'react';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
+import StarField from '../components/StarField';
 import { MapPin, Clock, Eye, Satellite } from 'lucide-react';
 const ISSGlobe = lazy(() => import('../components/ISSGlobe'));
 
@@ -139,6 +140,7 @@ const ISS = () => {
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16">
+      <StarField />
       {pulling && (
         <div
           className="fixed top-16 left-1/2 -translate-x-1/2 z-[100] flex items-center justify-center w-9 h-9 rounded-full bg-[#f97316]/20 border border-[#f97316]/40 transition-transform"

@@ -1,6 +1,7 @@
 import { Shield } from 'lucide-react';
 import PageMeta from '../components/PageMeta';
 import { useLanguage } from '../contexts/LanguageContext';
+import StarField from '../components/StarField';
 
 type Section = { title: string; items?: string[]; text?: string };
 type LangContent = {
@@ -578,6 +579,7 @@ const Terms = () => {
 
   return (
     <div className="min-h-screen py-8 sm:py-16">
+      <StarField />
       <PageMeta
         title="Terms of Service — The Storm Watcher"
         description="Read the Terms of Service for The Storm Watcher space weather monitoring application."

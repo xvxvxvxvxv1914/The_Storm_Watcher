@@ -3,6 +3,7 @@ import { Mail, Send, CheckCircle } from 'lucide-react';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { supabase } from '../lib/supabase';
+import StarField from '../components/StarField';
 import { useAuth } from '../contexts/AuthContext';
 import { logError } from '../utils/logger';
 
@@ -47,6 +48,7 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16">
+      <StarField />
       <PageMeta
         title="Contact — The Storm Watcher"
         description="Get in touch with The Storm Watcher team. Report bugs, ask questions, or explore partnership opportunities."

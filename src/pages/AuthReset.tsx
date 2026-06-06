@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Lock } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useLanguage } from '../contexts/LanguageContext';
+import StarField from '../components/StarField';
 
 const STRENGTH_COLORS = ['#ef4444', '#f97316', '#eab308', '#10b981', '#059669'] as const;
 const STRENGTH_KEYS = ['auth.strength.tooWeak', 'auth.strength.weak', 'auth.strength.fair', 'auth.strength.good', 'auth.strength.strong'] as const;
@@ -62,6 +63,7 @@ export default function AuthReset() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-16">
+      <StarField />
       <PageMeta
         title="Reset Password — The Storm Watcher"
         description="Set a new password for your Storm Watcher account."

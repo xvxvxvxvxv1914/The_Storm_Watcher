@@ -123,12 +123,6 @@ const PlanGuard = ({ requiredPlan, children, fullPage = false }: PlanGuardProps)
       >
         <StarField />
         <div className="relative z-10 flex flex-col items-center">
-          <img
-            src="/logos/logo-transparent.png"
-            alt="The Storm Watcher"
-            className="h-14 md:h-16 w-auto mb-6"
-            style={{ filter: 'drop-shadow(0 0 14px rgba(16,185,129,0.5)) drop-shadow(0 0 30px rgba(16,185,129,0.22))', animation: 'twinkle 4s ease-in-out infinite' }}
-          />
           {card}
         </div>
       </div>

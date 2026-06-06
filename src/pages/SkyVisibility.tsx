@@ -10,6 +10,7 @@ import { useSettings } from '../contexts/SettingsContext';
 import LocationPicker from '../components/LocationPicker';
 import ErrorCard from '../components/ErrorCard';
 import { reverseGeocode } from '../utils/reverseGeocode';
+import StarField from '../components/StarField';
 import { getCurrentPosition } from '../utils/geolocation';
 
 const verdictConfig = {
@@ -95,6 +96,7 @@ const SkyVisibility = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
+        <StarField />
         <div className="w-16 h-16 border-4 border-[#7c3aed]/20 border-t-[#7c3aed] rounded-full animate-spin" />
       </div>
     );
@@ -103,6 +105,7 @@ const SkyVisibility = () => {
   if (error || !sky) {
     return (
       <div className="min-h-screen flex items-center justify-center">
+        <StarField />
         <ErrorCard onRetry={requestGPS} />
       </div>
     );
@@ -115,6 +118,7 @@ const SkyVisibility = () => {
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16">
+      <StarField />
       {pulling && (
         <div
           className="fixed top-16 left-1/2 -translate-x-1/2 z-[100] flex items-center justify-center w-9 h-9 rounded-full bg-[#7c3aed]/20 border border-[#7c3aed]/40 transition-transform"

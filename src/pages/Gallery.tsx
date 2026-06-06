@@ -3,6 +3,7 @@ import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { Camera, Upload, X, MapPin, Image, Filter } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import StarField from '../components/StarField';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useKpLive } from '../hooks/useKpLive';
 import { supabase } from '../lib/supabase';
@@ -217,6 +218,7 @@ export default function Gallery() {
 
   return (
     <div className="min-h-screen px-4 pt-20 pb-24 max-w-6xl mx-auto">
+      <StarField />
       <PageMeta
         title="Aurora Gallery — The Storm Watcher"
         description="Community aurora photos from around the world. Share your northern lights sightings."

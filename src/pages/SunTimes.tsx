@@ -8,6 +8,7 @@ import { useSettings } from '../contexts/SettingsContext';
 import LocationPicker from '../components/LocationPicker';
 import { reverseGeocode } from '../utils/reverseGeocode';
 import { getCurrentPosition } from '../utils/geolocation';
+import StarField from '../components/StarField';
 
 const formatDaylight = (seconds: number) => {
   const h = Math.floor(seconds / 3600);
@@ -118,6 +119,7 @@ const SunTimes = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
+        <StarField />
         <div className="w-16 h-16 border-4 border-[#f97316]/20 border-t-[#f97316] rounded-full animate-spin" />
       </div>
     );
@@ -127,6 +129,7 @@ const SunTimes = () => {
 
   return (
     <div className="min-h-screen pt-24 md:pt-20 pb-16">
+      <StarField />
       <PageMeta
         title="Sunrise & Sunset Times — The Storm Watcher"
         description="Accurate sunrise, sunset and golden hour times for your location. Plan your photography and outdoor activities."

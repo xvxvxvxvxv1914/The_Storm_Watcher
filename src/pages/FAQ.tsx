@@ -3,6 +3,7 @@ import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { ChevronDown, Zap, Sun, Eye, Sparkles, Wind, Moon, MapPin } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import StarField from '../components/StarField';
 import { faqContent } from '../content/faqContent';
 
 // English faqData is the canonical source for icons and category keys
@@ -69,7 +70,9 @@ const FAQ = () => {
   const categoryKeys = [...new Set(faqData.map(f => f.category))];
 
   return (
-    <div className="min-h-screen px-4 pt-32 pb-12 sm:pt-44 sm:pb-24 max-w-3xl mx-auto relative z-10">
+    <>
+      <StarField />
+      <div className="min-h-screen px-4 pt-32 pb-12 sm:pt-44 sm:pb-24 max-w-3xl mx-auto relative z-10">
       <PageMeta
         title="Aurora FAQ — Northern Lights Guide | The Storm Watcher"
         description="Everything you need to know about the Northern Lights, Kp index, solar wind, and how to see the aurora. Expert answers to common space weather questions."
@@ -130,6 +133,7 @@ const FAQ = () => {
         </div>
       ))}
     </div>
+    </>
   );
 };
 
