@@ -111,11 +111,14 @@ export default function ISSGlobe({ globeWidth, auroraData, issLat, issLng, userL
     globeMaterial?.uniforms.globeRotation.value.set(lng, lat);
   }, [globeMaterial]);
 
-  // ISS point marker
-  const issPoints = useMemo(() => {
-    if (issLat == null || issLng == null) return [];
-    return [{ lat: issLat, lng: issLng, size: 0.8, color: '#f97316' }];
-  }, [issLat, issLng]);
+  // Combined HTML markers: ISS (SVG icon) + user location (pin)
+  type Marker = { lat: number; lng: number; kind: 'iss' | 'user' };
+  const htmlMarkers = useMemo<Marker[]>(() => {
+    const m: Marker[] = [];
+    if (issLat != null && issLng != null) m.push({ lat: issLat, lng: issLng, kind: 'iss' });
+    if (userLat != null && userLng != null) m.push({ lat: userLat, lng: userLng, kind: 'user' });
+    return m;
+  }, [issLat, issLng, userLat, userLng]);
 
   const auroraTexture = useMemo(() => {
     if (auroraData.length === 0) return null;
@@ -245,17 +248,27 @@ export default function ISSGlobe({ globeWidth, auroraData, issLat, issLng, userL
         atmosphereColor={theme === 'light' ? 'rgba(100,160,255,0.4)' : '#f97316'}
         atmosphereAltitude={0.15}
         onZoom={handleZoom}
-        pointsData={issPoints}
-        pointLat="lat"
-        pointLng="lng"
-        pointColor="color"
-        pointRadius="size"
-        pointAltitude={0.05}
-        htmlElementsData={userLat != null && userLng != null ? [{ lat: userLat, lng: userLng }] : []}
+        htmlElementsData={htmlMarkers}
         htmlLat="lat"
         htmlLng="lng"
         htmlAltitude={0.05}
-        htmlElement={() => {
+        htmlElement={(d: object) => {
+          const { kind } = d as { kind: 'iss' | 'user' };
+          if (kind === 'iss') {
+            const el = document.createElement('div');
+            el.style.cssText = 'pointer-events:none;transform:translate(-50%,-50%);filter:drop-shadow(0 0 5px rgba(249,115,22,0.95)) drop-shadow(0 0 12px rgba(249,115,22,0.5));';
+            el.innerHTML = `<svg width="40" height="20" viewBox="0 0 40 20" xmlns="http://www.w3.org/2000/svg">
+              <rect x="0"  y="4.5" width="12" height="4"  rx="1" fill="#93c5fd" stroke="#bfdbfe" stroke-width="0.5"/>
+              <rect x="0"  y="11.5" width="12" height="4" rx="1" fill="#93c5fd" stroke="#bfdbfe" stroke-width="0.5"/>
+              <rect x="12" y="8"   width="16" height="4"  rx="0.5" fill="#e2e8f0"/>
+              <rect x="28" y="4.5" width="12" height="4"  rx="1" fill="#93c5fd" stroke="#bfdbfe" stroke-width="0.5"/>
+              <rect x="28" y="11.5" width="12" height="4" rx="1" fill="#93c5fd" stroke="#bfdbfe" stroke-width="0.5"/>
+              <rect x="15" y="5.5" width="10" height="9"  rx="2" fill="white" stroke="#cbd5e1" stroke-width="0.5"/>
+              <rect x="17.5" y="7.5" width="5" height="5" rx="1" fill="#f1f5f9" stroke="#94a3b8" stroke-width="0.3"/>
+            </svg>`;
+            return el;
+          }
+          // user location pin
           const wrapper = document.createElement('div');
           wrapper.style.cssText = 'display:flex;flex-direction:column;align-items:center;transform:translateY(-100%);pointer-events:none;';
           const pin = document.createElement('div');
