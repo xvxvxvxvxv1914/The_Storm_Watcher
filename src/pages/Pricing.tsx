@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
+import StarField from '../components/StarField';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { isNative } from '../utils/platform';
 import { Check, Zap, Star, CreditCard, Sparkles, Smartphone, RefreshCw } from 'lucide-react';
@@ -136,6 +137,7 @@ export default function Pricing() {
       <div className="min-h-screen flex flex-col items-center justify-center px-4 py-16"
         style={{ background: 'radial-gradient(ellipse at top, #0d1b2a 0%, #0a0a1a 60%)' }}
       >
+        <StarField />
         <PageMeta title={`${t('pricing.title') || 'Pricing'} — The Storm Watcher`} description="" path="/pricing" noindex />
         <div className="max-w-sm w-full text-center">
           <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6" style={{ background: '#7c3aed22' }}>
@@ -212,6 +214,7 @@ export default function Pricing() {
     <div className="min-h-screen flex flex-col items-center px-4 py-16"
       style={{ background: 'radial-gradient(ellipse at top, #0d1b2a 0%, #0a0a1a 60%)' }}
     >
+      <StarField />
       <PageMeta
         title={`${t('pricing.title') || 'Pricing'} — The Storm Watcher`}
         description={t('pricing.metaDescription') || 'Choose your plan. Free space weather monitoring or Pro/Premium with advanced alerts and aurora forecasting.'}

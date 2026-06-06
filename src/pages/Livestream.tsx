@@ -4,6 +4,7 @@ import PlanGuard from '../components/PlanGuard';
 import { Video, ExternalLink, Globe, Youtube, CalendarClock, Radio, MapPin, Sparkles } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useKpLive } from '../hooks/useKpLive';
+import StarField from '../components/StarField';
 
 type CameraKind = 'youtube' | 'webcam';
 
@@ -246,6 +247,7 @@ export default function Livestream() {
 
   return (
     <div className="min-h-screen px-4 pt-20 pb-24 max-w-6xl mx-auto">
+      <StarField />
       <PageMeta
         title="Aurora Livestream — The Storm Watcher"
         description="Live aurora cameras from Norway, Iceland, Finland, Sweden and Canada. Watch the northern lights in real time."

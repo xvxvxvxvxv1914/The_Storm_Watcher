@@ -5,6 +5,7 @@ import { track } from '@vercel/analytics';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Mail, Lock, User, ArrowLeft, Zap } from 'lucide-react';
+import StarField from '../components/StarField';
 
 type Mode = 'login' | 'signup' | 'forgot';
 
@@ -77,6 +78,7 @@ export default function Auth() {
 if (confirmationSent) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4 py-12 relative overflow-hidden">
+        <StarField />
         <div className="magnetic-orb" style={{ top: '-80px', right: '-120px' }} />
         <div className="solar-orb" style={{ bottom: '-100px', left: '-100px' }} />
         <div className="max-w-md w-full relative z-10">
@@ -104,6 +106,7 @@ if (confirmationSent) {
   if (resetSent) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4 py-12 relative overflow-hidden">
+        <StarField />
         <div className="magnetic-orb" style={{ top: '-80px', right: '-120px' }} />
         <div className="solar-orb" style={{ bottom: '-100px', left: '-100px' }} />
         <div className="max-w-md w-full relative z-10">
@@ -138,6 +141,7 @@ if (confirmationSent) {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12 relative overflow-hidden">
+      <StarField />
       <PageMeta
         title="Sign In — The Storm Watcher"
         description="Sign in or create an account to access advanced space weather alerts and aurora forecasting."

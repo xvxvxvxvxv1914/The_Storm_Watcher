@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, Globe, Check, Loader2 } from 'lucide-react';
 import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
+import StarField from '../components/StarField';
 import { supabase } from '../lib/supabase';
 import PageMeta from '../components/PageMeta';
 
@@ -52,6 +53,7 @@ export default function LanguageSettings() {
 
   return (
     <div className="min-h-screen pt-20 pb-16 px-4 sm:px-6 lg:px-8">
+      <StarField />
       <PageMeta
         title="Language Settings — The Storm Watcher"
         description="Choose your interface language."

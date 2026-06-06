@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Gift, Copy, Check, Share2, Users, Sparkles, BadgeCheck } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import StarField from '../components/StarField';
 import { useTheme } from '../contexts/ThemeContext';
 import { usePaymentGate } from '../hooks/usePaymentGate';
 import { supabase } from '../lib/supabase';
@@ -63,6 +64,7 @@ export default function Referrals() {
 
   return (
     <div className="min-h-screen text-white pt-20 pb-24" style={{ background: isDark ? '#000008' : '#eef2f8' }}>
+      <StarField />
       <PageMeta title={`${t('referrals.title')} — The Storm Watcher`} description={t('referrals.subtitle')} path="/referrals" />
 
       <div className="max-w-2xl mx-auto px-4">

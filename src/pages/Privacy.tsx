@@ -1,6 +1,7 @@
 import PageMeta from '../components/PageMeta';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Shield } from 'lucide-react';
+import StarField from '../components/StarField';
 
 type LangContent = {
   title: string;
@@ -274,6 +275,7 @@ const Privacy = () => {
 
   return (
     <div className="min-h-screen pt-20 pb-24">
+      <StarField />
       <PageMeta
         title="Privacy Policy — The Storm Watcher"
         description="Privacy Policy for The Storm Watcher. Learn how we collect, use and protect your data."
