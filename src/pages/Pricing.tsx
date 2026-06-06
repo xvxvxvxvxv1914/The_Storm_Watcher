@@ -215,7 +215,7 @@ export default function Pricing() {
 
   return (
     <div className="min-h-screen flex flex-col items-center px-4 py-16"
-      style={{ background: 'radial-gradient(ellipse at top, #0d1b2a 0%, #0a0a1a 60%)' }}
+      style={{ background: isDark ? 'radial-gradient(ellipse at top, #0d1b2a 0%, #0a0a1a 60%)' : '#eef2f8' }}
     >
       <StarField />
       <PageMeta
