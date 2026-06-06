@@ -7,6 +7,7 @@ import { isNative } from '../utils/platform';
 import { Check, Zap, Star, CreditCard, Sparkles, Smartphone, RefreshCw } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { supabase } from '../lib/supabase';
 import { useIAP } from '../hooks/useIAP';
 
@@ -51,6 +52,8 @@ const PREMIUM_FEATURE_KEYS = [
 export default function Pricing() {
   const { user, profile, session } = useAuth();
   const { t } = useLanguage();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const navigate = useNavigate();
   const location = useLocation();
   const [billing, setBilling] = useState<Billing>('monthly');
@@ -135,7 +138,7 @@ export default function Pricing() {
   if (isNative()) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center px-4 py-16"
-        style={{ background: 'radial-gradient(ellipse at top, #0d1b2a 0%, #0a0a1a 60%)' }}
+        style={{ background: isDark ? 'radial-gradient(ellipse at top, #0d1b2a 0%, #0a0a1a 60%)' : undefined }}
       >
         <StarField />
         <PageMeta title={`${t('pricing.title') || 'Pricing'} — The Storm Watcher`} description="" path="/pricing" noindex />
