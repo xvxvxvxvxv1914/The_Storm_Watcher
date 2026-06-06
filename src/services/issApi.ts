@@ -1,5 +1,5 @@
 import * as satellite from 'satellite.js';
-import { logError } from '../utils/logger';
+import { logWarning } from '../utils/logger';
 import { cached } from '../utils/apiCache';
 
 const TTL_TLE    = 6 * 60 * 60 * 1000;  // 6 h — orbital elements change slowly
@@ -44,7 +44,7 @@ export const getIssPosition = async (): Promise<IssPosition> => {
       visibility: data.visibility,
     };
   } catch (error) {
-    logError('Error fetching ISS position:', error);
+    logWarning('Error fetching ISS position:', error);
     return { latitude: 0, longitude: 0, altitude: 0, velocity: 0, visibility: 'unknown' };
   }
 };
@@ -55,7 +55,7 @@ const getTle = (): Promise<{ line1: string; line2: string }> =>
       const data = await fetchJson<{ line1: string; line2: string; [k: string]: string }>('https://tle.ivanstanojevic.me/api/tle/25544');
       return { line1: data.line1, line2: data.line2 };
     } catch (error) {
-      logError('Error fetching ISS TLE:', error);
+      logWarning('Error fetching ISS TLE:', error);
       return { line1: '', line2: '' };
     }
   });
@@ -129,7 +129,7 @@ export const getIssPasses = (lat: number, lon: number, altMeters = 0): Promise<I
 
     return passes;
   } catch (error) {
-    logError('Error fetching ISS passes:', error);
+    logWarning('Error fetching ISS passes:', error);
     return [];
   }
 });
