@@ -170,42 +170,28 @@ const SplashAnimation = () => {
           }}
         />
 
-        {/* Logo + name — stacked */}
+        {/* Logo — centered, large, fades in immediately */}
         <div
           style={{
             position: 'absolute',
-            bottom: '12%',
-            left: 0,
-            right: 0,
+            inset: 0,
             display: 'flex',
-            flexDirection: 'column',
             alignItems: 'center',
-            gap: '16px',
-            opacity: visible ? 1 : 0,
-            transform: visible ? 'translateY(0)' : 'translateY(24px)',
-            transition: 'opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s',
+            justifyContent: 'center',
+            opacity: phase !== 'enter' ? 1 : 0,
+            transform: phase !== 'enter' ? 'scale(1)' : 'scale(0.88)',
+            transition: 'opacity 0.6s ease, transform 0.6s ease',
           }}
         >
           <img
             src="/logos/logo-transparent.png"
             alt="The Storm Watcher"
             style={{
-              height: '72px',
+              height: '160px',
               width: 'auto',
-              filter: 'drop-shadow(0 0 18px rgba(16,185,129,0.65)) drop-shadow(0 0 40px rgba(16,185,129,0.3))',
+              filter: 'drop-shadow(0 0 28px rgba(16,185,129,0.75)) drop-shadow(0 0 60px rgba(16,185,129,0.35))',
             }}
           />
-          <p
-            style={{
-              color: 'rgba(255,255,255,0.35)',
-              fontSize: '0.65rem',
-              letterSpacing: '0.35em',
-              textTransform: 'uppercase',
-              margin: 0,
-            }}
-          >
-            Space Weather Monitor
-          </p>
         </div>
       </div>
     </>
