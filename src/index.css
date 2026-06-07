@@ -207,6 +207,75 @@ html.light .skeleton {
   animation: pulse-glow 2s infinite;
 }
 
+/* ── Redesign: aurora ribbon backdrop for hero ── */
+@keyframes aurora-drift {
+  0%, 100% { transform: translateX(-3%) translateY(0) scaleX(1); opacity: 0.55; }
+  50% { transform: translateX(3%) translateY(-12px) scaleX(1.05); opacity: 0.8; }
+}
+
+.aurora-ribbon {
+  position: absolute;
+  top: 6%;
+  left: 50%;
+  width: 130%;
+  height: 340px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(60% 80% at 30% 50%, rgba(16, 185, 129, 0.22) 0%, transparent 70%),
+    radial-gradient(55% 75% at 65% 40%, rgba(124, 58, 237, 0.18) 0%, transparent 70%),
+    radial-gradient(50% 70% at 50% 60%, rgba(6, 182, 212, 0.15) 0%, transparent 70%);
+  filter: blur(50px);
+  animation: aurora-drift 14s ease-in-out infinite;
+}
+
+html.light .aurora-ribbon {
+  opacity: 0.4;
+}
+
+/* Glow ring behind the big live Kp number */
+.kp-halo {
+  position: relative;
+}
+.kp-halo::before {
+  content: '';
+  position: absolute;
+  inset: -30% -10%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.16) 0%, transparent 65%);
+  filter: blur(30px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Eyebrow label */
+.section-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #10b981;
+}
+
+/* Subtle top hairline accent on cards */
+.card-accent-top {
+  position: relative;
+  overflow: hidden;
+}
+.card-accent-top::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.5), transparent);
+}
+
 .storm-banner {
   top: calc(env(safe-area-inset-top) + 3rem);
 }

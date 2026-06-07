@@ -264,19 +264,26 @@ const Home = () => {
       <div className="magnetic-orb" style={{ bottom: '-150px', left: '-150px' }} />
 
       <div className="relative overflow-hidden">
+        <div className="aurora-ribbon" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-24 sm:pt-36 sm:pb-32">
           <div className="text-center">
 
             {/* Live badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-surface border border-[#f97316]/30 mb-6">
-              <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse" />
-              <span className="text-[#94a3b8] text-sm font-semibold uppercase tracking-widest">{t('home.liveSpaceWeather')}</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-surface border border-[#10b981]/30 mb-8">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10b981] opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#10b981]" />
+              </span>
+              <span className="text-[#94a3b8] text-xs font-semibold uppercase tracking-[0.2em]">{t('home.liveSpaceWeather')}</span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl font-bold mb-8 gradient-emerald">
+            <h1 className="text-5xl sm:text-7xl font-bold mb-4 gradient-emerald tracking-tight text-balance">
               The Storm Watcher
             </h1>
+            <p className="text-sm sm:text-base text-[#64748b] uppercase tracking-[0.25em] font-semibold mb-10">
+              {t('home.hero.tagline')}
+            </p>
 
             {/* Live Kp — first thing people see */}
             <div className="min-h-[300px] sm:min-h-[420px]">
@@ -300,7 +307,7 @@ const Home = () => {
                   <span className="text-xs text-[#64748b] uppercase tracking-widest font-semibold">Live · Kp Index</span>
                   {timeAgo && <span className="text-xs text-[#475569]">· {timeAgo}</span>}
                 </div>
-                <div className={`inline-block ${isStorm ? 'pulse-alert' : ''}`}>
+                <div className={`inline-block kp-halo ${isStorm ? 'pulse-alert' : ''}`}>
                   <div
                     className="text-8xl sm:text-[160px] font-bold leading-none"
                     style={getKpGradientStyle(kpValue ?? 0)}
@@ -366,24 +373,21 @@ const Home = () => {
             </div>
 
             {/* Tagline + CTA — after live data */}
-            <p className="text-xl sm:text-2xl text-white font-semibold mb-3 mt-4">
-              {t('home.hero.tagline')}
-            </p>
-            <p className="text-base text-[#94a3b8] mb-8 max-w-xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg text-[#94a3b8] mb-8 mt-6 max-w-xl mx-auto leading-relaxed text-pretty">
               {t('home.hero.desc')}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
               <Link
                 to={user ? '/dashboard' : '/pricing'}
-                className="px-8 py-4 bg-gradient-to-r from-[#10b981] to-[#059669] text-white rounded-lg font-bold uppercase tracking-wider hover:scale-105 transition-transform glow-green"
+                className="px-8 py-4 bg-gradient-to-r from-[#10b981] to-[#059669] text-white rounded-xl font-bold uppercase tracking-wider hover:scale-105 transition-transform glow-green"
               >
                 {user ? t('home.hero.viewMap') : t('home.hero.getStarted')}
               </Link>
               {!user && (
                 <Link
                   to="/dashboard"
-                  className="px-8 py-4 glass-surface text-white rounded-lg font-bold uppercase tracking-wider hover:glow-orange transition-all border border-white/10"
+                  className="px-8 py-4 glass-surface text-white rounded-xl font-bold uppercase tracking-wider hover:glow-orange transition-all border border-white/10"
                 >
                   {t('home.hero.viewMap')}
                 </Link>
@@ -446,8 +450,9 @@ const Home = () => {
 
       {/* Storm Score */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="glass-surface rounded-3xl p-10 border border-[#f97316]/10 text-center">
-          <h2 className="text-3xl sm:text-2xl sm:text-4xl font-bold text-white mb-3 uppercase tracking-wide">
+        <div className="glass-surface card-accent-top rounded-3xl p-10 border border-[#f97316]/10 text-center">
+          <span className="section-eyebrow mb-4">{t('home.liveSpaceWeather')}</span>
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3 mt-3 uppercase tracking-wide text-balance">
             {t('home.stormScore.title')}
           </h2>
           <p className="text-[#94a3b8] max-w-xl mx-auto mb-10 leading-relaxed">
@@ -633,13 +638,14 @@ const Home = () => {
 
       {/* Features */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-        <div className="text-center mb-14">
-          <h2 className="text-3xl sm:text-2xl sm:text-4xl font-bold text-white mb-4 uppercase tracking-wide">
+        <div className="text-center mb-14 flex flex-col items-center">
+          <span className="section-eyebrow mb-4">{t('home.liveSpaceWeather')}</span>
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 uppercase tracking-wide text-balance">
             {t('home.features2.title')}
           </h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Link to="/calendar" className="glass-surface rounded-2xl p-7 hover:glow-green transition-all group block">
+          <Link to="/calendar" className="glass-surface card-accent-top rounded-2xl p-7 hover:glow-green transition-all group block">
             <div className="w-14 h-14 bg-[#2DD4BF]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Calendar className="w-7 h-7 text-[#2DD4BF]" />
             </div>
@@ -647,7 +653,7 @@ const Home = () => {
             <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.calendar.desc')}</p>
           </Link>
 
-          <div className="glass-surface rounded-2xl p-7 hover:glow-purple transition-all group relative opacity-60">
+          <div className="glass-surface card-accent-top rounded-2xl p-7 hover:glow-purple transition-all group relative opacity-60">
             <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#7c3aed]/20 text-[#a78bfa] border border-[#7c3aed]/30">{t('home.comingSoon')}</span>
             <div className="w-14 h-14 bg-[#2DD4BF]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Bot className="w-7 h-7 text-[#2DD4BF]" />
@@ -656,7 +662,7 @@ const Home = () => {
             <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.ai.desc')}</p>
           </div>
 
-          <Link to="/aurora-map" className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group block">
+          <Link to="/aurora-map" className="glass-surface card-accent-top rounded-2xl p-7 hover:glow-orange transition-all group block">
             <div className="w-14 h-14 bg-[#F97316]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Globe className="w-7 h-7 text-[#F97316]" />
             </div>
@@ -664,7 +670,7 @@ const Home = () => {
             <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.map.desc')}</p>
           </Link>
 
-          <Link to="/alerts" className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group block">
+          <Link to="/alerts" className="glass-surface card-accent-top rounded-2xl p-7 hover:glow-orange transition-all group block">
             <div className="w-14 h-14 bg-[#F97316]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Bell className="w-7 h-7 text-[#F97316]" />
             </div>
@@ -672,7 +678,7 @@ const Home = () => {
             <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.alerts.desc')}</p>
           </Link>
 
-          <Link to="/gallery" className="glass-surface rounded-2xl p-7 hover:glow-green transition-all group block">
+          <Link to="/gallery" className="glass-surface card-accent-top rounded-2xl p-7 hover:glow-green transition-all group block">
             <div className="w-14 h-14 bg-[#2DD4BF]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Camera className="w-7 h-7 text-[#2DD4BF]" />
             </div>
@@ -680,7 +686,7 @@ const Home = () => {
             <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.gallery.desc')}</p>
           </Link>
 
-          <Link to="/hunt" className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group block">
+          <Link to="/hunt" className="glass-surface card-accent-top rounded-2xl p-7 hover:glow-orange transition-all group block">
             <div className="w-14 h-14 bg-[#2DD4BF]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Trophy className="w-7 h-7 text-[#2DD4BF]" />
             </div>
@@ -688,7 +694,7 @@ const Home = () => {
             <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.hunt.desc')}</p>
           </Link>
 
-          <Link to="/livestream" className="glass-surface rounded-2xl p-7 hover:glow-purple transition-all group block">
+          <Link to="/livestream" className="glass-surface card-accent-top rounded-2xl p-7 hover:glow-purple transition-all group block">
             <div className="w-14 h-14 bg-[#2DD4BF]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Video className="w-7 h-7 text-[#2DD4BF]" />
             </div>
@@ -730,8 +736,9 @@ const Home = () => {
 
       {/* FAQ Section */}
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-        <div className="text-center mb-14">
-          <h2 className="text-3xl sm:text-2xl sm:text-4xl font-bold text-white mb-4 uppercase tracking-wide">
+        <div className="text-center mb-14 flex flex-col items-center">
+          <span className="section-eyebrow mb-4">FAQ</span>
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 uppercase tracking-wide text-balance">
             {t('home.faq.title')}
           </h2>
         </div>
