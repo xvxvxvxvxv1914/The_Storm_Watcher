@@ -125,7 +125,8 @@ function AppRoutes() {
   }, []);
 
   return (
-    <div className="min-h-screen" style={{ background: theme === 'light' ? '#eef2f8' : '#000008' }}>
+    <div className="min-h-screen relative" style={{ background: theme === 'light' ? '#eef2f8' : '#000008' }}>
+      <div className="aurora-ribbon-global" aria-hidden="true" />
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-[#f97316] focus:text-white focus:rounded-lg focus:font-semibold"
