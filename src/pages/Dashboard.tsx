@@ -500,20 +500,24 @@ const Dashboard = () => {
       )}
 
       <div className="solar-orb" style={{ top: '100px', right: '-300px' }} />
+      <div className="aurora-ribbon" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ProTrialNudge />
         <div className="mb-3 md:mb-12 flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-3xl sm:text-5xl font-bold gradient-emerald mb-2 sm:mb-3 uppercase tracking-tight">
+            <span className="section-eyebrow mb-3">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10b981] opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#10b981]" />
+              </span>
+              {t('dashboard.live')}
+            </span>
+            <h1 className="text-3xl sm:text-5xl font-bold gradient-emerald mb-2 sm:mb-3 mt-3 uppercase tracking-tight text-balance">
               {t('dashboard.title')}
             </h1>
-            <p className="text-[#94a3b8] text-lg flex items-center gap-3">
+            <p className="text-[#94a3b8] text-base sm:text-lg">
               {t('dashboard.lastUpdated')}: {lastUpdated.toLocaleTimeString()}
-              <span className="inline-flex items-center gap-1.5 text-xs text-[#10b981] font-bold uppercase tracking-wider">
-                <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse" />
-                {t('dashboard.live')}
-              </span>
             </p>
             <p className="text-[#64748b] text-sm mt-1">
               {t('dashboard.nextUpdate')}{' '}
@@ -524,7 +528,7 @@ const Dashboard = () => {
             onClick={handleShare}
             disabled={sharing}
             aria-label="Share storm score card"
-            className="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 disabled:opacity-50 mt-1"
+            className="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white transition-all hover:scale-105 hover:opacity-90 disabled:opacity-50 mt-1 glow-green"
             style={{ background: 'linear-gradient(to right, #10b981, #059669)' }}
           >
             <Share2 className="w-4 h-4" />
@@ -550,7 +554,7 @@ const Dashboard = () => {
             const dropRing = isDropTarget ? 'ring-2 ring-[#10b981]/60' : '';
 
             if (id === 'kp') return (
-              <div key="kp" {...dragProps} data-tour="kp-card" className={`group relative glass-surface rounded-2xl p-3 sm:p-6 ${
+              <div key="kp" {...dragProps} data-tour="kp-card" className={`group relative glass-surface card-accent-top rounded-2xl p-3 sm:p-6 ${
                 kpValue >= 5 ? 'glow-red' : kpValue >= 4 ? 'glow-orange' : 'glow-green'
               } hover:scale-105 transition-transform ${dropRing}`}>
                 {dragHandle}
@@ -568,7 +572,7 @@ const Dashboard = () => {
                     {t('dashboard.kpIndex')}
                   </h3>
                 </div>
-                <div className="text-[1.4rem] sm:text-6xl font-bold mb-2 sm:mb-3" style={getKpGradientStyle(kpValue)}>{kpDisplay.toFixed(1)}</div>
+                <div className="kp-halo inline-block text-[1.4rem] sm:text-6xl font-bold mb-2 sm:mb-3" style={getKpGradientStyle(kpValue)}>{kpDisplay.toFixed(1)}</div>
                 <div className={`inline-block px-2 py-1 sm:px-4 sm:py-2 rounded-lg text-[0.6rem] sm:text-xs font-bold uppercase tracking-wider ${
                   kpValue >= 7 ? 'bg-gradient-to-r from-[#ef4444] to-[#dc2626] text-white' :
                   kpValue >= 5 ? 'bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white' :
@@ -581,7 +585,7 @@ const Dashboard = () => {
             );
 
             if (id === 'wind') return (
-              <div key="wind" {...dragProps} data-tour="wind-card" className={`group relative glass-surface rounded-2xl p-3 sm:p-6 hover:glow-purple transition-all hover:scale-105 ${dropRing}`}>
+              <div key="wind" {...dragProps} data-tour="wind-card" className={`group relative glass-surface card-accent-top rounded-2xl p-3 sm:p-6 hover:glow-purple transition-all hover:scale-105 ${dropRing}`}>
                 {dragHandle}
                 <InfoTooltip text={t('dashboard.tooltip.wind')} />
                 <div className="flex items-center gap-2 mb-2 sm:mb-4">
@@ -598,7 +602,7 @@ const Dashboard = () => {
             );
 
             if (id === 'bz') return (
-              <div key="bz" {...dragProps} className={`group relative glass-surface rounded-2xl p-3 sm:p-6 hover:glow-green transition-all hover:scale-105 ${dropRing}`}>
+              <div key="bz" {...dragProps} className={`group relative glass-surface card-accent-top rounded-2xl p-3 sm:p-6 hover:glow-green transition-all hover:scale-105 ${dropRing}`}>
                 {dragHandle}
                 <InfoTooltip text={t('dashboard.tooltip.bz')} />
                 <div className="flex items-center gap-2 mb-2 sm:mb-4">
@@ -617,7 +621,7 @@ const Dashboard = () => {
             );
 
             return (
-              <div key="xray" {...dragProps} className={`group relative glass-surface rounded-2xl p-3 sm:p-6 hover:glow-green transition-all hover:scale-105 ${dropRing}`}>
+              <div key="xray" {...dragProps} className={`group relative glass-surface card-accent-top rounded-2xl p-3 sm:p-6 hover:glow-green transition-all hover:scale-105 ${dropRing}`}>
                 {dragHandle}
                 <InfoTooltip text={t('dashboard.tooltip.xray')} />
                 <div className="flex items-center gap-2 mb-2 sm:mb-4">
@@ -635,7 +639,7 @@ const Dashboard = () => {
           })}
         </div>
 
-        <div className="glass-surface rounded-2xl p-4 sm:p-8 mb-4 sm:mb-8">
+        <div className="glass-surface card-accent-top rounded-2xl p-4 sm:p-8 mb-4 sm:mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <h3 className="text-lg sm:text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
               <Radio className="w-6 h-6 text-[#f97316]" />
@@ -688,7 +692,7 @@ const Dashboard = () => {
           )}
         </div>
 
-        <div className="glass-surface rounded-2xl p-4 sm:p-8 mb-4 sm:mb-8">
+        <div className="glass-surface card-accent-top rounded-2xl p-4 sm:p-8 mb-4 sm:mb-8">
           <h3 className="text-lg sm:text-2xl font-bold text-white mb-3 sm:mb-6 uppercase tracking-wide flex items-center gap-3">
             <Wind className="w-6 h-6 text-[#7c3aed]" />
             {t('dashboard.windHistory')}
@@ -712,7 +716,7 @@ const Dashboard = () => {
           )}
         </div>
 
-        {inNigggRegion && <div className="glass-surface rounded-2xl p-4 sm:p-8 mb-4 sm:mb-8">
+        {inNigggRegion && <div className="glass-surface card-accent-top rounded-2xl p-4 sm:p-8 mb-4 sm:mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <h3 className="text-lg sm:text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
               <MapPin className="w-6 h-6 text-[#10b981]" />
@@ -755,7 +759,7 @@ const Dashboard = () => {
 
         {/* Storm Watch — recent storm events (Kp ≥ 5) */}
         {stormEvents.length > 0 && (
-          <div className="glass-surface rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6">
+          <div className="glass-surface card-accent-top rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-base sm:text-lg font-bold text-white uppercase tracking-wide flex items-center gap-2.5">
                 <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-red-400" />
@@ -796,7 +800,7 @@ const Dashboard = () => {
         )}
 
         {dailyKp.length > 0 && (
-          <div className="glass-surface rounded-2xl p-4 sm:p-8 mb-4 sm:mb-8">
+          <div className="glass-surface card-accent-top rounded-2xl p-4 sm:p-8 mb-4 sm:mb-8">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-6">
               <h3 className="text-lg sm:text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
                 <Activity className="w-6 h-6 text-[#f97316]" />
