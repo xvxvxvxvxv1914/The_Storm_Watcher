@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { logError } from '../utils/logger';
+import { logError, logWarning } from '../utils/logger';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { Activity, AlertTriangle, Zap, Radio, Calendar, Bot, Globe, Bell, Camera, Trophy, Video, Share2, Copy, Twitter, ImageDown, Users } from 'lucide-react';
@@ -85,7 +85,7 @@ const Home = () => {
           setPulseData({ mood: topMood, symptom: topSymptom, count: data.length });
         }
       } catch (err) {
-        console.warn('Error fetching pulse (non-critical):', err);
+        logWarning('Error fetching pulse (non-critical):', err);
       }
     };
 

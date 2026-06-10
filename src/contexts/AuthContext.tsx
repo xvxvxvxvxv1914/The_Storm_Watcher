@@ -4,6 +4,7 @@ import { User, Session, AuthError } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 import { isNative } from '../utils/platform';
 import { getStoredReferralCode, clearStoredReferralCode } from '../utils/referral';
+import { logError } from '../utils/logger';
 
 interface Profile {
   id: string;
@@ -107,7 +108,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setProfile(data);
     } catch (error) {
       if (req !== profileReqRef.current) return;
-      console.error('Error fetching profile:', error instanceof Error ? error.message : 'Unknown error');
+      logError('Error fetching profile:', error);
     } finally {
       if (req === profileReqRef.current) setLoading(false);
     }
