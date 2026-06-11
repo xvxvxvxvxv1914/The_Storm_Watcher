@@ -30,8 +30,6 @@ export function usePushNotifications() {
     // Push notifications are a Pro feature — skip registration for free users
     if (!hasPro) return;
 
-    let registered = false;
-
     async function register() {
       let permStatus = await PushNotifications.checkPermissions();
 
@@ -42,39 +40,36 @@ export function usePushNotifications() {
       if (permStatus.receive !== 'granted') return;
 
       await PushNotifications.register();
-      registered = true;
     }
 
-    const tokenListener = PushNotifications.addListener('registration', async ({ value: token }) => {
-      if (!user?.id) return;
-      const platform = /iphone|ipad|ipod/i.test(navigator.userAgent) ? 'ios' : 'android';
-      await saveToken(user.id, token, platform, settings.kpThreshold, settings.preferredLat, settings.preferredLon);
-    });
-
-    const errorListener = PushNotifications.addListener('registrationError', ({ error }) => {
-      logError('Push registration error', error);
-    });
-
-    PushNotifications.addListener('pushNotificationReceived', (notification) => {
-      // App is in foreground — the notification arrived silently.
-      // Dispatch a custom event so UI can optionally show an in-app banner.
-      window.dispatchEvent(new CustomEvent('push-notification', { detail: notification }));
-    });
-
-    PushNotifications.addListener('pushNotificationActionPerformed', (action) => {
-      const url = (action.notification.data as Record<string, string>)?.url;
-      if (url && url.startsWith('/')) {
-        window.dispatchEvent(new CustomEvent('push-navigate', { detail: url }));
-      }
-    });
+    // The effect re-runs on login/plan change — every listener must be removed
+    // in cleanup or duplicates accumulate and fire events multiple times.
+    const listeners = [
+      PushNotifications.addListener('registration', async ({ value: token }) => {
+        if (!user?.id) return;
+        const platform = /iphone|ipad|ipod/i.test(navigator.userAgent) ? 'ios' : 'android';
+        await saveToken(user.id, token, platform, settings.kpThreshold, settings.preferredLat, settings.preferredLon);
+      }),
+      PushNotifications.addListener('registrationError', ({ error }) => {
+        logError('Push registration error', error);
+      }),
+      PushNotifications.addListener('pushNotificationReceived', (notification) => {
+        // App is in foreground — the notification arrived silently.
+        // Dispatch a custom event so UI can optionally show an in-app banner.
+        window.dispatchEvent(new CustomEvent('push-notification', { detail: notification }));
+      }),
+      PushNotifications.addListener('pushNotificationActionPerformed', (action) => {
+        const url = (action.notification.data as Record<string, string>)?.url;
+        if (url && url.startsWith('/')) {
+          window.dispatchEvent(new CustomEvent('push-navigate', { detail: url }));
+        }
+      }),
+    ];
 
     register().catch((err) => logError('Push register failed', err));
 
     return () => {
-      if (registered) {
-        tokenListener.then(h => h.remove());
-        errorListener.then(h => h.remove());
-      }
+      listeners.forEach(p => p.then(h => h.remove()));
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id, hasPro]);

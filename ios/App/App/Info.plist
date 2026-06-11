@@ -42,6 +42,8 @@
 	</array>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>The Storm Watcher uses your location to show local UV index, sunrise/sunset times, and aurora visibility for where you are.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>The Storm Watcher uses the camera to take aurora photos for the community gallery and your profile picture.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>The Storm Watcher saves aurora screenshots to your photo library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

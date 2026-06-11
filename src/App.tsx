@@ -92,7 +92,7 @@ function AppRoutes() {
 
   // Handle deep links — stormwatcher://dashboard, stormwatcher://alerts?kp=7, etc.
   useEffect(() => {
-    const ALLOWED_ROUTES = new Set(['dashboard','forecast','aurora','alerts','uv','sun','mood','iss','profile','settings','pricing','privacy','terms','calendar','gallery','magnetic-effects']);
+    const ALLOWED_ROUTES = new Set(['dashboard','forecast','aurora','alerts','uv','sun','sky','mood','iss','profile','settings','pricing','privacy','terms','calendar','gallery','hunt','livestream','faq','log','aurora-map','referrals','magnetic-effects']);
     const sub = CapApp.addListener('appUrlOpen', ({ url }) => {
       try {
         const parsed = new URL(url);
@@ -135,7 +135,7 @@ function AppRoutes() {
       <OfflineBanner />
       <Navigation />
       <TrialBanner />
-      <main id="main" className="pt-[env(safe-area-inset-top)] pb-24 lg:pb-0" style={isStorm ? { paddingTop: '2.25rem' } : undefined}>
+      <main id="main" className="pt-[env(safe-area-inset-top)] pb-24 lg:pb-0" style={isStorm ? { paddingTop: 'calc(env(safe-area-inset-top) + 2.25rem)' } : undefined}>
       <ErrorBoundary>
         <Suspense fallback={<LoadingFallback />}>
           <AnimatedRoutes />

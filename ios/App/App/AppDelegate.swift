@@ -26,7 +26,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         BGTaskScheduler.shared.register(forTaskWithIdentifier: bgTaskID, using: nil) { [weak self] task in
             self?.handleWidgetRefresh(task as! BGAppRefreshTask)
         }
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { _, _ in }
+        // Notification permission is requested in context by the JS layer
+        // (usePushNotifications, Pro users) — never unprompted at first launch.
         UNUserNotificationCenter.current().delegate = self
         // Establish the APNs connection at launch. This does NOT require
         // notification permission, but it IS required for Live Activity push
