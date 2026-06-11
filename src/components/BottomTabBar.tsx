@@ -92,7 +92,9 @@ const BottomTabBar = () => {
       {/* Floating pill tab bar */}
       <nav
         className="lg:hidden fixed bottom-0 left-0 right-0 z-50 flex justify-center pointer-events-none"
-        style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 12px)' }}
+        // translateZ pins the bar to its own compositor layer — without it the
+        // backdrop-filter flickers/vanishes over the WebGL globe on iOS.
+        style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 12px)', transform: 'translateZ(0)' }}
         aria-label="Main navigation"
       >
         <div
