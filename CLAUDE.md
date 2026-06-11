@@ -110,6 +110,20 @@ watchOS companion app за The Storm Watcher. Данните вече са в Ap
 
 ## TODO / Pending Work
 
+### Mobile одит 2026-06-11 — оставащи задачи (по приоритет)
+Одитът поправи: NSCameraUsageDescription, launch-time permission промпт, widget версии (project-level), storm safe-area падинг, deep link allowlist, дублирани push listener-и, autoVerify, счупен noaaApi тест.
+
+**Остава:**
+1. **Android FCM push (критично)** — Android няма НИКАКВИ известия, дори за Pro:
+   - Добави `google-services.json` (Firebase Console) в `android/app/`
+   - Добави `<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />` в AndroidManifest.xml (Android 13+)
+   - Махни iOS gate-а в `src/hooks/usePushNotifications.ts` (`if (!isIos()) return`)
+   - Добави FCM изпращане в `supabase/functions/send-kp-alerts` (сега е само APNs)
+2. **Android Glance widget** — iOS има 6 widget формата + Live Activity, Android нула. Kotlin Glance widget с Kp + 24h прогноза; дизайнът копира iOS small/medium widget-а; същите NOAA endpoints.
+3. **Android 15 edge-to-edge тест** — targetSdk 35 игнорира `statusBarColor`; `env(safe-area-inset-top)` в Android WebView често е 0 → съдържанието може да влиза под status bar-а. Тест на API 35 емулатор/устройство.
+4. **Live Activity tap → paywall** — `stormwatcher://alerts` (Live Activity) и widget tap към `/aurora` са Pro-gated; free потребител от lock screen-а удря paywall. Реши: умишлен funnel или пренасочване към `/dashboard`.
+5. **Widget полиш** — (а) Kp = 0.0 се третира като "няма данни" (`ck > 0`/`v > 0` проверки в StormWidget.swift и AppDelegate.swift); (б) непреведени стрингове в widget-а: "No signal", "Kp SCALE", G-описанията в large widget ("G3 — Strong").
+
 ### Mobile App Payments (преди пускане в App Store / Play Store)
 IAP инфраструктурата е готова — остава само plugin install + конфигурация в магазините:
 

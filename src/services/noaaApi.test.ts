@@ -96,7 +96,8 @@ describe('NOAA cache + single-flight', () => {
   });
 
   it('returns [] and does not poison cache on fetch error', async () => {
-    mockFetch.mockRejectedValueOnce(new Error('network down'));
+    localStorage.clear(); // drop offline_kp persisted (via Preferences) by earlier tests
+    mockFetch.mockRejectedValue(new Error('network down'));
     const { getKpIndex } = await import('./noaaApi');
 
     // getJson retries after 1500ms per attempt (GFZ retry + NOAA fallback retry).
@@ -108,6 +109,7 @@ describe('NOAA cache + single-flight', () => {
 
     // Failed result IS cached (empty array) within TTL_FORECAST.
     // After TTL, the next call refetches. GFZ fails again → NOAA succeeds.
+    mockFetch.mockReset();
     mockFetch.mockRejectedValueOnce(new Error('gfz still down'));
     mockFetch.mockResolvedValueOnce(okJson([{ time_tag: 't', kp_index: 4 }]));
     await vi.advanceTimersByTimeAsync(900_001);
