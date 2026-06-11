@@ -100,10 +100,10 @@ describe('NOAA cache + single-flight', () => {
     mockFetch.mockRejectedValue(new Error('network down'));
     const { getKpIndex } = await import('./noaaApi');
 
-    // GFZ fails, then the NOAA fallback retries once after 1.5s (getJson) —
-    // advance fake timers while the call is in flight or it never settles.
+    // getJson retries after 1500ms per attempt (GFZ retry + NOAA fallback retry).
+    // With fake timers we must advance time while the promise is in-flight.
     const p1 = getKpIndex();
-    await vi.advanceTimersByTimeAsync(1600);
+    await vi.advanceTimersByTimeAsync(3500); // covers GFZ 1500ms + NOAA 1500ms retry delays
     const r1 = await p1;
     expect(r1).toEqual([]);
 
@@ -113,7 +113,10 @@ describe('NOAA cache + single-flight', () => {
     mockFetch.mockRejectedValueOnce(new Error('gfz still down'));
     mockFetch.mockResolvedValueOnce(okJson([{ time_tag: 't', kp_index: 4 }]));
     await vi.advanceTimersByTimeAsync(900_001);
-    const r2 = await getKpIndex();
+
+    const p2 = getKpIndex();
+    await vi.advanceTimersByTimeAsync(2000); // covers GFZ 1500ms retry delay before NOAA succeeds
+    const r2 = await p2;
     expect(r2).toEqual([{ time_tag: 't', kp_index: 4 }]);
   });
 
