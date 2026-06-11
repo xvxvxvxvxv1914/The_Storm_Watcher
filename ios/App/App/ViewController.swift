@@ -15,6 +15,11 @@ class ViewController: CAPBridgeViewController {
         // Enable iOS native swipe-back gesture — WKWebView disables it by default.
         // React Router handles the resulting popstate event correctly.
         webView?.allowsBackForwardNavigationGestures = true
+        // Disable rubber-band overscroll: position:fixed elements (bottom tab
+        // bar) drag along with the bounce and slide off-screen while pulling.
+        // The app ships its own touch-based pull-to-refresh, so the native
+        // bounce is unused.
+        webView?.scrollView.bounces = false
     }
 
     // Called by Capacitor after the bridge is fully set up, before JS loads.
