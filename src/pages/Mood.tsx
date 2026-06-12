@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import SvgDonut from '../components/charts/SvgDonut';
 import { supabase, getSessionId } from '../lib/supabase';
+import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import { getKpIndex } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -309,6 +310,10 @@ const Mood = () => {
     checkPersonalHistory();
   }, []);
 
+  const { pulling, pullY } = usePullToRefresh(async () => {
+    await Promise.allSettled([fetchKp(), fetchStats(), checkPersonalHistory()]);
+  });
+
   // Rotate facts every 8s
   useEffect(() => {
     const id = setInterval(() => {
@@ -498,6 +503,14 @@ const Mood = () => {
 
   return (
     <div className="min-h-screen pt-20 pb-32 md:pt-24 md:pb-20 relative overflow-hidden">
+      {pulling && (
+        <div
+          className="fixed top-16 left-1/2 -translate-x-1/2 z-[100] flex items-center justify-center w-9 h-9 rounded-full bg-[#10b981]/20 border border-[#10b981]/40 transition-transform"
+          style={{ transform: `translateX(-50%) translateY(${pullY}px)` }}
+        >
+          <div className="w-4 h-4 border-2 border-[#10b981] border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
       <PageMeta
         title="Cosmic Mood Pulse — The Storm Watcher"
         description="Track how geomagnetic storms affect your mood and wellbeing. See community mood patterns correlated with Kp index."

@@ -9,18 +9,29 @@ const OnboardingTour = () => {
   const { seen, markSeen } = useOnboarding();
   const location = useLocation();
   const [run, setRun] = useState(false);
+  const [availableTargets, setAvailableTargets] = useState<Set<string> | null>(null);
 
   // Trigger only on Dashboard for users who haven't seen the tour. Slight
   // delay so Joyride can find the data-tour anchors after Dashboard's
-  // loading state resolves.
+  // loading state resolves. Snapshot which anchors actually exist — on
+  // mobile some steps target desktop-only elements (user-menu, push-bell)
+  // and Joyride breaks on missing targets.
   useEffect(() => {
     if (seen) return;
     if (location.pathname !== '/dashboard') return;
-    const id = window.setTimeout(() => setRun(true), 800);
+    const id = window.setTimeout(() => {
+      const targets = new Set<string>();
+      for (const sel of ['[data-tour="kp-card"]', '[data-tour="wind-card"]', '[data-tour="push-bell"]', '[data-tour="user-menu"]']) {
+        const el = document.querySelector(sel);
+        if (el && (el as HTMLElement).offsetParent !== null) targets.add(sel);
+      }
+      setAvailableTargets(targets);
+      setRun(true);
+    }, 800);
     return () => window.clearTimeout(id);
   }, [seen, location.pathname]);
 
-  const steps: Step[] = useMemo(() => [
+  const steps: Step[] = useMemo<Step[]>(() => [
     {
       target: 'body',
       placement: 'center',
@@ -51,7 +62,9 @@ const OnboardingTour = () => {
       content: t('onboarding.settings.body'),
       placement: 'bottom',
     },
-  ], [t]);
+  ], [t]).filter(step =>
+    step.target === 'body' || availableTargets === null || availableTargets.has(step.target as string)
+  );
 
   const handleEvent = (data: EventData) => {
     const finished: string[] = [STATUS.FINISHED, STATUS.SKIPPED];

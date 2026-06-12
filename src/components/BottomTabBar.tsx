@@ -123,11 +123,11 @@ const BottomTabBar = () => {
                 style={{ minWidth: 64, borderRadius: 80 }}
               >
                 <Icon
-                  className={active ? 'text-[#10b981]' : theme === 'light' ? 'text-slate-400' : 'text-[#4a5568]'}
+                  className={active ? 'text-[#10b981]' : theme === 'light' ? 'text-slate-400' : 'text-[#7c8aa0]'}
                   size={24}
                   strokeWidth={active ? 2.5 : 1.8}
                 />
-                <span className={`text-[11px] ${active ? 'font-bold text-[#10b981]' : theme === 'light' ? 'font-medium text-slate-400' : 'font-medium text-[#4a5568]'}`}>
+                <span className={`text-[11px] ${active ? 'font-bold text-[#10b981]' : theme === 'light' ? 'font-medium text-slate-400' : 'font-medium text-[#7c8aa0]'}`}>
                   {t(labelKey)}
                 </span>
               </Link>
@@ -142,11 +142,11 @@ const BottomTabBar = () => {
             style={{ minWidth: 64 }}
           >
             <MoreHorizontal
-              className={isMoreActive ? 'text-[#10b981]' : theme === 'light' ? 'text-slate-400' : 'text-[#4a5568]'}
+              className={isMoreActive ? 'text-[#10b981]' : theme === 'light' ? 'text-slate-400' : 'text-[#7c8aa0]'}
               size={24}
               strokeWidth={isMoreActive ? 2.5 : 1.8}
             />
-            <span className={`text-[11px] ${isMoreActive ? 'font-bold text-[#10b981]' : theme === 'light' ? 'font-medium text-slate-400' : 'font-medium text-[#4a5568]'}`}>
+            <span className={`text-[11px] ${isMoreActive ? 'font-bold text-[#10b981]' : theme === 'light' ? 'font-medium text-slate-400' : 'font-medium text-[#7c8aa0]'}`}>
               {t('nav.more') || 'More'}
             </span>
           </button>

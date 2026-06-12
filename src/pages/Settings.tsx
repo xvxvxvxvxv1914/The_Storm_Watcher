@@ -208,6 +208,50 @@ export default function Settings() {
             <p className="text-xs text-[#64748b]">
               {t('settings.kpThresholdNote') || 'Push notifications require enabling them first via the bell icon in the navigation bar.'}
             </p>
+
+            {/* Quiet hours — suppress storm pushes during the local window */}
+            {profile && (
+              <div className="mt-5 pt-5 border-t border-white/10">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-sm text-white font-medium">{t('settings.quietHours') || 'Quiet hours'}</span>
+                    <p className="text-xs text-[#64748b] mt-0.5">
+                      {t('settings.quietHoursDesc') || "Don't send storm alerts during these hours."}
+                    </p>
+                  </div>
+                  <button
+                    role="switch"
+                    aria-checked={profile.quiet_start != null}
+                    onClick={() => updateProfile(
+                      profile.quiet_start != null
+                        ? { quiet_start: null, quiet_end: null }
+                        : { quiet_start: 23, quiet_end: 7 }
+                    )}
+                    className={`relative w-11 h-6 rounded-full transition-colors flex-shrink-0 ${profile.quiet_start != null ? 'bg-[#f97316]' : 'bg-white/15'}`}
+                  >
+                    <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white transition-transform ${profile.quiet_start != null ? 'translate-x-[22px]' : 'translate-x-0.5'}`} />
+                  </button>
+                </div>
+                {profile.quiet_start != null && (
+                  <div className="flex items-center gap-3 mt-3">
+                    {([['quiet_start', t('settings.quietFrom') || 'From'], ['quiet_end', t('settings.quietTo') || 'To']] as const).map(([field, label]) => (
+                      <label key={field} className="flex items-center gap-2 text-sm text-[#94a3b8]">
+                        {label}
+                        <select
+                          value={profile[field] ?? 0}
+                          onChange={e => updateProfile({ [field]: Number(e.target.value) })}
+                          className="bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-white text-sm"
+                        >
+                          {Array.from({ length: 24 }, (_, h) => (
+                            <option key={h} value={h} className="bg-[#0a0a1a]">{String(h).padStart(2, '0')}:00</option>
+                          ))}
+                        </select>
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </section>
 
           {/* Weekly Digest */}

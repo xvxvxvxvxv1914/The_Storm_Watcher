@@ -7,6 +7,10 @@ import { useSettings } from '../contexts/SettingsContext';
 import { usePaymentGate } from './usePaymentGate';
 import { logError } from '../utils/logger';
 
+// Minutes EAST of UTC (Sofia = +180) — lets the alert cron evaluate the
+// user's quiet-hours window in device-local time.
+const tzOffsetMin = () => -new Date().getTimezoneOffset();
+
 async function saveToken(
   userId: string, token: string, platform: string,
   thresholdKp: number, lat: number | null, lon: number | null,
@@ -14,7 +18,7 @@ async function saveToken(
   const { error } = await supabase
     .from('device_push_tokens')
     .upsert(
-      { user_id: userId, token, platform, threshold_kp: thresholdKp, lat, lon, updated_at: new Date().toISOString() },
+      { user_id: userId, token, platform, threshold_kp: thresholdKp, lat, lon, tz_offset_min: tzOffsetMin(), updated_at: new Date().toISOString() },
       { onConflict: 'user_id,token' }
     );
   if (error) logError('Failed to save push token', error);
@@ -83,6 +87,7 @@ export function usePushNotifications() {
         threshold_kp: settings.kpThreshold,
         lat: settings.preferredLat,
         lon: settings.preferredLon,
+        tz_offset_min: tzOffsetMin(),
         updated_at: new Date().toISOString(),
       })
       .eq('user_id', user.id)

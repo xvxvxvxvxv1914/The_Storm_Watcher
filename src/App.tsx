@@ -31,6 +31,7 @@ import LocationPrompt, { useLocationPromptVisible } from './components/LocationP
 import KpAlertPrompt from './components/KpAlertPrompt';
 import TrialBanner from './components/TrialBanner';
 import { captureReferralCode } from './utils/referral';
+import { isNative } from './utils/platform';
 
 const LoadingFallback = () => {
   const { t } = useLanguage();
@@ -57,6 +58,14 @@ function AppRoutes() {
   }, []);
   // Stash ?ref=CODE from the landing URL so it survives until signup.
   useEffect(() => { captureReferralCode(); }, []);
+  // Native app opens straight on the live dashboard — '/' is the web landing
+  // page. Runs once at launch; deep links arrive later via appUrlOpen.
+  useEffect(() => {
+    if (isNative() && window.location.pathname === '/') {
+      navigate('/dashboard', { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   useSwipeNavigation();
   useKpAlert();
   usePushNotifications();
@@ -93,10 +102,25 @@ function AppRoutes() {
   // Handle deep links — stormwatcher://dashboard, stormwatcher://alerts?kp=7, etc.
   useEffect(() => {
     const ALLOWED_ROUTES = new Set(['dashboard','forecast','aurora','alerts','uv','sun','sky','mood','iss','profile','settings','pricing','privacy','terms','calendar','gallery','hunt','livestream','faq','log','aurora-map','referrals','magnetic-effects']);
-    const sub = CapApp.addListener('appUrlOpen', ({ url }) => {
+    const sub = CapApp.addListener('appUrlOpen', async ({ url }) => {
       try {
         const parsed = new URL(url);
         const route = parsed.hostname;
+        // OAuth return leg: Supabase redirects to
+        // stormwatcher://auth-callback#access_token=…&refresh_token=…
+        if (route === 'auth-callback') {
+          const { Browser } = await import('@capacitor/browser');
+          Browser.close().catch(() => {});
+          const params = new URLSearchParams(parsed.hash.slice(1));
+          const access_token = params.get('access_token');
+          const refresh_token = params.get('refresh_token');
+          if (access_token && refresh_token) {
+            const { supabase } = await import('./lib/supabase');
+            const { error } = await supabase.auth.setSession({ access_token, refresh_token });
+            if (!error) navigate('/dashboard', { replace: true });
+          }
+          return;
+        }
         if (ALLOWED_ROUTES.has(route)) {
           const qs = parsed.search; // preserve ?kp=7 etc.
           navigate(`/${route}${qs}`, { replace: true });

@@ -10,6 +10,11 @@ interface KpEntry {
   estimated_kp?: number;
 }
 
+interface QuietProfile {
+  quiet_start: number | null;
+  quiet_end: number | null;
+}
+
 interface PushSub {
   id: string;
   endpoint: string;
@@ -18,6 +23,8 @@ interface PushSub {
   threshold_kp: number;
   lat: number | null;
   lon: number | null;
+  tz_offset_min: number | null;
+  profiles: QuietProfile;
 }
 
 interface DeviceToken {
@@ -28,6 +35,20 @@ interface DeviceToken {
   last_notified_at: string | null;
   lat: number | null;
   lon: number | null;
+  tz_offset_min: number | null;
+  profiles: QuietProfile;
+}
+
+// True while the device-local hour falls inside the user's quiet window.
+// quiet_start/quiet_end are local hours (0-23); the window may wrap midnight
+// (23 → 7). tz_offset_min is minutes EAST of UTC; unknown tz → assume UTC.
+function inQuietHours(p: QuietProfile | null, tzOffsetMin: number | null): boolean {
+  const qs = p?.quiet_start ?? null;
+  const qe = p?.quiet_end ?? null;
+  if (qs === null || qe === null || qs === qe) return false;
+  const localMin = ((Date.now() / 60000 + (tzOffsetMin ?? 0)) % 1440 + 1440) % 1440;
+  const h = Math.floor(localMin / 60);
+  return qs < qe ? h >= qs && h < qe : h >= qs || h < qe;
 }
 
 // Dipole-approximation aurora visibility (mirrors src/utils/auroraVisibility.ts).
@@ -216,7 +237,7 @@ Deno.serve(async (req: Request) => {
   // Trialing users are also included (trialing = pro access).
   const { data: subs, error: subsError } = await supabase
     .from('push_subscriptions')
-    .select('id, endpoint, p256dh, auth, threshold_kp, lat, lon, profiles!inner(plan, subscription_status)')
+    .select('id, endpoint, p256dh, auth, threshold_kp, lat, lon, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
     .lte('threshold_kp', currentKp)
     .or(`last_notified_at.is.null,last_notified_at.lt.${cooldownCutoff}`)
     .or('profiles.plan.in.(pro,premium),profiles.subscription_status.eq.trialing', { referencedTable: 'profiles' });
@@ -227,7 +248,8 @@ Deno.serve(async (req: Request) => {
     const expiredIds: string[] = [];
 
     await Promise.allSettled(
-      (subs as PushSub[]).filter(sub => {
+      (subs as unknown as PushSub[]).filter(sub => {
+        if (inQuietHours(sub.profiles, sub.tz_offset_min)) return false;
         if (sub.lat !== null && sub.lon !== null) {
           return calcAuroraVisibility(sub.lat, sub.lon, currentKp) > 0;
         }
@@ -268,7 +290,7 @@ Deno.serve(async (req: Request) => {
   if (apnsEnabled) {
     const { data: tokens, error: tokensError } = await supabase
       .from('device_push_tokens')
-      .select('id, token, platform, threshold_kp, last_notified_at, lat, lon, profiles!inner(plan, subscription_status)')
+      .select('id, token, platform, threshold_kp, last_notified_at, lat, lon, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
       .lte('threshold_kp', currentKp)
       .or(`last_notified_at.is.null,last_notified_at.lt.${cooldownCutoff}`)
       .or('profiles.plan.in.(pro,premium),profiles.subscription_status.eq.trialing', { referencedTable: 'profiles' });
@@ -280,8 +302,9 @@ Deno.serve(async (req: Request) => {
       const expiredTokenIds: string[] = [];
 
       await Promise.allSettled(
-        (tokens as DeviceToken[]).filter(t => {
+        (tokens as unknown as DeviceToken[]).filter(t => {
           if (t.platform !== 'ios') return false;
+          if (inQuietHours(t.profiles, t.tz_offset_min)) return false;
           if (t.lat !== null && t.lon !== null) {
             return calcAuroraVisibility(t.lat, t.lon, currentKp) > 0;
           }
@@ -317,6 +340,8 @@ Deno.serve(async (req: Request) => {
   // lock-screen storm banner fresh while the app is closed. While a storm is on
   // (Kp ≥ threshold) we update; once it passes we end the banner and drop the
   // token. No cooldown — the activity is meant to track the storm continuously.
+  // Quiet hours deliberately do NOT gate Live Activity updates: they refresh an
+  // existing lock-screen banner silently (no sound/wake), unlike alert pushes.
   let liveActivitySent = 0;
   if (apnsEnabled) {
     const { data: laTokens, error: laError } = await supabase

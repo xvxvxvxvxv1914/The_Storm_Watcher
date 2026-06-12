@@ -96,7 +96,10 @@ describe('NOAA cache + single-flight', () => {
   });
 
   it('returns [] and does not poison cache on fetch error', async () => {
-    localStorage.clear(); // drop offline_kp persisted (via Preferences) by earlier tests
+    // Drop offline_kp persisted (via Preferences) by earlier tests. Node 22+
+    // exposes a localStorage global that is undefined without
+    // --localstorage-file, so guard the access.
+    globalThis.localStorage?.clear?.();
     mockFetch.mockRejectedValue(new Error('network down'));
     const { getKpIndex } = await import('./noaaApi');
 
