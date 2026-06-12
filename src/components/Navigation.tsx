@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Globe, User, LogOut, ChevronDown, AlertTriangle, SlidersHorizontal, Sun } from 'lucide-react';
+import { Globe, User, LogOut, ChevronDown, AlertTriangle, SlidersHorizontal } from 'lucide-react';
 import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -100,11 +100,17 @@ const Navigation = () => {
           : '0 4px 20px rgba(0,0,0,0.45), 0 1px 4px rgba(0,0,0,0.3)',
       }}>
         <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2.5">
-          <div className="relative">
-            <Sun className="w-7 h-7 text-[#f97316]" />
-            <div className="absolute inset-0 rounded-full bg-[#f97316] opacity-20 blur-lg" />
-          </div>
-          <span className="text-sm font-bold gradient-solar">The Storm Watcher</span>
+          <img
+            src="/logos/icon.svg"
+            alt=""
+            className="w-14 h-14 -my-1.5"
+            style={{ filter: 'drop-shadow(0 0 10px rgba(249,115,22,0.55)) drop-shadow(0 0 20px rgba(16,185,129,0.3))' }}
+          />
+          <span className="text-[17px] font-extrabold tracking-tight">
+            <span className={theme === 'light' ? 'text-slate-800' : 'text-[#f8fafc]'}>The </span>
+            <span className="text-[#f97316]">Storm</span>
+            <span className={theme === 'light' ? 'text-slate-800' : 'text-[#f8fafc]'}> Watcher</span>
+          </span>
         </Link>
         <div className="flex items-center gap-2">
           {user ? (
