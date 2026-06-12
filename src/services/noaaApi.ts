@@ -139,10 +139,13 @@ export const getKpIndex = (): Promise<KpIndexData[]> =>
 export const getXrayFlux = (): Promise<XrayData[]> =>
   cached('xray', TTL_1M, async () => {
     try {
-      return await getJson<XrayData[]>(`${NOAA_BASE_URL}/json/goes/primary/xrays-1-day.json`);
+      const result = await getJson<XrayData[]>(`${NOAA_BASE_URL}/json/goes/primary/xrays-1-day.json`);
+      persistSet('offline_xray', result).catch(() => {});
+      return result;
     } catch (error) {
       logWarning('Error fetching data in getXrayFlux:', error);
-      return [];
+      const cached_offline = await persistGet<XrayData[]>('offline_xray');
+      return cached_offline ?? [];
     }
   });
 

@@ -94,5 +94,32 @@
 			<string>com.stormwatcher.app</string>
 		</dict>
 	</array>
+	<key>UIApplicationShortcutItems</key>
+	<array>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.stormwatcher.app.aurora</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Aurora Forecast</string>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>sparkles</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.stormwatcher.app.alerts</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Storm Alerts</string>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>bell.badge</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.stormwatcher.app.mood</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Log Mood</string>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>face.smiling</string>
+		</dict>
+	</array>
 </dict>
 </plist>

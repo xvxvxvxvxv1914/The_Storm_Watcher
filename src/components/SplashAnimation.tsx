@@ -54,8 +54,8 @@ const SplashAnimation = () => {
 
     prefetchCoreData();
 
-    const exitMs  = isNativePlatform ? 2500 : 600;
-    const doneMs  = isNativePlatform ? 3000 : 1100;
+    const exitMs  = isNativePlatform ? 1400 : 600;
+    const doneMs  = isNativePlatform ? 1900 : 1100;
     const t1 = setTimeout(() => setPhase('show'), 60);
     const t2 = setTimeout(() => setPhase('exit'), exitMs);
     const t3 = setTimeout(() => setPhase('done'), doneMs);
@@ -170,14 +170,16 @@ const SplashAnimation = () => {
           }}
         />
 
-        {/* Logo icon — centered, large, fades in immediately */}
+        {/* Logo icon + wordmark — vertically centered together */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
+            gap: '20px',
             opacity: phase !== 'enter' ? 1 : 0,
             transform: phase !== 'enter' ? 'scale(1)' : 'scale(0.88)',
             transition: 'opacity 0.6s ease, transform 0.6s ease',
@@ -192,28 +194,19 @@ const SplashAnimation = () => {
               filter: 'drop-shadow(0 0 28px rgba(16,185,129,0.75)) drop-shadow(0 0 60px rgba(16,185,129,0.35))',
             }}
           />
-        </div>
-
-        {/* Wordmark — bottom of screen */}
-        <div
-          style={{
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            bottom: 'calc(env(safe-area-inset-bottom, 0px) + 44px)',
-            textAlign: 'center',
-            opacity: phase !== 'enter' ? 1 : 0,
-            transform: phase !== 'enter' ? 'translateY(0)' : 'translateY(12px)',
-            transition: 'opacity 0.7s ease 0.15s, transform 0.7s ease 0.15s',
-            fontSize: '22px',
-            fontWeight: 800,
-            letterSpacing: '0.02em',
-            textShadow: '0 2px 12px rgba(0,0,0,0.6)',
-          }}
-        >
-          <span style={{ color: '#f8fafc' }}>The </span>
-          <span style={{ color: '#f97316' }}>Storm</span>
-          <span style={{ color: '#f8fafc' }}> Watcher</span>
+          <div
+            style={{
+              textAlign: 'center',
+              fontSize: '36px',
+              fontWeight: 800,
+              letterSpacing: '0.02em',
+              textShadow: '0 2px 12px rgba(0,0,0,0.6)',
+            }}
+          >
+            <span style={{ color: '#f8fafc' }}>The </span>
+            <span style={{ color: '#f97316' }}>Storm</span>
+            <span style={{ color: '#f8fafc' }}> Watcher</span>
+          </div>
         </div>
       </div>
     </>

@@ -10,6 +10,7 @@ import { getAlerts, Alert as AlertType } from '../services/noaaApi';
 import { getDonkiCme, getDonkiFlares, CmeEvent, FlareEvent } from '../services/donkiApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { usePullToRefresh } from '../hooks/usePullToRefresh';
 
 /* ─── time helpers ─────────────────────────────────────────── */
 
@@ -374,8 +375,8 @@ const Alerts = () => {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [activeFilter, setActiveFilter] = useState<Filter>('all');
 
-  const fetchAlerts = useCallback(async () => {
-    setLoading(true);
+  const fetchAlerts = useCallback(async (opts?: { silent?: boolean }) => {
+    if (!opts?.silent) setLoading(true);
     const [noaaData, cmeData, flareData] = await Promise.allSettled([
       getAlerts(), getDonkiCme(), getDonkiFlares(),
     ]);
@@ -392,9 +393,12 @@ const Alerts = () => {
 
   useEffect(() => {
     fetchAlerts();
-    const interval = setInterval(() => { if (document.visibilityState !== 'hidden') fetchAlerts(); }, 120000);
+    // Silent: a full-screen spinner on every background refresh is jarring
+    const interval = setInterval(() => { if (document.visibilityState !== 'hidden') fetchAlerts({ silent: true }); }, 120000);
     return () => clearInterval(interval);
   }, [fetchAlerts]);
+
+  const { pulling, pullY } = usePullToRefresh(() => fetchAlerts({ silent: true }));
 
   const feed = useMemo((): FeedItem[] => {
     const seen = new Set<string>();
@@ -451,7 +455,7 @@ const Alerts = () => {
         <AlertOctagon className="w-12 h-12 text-[#ef4444] mx-auto mb-4" />
         <h2 className={`font-semibold text-lg mb-2 ${theme === 'light' ? 'text-slate-900' : 'text-white'}`}>{t('alerts.fetchError') || 'Could not load alerts'}</h2>
         <p className="text-[#64748b] text-sm mb-6">{t('alerts.fetchErrorDesc') || 'NOAA servers may be temporarily unavailable.'}</p>
-        <button onClick={fetchAlerts} className="px-5 py-2.5 rounded-xl bg-[#ef4444]/20 border border-[#ef4444]/30 text-[#ef4444] text-sm font-medium hover:bg-[#ef4444]/30 transition-colors">
+        <button onClick={() => fetchAlerts()} className="px-5 py-2.5 rounded-xl bg-[#ef4444]/20 border border-[#ef4444]/30 text-[#ef4444] text-sm font-medium hover:bg-[#ef4444]/30 transition-colors">
           {t('alerts.retry') || 'Try again'}
         </button>
       </div>
@@ -486,6 +490,14 @@ const Alerts = () => {
 
   return (
     <div className={`min-h-screen pt-20 pb-24 md:pt-24 relative ${theme === 'light' ? 'bg-white' : ''}`}>
+      {pulling && (
+        <div
+          className="fixed top-16 left-1/2 -translate-x-1/2 z-[100] flex items-center justify-center w-9 h-9 rounded-full bg-[#10b981]/20 border border-[#10b981]/40 transition-transform"
+          style={{ transform: `translateX(-50%) translateY(${pullY}px)` }}
+        >
+          <div className="w-4 h-4 border-2 border-[#10b981] border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
       <StarField />
       <PageMeta title="Space Weather Alerts — The Storm Watcher" description="Real-time NOAA space weather alerts, CMEs and solar flares in plain language." path="/alerts" />
       <div className="max-w-2xl mx-auto px-4 sm:px-6">

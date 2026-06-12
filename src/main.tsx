@@ -9,6 +9,13 @@ import { LanguageProvider } from './contexts/LanguageContext';
 // Service worker is only useful for web/PWA — skip on native Capacitor (files are local)
 if (!('Capacitor' in window)) {
   registerSW({ immediate: true });
+} else {
+  // Native app: disable pinch-zoom of the whole UI (standard app behavior;
+  // system-level zoom remains available for accessibility). Web keeps zoom —
+  // WCAG requires it there.
+  document
+    .querySelector('meta[name="viewport"]')
+    ?.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
 }
 
 // ── Chunk-load error recovery ──────────────────────────────────

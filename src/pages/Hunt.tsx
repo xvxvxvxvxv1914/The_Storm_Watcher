@@ -10,6 +10,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { useKpLive } from '../hooks/useKpLive';
 import { supabase } from '../lib/supabase';
+import { maybeAskForReview } from '../plugins/appReview';
 import { Link } from 'react-router-dom';
 
 interface Sighting {
@@ -200,6 +201,9 @@ export default function Hunt() {
       Haptics.notification({ type: NotificationType.Success }).catch(() => {});
       setSubmitMsg(t('hunt.reportSuccess') || 'Sighting reported!');
       setLastSharedSighting({ location: locationName, kp: kp ?? 0 });
+      // A logged sighting is the happiest moment in the app — best time to
+      // ask for an App Store rating (frequency-capped inside).
+      maybeAskForReview();
       setTimeout(() => { setSubmitMsg(''); setNewBadges([]); setLastSharedSighting(null); }, 8000);
       setShowForm(false);
       setNotes('');

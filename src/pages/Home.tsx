@@ -9,6 +9,7 @@ import { track } from '@vercel/analytics';
 import { generateStormScoreImage } from '../utils/generateStormImage';
 import { getSolarWind, getXrayFlux, getXrayClass, getStormStatus, getKpGradientStyle, getKpHistory3Day } from '../services/noaaApi';
 import { useKpLive } from '../hooks/useKpLive';
+import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -139,6 +140,8 @@ const Home = () => {
   }, [lastUpdated]);
 
 
+  const { pulling, pullY } = usePullToRefresh(() => setRetryCount(c => c + 1));
+
   const stormStatus = kpValue !== null ? getStormStatus(kpValue) : null;
   const isStorm = kpValue !== null && kpValue >= 5;
 
@@ -177,6 +180,14 @@ const Home = () => {
 
   return (
     <div className="min-h-screen relative">
+      {pulling && (
+        <div
+          className="fixed top-16 left-1/2 -translate-x-1/2 z-[100] flex items-center justify-center w-9 h-9 rounded-full bg-[#10b981]/20 border border-[#10b981]/40 transition-transform"
+          style={{ transform: `translateX(-50%) translateY(${pullY}px)` }}
+        >
+          <div className="w-4 h-4 border-2 border-[#10b981] border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
       <Helmet>
         <title>
           {kpValue !== null && kpValue >= 5
@@ -373,14 +384,15 @@ const Home = () => {
               {t('home.hero.desc')}
             </p>
 
+            {/* Native users already live in the app — skip the web funnel CTAs */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
               <Link
-                to={user ? '/dashboard' : '/pricing'}
+                to={user || isNative() ? '/dashboard' : '/pricing'}
                 className="px-8 py-4 bg-gradient-to-r from-[#10b981] to-[#059669] text-white rounded-lg font-bold uppercase tracking-wider hover:scale-105 transition-transform glow-green"
               >
-                {user ? t('home.hero.viewMap') : t('home.hero.getStarted')}
+                {user || isNative() ? t('home.hero.viewMap') : t('home.hero.getStarted')}
               </Link>
-              {!user && (
+              {!user && !isNative() && (
                 <Link
                   to="/dashboard"
                   className="px-8 py-4 glass-surface text-white rounded-lg font-bold uppercase tracking-wider hover:glow-orange transition-all border border-white/10"

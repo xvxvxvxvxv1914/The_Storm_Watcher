@@ -26,5 +26,6 @@ class ViewController: CAPBridgeViewController {
     // This is the correct place to register app-local plugins.
     override func capacitorDidLoad() {
         bridge?.registerPluginInstance(StormLiveActivityPlugin())
+        bridge?.registerPluginInstance(AppReviewPlugin())
     }
 }

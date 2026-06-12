@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
 const THRESHOLD = 72; // px pulled before triggering
 const RESIST = 0.4;   // rubber-band factor
@@ -8,6 +9,7 @@ export function usePullToRefresh(onRefresh: () => Promise<void> | void) {
   const [pullY, setPullY] = useState(0);
   const startY = useRef<number | null>(null);
   const refreshing = useRef(false);
+  const buzzed = useRef(false);
 
   useEffect(() => {
     const onTouchStart = (e: TouchEvent) => {
@@ -15,6 +17,7 @@ export function usePullToRefresh(onRefresh: () => Promise<void> | void) {
       const target = e.target as HTMLElement;
       if (target.closest('.no-pull') || target.closest('canvas') || target.closest('.overflow-y-auto') || target.closest('.overflow-x-auto')) return;
       startY.current = e.touches[0].clientY;
+      buzzed.current = false;
     };
 
     const onTouchMove = (e: TouchEvent) => {
@@ -22,7 +25,13 @@ export function usePullToRefresh(onRefresh: () => Promise<void> | void) {
       const dy = e.touches[0].clientY - startY.current;
       if (dy <= 0) { startY.current = null; return; }
       setPulling(true);
-      setPullY(Math.min(dy * RESIST, THRESHOLD + 20));
+      const y = Math.min(dy * RESIST, THRESHOLD + 20);
+      setPullY(y);
+      // Haptic tick the moment the pull is far enough to trigger a refresh
+      if (!buzzed.current && y >= THRESHOLD * RESIST) {
+        buzzed.current = true;
+        Haptics.impact({ style: ImpactStyle.Light }).catch(() => {});
+      }
     };
 
     const onTouchEnd = async () => {

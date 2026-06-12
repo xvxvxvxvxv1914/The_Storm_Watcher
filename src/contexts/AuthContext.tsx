@@ -20,6 +20,8 @@ interface Profile {
   referral_code?: string | null;
   referred_by?: string | null;
   referral_pro_until?: string | null;
+  quiet_start?: number | null;
+  quiet_end?: number | null;
   created_at: string;
   updated_at: string;
 }
@@ -145,9 +147,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { error };
   };
 
-  const signInWithGoogle = async () => {
+  // On native the OAuth page must open in SFSafariViewController (Google
+  // rejects embedded webviews) and Supabase must redirect back into the app
+  // via the stormwatcher:// scheme — App.tsx handles the auth-callback deep
+  // link and calls setSession with the returned tokens.
+  const signInWithProvider = async (provider: 'google' | 'facebook' | 'apple') => {
+    if (isNative()) {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: 'stormwatcher://auth-callback',
+          skipBrowserRedirect: true,
+        },
+      });
+      if (!error && data?.url) {
+        const { Browser } = await import('@capacitor/browser');
+        await Browser.open({ url: data.url });
+      }
+      return { error };
+    }
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
+      provider,
       options: {
         redirectTo: 'https://thestormwatcher.com',
       },
@@ -155,25 +175,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { error };
   };
 
-  const signInWithFacebook = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'facebook',
-      options: {
-        redirectTo: 'https://thestormwatcher.com',
-      },
-    });
-    return { error };
-  };
-
-  const signInWithApple = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'apple',
-      options: {
-        redirectTo: 'https://thestormwatcher.com',
-      },
-    });
-    return { error };
-  };
+  const signInWithGoogle = () => signInWithProvider('google');
+  const signInWithFacebook = () => signInWithProvider('facebook');
+  const signInWithApple = () => signInWithProvider('apple');
 
   const signOut = async () => {
     await supabase.auth.signOut();
