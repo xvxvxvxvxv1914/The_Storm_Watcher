@@ -31,6 +31,7 @@ const Footer = () => {
     {
       heading: t('footer.section.healthInfo'),
       links: [
+        { to: '/blog',             label: 'Blog' },
         { to: '/gallery',          label: t('nav.gallery') },
         { to: '/hunt',             label: t('nav.hunt') },
         { to: '/livestream',       label: t('nav.livestream') },
@@ -91,6 +92,7 @@ const Footer = () => {
                   { to: '/uv',               label: t('nav.uv') },
                   { to: '/mood',             label: t('nav.mood') },
                   { to: '/magnetic-effects', label: t('nav.magneticEffectsShort') },
+                  { to: '/blog',             label: 'Blog' },
                   { to: '/faq',              label: t('nav.faq') },
                   { to: '/about',            label: t('nav.about') },
                   { to: '/contact',          label: t('footer.contact') || 'Contact' },
