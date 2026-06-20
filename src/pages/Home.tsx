@@ -285,7 +285,7 @@ const Home = () => {
               <span className="text-[#94a3b8] text-sm font-semibold uppercase tracking-widest">{t('home.liveSpaceWeather')}</span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl font-bold mb-8 gradient-emerald">
+            <h1 className="text-4xl sm:text-5xl font-bold mb-8 gradient-emerald tracking-tight">
               The Storm Watcher
             </h1>
 
@@ -388,14 +388,14 @@ const Home = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
               <Link
                 to={user || isNative() ? '/dashboard' : '/pricing'}
-                className="px-8 py-4 bg-gradient-to-r from-[#10b981] to-[#059669] text-white rounded-lg font-bold uppercase tracking-wider hover:scale-105 transition-transform glow-green"
+                className="px-8 py-4 bg-gradient-to-r from-[#10b981] to-[#059669] text-white rounded-xl font-bold uppercase tracking-wider transition-all duration-300 hover:-translate-y-0.5 glow-green hover:shadow-[0_16px_40px_-12px_rgba(16,185,129,0.6)] active:translate-y-0"
               >
                 {user || isNative() ? t('home.hero.viewMap') : t('home.hero.getStarted')}
               </Link>
               {!user && !isNative() && (
                 <Link
                   to="/dashboard"
-                  className="px-8 py-4 glass-surface text-white rounded-lg font-bold uppercase tracking-wider hover:glow-orange transition-all border border-white/10"
+                  className="px-8 py-4 glass-surface text-white rounded-xl font-bold uppercase tracking-wider transition-all duration-300 hover:-translate-y-0.5 hover:glow-orange active:translate-y-0 border border-white/10"
                 >
                   {t('home.hero.viewMap')}
                 </Link>
