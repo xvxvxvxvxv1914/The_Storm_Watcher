@@ -1,6 +1,6 @@
 import type React from 'react';
 
-import { logError, logWarning } from '../utils/logger';
+import { logWarning } from '../utils/logger';
 import { persistGet, persistSet } from '../utils/offlineCache';
 import { isNative } from '../utils/platform';
 
@@ -129,7 +129,7 @@ export const getKpIndex = (): Promise<KpIndexData[]> =>
         persistSet('offline_kp', result).catch(() => {});
         return result;
       } catch (error) {
-        logError('NOAA Kp fallback failed:', error);
+        logWarning('NOAA Kp fallback failed:', error);
         const cached_offline = await persistGet<KpIndexData[]>('offline_kp');
         return cached_offline ?? [];
       }
@@ -164,7 +164,7 @@ export const getSolarWind = (): Promise<SolarWindData[]> =>
       persistSet('offline_wind', result).catch(() => {});
       return result;
     } catch (error) {
-      logError('Error fetching data in getSolarWind:', error);
+      logWarning('Error fetching data in getSolarWind:', error);
       const cached_offline = await persistGet<SolarWindData[]>('offline_wind');
       return cached_offline ?? [];
     }
@@ -178,7 +178,7 @@ export const getMagField = (): Promise<MagFieldData[]> =>
       persistSet('offline_mag', result).catch(() => {});
       return result;
     } catch (error) {
-      logError('Error fetching data in getMagField:', error);
+      logWarning('Error fetching data in getMagField:', error);
       const cached_offline = await persistGet<MagFieldData[]>('offline_mag');
       return cached_offline ?? [];
     }
@@ -191,7 +191,7 @@ export const getAlerts = (): Promise<Alert[]> =>
       persistSet('offline_alerts', result).catch(() => {});
       return result;
     } catch (error) {
-      logError('Error fetching data in getAlerts:', error);
+      logWarning('Error fetching data in getAlerts:', error);
       const cached_offline = await persistGet<Alert[]>('offline_alerts');
       return cached_offline ?? [];
     }
@@ -215,7 +215,7 @@ export const getKpForecast = (): Promise<KpIndexData[]> =>
       persistSet('offline_kp_forecast', result).catch(() => {});
       return result;
     } catch (error) {
-      logError('Error fetching data in getKpForecast:', error);
+      logWarning('Error fetching data in getKpForecast:', error);
       const cached_offline = await persistGet<KpIndexData[]>('offline_kp_forecast');
       return cached_offline ?? [];
     }
@@ -246,7 +246,7 @@ export const getAuroraModel = (): Promise<AuroraOvationPoint[]> =>
       }
       return [];
     } catch (error) {
-      logError('Error fetching aurora ovation model:', error);
+      logWarning('Error fetching aurora ovation model:', error);
       return [];
     }
   });
@@ -266,7 +266,7 @@ export const getKpHistory3Day = (): Promise<{ time_tag: string; Kp: number }[]> 
           `${NOAA_BASE_URL}/products/noaa-planetary-k-index.json`
         );
       } catch (error) {
-        logError('NOAA Kp history fallback failed:', error);
+        logWarning('NOAA Kp history fallback failed:', error);
         return [];
       }
     }
@@ -328,7 +328,7 @@ export const getWeatherData = (lat: number, lon: number): Promise<WeatherData | 
       }
       return null;
     } catch (error) {
-      logError('Error fetching weather data:', error);
+      logWarning('Error fetching weather data:', error);
       return null;
     }
   });
@@ -372,7 +372,7 @@ export const get27DayOutlook = (): Promise<DayOutlook[]> =>
       }
       return rows;
     } catch (error) {
-      logError('Error fetching 27-day outlook:', error);
+      logWarning('Error fetching 27-day outlook:', error);
       return [];
     }
   });
@@ -432,7 +432,7 @@ export const getSpaceWeatherOutlook = (): Promise<SpaceWeatherOutlook | null> =>
         radioBlackout: { r1r2Pct, r3Pct, rationale: radioRationale },
       };
     } catch (error) {
-      logError('Error fetching space weather outlook:', error);
+      logWarning('Error fetching space weather outlook:', error);
       return null;
     }
   });
