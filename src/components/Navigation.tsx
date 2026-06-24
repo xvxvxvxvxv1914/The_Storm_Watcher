@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import PushNotificationBell from './PushNotificationBell';
 import { useKpLive } from '../hooks/useKpLive';
+import { navigateToLang } from '../utils/langUrl';
 
 const Navigation = () => {
   const stormKp = useKpLive();
@@ -19,7 +20,7 @@ const Navigation = () => {
   const userMenuRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const navigate = useNavigate();
-  const { language, setLanguage, t } = useLanguage();
+  const { language, t } = useLanguage();
   const { user, profile, signOut } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
@@ -246,7 +247,7 @@ const Navigation = () => {
                   {languages.map((lang) => (
                     <button
                       key={lang.code}
-                      onClick={() => { setLanguage(lang.code); setIsLangMenuOpen(false); }}
+                      onClick={() => { setIsLangMenuOpen(false); navigateToLang(lang.code); }}
                       className={`w-full text-left px-4 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${
                         language === lang.code
                           ? 'text-[#f97316] bg-[#f97316]/10'

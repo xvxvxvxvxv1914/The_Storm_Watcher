@@ -11,6 +11,7 @@ import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { navigateToLang } from '../utils/langUrl';
 
 const hapticLight = () => Haptics.impact({ style: ImpactStyle.Light }).catch(() => {});
 const hapticMedium = () => Haptics.impact({ style: ImpactStyle.Medium }).catch(() => {});
@@ -48,7 +49,7 @@ const BottomTabBar = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const { t, language, setLanguage } = useLanguage();
+  const { t, language } = useLanguage();
   const { user, profile, signOut } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
@@ -231,7 +232,7 @@ const BottomTabBar = () => {
                     {languages.map(lang => (
                       <button
                         key={lang.code}
-                        onClick={() => { setLanguage(lang.code); setLangOpen(false); }}
+                        onClick={() => { setLangOpen(false); navigateToLang(lang.code); }}
                         className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm ${
                           language === lang.code ? 'text-[#10b981] font-semibold' : theme === 'light' ? 'text-slate-500' : 'text-white/60'
                         }`}

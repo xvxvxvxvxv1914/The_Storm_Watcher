@@ -32,6 +32,13 @@ import KpAlertPrompt from './components/KpAlertPrompt';
 import TrialBanner from './components/TrialBanner';
 import { captureReferralCode } from './utils/referral';
 import { isNative } from './utils/platform';
+import { langBasename, stripLangPrefix } from './utils/langUrl';
+
+// English lives at the root; the other 15 locales are served under a path prefix
+// (`/de/sky`). Run the Router under that prefix as a basename so the existing
+// non-prefixed routes match and `<Link>`s stay within the language subtree.
+// Computed once at startup — switching language does a full navigation.
+const ROUTER_BASENAME = langBasename(window.location.pathname);
 
 const LoadingFallback = () => {
   const { t } = useLanguage();
@@ -92,7 +99,7 @@ function AppRoutes() {
   // Block unverified email users from accessing the app
   useEffect(() => {
     if (user && !user.email_confirmed_at) {
-      const path = window.location.pathname;
+      const path = stripLangPrefix(window.location.pathname);
       if (path !== '/auth' && path !== '/auth/reset' && path !== '/privacy' && path !== '/terms') {
         navigate('/auth?verify=pending', { replace: true });
       }
@@ -185,7 +192,7 @@ function App() {
   return (
     <MotionConfig reducedMotion="user">
     <HelmetProvider>
-      <Router>
+      <Router basename={ROUTER_BASENAME}>
         <ThemeProvider>
           <SettingsProvider>
             <AuthProvider>

@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { langFromPath } from '../utils/langUrl';
 
 type Language = 'en' | 'bg' | 'es' | 'fr' | 'de' | 'ru' | 'zh' | 'ja' | 'no' | 'fi' | 'sv' | 'is' | 'da' | 'pl' | 'uk' | 'ko';
 
@@ -37,6 +38,10 @@ const cache = new Map<Language, Record<string, string>>();
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguageState] = useState<Language>(() => {
+    // URL prefix wins — `/de/sky` must render in German regardless of the saved
+    // preference, so the page matches its prerendered HTML and canonical.
+    const fromUrl = langFromPath(window.location.pathname);
+    if (fromUrl) return fromUrl as Language;
     const saved = localStorage.getItem('language');
     if (saved) return saved as Language;
     const supported: Language[] = ['en', 'bg', 'es', 'fr', 'de', 'ru', 'zh', 'ja', 'no', 'fi', 'sv', 'is', 'da', 'pl', 'uk', 'ko'];
