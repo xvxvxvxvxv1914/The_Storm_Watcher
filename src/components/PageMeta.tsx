@@ -1,4 +1,6 @@
 import { Helmet } from 'react-helmet-async';
+import { useLanguage } from '../contexts/LanguageContext';
+import { localizedPath } from '../utils/langUrl';
 
 const BASE_URL = 'https://www.thestormwatcher.com';
 const DEFAULT_IMAGE = `${BASE_URL}/og-image.png`;
@@ -30,7 +32,11 @@ interface Props {
 }
 
 export default function PageMeta({ title, description, path, image, ogKp, noindex, children }: Props) {
-  const url = `${BASE_URL}${path}`;
+  const { language } = useLanguage();
+  // Self-referencing canonical per locale: `/de/sky` canonicals to itself, not to
+  // the English `/sky`. Crawlers (no saved language) resolve `language` to the URL
+  // prefix, so this matches the prerendered HTML.
+  const url = `${BASE_URL}${localizedPath(language, path)}`;
   const slug = PAGE_SLUGS[path];
   const ogImage = image
     ?? (slug

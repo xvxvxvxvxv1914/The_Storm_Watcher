@@ -49,6 +49,12 @@
       "has": [{ "type": "host", "value": "thestormwatcher.com" }],
       "destination": "https://www.thestormwatcher.com/:path*",
       "permanent": true
+    },
+    {
+      "source": "/((?!(?:bg|de|es|fr|ja|ru|zh|da|fi|is|ko|no|pl|sv|uk)(?:/|$)).*)",
+      "has": [{ "type": "query", "key": "lang", "value": "(?<lang>bg|de|es|fr|ja|ru|zh|da|fi|is|ko|no|pl|sv|uk)" }],
+      "destination": "/:lang/$1",
+      "permanent": true
     }
   ],
   "rewrites": [
