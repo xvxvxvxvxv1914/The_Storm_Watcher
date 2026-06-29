@@ -104,7 +104,7 @@ export default function BlogPost() {
       </PageMeta>
       <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Blog', path: '/blog' }, { name: post.title, path: `/blog/${post.slug}` }]} />
 
-      <div className="min-h-screen relative overflow-hidden pt-20 pb-24 px-4" style={{ background: isDark ? '#050510' : '#eef2f8' }}>
+      <div className="min-h-screen relative overflow-hidden pt-20 pb-24 px-4" style={{ background: isDark ? 'transparent' : '#eef2f8' }}>
         <StarField />
         <div className="solar-orb" style={{ top: '-10%', right: '-5%', opacity: 0.2 }} />
         <div className="magnetic-orb" style={{ bottom: '15%', left: '-8%', opacity: 0.15 }} />
