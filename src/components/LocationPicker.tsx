@@ -71,6 +71,7 @@ export default function LocationPicker({ lat, lon, locationName, onSelect, onReq
                     </button>
                     <button
                       onClick={() => remove(fav.id)}
+                      aria-label="Remove location"
                       className="opacity-0 group-hover:opacity-100 text-[#64748b] hover:text-red-400 transition-all p-0.5"
                     >
                       <X className="w-3 h-3" />

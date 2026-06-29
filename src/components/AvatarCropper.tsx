@@ -67,7 +67,7 @@ export default function AvatarCropper({ imageSrc, onConfirm, onCancel }: Props) 
       <div className="bg-[var(--tsw-surface-bg)] border border-black/10 rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-white/8">
-          <button onClick={onCancel} className="p-1.5 rounded-lg hover:bg-white/8 transition-colors text-slate-400 hover:text-white">
+          <button onClick={onCancel} aria-label="Close" className="p-1.5 rounded-lg hover:bg-white/8 transition-colors text-slate-400 hover:text-white">
             <X size={18} />
           </button>
           <span className="text-white text-sm font-semibold">Adjust photo</span>
