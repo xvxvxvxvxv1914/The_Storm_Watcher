@@ -184,7 +184,7 @@ const AuroraLog = () => {
                   required
                   value={form.sighted_at}
                   onChange={e => setForm(f => ({ ...f, sighted_at: e.target.value }))}
-                  className="w-full rounded-xl px-4 py-2.5 bg-white/5 border border-white/10 text-white focus:outline-none focus:border-[#10b981]/60 transition-colors"
+                  className="w-full rounded-xl px-4 py-2.5 bg-white/5 border border-white/10 text-white focus:outline-none focus:border-[#f97316]/60 transition-colors"
                 />
               </div>
               <div>
@@ -194,7 +194,7 @@ const AuroraLog = () => {
                   value={form.location_name}
                   onChange={e => setForm(f => ({ ...f, location_name: e.target.value }))}
                   placeholder="e.g. Lapland, Finland"
-                  className="w-full rounded-xl px-4 py-2.5 bg-white/5 border border-white/10 text-white placeholder-[#475569] focus:outline-none focus:border-[#10b981]/60 transition-colors"
+                  className="w-full rounded-xl px-4 py-2.5 bg-white/5 border border-white/10 text-white placeholder-[#475569] focus:outline-none focus:border-[#f97316]/60 transition-colors"
                 />
               </div>
             </div>
@@ -215,7 +215,7 @@ const AuroraLog = () => {
                 value={form.kp_at_sighting}
                 onChange={e => setForm(f => ({ ...f, kp_at_sighting: e.target.value }))}
                 placeholder="e.g. 6.3"
-                className="w-32 rounded-xl px-4 py-2.5 bg-white/5 border border-white/10 text-white placeholder-[#475569] focus:outline-none focus:border-[#10b981]/60 transition-colors"
+                className="w-32 rounded-xl px-4 py-2.5 bg-white/5 border border-white/10 text-white placeholder-[#475569] focus:outline-none focus:border-[#f97316]/60 transition-colors"
               />
             </div>
 
@@ -226,7 +226,7 @@ const AuroraLog = () => {
                 value={form.notes}
                 onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
                 placeholder="Colors, structure, duration, photos..."
-                className="w-full rounded-xl px-4 py-2.5 bg-white/5 border border-white/10 text-white placeholder-[#475569] focus:outline-none focus:border-[#10b981]/60 transition-colors resize-none"
+                className="w-full rounded-xl px-4 py-2.5 bg-white/5 border border-white/10 text-white placeholder-[#475569] focus:outline-none focus:border-[#f97316]/60 transition-colors resize-none"
               />
             </div>
 
