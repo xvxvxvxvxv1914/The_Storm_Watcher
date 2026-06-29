@@ -257,6 +257,19 @@ html.light button.text-white {
   color: #1e293b;
 }
 
+/* Form fields must follow the theme text colour. The .text-white override
+   above does not target form controls, so typed text in inputs/textareas/
+   selects stayed white → invisible on the light surface. */
+html.light input,
+html.light textarea,
+html.light select {
+  color: var(--tsw-fg);
+}
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: var(--tsw-fg-subtle);
+}
+
 html.light .border-white\/10 {
   border-color: rgba(0, 0, 0, 0.12);
 }
