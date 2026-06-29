@@ -325,7 +325,7 @@ export default function Hunt() {
                 onChange={e => setLocationName(e.target.value)}
                 maxLength={100}
                 placeholder="Tromsø, Norway"
-                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-[#475569] focus:outline-none focus:border-[#f59e0b]/50 focus:ring-1 focus:ring-[#f59e0b]/30 transition-colors text-sm"
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-[#475569] focus:outline-none focus:border-[#f97316]/50 focus:ring-1 focus:ring-[#f97316]/30 transition-colors text-sm"
               />
             </div>
 
@@ -358,7 +358,7 @@ export default function Hunt() {
                 onChange={e => setNotes(e.target.value)}
                 maxLength={200}
                 placeholder="Visible to the naked eye, green curtains…"
-                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-[#475569] focus:outline-none focus:border-[#f59e0b]/50 focus:ring-1 focus:ring-[#f59e0b]/30 transition-colors text-sm"
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-[#475569] focus:outline-none focus:border-[#f97316]/50 focus:ring-1 focus:ring-[#f97316]/30 transition-colors text-sm"
               />
             </div>
 
