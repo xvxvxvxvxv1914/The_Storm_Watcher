@@ -7,8 +7,8 @@ import ErrorCard from '../components/ErrorCard';
 import KpGauge from '../components/KpGauge';
 import { track } from '@vercel/analytics';
 import { generateStormScoreImage } from '../utils/generateStormImage';
-import { getSolarWind, getXrayFlux, getXrayClass, getStormStatus, getKpGradientStyle, getKpHistory3Day } from '../services/noaaApi';
-import { useKpLive } from '../hooks/useKpLive';
+import { getSolarWind, getXrayFlux, getXrayClass, getStormStatus, getKpGradientStyle, getKpHistory3Day, latestSolarWindSpeed } from '../services/noaaApi';
+import { useKpLiveState, refreshKp } from '../hooks/useKpLive';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
@@ -32,7 +32,10 @@ const Home = () => {
   const { settings } = useSettings();
   const { user } = useAuth();
   const { hasPro: hasPaidPlan } = usePaymentGate();
-  const kpValue = useKpLive();
+  // kpStatus/kpStale let us distinguish "still loading" from "genuinely failed"
+  // and from "showing a cached value" — so the homepage no longer flashes the
+  // error card while the Kp fetch is merely in flight.
+  const { kp: kpValue, status: kpStatus, stale: kpStale } = useKpLiveState();
   const [windSpeed, setWindSpeed] = useState<number | null>(null);
   const [xrayClass, setXrayClass] = useState<string | null>(null);
   const [kpSparkData, setKpSparkData] = useState<number[]>([]);
@@ -96,7 +99,9 @@ const Home = () => {
           (async () => {
             const windData = await getSolarWind();
             if (windData && windData.length > 0) {
-              setWindSpeed(windData[windData.length - 1].proton_speed || 0);
+              // Same selection as the Dashboard (newest *active* sample) so both
+              // pages always show the identical solar-wind value.
+              setWindSpeed(latestSolarWindSpeed(windData));
             }
           })(),
           (async () => {
@@ -169,14 +174,22 @@ const Home = () => {
     );
   };
 
-  if (!loading && kpValue === null) {
+  // Hard-failure screen ONLY when the Kp poll has exhausted every retry AND has
+  // no cached value to show. A slow / in-flight fetch now renders a skeleton
+  // (below), not this card — that race was the "Failed to load data" bug.
+  if (kpStatus === 'error' && kpValue === null) {
     return (
       <div className="min-h-screen flex items-center justify-center relative">
         <StarField />
-        <ErrorCard onRetry={() => { setLoading(true); setRetryCount(c => c + 1); }} />
+        <ErrorCard onRetry={() => { refreshKp(); setLoading(true); setRetryCount(c => c + 1); }} />
       </div>
     );
   }
+
+  // Show the skeleton only while we have no Kp value at all (initial load or
+  // manual retry). Once a value arrives — live or from cache — we render it
+  // immediately, even if the secondary NOAA stats are still loading.
+  const showKpSkeleton = kpValue === null && kpStatus !== 'error';
 
   return (
     <div className="min-h-screen relative">
@@ -291,7 +304,7 @@ const Home = () => {
 
             {/* Live Kp — first thing people see */}
             <div className="min-h-[300px] sm:min-h-[420px]">
-            {loading ? (
+            {showKpSkeleton ? (
               <div className="my-8 flex flex-col items-center gap-4">
                 <Skeleton className="w-40 h-24 sm:w-64 sm:h-40 rounded-2xl" />
                 <Skeleton className="w-full max-w-xs h-6 rounded-full" />
@@ -310,6 +323,10 @@ const Home = () => {
                   </span>
                   <span className="text-xs text-[#64748b] uppercase tracking-widest font-semibold">Live · Kp Index</span>
                   {timeAgo && <span className="text-xs text-[#475569]">· {timeAgo}</span>}
+                  {/* Cached value shown while the live fetch is delayed/unconfirmed */}
+                  {kpStale && (
+                    <span className="text-xs text-amber-400/80">· {t('home.dataDelayed') || 'data may be delayed'}</span>
+                  )}
                 </div>
                 <div className={`inline-block ${isStorm ? 'pulse-alert' : ''}`}>
                   <div
@@ -466,7 +483,7 @@ const Home = () => {
             {t('home.stormScore.desc')}
           </p>
 
-          {loading ? (
+          {showKpSkeleton ? (
             <div className="flex flex-col items-center gap-4">
               <Skeleton className="w-32 h-32 sm:w-40 sm:h-40 rounded-2xl" />
               <Skeleton className="w-40 h-5 rounded" />
@@ -619,7 +636,7 @@ const Home = () => {
 
       {/* What does this mean for me? — always rendered to avoid CLS */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        {loading ? (
+        {showKpSkeleton ? (
           <Skeleton className="w-full h-24 rounded-2xl" />
         ) : kpValue !== null ? (() => {
           const score = Math.round((kpValue / 9) * 100);

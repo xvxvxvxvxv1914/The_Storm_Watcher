@@ -865,6 +865,7 @@ const da: Record<string, string> = {
   'payment.exploreAurora': 'Udforsk Aurora →',
   'payment.cancelled': 'Betaling annulleret — ingen betaling opkrævet. Vælg en plan for at fortsætte.',
   'home.noCC': '— intet kreditkort krævet',
+  'home.dataDelayed': 'data kan være forsinket',
   'alerts.justNow': 'Lige nu',
   'alerts.mAgo': '{m}m siden',
   'alerts.hAgo': '{h}t siden',

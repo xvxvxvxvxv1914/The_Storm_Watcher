@@ -865,6 +865,7 @@ const fi: Record<string, string> = {
   'payment.exploreAurora': 'Tutustu Auroraan →',
   'payment.cancelled': 'Maksu peruutettu — ei maksuja veloitettu. Valitse paketti jatkaaksesi.',
   'home.noCC': '— ei luottokorttia tarvita',
+  'home.dataDelayed': 'tiedot voivat olla viiveellä',
   'alerts.justNow': 'Juuri nyt',
   'alerts.mAgo': '{m}m sitten',
   'alerts.hAgo': '{h}h sitten',

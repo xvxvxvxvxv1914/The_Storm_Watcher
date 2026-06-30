@@ -873,6 +873,7 @@ const zh: Record<string, string> = {
   'payment.exploreAurora': '探索极光 →',
   'payment.cancelled': '付款已取消 — 未产生任何费用。选择一个计划以继续。',
   'home.noCC': '— 无需信用卡',
+  'home.dataDelayed': '数据可能有延迟',
   'alerts.justNow': '刚刚',
   'alerts.mAgo': '{m}分钟前',
   'alerts.hAgo': '{h}小时前',

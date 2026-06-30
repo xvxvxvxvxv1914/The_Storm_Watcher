@@ -865,6 +865,7 @@ const is_: Record<string, string> = {
   'payment.exploreAurora': 'Skoða norðurljós →',
   'payment.cancelled': 'Greiðsla afturkölluð — engin gjöld gert. Veldu pakka til að halda áfram.',
   'home.noCC': '— ekkert kreditkort þarf',
+  'home.dataDelayed': 'gögn kunna að vera seinkuð',
   'alerts.justNow': 'Rétt í þessu',
   'alerts.mAgo': '{m}m síðan',
   'alerts.hAgo': '{h}h síðan',
