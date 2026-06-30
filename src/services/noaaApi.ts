@@ -14,7 +14,16 @@ type CacheEntry<T> = { ts: number; data: T };
 const cache = new Map<string, CacheEntry<unknown>>();
 const inflight = new Map<string, Promise<unknown>>();
 
-const cached = async <T,>(key: string, ttlMs: number, fetcher: () => Promise<T>): Promise<T> => {
+// `cacheIf` lets a caller refuse to cache a result (e.g. an empty array from a
+// failed fetch). Without it, a single failed Kp fetch would freeze an empty
+// result for the whole TTL (15 min for forecasts) and defeat any retry — one of
+// the root causes of the homepage "Failed to load data" bug.
+const cached = async <T,>(
+  key: string,
+  ttlMs: number,
+  fetcher: () => Promise<T>,
+  cacheIf?: (data: T) => boolean,
+): Promise<T> => {
   const hit = cache.get(key) as CacheEntry<T> | undefined;
   if (hit && Date.now() - hit.ts < ttlMs) return hit.data;
 
@@ -23,13 +32,15 @@ const cached = async <T,>(key: string, ttlMs: number, fetcher: () => Promise<T>)
 
   const promise = fetcher()
     .then((data) => {
-      cache.set(key, { ts: Date.now(), data });
+      if (!cacheIf || cacheIf(data)) cache.set(key, { ts: Date.now(), data });
       return data;
     })
     .finally(() => inflight.delete(key));
   inflight.set(key, promise);
   return promise;
 };
+
+const nonEmpty = (data: unknown): boolean => Array.isArray(data) && data.length > 0;
 
 const getJson = async <T,>(url: string, timeoutMs = 10000, retries = 1): Promise<T> => {
   const attempt = async (): Promise<T> => {
@@ -107,9 +118,18 @@ const getGfzKp3Day = (): Promise<GfzResponse> =>
     const end = new Date();
     const start = new Date(end.getTime() - 7 * 24 * 60 * 60 * 1000);
     const url = `${GFZ_BASE}?start=${encodeURIComponent(toGfzDate(start))}&end=${encodeURIComponent(toGfzDate(end))}&index=Kp`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`GFZ HTTP ${res.status}`);
-    return res.json() as Promise<GfzResponse>;
+    // Hard timeout so a cold-starting /api/gfz serverless function fails fast and
+    // lets getKpIndex() fall back to NOAA, instead of hanging the homepage's Kp
+    // poll indefinitely (a raw fetch has no timeout). The poll layer retries.
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 8000);
+    try {
+      const res = await fetch(url, { signal: ctrl.signal });
+      if (!res.ok) throw new Error(`GFZ HTTP ${res.status}`);
+      return (await res.json()) as GfzResponse;
+    } finally {
+      clearTimeout(timer);
+    }
   });
 
 export const getKpIndex = (): Promise<KpIndexData[]> =>
@@ -134,7 +154,7 @@ export const getKpIndex = (): Promise<KpIndexData[]> =>
         return cached_offline ?? [];
       }
     }
-  });
+  }, nonEmpty);
 
 export const getXrayFlux = (): Promise<XrayData[]> =>
   cached('xray', TTL_1M, async () => {
@@ -169,6 +189,17 @@ export const getSolarWind = (): Promise<SolarWindData[]> =>
       return cached_offline ?? [];
     }
   });
+
+// Single source of truth for "current solar wind speed". The rtsw feed's
+// trailing samples are frequently flagged active:false (not yet validated), so
+// the newest *active* sample is the right one to show. Home and Dashboard MUST
+// use this same selection or they display different numbers for the same feed
+// (Home previously took the raw last sample → mismatched the Dashboard).
+export const latestSolarWindSpeed = (data: SolarWindData[] | null | undefined): number => {
+  if (!data || data.length === 0) return 0;
+  const active = data.findLast(d => d.active) ?? data[data.length - 1];
+  return active.proton_speed || 0;
+};
 
 export const getMagField = (): Promise<MagFieldData[]> =>
   cached('mag', TTL_1M, async () => {
@@ -270,7 +301,7 @@ export const getKpHistory3Day = (): Promise<{ time_tag: string; Kp: number }[]> 
         return [];
       }
     }
-  });
+  }, nonEmpty);
 
 export const getKpGradientStyle = (kp: number): React.CSSProperties => ({
   backgroundImage:

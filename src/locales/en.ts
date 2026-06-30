@@ -917,6 +917,7 @@ const en: Record<string, string> = {
   'payment.exploreAurora': 'Explore Aurora →',
   'payment.cancelled': 'Payment cancelled — no charge was made. Choose a plan to continue.',
   'home.noCC': '— no credit card required',
+  'home.dataDelayed': 'data may be delayed',
   'alerts.justNow': 'Just now',
   'alerts.mAgo': '{m}m ago',
   'alerts.hAgo': '{h}h ago',

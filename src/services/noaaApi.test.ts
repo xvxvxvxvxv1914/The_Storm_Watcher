@@ -95,7 +95,7 @@ describe('NOAA cache + single-flight', () => {
     expect(r1).toEqual(r2);
   });
 
-  it('returns [] and does not poison cache on fetch error', async () => {
+  it('returns [] but does NOT cache the failure — a retry within TTL can recover', async () => {
     // Drop offline_kp persisted (via Preferences) by earlier tests. Node 22+
     // exposes a localStorage global that is undefined without
     // --localstorage-file, so guard the access.
@@ -103,24 +103,24 @@ describe('NOAA cache + single-flight', () => {
     mockFetch.mockRejectedValue(new Error('network down'));
     const { getKpIndex } = await import('./noaaApi');
 
-    // getJson retries after 1500ms per attempt (GFZ retry + NOAA fallback retry).
-    // With fake timers we must advance time while the promise is in-flight.
+    // All sources fail → [] is returned but, thanks to the `cacheIf` guard, the
+    // empty result is NOT stored. With fake timers we advance past the in-flight
+    // NOAA-fallback retry delay.
     const p1 = getKpIndex();
-    await vi.advanceTimersByTimeAsync(3500); // covers GFZ 1500ms + NOAA 1500ms retry delays
-    const r1 = await p1;
-    expect(r1).toEqual([]);
+    await vi.advanceTimersByTimeAsync(3500); // covers the NOAA fallback retry delay
+    expect(await p1).toEqual([]);
 
-    // Failed result IS cached (empty array) within TTL_FORECAST.
-    // After TTL, the next call refetches. GFZ fails again → NOAA succeeds.
+    // A second call *within the same TTL window* must re-fetch (the empty result
+    // was not frozen) and recover. This is what lets the homepage poll retry out
+    // of a transient cold-start instead of being stuck on "Failed to load data".
     mockFetch.mockReset();
-    mockFetch.mockRejectedValueOnce(new Error('gfz still down'));
-    mockFetch.mockResolvedValueOnce(okJson([{ time_tag: 't', kp_index: 4 }]));
-    await vi.advanceTimersByTimeAsync(900_001);
+    mockFetch.mockRejectedValueOnce(new Error('gfz still down')); // GFZ fails again
+    mockFetch.mockResolvedValueOnce(okJson([{ time_tag: 't', kp_index: 4 }])); // NOAA recovers
 
     const p2 = getKpIndex();
-    await vi.advanceTimersByTimeAsync(2000); // covers GFZ 1500ms retry delay before NOAA succeeds
-    const r2 = await p2;
-    expect(r2).toEqual([{ time_tag: 't', kp_index: 4 }]);
+    await vi.advanceTimersByTimeAsync(2000);
+    expect(await p2).toEqual([{ time_tag: 't', kp_index: 4 }]);
+    expect(mockFetch).toHaveBeenCalledTimes(2); // proves a genuine re-fetch happened
   });
 
   it('rtsw wind/mag endpoints are sorted ascending by time_tag', async () => {

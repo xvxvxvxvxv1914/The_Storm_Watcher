@@ -865,6 +865,7 @@ const uk: Record<string, string> = {
   'payment.exploreAurora': 'Дослідити Аврору →',
   'payment.cancelled': 'Оплату скасовано — плата не знімалась. Оберіть план, щоб продовжити.',
   'home.noCC': '— кредитна карта не потрібна',
+  'home.dataDelayed': 'дані можуть бути застарілими',
   'alerts.justNow': 'Щойно',
   'alerts.mAgo': '{m}хв тому',
   'alerts.hAgo': '{h}год тому',

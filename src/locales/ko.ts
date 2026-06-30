@@ -903,6 +903,7 @@ const ko: Record<string, string> = {
   'payment.exploreAurora': 'Aurora 탐색 →',
   'payment.cancelled': '결제가 취소되었습니다 — 청구되지 않았습니다. 계속하려면 플랜을 선택하세요.',
   'home.noCC': '— 신용카드 불필요',
+  'home.dataDelayed': '데이터가 지연될 수 있음',
   'alerts.justNow': '방금',
   'alerts.mAgo': '{m}분 전',
   'alerts.hAgo': '{h}시간 전',

@@ -873,6 +873,7 @@ const ja: Record<string, string> = {
   'payment.exploreAurora': 'Auroraを探索 →',
   'payment.cancelled': 'お支払いがキャンセルされました — 料金は発生しません。続けるにはプランを選択してください。',
   'home.noCC': '— クレジットカード不要',
+  'home.dataDelayed': 'データが遅延している可能性があります',
   'alerts.justNow': 'たった今',
   'alerts.mAgo': '{m}分前',
   'alerts.hAgo': '{h}時間前',

@@ -12,7 +12,7 @@ import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesCh
 import SvgBarChart from '../components/charts/SvgBarChart';
 import { Activity, Wind, Compass, Sun, Radio, MapPin, Download, Share2, GripVertical } from 'lucide-react';
 import { generateStormScoreImage } from '../utils/generateStormImage';
-import { getKpIndex, getSolarWind, getMagField, getXrayFlux, getKpHistory3Day, getKpForecast, getStormStatus, getXrayClass, getKpGradientStyle } from '../services/noaaApi';
+import { getKpIndex, getSolarWind, getMagField, getXrayFlux, getKpHistory3Day, getKpForecast, getStormStatus, getXrayClass, getKpGradientStyle, latestSolarWindSpeed } from '../services/noaaApi';
 import PlanGuard from '../components/PlanGuard';
 import { fetchNigggData, toDeltaSeries, getNigggStormStatus, type NigggDataPoint } from '../services/nigggApi';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -248,9 +248,8 @@ const Dashboard = () => {
       }
 
       if (windData && windData.length > 0) {
-        // findLast — data is ascending, we want the newest active sample.
-        const active = windData.findLast(d => d.active) || windData[windData.length - 1];
-        setSolarWindSpeed(active.proton_speed || 0);
+        // Shared selection (newest *active* sample) — identical to the homepage.
+        setSolarWindSpeed(latestSolarWindSpeed(windData));
 
         const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
         const filtered = windData.filter(d => d.proton_speed > 0 && new Date(d.time_tag) >= since24h);
