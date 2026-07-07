@@ -25,7 +25,7 @@ const LocationPrompt = ({ onDone }: { onDone: () => void }) => {
       const lat = pos.coords.latitude;
       const lon = pos.coords.longitude;
       const name = await reverseGeocode(lat, lon);
-      updateSettings({ preferredLat: lat, preferredLon: lon, preferredLocationName: name });
+      updateSettings({ preferredLat: lat, preferredLon: lon, preferredLocationName: name, locationMode: 'auto' });
       localStorage.setItem(ASKED_KEY, '1');
       setLoading(false);
       onDone();
