@@ -20,10 +20,47 @@
 - Production: всички route-ове 200, apex→www 308, ?lang= strip 301, sitemap/feed/robots 200. Данни: NOAA (Kp/wind/mag/xray/alerts/forecast), GFZ/NIGGG/DONKI проксита, ISS, Open-Meteo — работят. GSC: **/bg и /de/aurora вече ИНДЕКСИРАНИ**; само /blog чака. Vercel: 0 реални грешки.
 - Cloudflare връща 403 challenge на curl-подобни UA — реални браузъри и Googlebot минават (не е проблем).
 
-### ⏳ Остава (иска акаунти/устройство)
-- Supabase Auth: включи **Leaked password protection** (Dashboard → Auth → Passwords) — 1 клик.
-- Android push (FCM): google-services.json + POST_NOTIFICATIONS — чака Firebase Console (виж CLAUDE.md TODO).
-- iPhone тест на локацията: `npm run ios:open` (resync-ва dist с новите фиксове).
+### 📌 TODO списък за следващи сесии (записано 2026-07-08 вечерта)
+
+**1. Cloudflare — довърши performance фикса (НАЙ-ВАЖНО, наполовина готово)**
+- Открито: Speed Insights падна 66 → 38 mobile заради Bot Fight Mode — инжектираният
+  `/cdn-cgi/challenge-platform/scripts/jsd/main.js` изяжда 2765ms CPU (TBT 10ms → 1410ms).
+  Доказано: същият код през vercel.app deploy URL = 64 т., през www = 38 т.
+- Направено: Bot Fight Mode = OFF, Browser Integrity Check = OFF (през Chrome AI агента).
+- ❗ ОСТАВА: JS Detections остава ON и след изключването (CF quirk) — скриптът още се
+  инжектира на `/`. Трябва **API token** (Create Token → Custom → Zone → Bot Management →
+  Edit → zone thestormwatcher.com), после: `PUT /zones/{id}/bot_management {"enable_js": false}`.
+- След фикса: re-run Lighthouse (очаквано ~64), curl тестове, re-валидация в GSC.
+- Бележка: 403 за curl-подобни клиенти идва от НАШЕТО WAF правило „Block Bad Bots" —
+  умишлено е, Googlebot минава (200), не го пипай.
+
+**2. Lighthouse 64 → 85+ (следва СЛЕД Cloudflare фикса, за да се мери чисто)**
+- Preload на LCP изображението `/logos/icon.svg` в index.html (`<link rel="preload" as="image">`)
+- Отложен Sentry init (спестява ~88KB + ~490ms от критичния път; Replay вече е lazy)
+- Splash анимацията само на native (или по-къса на web) — тя бави първото рисуване
+- LCP сега е ~8s: render delay от JS + splash; TBT без CF е 10ms (кодът е ОК)
+
+**3. Supabase (1 клик, dashboard)**
+- Authentication → Passwords → включи **Leaked password protection** (единственият останал security advisor)
+
+**4. iPhone тест на location auto-follow**
+- `npm run ios:open` (resync-ва dist) → билд на телефона → провери: смяна на локация
+  (симулатор: Features → Location → Custom) обновява всички табове; Settings превключвателят auto/manual
+
+**5. Android push (FCM) — критично преди Play Store**
+- Ти: Firebase Console → Add app → package `com.stormwatcher.app` → изтегли google-services.json → в android/app/
+- Аз: POST_NOTIFICATIONS в манифеста, махам iOS gate-а в usePushNotifications.ts, FCM в send-kp-alerts
+- Бележка: Gradle иска Java 21 → `JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"`
+
+**6. GSC (след ~3-5 дни)**
+- Провери дали `/blog` е влязъл в индекса (езиковите /bg, /de/aurora ВЛЯЗОХА ✅)
+- След Cloudflare фикса: URL Inspection на страница, която даваше „URL is not available to Google"
+
+**7. По-нататък (от CLAUDE.md TODO, непроменено)**
+- Android Glance widget; Android 15 edge-to-edge тест (API 35)
+- IAP: plugin install + продукти в App Store Connect / Play Console + secrets + deploy verify-iap
+- Stripe CLI тест преди web go-live; Apple Watch app (идея)
+- Опционално: изтриване на branch `redesign/premium-dark`; споделен `<Input>` компонент
 
 ---
 
