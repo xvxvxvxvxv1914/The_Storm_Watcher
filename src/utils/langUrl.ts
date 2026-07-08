@@ -68,11 +68,21 @@ export const switchLangUrl = (lang: string): string => {
 };
 
 /**
+ * Persist the language choice before navigating to a localized URL. Persisting
+ * first ensures the English root (no prefix) shows English on reload instead of
+ * falling back to the previous saved language.
+ */
+export const persistLanguage = (lang: string): void => {
+  try { localStorage.setItem('language', lang); } catch { /* storage may be blocked */ }
+};
+
+/**
  * Switch the UI language: persist the choice, then full-navigate to the localized
- * URL of the current route. Persisting first ensures the English root (no prefix)
- * shows English on reload instead of falling back to the previous saved language.
+ * URL of the current route. Prefer a real `<a href={switchLangUrl(lang)}>` with an
+ * onClick that calls persistLanguage — crawlable and middle-click friendly — and
+ * keep this only for places where an anchor isn't possible.
  */
 export const navigateToLang = (lang: string): void => {
-  try { localStorage.setItem('language', lang); } catch { /* storage may be blocked */ }
+  persistLanguage(lang);
   window.location.assign(switchLangUrl(lang));
 };

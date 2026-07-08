@@ -11,7 +11,7 @@ import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { navigateToLang } from '../utils/langUrl';
+import { switchLangUrl, persistLanguage, hreflangCode } from '../utils/langUrl';
 
 const hapticLight = () => Haptics.impact({ style: ImpactStyle.Light }).catch(() => {});
 const hapticMedium = () => Haptics.impact({ style: ImpactStyle.Medium }).catch(() => {});
@@ -230,9 +230,11 @@ const BottomTabBar = () => {
                 {langOpen && (
                   <div className="ml-11 space-y-0.5">
                     {languages.map(lang => (
-                      <button
+                      <a
                         key={lang.code}
-                        onClick={() => { setLangOpen(false); navigateToLang(lang.code); }}
+                        href={switchLangUrl(lang.code)}
+                        hrefLang={hreflangCode(lang.code)}
+                        onClick={() => { setLangOpen(false); persistLanguage(lang.code); }}
                         className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm ${
                           language === lang.code ? 'text-[#10b981] font-semibold' : theme === 'light' ? 'text-slate-500' : 'text-white/60'
                         }`}
@@ -240,7 +242,7 @@ const BottomTabBar = () => {
                         <span>{lang.flag}</span>
                         <span>{lang.name}</span>
                         {language === lang.code && <span className="ml-auto w-2 h-2 rounded-full bg-[#10b981]" />}
-                      </button>
+                      </a>
                     ))}
                   </div>
                 )}
