@@ -5,7 +5,6 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { BrowserRouter as Router, useNavigate } from 'react-router-dom';
 import { App as CapApp } from '@capacitor/app';
-import * as Sentry from '@sentry/react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import { useLanguage } from './contexts/LanguageContext';
@@ -13,6 +12,7 @@ import { SettingsProvider } from './contexts/SettingsContext';
 import { useSwipeNavigation } from './hooks/useSwipeNavigation';
 import { useKpLive } from './hooks/useKpLive';
 import { useKpAlert } from './hooks/useKpAlert';
+import { setSentryUser } from './utils/sentryLazy';
 import { usePushNotifications } from './hooks/usePushNotifications';
 import { useStormLiveActivity } from './hooks/useStormLiveActivity';
 import { AnimatedRoutes } from './components/AnimatedRoutes';
@@ -90,9 +90,9 @@ function AppRoutes() {
   // Set Sentry user context with plan info for better error debugging
   useEffect(() => {
     if (user) {
-      Sentry.setUser({ id: user.id, plan: profile?.plan ?? 'free' });
+      setSentryUser({ id: user.id, plan: profile?.plan ?? 'free' });
     } else {
-      Sentry.setUser(null);
+      setSentryUser(null);
     }
   }, [user, profile?.plan]);
 

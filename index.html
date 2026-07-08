@@ -46,6 +46,7 @@
     <meta property="og:image:type" content="image/png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content="https://www.thestormwatcher.com/og-image.png" />
+    <link rel="preload" as="image" href="/logos/icon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=optional" onload="this.onload=null;this.rel='stylesheet'">
@@ -89,6 +90,18 @@
         <p>The Storm Watcher needs JavaScript to show real-time space weather.</p>
       </div>
     </noscript>
+    <!-- Static splash: paints the brand screen as soon as the HTML arrives, long
+         before React boots (FCP/LCP happen here instead of seconds later). Kept
+         `hidden` and revealed by the inline script so users without JS see the
+         <noscript> message instead of a stuck splash. SplashAnimation removes it
+         on mount (its animated splash overlays this at a higher z-index). -->
+    <div id="static-splash" hidden style="position:fixed;inset:0;z-index:199;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:#030712">
+      <img src="/logos/icon.svg" alt="" width="200" height="200" style="filter:drop-shadow(0 0 28px rgba(16,185,129,0.75)) drop-shadow(0 0 60px rgba(16,185,129,0.35))">
+      <div style="text-align:center;font-size:36px;font-weight:800;letter-spacing:0.02em;text-shadow:0 2px 12px rgba(0,0,0,0.6);font-family:'Space Grotesk',system-ui,-apple-system,sans-serif">
+        <span style="color:#f8fafc">The </span><span style="color:#f97316">Storm</span><span style="color:#f8fafc"> Watcher</span>
+      </div>
+    </div>
+    <script>document.getElementById('static-splash').hidden = false;</script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
