@@ -20,6 +20,17 @@
 - Production: всички route-ове 200, apex→www 308, ?lang= strip 301, sitemap/feed/robots 200. Данни: NOAA (Kp/wind/mag/xray/alerts/forecast), GFZ/NIGGG/DONKI проксита, ISS, Open-Meteo — работят. GSC: **/bg и /de/aurora вече ИНДЕКСИРАНИ**; само /blog чака. Vercel: 0 реални грешки.
 - Cloudflare връща 403 challenge на curl-подобни UA — реални браузъри и Googlebot минават (не е проблем).
 
+### ✅ SEO: trailing-slash дубликати (2026-07-08 късно, `91f7363`, в main 2026-07-09)
+- GSC: `/ru/`, `/pl`, `/pl/` = "Duplicate without user-selected canonical"; `/uk/` = unknown.
+  Причина: `/ru` и `/ru/` живееха като два отделни 200 URL-а без redirect + language
+  switcher-ът беше JS `window.location.assign` (никакви crawlable вътрешни линкове към локалите).
+- Fix: middleware.ts — single-hop 301 `/ru/` → `/ru` (и комбинирано с ?lang= strip);
+  Navigation + BottomTabBar switcher → истински `<a href>` с hreflang.
+- Проверено: canonical таговете са били коректни през цялото време (curl с Googlebot UA);
+  „/uk с noindex" от GSC report-а е бил Cloudflare 403 blocking page (има собствен noindex),
+  не реалният сайт. sitemap.xml чист (само non-slash форми).
+- След деплой: поискай re-indexing в GSC за slash-вариантите (очаквай 301 при inspect).
+
 ### 📌 TODO списък за следващи сесии (записано 2026-07-08 вечерта)
 
 **1. Cloudflare — довърши performance фикса (НАЙ-ВАЖНО, наполовина готово)**
