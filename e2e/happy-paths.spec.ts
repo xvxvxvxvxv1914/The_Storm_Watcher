@@ -4,7 +4,8 @@ import { test, expect, Page } from '@playwright/test';
 // Open-Meteo (UV/sun) is not used on the Dashboard so we don't need to stub
 // it for these paths.
 const stubNoaa = async (page: Page) => {
-  await page.route(/\/api\/gfz\/.*/, async (route) => {
+  // The app calls /api/gfz?start=…&end=… (query string, no path segment after gfz)
+  await page.route(/\/api\/gfz(\?|\/|$)/, async (route) => {
     return route.fulfill({
       status: 200,
       contentType: 'application/json',

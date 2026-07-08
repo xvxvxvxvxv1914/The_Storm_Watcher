@@ -54,7 +54,12 @@ Sentry.init({
   replaysOnErrorSampleRate: 1.0,
   beforeSend(event, hint) {
     const err = hint?.originalException;
-    if (err instanceof Error && (err.name === 'AbortError' || err.message === 'Load failed')) {
+    // Drop plain network failures — user offline or upstream (NOAA/GFZ) hiccup.
+    // 'Load failed' is Safari's wording, 'Failed to fetch' is Chrome/Edge's.
+    if (
+      err instanceof Error &&
+      (err.name === 'AbortError' || err.message === 'Load failed' || err.message.startsWith('Failed to fetch'))
+    ) {
       return null;
     }
     if (event.user) {

@@ -76,10 +76,11 @@ test.describe('Auth flows', () => {
     await baseInit(page);
     await page.goto('/auth');
 
-    await expect(page.getByRole('heading', { name: /welcome back/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /sign in/i })).toBeVisible();
     await expect(page.locator('input[type="email"]')).toBeVisible();
     await expect(page.locator('input[type="password"]')).toBeVisible();
-    await expect(page.getByRole('button', { name: /sign in/i })).toBeVisible();
+    // The mode tab and the submit button are both labelled "Sign In" — scope to the form.
+    await expect(page.locator('form').getByRole('button', { name: /sign in/i })).toBeVisible();
   });
 
   test('invalid credentials show error message', async ({ page }) => {
@@ -89,7 +90,7 @@ test.describe('Auth flows', () => {
 
     await page.locator('input[type="email"]').fill('wrong@example.com');
     await page.locator('input[type="password"]').fill('wrongpassword');
-    await page.getByRole('button', { name: /sign in/i }).click();
+    await page.locator('form').getByRole('button', { name: /sign in/i }).click();
 
     await expect(page.getByText(/invalid login credentials/i)).toBeVisible({ timeout: 5_000 });
   });
@@ -98,9 +99,10 @@ test.describe('Auth flows', () => {
     await baseInit(page);
     await page.goto('/auth');
 
-    await page.getByRole('button', { name: /create account/i }).click();
+    // The signup tab is labelled "Sign Up" (mode tabs sit above the form).
+    await page.getByRole('button', { name: /sign up/i }).first().click();
 
-    await expect(page.locator('input[placeholder*="Name"], input[name="fullName"], input[autocomplete="name"]').first()).toBeVisible();
+    await expect(page.getByLabel(/full name/i)).toBeVisible();
     await expect(page.locator('input[type="email"]')).toBeVisible();
   });
 
@@ -109,15 +111,13 @@ test.describe('Auth flows', () => {
     await stubSupabaseAuth(page, { signUpResult: 'success' });
     await page.goto('/auth');
 
-    await page.getByRole('button', { name: /create account/i }).click();
+    await page.getByRole('button', { name: /sign up/i }).first().click();
 
     await page.locator('input[type="email"]').fill('new@example.com');
     await page.locator('input[type="password"]').fill('SecurePass123!');
-    // Fill full name if visible
-    const nameInput = page.locator('input[autocomplete="name"]').first();
-    if (await nameInput.isVisible()) await nameInput.fill('Test User');
+    await page.getByLabel(/full name/i).fill('Test User');
 
-    await page.getByRole('button', { name: /create account/i }).click();
+    await page.locator('button[type="submit"]').click();
 
     // After successful signup → confirmation sent screen
     await expect(page.getByText(/check your email/i)).toBeVisible({ timeout: 5_000 });
@@ -127,7 +127,7 @@ test.describe('Auth flows', () => {
     await baseInit(page);
     await page.goto('/auth?verify=pending');
 
-    await expect(page.getByText(/verify/i).first()).toBeVisible({ timeout: 5_000 });
+    await expect(page.getByText(/check your email/i).first()).toBeVisible({ timeout: 5_000 });
   });
 
   test('forgot password mode shows email-only form', async ({ page }) => {
