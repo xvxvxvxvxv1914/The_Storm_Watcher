@@ -4,6 +4,29 @@
 
 ---
 
+## 2026-07-08 — Пълен одит (сайт + мобилни) и фиксове
+
+### ✅ Направено
+- **Локация auto-follow** (`ef063dc`): при отваряне/foreground тихо чете GPS и мести локацията при > 25 км; ръчно избраната остава фиксирана (нов превключвател в Settings). Оправя „в Гърция всичко показваше България".
+- **Бъг: /auth?verify=pending игнориран** — непотвърден потребител виждаше гол login без обяснение; сега вижда „Check your email" екрана (+ signOut при връщане).
+- **a11y/UX Auth форма**: label↔input връзки (htmlFor/id) + autocomplete атрибути.
+- **E2E: 23/23 минават** (бяха 17/23) — тестовете бяха срещу стар UI (стари етикети, счупен GFZ mock regex); бавните run-ове идваха от студен vite dep-кеш.
+- **npm audit: 0 уязвимости** (ws high + tar moderate — фикснати).
+- **Sentry шум**: 'Failed to fetch' мрежови грешки вече не се репортват (55 events/14д бяха такива).
+- **Supabase perf миграция** (приложена в prod): 4 RLS initplan fix-а + 4 FK индекса.
+- **iOS**: simulator build минава чисто; widget/app версии изравнени (1.1/2).
+
+### ✅ Проверено (наред е)
+- Production: всички route-ове 200, apex→www 308, ?lang= strip 301, sitemap/feed/robots 200. Данни: NOAA (Kp/wind/mag/xray/alerts/forecast), GFZ/NIGGG/DONKI проксита, ISS, Open-Meteo — работят. GSC: **/bg и /de/aurora вече ИНДЕКСИРАНИ**; само /blog чака. Vercel: 0 реални грешки.
+- Cloudflare връща 403 challenge на curl-подобни UA — реални браузъри и Googlebot минават (не е проблем).
+
+### ⏳ Остава (иска акаунти/устройство)
+- Supabase Auth: включи **Leaked password protection** (Dashboard → Auth → Passwords) — 1 клик.
+- Android push (FCM): google-services.json + POST_NOTIFICATIONS — чака Firebase Console (виж CLAUDE.md TODO).
+- iPhone тест на локацията: `npm run ios:open` (resync-ва dist с новите фиксове).
+
+---
+
 ## 2026-06-30 — SEO/индексиране, одит, theming, проверка на данните
 
 ### ✅ Направено (в PRODUCTION, branch `main`)

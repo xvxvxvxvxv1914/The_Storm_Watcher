@@ -2,7 +2,7 @@ import { useState } from 'react';
 import PageMeta from '../components/PageMeta';
 import StarField from '../components/StarField';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Bell, Ruler, Globe, Check, Loader2, X, HelpCircle, Lock, Mail } from 'lucide-react';
+import { ArrowLeft, MapPin, Bell, Ruler, Globe, Check, Loader2, X, HelpCircle, Lock, Mail, Navigation2, Pin } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
 import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useOnboarding } from '../hooks/useOnboarding';
@@ -56,7 +56,7 @@ export default function Settings() {
       const lat = parseFloat(pos.coords.latitude.toFixed(4));
       const lon = parseFloat(pos.coords.longitude.toFixed(4));
       const name = await reverseGeocode(lat, lon);
-      updateSettings({ preferredLat: lat, preferredLon: lon, preferredLocationName: name });
+      updateSettings({ preferredLat: lat, preferredLon: lon, preferredLocationName: name, locationMode: 'auto' });
       setLocating(false);
     }).catch(() => {
       setLocError(t('settings.gpsError') || 'Could not get your location. Check permissions.');
@@ -65,11 +65,18 @@ export default function Settings() {
   };
 
   const handleLocationSelect = (lat: number, lon: number, name: string) => {
-    updateSettings({ preferredLat: lat, preferredLon: lon, preferredLocationName: name });
+    // Picking a place by hand pins it — auto-follow must not override it.
+    updateSettings({ preferredLat: lat, preferredLon: lon, preferredLocationName: name, locationMode: 'manual' });
   };
 
   const handleClearLocation = () => {
-    updateSettings({ preferredLat: null, preferredLon: null, preferredLocationName: '' });
+    updateSettings({ preferredLat: null, preferredLon: null, preferredLocationName: '', locationMode: 'auto' });
+  };
+
+  const handleModeChange = (mode: 'auto' | 'manual') => {
+    if (mode === settings.locationMode) return;
+    updateSettings({ locationMode: mode });
+    if (mode === 'auto') handleUseGPS();
   };
 
   const kpLabels: Record<number, string> = {
@@ -117,6 +124,32 @@ export default function Settings() {
             <p className="text-sm text-[#94a3b8] mb-5">
               {t('settings.locationDesc') || 'Used on Aurora, UV, Sun Times and Sky Visibility pages instead of asking for GPS every time.'}
             </p>
+
+            {/* Auto-follow vs pinned location */}
+            <div className="grid grid-cols-2 gap-2 mb-4" role="radiogroup" aria-label={t('settings.location') || 'Preferred Location'}>
+              {([
+                ['auto', Navigation2, t('settings.locationModeAuto') || 'Follow my location', t('settings.locationModeAutoDesc') || 'Updates automatically as you travel'],
+                ['manual', Pin, t('settings.locationModeManual') || 'Fixed location', t('settings.locationModeManualDesc') || 'Stays as chosen until you change it'],
+              ] as const).map(([mode, Icon, label, desc]) => (
+                <button
+                  key={mode}
+                  role="radio"
+                  aria-checked={settings.locationMode === mode}
+                  onClick={() => handleModeChange(mode)}
+                  className={`text-left p-3 rounded-xl border transition-colors ${
+                    settings.locationMode === mode
+                      ? 'border-[#f97316]/60 bg-[#f97316]/10'
+                      : 'border-white/10 hover:border-white/20'
+                  }`}
+                >
+                  <span className={`flex items-center gap-1.5 text-sm font-semibold ${settings.locationMode === mode ? 'text-[#f97316]' : 'text-white'}`}>
+                    <Icon className="w-3.5 h-3.5" />
+                    {label}
+                  </span>
+                  <span className="block text-xs text-[#94a3b8] mt-1">{desc}</span>
+                </button>
+              ))}
+            </div>
 
             <div className="mb-4">
               <LocationPicker

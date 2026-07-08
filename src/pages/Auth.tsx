@@ -36,8 +36,12 @@ export default function Auth() {
   const navigate = useNavigate();
   const location = useLocation();
   const redirectTo = (location.state as { from?: string } | null)?.from ?? '/dashboard';
-  const { signIn, signUp, signOut, resetPassword } = useAuth();
+  const { user, signIn, signUp, signOut, resetPassword } = useAuth();
   const { t } = useLanguage();
+
+  // App.tsx bounces signed-in users with unconfirmed emails to /auth?verify=pending —
+  // show them the "check your email" screen instead of a bare login form.
+  const verifyPending = new URLSearchParams(location.search).get('verify') === 'pending';
 
   const strength = useMemo(() => {
     const { level } = scorePassword(password);
@@ -75,7 +79,7 @@ export default function Auth() {
     }
   };
 
-if (confirmationSent) {
+if (confirmationSent || verifyPending) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4 py-12 relative overflow-hidden">
         <StarField />
@@ -88,11 +92,17 @@ if (confirmationSent) {
             </div>
             <h2 className="text-2xl font-bold text-white mb-3">{t('auth.checkEmail')}</h2>
             <p className="text-[#94a3b8] mb-6 leading-relaxed">
-              {t('auth.checkEmailSent')} <span className="text-white font-medium">{email}</span>. {t('auth.checkEmailActivate')}
+              {t('auth.checkEmailSent')} <span className="text-white font-medium">{email || user?.email || ''}</span>. {t('auth.checkEmailActivate')}
             </p>
             <p className="text-[#475569] text-sm">{t('auth.checkEmailSpam')}</p>
             <button
-              onClick={() => { setConfirmationSent(false); setMode('login'); }}
+              onClick={async () => {
+                // A verify-pending user is still signed in (unconfirmed) — sign them
+                // out so trying another account doesn't bounce back here.
+                if (verifyPending) { await signOut(); navigate('/auth', { replace: true }); }
+                setConfirmationSent(false);
+                setMode('login');
+              }}
               className="mt-6 text-[#f97316] hover:text-[#fbbf24] text-sm font-medium transition"
             >
               {t('auth.backToSignIn')}
@@ -209,11 +219,13 @@ if (confirmationSent) {
           <form onSubmit={handleEmailAuth} className="space-y-4">
             {mode === 'signup' && (
               <div>
-                <label className="block text-sm font-medium text-[#94a3b8] mb-2">{t('auth.fullName')}</label>
+                <label htmlFor="auth-fullname" className="block text-sm font-medium text-[#94a3b8] mb-2">{t('auth.fullName')}</label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#475569]" />
                   <input
+                    id="auth-fullname"
                     type="text"
+                    autoComplete="name"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-[#475569] focus:outline-none focus:ring-2 focus:ring-[#f97316]/50 focus:border-[#f97316]/50 transition"
@@ -225,11 +237,13 @@ if (confirmationSent) {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-[#94a3b8] mb-2">{t('auth.email')}</label>
+              <label htmlFor="auth-email" className="block text-sm font-medium text-[#94a3b8] mb-2">{t('auth.email')}</label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#475569]" />
                 <input
+                  id="auth-email"
                   type="email"
+                  autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-[#475569] focus:outline-none focus:ring-2 focus:ring-[#f97316]/50 focus:border-[#f97316]/50 transition"
@@ -242,7 +256,7 @@ if (confirmationSent) {
             {mode !== 'forgot' && (
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm font-medium text-[#94a3b8]">{t('auth.password')}</label>
+                  <label htmlFor="auth-password" className="block text-sm font-medium text-[#94a3b8]">{t('auth.password')}</label>
                   {mode === 'login' && (
                     <button
                       type="button"
@@ -256,7 +270,9 @@ if (confirmationSent) {
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#475569]" />
                   <input
+                    id="auth-password"
                     type="password"
+                    autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-[#475569] focus:outline-none focus:ring-2 focus:ring-[#f97316]/50 focus:border-[#f97316]/50 transition"
