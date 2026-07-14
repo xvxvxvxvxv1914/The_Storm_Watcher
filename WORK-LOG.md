@@ -31,6 +31,21 @@
   не реалният сайт. sitemap.xml чист (само non-slash форми).
 - След деплой: поискай re-indexing в GSC за slash-вариантите (очаквай 301 при inspect).
 
+### ✅ Performance: FCP/LCP фикс (2026-07-09, `397501d` + `9369514`, staging)
+- Причина за бавното: нищо не се рисуваше преди целия entry JS граф (вкл. sentry-vendor
+  75KB + ~430ms CPU) + React mount; LCP елементът беше LocationPrompt параграфът.
+- Fix 1: статичен brand splash в index.html (рисува се с пристигането на HTML-а,
+  preload на icon.svg); SplashAnimation го маха на mount и стартира от 'show' фаза
+  (пиксел-идентично предаване). За no-JS: display:none + inline script (НЕ hidden
+  атрибут — inline display го надписва).
+- Fix 2: sentryLazy.ts фасада — @sentry/react вече не е статичен import никъде;
+  SDK-то се зарежда след window load; ранните грешки се буферират и препращат.
+- Резултат: реален LCP 860ms (PerformanceObserver). Lighthouse devtools-throttling:
+  **95 точки** (FCP 1.9s / LCP 1.9s / TBT 120ms). ВНИМАНИЕ: default (simulated)
+  Lighthouse/PSI lab показва ~64 заради lantern артефакт — грешно приписва LCP на
+  React-копието на логото; реалните CrUX/Speed Insights полеви данни са меродавни.
+- Cloudflare JSD изключен същия ден (виж по-долу) — измерването вече е чисто.
+
 ### 📌 TODO списък за следващи сесии (записано 2026-07-08 вечерта)
 
 **1. Cloudflare — довърши performance фикса (НАЙ-ВАЖНО, наполовина готово)**

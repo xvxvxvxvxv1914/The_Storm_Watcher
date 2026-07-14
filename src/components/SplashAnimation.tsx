@@ -43,9 +43,18 @@ const AURORA_STYLE = `
 `;
 
 const SplashAnimation = () => {
-  const [phase, setPhase] = useState<'enter' | 'show' | 'exit' | 'done'>('enter');
+  // If the static splash from index.html is on screen, its pixels already match
+  // this component's 'show' state — start there so taking over is seamless
+  // (starting at 'enter' would blank the logo for the fade-in).
+  const [phase, setPhase] = useState<'enter' | 'show' | 'exit' | 'done'>(
+    () => (document.getElementById('static-splash') ? 'show' : 'enter'),
+  );
 
   useEffect(() => {
+    // The static splash from index.html (painted before React booted) is no
+    // longer needed — this component takes over at a higher z-index.
+    document.getElementById('static-splash')?.remove();
+
     if (!isNativePlatform && sessionStorage.getItem(SPLASH_KEY)) {
       setPhase('done');
       return;

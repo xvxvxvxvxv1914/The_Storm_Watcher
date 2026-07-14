@@ -1,10 +1,10 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { registerSW } from 'virtual:pwa-register';
-import * as Sentry from '@sentry/react';
 import App from './App.tsx';
 import './index.css';
 import { LanguageProvider } from './contexts/LanguageContext';
+import { loadSentry, disableSentry, captureException } from './utils/sentryLazy';
 
 // Service worker is only useful for web/PWA — skip on native Capacitor (files are local)
 if (!('Capacitor' in window)) {
@@ -44,52 +44,67 @@ window.addEventListener('error', (e) => {
 // Clear the reload guard on successful load so future deploys can trigger it again
 window.addEventListener('load', () => sessionStorage.removeItem(RELOAD_KEY));
 
-Sentry.init({
-  dsn: import.meta.env.VITE_SENTRY_DSN,
-  enabled: import.meta.env.PROD && !!import.meta.env.VITE_SENTRY_DSN,
-  environment: import.meta.env.MODE,
-  integrations: [],
-  tracesSampleRate: 0.1,
-  replaysSessionSampleRate: 0.05,
-  replaysOnErrorSampleRate: 1.0,
-  beforeSend(event, hint) {
-    const err = hint?.originalException;
-    // Drop plain network failures — user offline or upstream (NOAA/GFZ) hiccup.
-    // 'Load failed' is Safari's wording, 'Failed to fetch' is Chrome/Edge's.
-    if (
-      err instanceof Error &&
-      (err.name === 'AbortError' || err.message === 'Load failed' || err.message.startsWith('Failed to fetch'))
-    ) {
-      return null;
-    }
-    if (event.user) {
-      delete event.user.email;
-      delete event.user.username;
-      delete event.user.ip_address;
-    }
-    if (event.request?.url) {
-      try {
-        const u = new URL(event.request.url);
-        u.search = '';
-        event.request.url = u.toString();
-      } catch { /* URL parse failure — keep original */ }
-    }
-    return event;
-  },
-});
-
-// Load Sentry Replay lazily so it doesn't bloat the initial JS parse.
-// replaysOnErrorSampleRate stays at 1.0 but only captures errors after load.
+// ── Deferred Sentry ────────────────────────────────────────────
+// The SDK is not part of the entry bundle (see utils/sentryLazy.ts) — it loads
+// after the window 'load' event so it never competes with first paint. Uncaught
+// errors thrown before then are buffered here and replayed into Sentry once it
+// is up (beforeSend still filters them as usual).
 if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
-  window.addEventListener('load', () => {
-    import('@sentry/react').then(({ replayIntegration }) => {
-      Sentry.addIntegration(replayIntegration({
+  const earlyErrors: unknown[] = [];
+  const onEarlyError = (e: ErrorEvent) => { if (e.error) earlyErrors.push(e.error); };
+  const onEarlyRejection = (e: PromiseRejectionEvent) => { earlyErrors.push(e.reason); };
+  window.addEventListener('error', onEarlyError);
+  window.addEventListener('unhandledrejection', onEarlyRejection);
+
+  const initSentry = () => loadSentry((Sentry) => {
+    Sentry.init({
+      dsn: import.meta.env.VITE_SENTRY_DSN,
+      environment: import.meta.env.MODE,
+      // Replay used to be added on 'load' to spare the initial parse; init itself
+      // now runs after 'load', so it can be part of init directly.
+      integrations: [Sentry.replayIntegration({
         maskAllText: true,
         blockAllMedia: true,
         maskAllInputs: true,
-      }));
+      })],
+      tracesSampleRate: 0.1,
+      replaysSessionSampleRate: 0.05,
+      replaysOnErrorSampleRate: 1.0,
+      beforeSend(event, hint) {
+        const err = hint?.originalException;
+        // Drop plain network failures — user offline or upstream (NOAA/GFZ) hiccup.
+        // 'Load failed' is Safari's wording, 'Failed to fetch' is Chrome/Edge's.
+        if (
+          err instanceof Error &&
+          (err.name === 'AbortError' || err.message === 'Load failed' || err.message.startsWith('Failed to fetch'))
+        ) {
+          return null;
+        }
+        if (event.user) {
+          delete event.user.email;
+          delete event.user.username;
+          delete event.user.ip_address;
+        }
+        if (event.request?.url) {
+          try {
+            const u = new URL(event.request.url);
+            u.search = '';
+            event.request.url = u.toString();
+          } catch { /* URL parse failure — keep original */ }
+        }
+        return event;
+      },
     });
-  }, { once: true });
+    window.removeEventListener('error', onEarlyError);
+    window.removeEventListener('unhandledrejection', onEarlyRejection);
+    earlyErrors.forEach((err) => captureException(err, { extra: { earlyError: true } }));
+    earlyErrors.length = 0;
+  });
+
+  if (document.readyState === 'complete') initSentry();
+  else window.addEventListener('load', initSentry, { once: true });
+} else {
+  disableSentry();
 }
 
 createRoot(document.getElementById('root')!).render(

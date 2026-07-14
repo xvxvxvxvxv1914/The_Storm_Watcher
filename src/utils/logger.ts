@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/react';
+import { captureException, captureMessage } from './sentryLazy';
 
 // Transient failures we never want to report — they're expected and self-healing:
 //  • AbortError — the user navigated away before a fetch completed.
@@ -24,11 +24,11 @@ export const logError = (msg: string, err?: unknown) => {
     console.error(msg, err);
     return;
   }
-  // Sentry.init is gated on VITE_SENTRY_DSN — if missing, these calls are no-ops.
+  // Queued through the lazy facade — no-ops when Sentry is disabled (no DSN).
   if (err instanceof Error) {
-    Sentry.captureException(err, { extra: { msg } });
+    captureException(err, { extra: { msg } });
   } else {
-    Sentry.captureMessage(msg, { level: 'error', extra: { err } });
+    captureMessage(msg, { level: 'error', extra: { err } });
   }
 };
 
@@ -43,8 +43,8 @@ export const logWarning = (msg: string, err?: unknown) => {
     return;
   }
   if (err instanceof Error) {
-    Sentry.captureException(err, { level: 'warning', extra: { msg } });
+    captureException(err, { level: 'warning', extra: { msg } });
   } else {
-    Sentry.captureMessage(msg, { level: 'warning', extra: { err } });
+    captureMessage(msg, { level: 'warning', extra: { err } });
   }
 };
