@@ -41,6 +41,24 @@
           "value": "public, max-age=31536000, immutable"
         }
       ]
+    },
+    {
+      "source": "/:page(auth|profile|settings|log|referrals|contact)/:rest*",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
+    },
+    {
+      "source": "/:lang(bg|de|es|fr|ja|ru|zh|da|fi|is|ko|no|pl|sv|uk)/:page(auth|profile|settings|log|referrals|contact)/:rest*",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
     }
   ],
   "redirects": [
