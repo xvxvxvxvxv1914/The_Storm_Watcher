@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import { logError } from '../utils/logger';
-import { getCurrentPosition } from '../utils/geolocation';
+import { resolveLocation } from '../utils/geolocation';
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import PageMeta from '../components/PageMeta';
@@ -86,8 +86,6 @@ const UpdateCountdown = React.memo(function UpdateCountdown() {
   return <span className="text-[#f97316] font-mono font-bold tracking-wider">{countdown}</span>;
 });
 
-const NIGGG_COUNTRIES = new Set(['BG', 'RO', 'RS', 'MK', 'GR', 'TR', 'AL', 'ME', 'HR', 'HU', 'MD']);
-
 const CARD_IDS = ['kp', 'wind', 'bz', 'xray'] as const;
 type CardId = (typeof CARD_IDS)[number];
 const DASHBOARD_ORDER_KEY = 'tsw_dashboard_order';
@@ -107,7 +105,8 @@ function loadCardOrder(): CardId[] {
   return [...CARD_IDS];
 }
 
-// Bounding box covering NIGGG_COUNTRIES region (roughly SE Europe + Turkey)
+// Bounding box covering the NIGGG magnetometer's relevant region
+// (BG + neighbours — roughly SE Europe + Turkey)
 const isInNigggBbox = (lat: number, lon: number) =>
   lat >= 35 && lat <= 48 && lon >= 14 && lon <= 42;
 
@@ -190,22 +189,11 @@ const Dashboard = () => {
       setInNigggRegion(isInNigggBbox(settings.preferredLat, settings.preferredLon));
       return;
     }
-    // Cached IP lookup
-    const cached = sessionStorage.getItem('user_country_code');
-    if (cached) { setInNigggRegion(NIGGG_COUNTRIES.has(cached)); return; }
-    fetch('https://ipapi.co/country/')
-      .then(r => r.text())
-      .then(code => {
-        const c = code.trim().toUpperCase();
-        sessionStorage.setItem('user_country_code', c);
-        setInNigggRegion(NIGGG_COUNTRIES.has(c));
-      })
-      .catch(() => {
-        // ipapi.co failed — fall back to GPS if available
-        getCurrentPosition()
-          .then(({ coords }) => setInNigggRegion(isInNigggBbox(coords.latitude, coords.longitude)))
-          .catch(() => {});
-      });
+    // Silent resolve: GPS only when permission is already granted, otherwise
+    // the cached IP city. Never triggers a permission prompt on the dashboard.
+    resolveLocation()
+      .then(loc => { if (loc) setInNigggRegion(isInNigggBbox(loc.lat, loc.lon)); })
+      .catch(() => {});
   }, [settings.preferredLat, settings.preferredLon]);
 
   const chartH    = useChartHeight(190, 300);

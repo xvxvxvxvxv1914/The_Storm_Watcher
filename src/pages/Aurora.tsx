@@ -10,7 +10,8 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { logError } from '../utils/logger';
-import { getCurrentPosition } from '../utils/geolocation';
+import { getCurrentPosition, resolveLocation } from '../utils/geolocation';
+import { reverseGeocode } from '../utils/reverseGeocode';
 import KpGauge from '../components/KpGauge';
 
 const AuroraGlobe = lazy(() => import('../components/AuroraGlobe'));
@@ -40,7 +41,7 @@ class GlobeErrorBoundary extends Component<{ children: ReactNode; t: (k: string)
 
 const Aurora = () => {
   const { t } = useLanguage();
-  const { settings } = useSettings();
+  const { settings, updateSettings } = useSettings();
   const { theme } = useTheme();
   const [kpValue, setKpValue] = useState<number>(0);
   const [auroraData, setAuroraData] = useState<AuroraOvationPoint[]>([]);
@@ -101,8 +102,14 @@ const Aurora = () => {
     if (settings.preferredLat !== null && settings.preferredLon !== null) {
       load(settings.preferredLat, settings.preferredLon);
     } else {
-      getCurrentPosition()
-        .then(pos => load(pos.coords.latitude, pos.coords.longitude))
+      // Silent: GPS only when permission is already granted, otherwise the IP
+      // city. Never triggers a permission prompt — the "allow" button in the
+      // error state below requests precise location on an explicit tap.
+      resolveLocation()
+        .then(loc => {
+          if (loc) load(loc.lat, loc.lon);
+          else if (mounted) { setLocationError(true); setIsWeatherLoading(false); }
+        })
         .catch(() => { if (mounted) { setLocationError(true); setIsWeatherLoading(false); } });
     }
 
@@ -419,9 +426,31 @@ const Aurora = () => {
                   {t('aurora.visibility.checking')}
                 </div>
               ) : locationError ? (
-                <div className="text-[#ef4444] text-sm flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4" />
-                  {t('aurora.visibility.noLocation')}
+                <div className="flex flex-wrap items-center gap-3">
+                  <div className="text-[#94a3b8] text-sm flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4" />
+                    {t('aurora.visibility.noLocation')}
+                  </div>
+                  <button
+                    onClick={() => {
+                      setLocationError(false);
+                      setIsWeatherLoading(true);
+                      // User gesture — the one place this page may show the
+                      // OS/browser permission dialog. Saving to settings makes
+                      // every location page pick the fix up.
+                      getCurrentPosition()
+                        .then(async pos => {
+                          const lat = pos.coords.latitude;
+                          const lon = pos.coords.longitude;
+                          const name = await reverseGeocode(lat, lon);
+                          updateSettings({ preferredLat: lat, preferredLon: lon, preferredLocationName: name, locationMode: 'auto' });
+                        })
+                        .catch(() => { setLocationError(true); setIsWeatherLoading(false); });
+                    }}
+                    className="px-3 py-1.5 rounded-lg bg-[#10b981]/15 border border-[#10b981]/40 text-[#10b981] text-xs font-semibold hover:bg-[#10b981]/25 transition-colors"
+                  >
+                    {t('location.prompt.allow') || 'Allow Location'}
+                  </button>
                 </div>
               ) : localWeather ? (
                 <>
