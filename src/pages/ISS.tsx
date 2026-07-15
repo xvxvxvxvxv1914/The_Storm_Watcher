@@ -32,7 +32,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { reverseGeocode } from '../utils/reverseGeocode';
-import { getCurrentPosition } from '../utils/geolocation';
+import { resolveLocation } from '../utils/geolocation';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 
 const ISS = () => {
@@ -118,8 +118,18 @@ const ISS = () => {
       load(settings.preferredLat, settings.preferredLon);
       if (settings.preferredLocationName) setLocationName(settings.preferredLocationName);
     } else {
-      getCurrentPosition()
-        .then(pos => load(pos.coords.latitude, pos.coords.longitude))
+      // Silent: GPS only when permission is already granted, otherwise the IP
+      // city. Never triggers a permission prompt. Sofia is the last resort.
+      resolveLocation()
+        .then(loc => {
+          if (loc) {
+            load(loc.lat, loc.lon);
+            if (loc.name && mounted) setLocationName(loc.name);
+          } else {
+            load(42.7, 23.3);
+            if (mounted) setLocationName(defaultLocationLabel);
+          }
+        })
         .catch(() => { load(42.7, 23.3); if (mounted) setLocationName(defaultLocationLabel); });
     }
 

@@ -7,7 +7,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import LocationPicker from '../components/LocationPicker';
 import { reverseGeocode } from '../utils/reverseGeocode';
-import { getCurrentPosition } from '../utils/geolocation';
+import { resolveLocation } from '../utils/geolocation';
 import StarField from '../components/StarField';
 
 const formatDaylight = (seconds: number) => {
@@ -102,9 +102,13 @@ const SunTimes = () => {
     setLocationName(name ?? await reverseGeocode(lat, lon));
   }, []);
 
+  // Silent: GPS only when permission is already granted, otherwise the IP
+  // city. Never triggers a permission prompt. Sofia is the last resort.
   const requestGPS = useCallback(() => {
-    getCurrentPosition()
-      .then(pos => loadForCoords(pos.coords.latitude, pos.coords.longitude))
+    resolveLocation()
+      .then(loc => loc
+        ? loadForCoords(loc.lat, loc.lon, loc.name ?? undefined)
+        : loadForCoords(42.7, 23.3))
       .catch(() => loadForCoords(42.7, 23.3));
   }, [loadForCoords]);
 
