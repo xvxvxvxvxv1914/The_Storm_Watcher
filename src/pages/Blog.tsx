@@ -23,10 +23,13 @@ export default function Blog() {
 
   return (
     <AnimatedPage>
+      {/* The blog index meta is English-only, so localized variants (/de/blog)
+          canonicalize to the English page (mirrors scripts/prerender-meta.mjs). */}
       <PageMeta
         title="Space Weather Blog — The Storm Watcher"
         description="Learn about the Kp index, geomagnetic storms, aurora forecasts, solar flares, and space weather. Expert guides for aurora hunters and space weather enthusiasts."
         path="/blog"
+        canonicalPath="/blog"
       >
         <link rel="alternate" type="application/rss+xml" title="The Storm Watcher Blog" href="https://www.thestormwatcher.com/feed.xml" />
       </PageMeta>

@@ -28,15 +28,22 @@ interface Props {
   image?: string;
   ogKp?: number;
   noindex?: boolean;
+  /**
+   * Overrides the canonical (and og:url) with a non-localized path. Used by
+   * pages whose current-language variant serves untranslated (English) content
+   * — e.g. a blog post without a translation canonicalizes to `/blog/<slug>`
+   * instead of `/de/blog/<slug>`, matching the prerendered HTML.
+   */
+  canonicalPath?: string;
   children?: React.ReactNode;
 }
 
-export default function PageMeta({ title, description, path, image, ogKp, noindex, children }: Props) {
+export default function PageMeta({ title, description, path, image, ogKp, noindex, canonicalPath, children }: Props) {
   const { language } = useLanguage();
   // Self-referencing canonical per locale: `/de/sky` canonicals to itself, not to
   // the English `/sky`. Crawlers (no saved language) resolve `language` to the URL
   // prefix, so this matches the prerendered HTML.
-  const url = `${BASE_URL}${localizedPath(language, path)}`;
+  const url = `${BASE_URL}${canonicalPath ?? localizedPath(language, path)}`;
   const slug = PAGE_SLUGS[path];
   const ogImage = image
     ?? (slug

@@ -1,6 +1,6 @@
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { Clock, ArrowLeft, Info, AlertTriangle, Lightbulb, ChevronRight } from 'lucide-react';
-import { getLocalizedBlogPost, getLocalizedBlogList, CATEGORY_LABELS } from '../data/blog';
+import { getBlogPost, getLocalizedBlogPost, getLocalizedBlogList, CATEGORY_LABELS } from '../data/blog';
 import type { BlogSection } from '../data/blog/types';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
@@ -75,6 +75,11 @@ export default function BlogPost() {
 
   if (!post) return <Navigate to="/blog" replace />;
 
+  // A language variant without a real translation renders the English body, so
+  // it must canonicalize to the English URL (mirrors scripts/prerender-meta.mjs).
+  const hasOwnTranslation =
+    language === 'en' || Boolean(getBlogPost(post.slug)?.translations?.[language]);
+
   const cat = CATEGORY_CONFIG[post.category] ?? CATEGORY_CONFIG['guide'];
   const otherPosts = getLocalizedBlogList(language).filter((p) => p.slug !== post.slug).slice(0, 3);
 
@@ -86,6 +91,7 @@ export default function BlogPost() {
         title={`${post.title} — The Storm Watcher`}
         description={post.description}
         path={`/blog/${post.slug}`}
+        canonicalPath={hasOwnTranslation ? undefined : `/blog/${post.slug}`}
         image={ogImage}
       >
         <meta property="og:type" content="article" />

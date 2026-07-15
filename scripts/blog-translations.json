@@ -1,0 +1,12 @@
+{
+  "aurora-forecast-explained": ["bg"],
+  "best-places-aurora-europe": ["bg", "de", "es", "fr", "ja", "ru", "zh", "da", "fi", "is", "ko", "no", "pl", "sv", "uk"],
+  "g1-to-g5-storm-levels": ["bg"],
+  "how-to-see-northern-lights": ["bg", "de", "es", "fr", "ja", "ru", "zh", "da", "fi", "is", "ko", "no", "pl", "sv", "uk"],
+  "space-weather-effects-on-earth": ["bg"],
+  "what-is-geomagnetic-storm": [],
+  "what-is-iss-how-to-track": ["bg"],
+  "what-is-kp-index": ["bg", "de", "es", "fr", "ja", "ru", "zh", "da", "fi", "is", "ko"],
+  "what-is-solar-flare": ["bg"],
+  "what-is-solar-wind": ["bg", "de"]
+}

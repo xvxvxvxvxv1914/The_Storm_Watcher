@@ -3,10 +3,16 @@
 Generate sitemap.xml with all 16 supported languages from LanguageContext.
 Run from project root: python3 scripts/generate_sitemap.py
 """
+import json
 import os
 from datetime import date
 
 BASE = 'https://www.thestormwatcher.com'
+
+# slug → non-EN languages with real content translations (see
+# src/data/blog/blogTranslations.test.ts which keeps this file in sync).
+with open(os.path.join(os.path.dirname(__file__), 'blog-translations.json'), encoding='utf-8') as f:
+    BLOG_COVERAGE = json.load(f)
 
 LANGUAGES = ['en', 'bg', 'da', 'de', 'es', 'fi', 'fr', 'is', 'ja', 'ko', 'no', 'pl', 'ru', 'sv', 'uk', 'zh']
 
@@ -36,7 +42,9 @@ ROUTES = [
     ('/terms',            'yearly', '0.3'),
 ]
 
-# Blog posts (English only — no hreflang variants until translations are merged)
+# Blog posts. Localized variants are listed only for languages with real
+# translated content (BLOG_COVERAGE); untranslated variants canonicalize to the
+# English post and stay out of the sitemap.
 # tuple: (slug, publication_date) — use actual publication date so Google tracks freshness correctly
 BLOG_POSTS = [
     ('what-is-kp-index',             '2026-02-15'),
@@ -94,12 +102,34 @@ def url_block(path: str, changefreq: str, priority: str) -> str:
 def blog_url_block(slug: str, pub_date: str) -> str:
     path = f'/blog/{slug}'
     full = f'{BASE}{path}'
-    return '\n'.join([
+    covered = BLOG_COVERAGE.get(slug, [])
+
+    def hreflang_lines() -> list[str]:
+        if not covered:
+            return []
+        lines = [f'    <xhtml:link rel="alternate" hreflang="x-default" href="{full}"/>',
+                 f'    <xhtml:link rel="alternate" hreflang="en" href="{full}"/>']
+        for lang in covered:
+            hreflang = HREFLANG_CODES.get(lang, lang)
+            lines.append(f'    <xhtml:link rel="alternate" hreflang="{hreflang}" href="{lang_url(lang, path)}"/>')
+        return lines
+
+    parts = [
         '  <url>',
         f'    <loc>{full}</loc>',
         f'    <lastmod>{pub_date}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority>',
+        *hreflang_lines(),
         '  </url>',
-    ])
+    ]
+    for lang in covered:
+        parts += [
+            '  <url>',
+            f'    <loc>{lang_url(lang, path)}</loc>',
+            f'    <lastmod>{pub_date}</lastmod><changefreq>monthly</changefreq><priority>0.7</priority>',
+            *hreflang_lines(),
+            '  </url>',
+        ]
+    return '\n'.join(parts)
 
 
 def main():
@@ -123,9 +153,11 @@ def main():
     parts.append('</urlset>')
 
     out = os.path.join(os.path.dirname(__file__), '..', 'public', 'sitemap.xml')
+    body = '\n'.join(parts) + '\n'
     with open(out, 'w', encoding='utf-8') as f:
-        f.write('\n'.join(parts) + '\n')
-    print(f'Generated sitemap.xml: {len(ROUTES)} routes x {len(LANGUAGES)} languages + {len(BLOG_POSTS) + 1} blog pages')
+        f.write(body)
+    print(f'Generated sitemap.xml: {body.count("<loc>")} URLs '
+          f'({len(ROUTES)} routes x {len(LANGUAGES)} languages + blog)')
 
 
 if __name__ == '__main__':
