@@ -1,0 +1,9 @@
+/* Localized Info.plist strings — permission dialogs and home-screen quick actions. */
+
+"NSLocationWhenInUseUsageDescription" = "The Storm Watcherは、現在地のUV指数、日の出・日の入り時刻、オーロラの可視性を表示するために位置情報を使用します。";
+"NSCameraUsageDescription" = "The Storm Watcherは、コミュニティギャラリーやプロフィール写真用のオーロラ写真を撮影するためにカメラを使用します。";
+"NSPhotoLibraryAddUsageDescription" = "The Storm Watcherは、オーロラのスクリーンショットをフォトライブラリに保存します。";
+"NSPhotoLibraryUsageDescription" = "The Storm Watcherは、オーロラや天気の写真を共有するためにフォトライブラリにアクセスします。";
+"Aurora Forecast" = "オーロラ予報";
+"Storm Alerts" = "磁気嵐アラート";
+"Log Mood" = "気分を記録";

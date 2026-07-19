@@ -1,0 +1,9 @@
+/* Localized Info.plist strings — permission dialogs and home-screen quick actions. */
+
+"NSLocationWhenInUseUsageDescription" = "The Storm Watcher использует ваше местоположение, чтобы показывать местный УФ-индекс, время восхода/заката и видимость полярного сияния там, где вы находитесь.";
+"NSCameraUsageDescription" = "The Storm Watcher использует камеру для съёмки полярных сияний для галереи сообщества и фото профиля.";
+"NSPhotoLibraryAddUsageDescription" = "The Storm Watcher сохраняет снимки полярных сияний в вашу медиатеку.";
+"NSPhotoLibraryUsageDescription" = "The Storm Watcher получает доступ к вашей медиатеке, чтобы делиться фото сияний и погоды.";
+"Aurora Forecast" = "Прогноз сияний";
+"Storm Alerts" = "Штормовые оповещения";
+"Log Mood" = "Записать настроение";

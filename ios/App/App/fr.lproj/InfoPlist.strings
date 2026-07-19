@@ -1,0 +1,9 @@
+/* Localized Info.plist strings — permission dialogs and home-screen quick actions. */
+
+"NSLocationWhenInUseUsageDescription" = "The Storm Watcher utilise votre position pour afficher l'indice UV local, les heures de lever/coucher du soleil et la visibilité des aurores là où vous êtes.";
+"NSCameraUsageDescription" = "The Storm Watcher utilise l'appareil photo pour prendre des photos d'aurores pour la galerie communautaire et votre photo de profil.";
+"NSPhotoLibraryAddUsageDescription" = "The Storm Watcher enregistre des captures d'aurores dans votre photothèque.";
+"NSPhotoLibraryUsageDescription" = "The Storm Watcher accède à votre photothèque pour partager des photos d'aurores et de météo.";
+"Aurora Forecast" = "Prévision d'aurores";
+"Storm Alerts" = "Alertes de tempête";
+"Log Mood" = "Noter l'humeur";

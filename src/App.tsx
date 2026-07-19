@@ -106,13 +106,20 @@ function AppRoutes() {
     }
   }, [user, navigate]);
 
-  // Handle deep links — stormwatcher://dashboard, stormwatcher://alerts?kp=7, etc.
+  // Handle deep links — custom scheme (stormwatcher://alerts?kp=7) and iOS
+  // universal links (https://www.thestormwatcher.com/aurora).
   useEffect(() => {
-    const ALLOWED_ROUTES = new Set(['dashboard','forecast','aurora','alerts','uv','sun','sky','mood','iss','profile','settings','pricing','privacy','terms','calendar','gallery','hunt','livestream','faq','log','aurora-map','referrals','magnetic-effects']);
+    const ALLOWED_ROUTES = new Set(['dashboard','forecast','aurora','alerts','uv','sun','sky','mood','iss','profile','settings','pricing','privacy','terms','calendar','gallery','hunt','livestream','faq','log','aurora-map','referrals','magnetic-effects','blog','about','contact']);
     const sub = CapApp.addListener('appUrlOpen', async ({ url }) => {
       try {
         const parsed = new URL(url);
-        const route = parsed.hostname;
+        const isUniversal = parsed.protocol === 'https:' && /(^|\.)thestormwatcher\.com$/.test(parsed.hostname);
+        // Custom scheme carries the route in the hostname; universal links in the path.
+        let path = isUniversal ? (parsed.pathname.replace(/\/+$/, '') || '/') : `/${parsed.hostname}`;
+        // Site URLs may carry a language prefix (/bg/aurora) — the app router
+        // uses plain paths, so strip it.
+        path = path.replace(/^\/(bg|de|es|fr|ja|ru|zh|da|fi|is|ko|no|pl|sv|uk)(\/|$)/, '/') || '/';
+        const route = path.split('/')[1] ?? '';
         // OAuth return leg: Supabase redirects to
         // stormwatcher://auth-callback#access_token=…&refresh_token=…
         if (route === 'auth-callback') {
@@ -128,9 +135,12 @@ function AppRoutes() {
           }
           return;
         }
+        if (isUniversal && path === '/') {
+          navigate('/', { replace: true });
+          return;
+        }
         if (ALLOWED_ROUTES.has(route)) {
-          const qs = parsed.search; // preserve ?kp=7 etc.
-          navigate(`/${route}${qs}`, { replace: true });
+          navigate(`${path}${parsed.search}`, { replace: true }); // preserve ?kp=7 and /blog/:slug
         }
       } catch { /* ignore malformed URLs */ }
     });

@@ -1,0 +1,9 @@
+/* Localized Info.plist strings — permission dialogs and home-screen quick actions. */
+
+"NSLocationWhenInUseUsageDescription" = "The Storm Watcher uses your location to show local UV index, sunrise/sunset times, and aurora visibility for where you are.";
+"NSCameraUsageDescription" = "The Storm Watcher uses the camera to take aurora photos for the community gallery and your profile picture.";
+"NSPhotoLibraryAddUsageDescription" = "The Storm Watcher saves aurora screenshots to your photo library.";
+"NSPhotoLibraryUsageDescription" = "The Storm Watcher accesses your photo library to share aurora and weather photos.";
+"Aurora Forecast" = "Aurora Forecast";
+"Storm Alerts" = "Storm Alerts";
+"Log Mood" = "Log Mood";
