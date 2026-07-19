@@ -1,9 +1,11 @@
 import { Mail, MessageSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 const Footer = () => {
   const { t } = useLanguage();
+  const { theme } = useTheme();
 
   const navGroups = [
     {
@@ -129,7 +131,11 @@ const Footer = () => {
           <div className="grid grid-cols-5 gap-10 mb-10">
             <div className="col-span-2">
               <div className="flex items-center mb-4">
-                <img src="/logos/logo-transparent.png" alt="The Storm Watcher" className="h-14 w-auto" />
+                <img
+                  src={theme === 'light' ? '/logos/logo-transparent-dark.png' : '/logos/logo-transparent.png'}
+                  alt="The Storm Watcher"
+                  className="h-14 w-auto"
+                />
               </div>
               <p className="text-[#94a3b8] text-sm leading-relaxed mb-6">
                 {t('footer.description')}
@@ -151,13 +157,12 @@ const Footer = () => {
                 </a>
                 <a
                   href="mailto:support@thestormwatcher.com"
-                  className="flex items-center gap-2 text-sm hover:text-white transition-colors"
-                  style={{ color: '#a78bfa' }}
+                  className="flex items-center gap-2 text-sm text-[#a78bfa] hover:text-white transition-colors"
                   title={t('footer.premiumSupport') || 'Priority support for Premium subscribers'}
                 >
                   <Mail className="w-4 h-4" />
                   support@thestormwatcher.com
-                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded" style={{ background: '#7c3aed33', color: '#a78bfa' }}>Premium</span>
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#7c3aed]/20 text-[#a78bfa]">Premium</span>
                 </a>
                 <a
                   href="mailto:partnerships@thestormwatcher.com"

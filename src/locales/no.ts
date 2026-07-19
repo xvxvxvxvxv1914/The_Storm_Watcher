@@ -916,6 +916,7 @@ const no: Record<string, string> = {
   'alerts.impact.label': 'Hva dette betyr for deg',
   'alerts.liveUpdated': 'Live · oppdatert',
   'alerts.technical': 'Tekniske detaljer fra NOAA',
+  'alerts.showMore': 'Vis {n} til',
   'alerts.etaBar': 'Ankommer om ~{eta}t',
   'alerts.arrivedBar': 'Solstormen er ankommet',
   'alerts.impact.geoStorm.high': 'Aurora synlig fra Sør-Europa og store deler av Nord-Amerika. Forstyrrelser i strømnettet og GPS mulig.',

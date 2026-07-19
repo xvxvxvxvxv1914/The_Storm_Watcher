@@ -968,6 +968,7 @@ const en: Record<string, string> = {
   'alerts.impact.label': 'What this means for you',
   'alerts.liveUpdated': 'Live · updated',
   'alerts.technical': 'Technical details from NOAA',
+  'alerts.showMore': 'Show {n} more',
   'alerts.etaBar': 'Arriving in ~{eta}h',
   'alerts.arrivedBar': 'Solar storm has arrived',
   'alerts.impact.geoStorm.high': 'Aurora visible from southern Europe and much of North America. Power grid and GPS disruptions possible.',

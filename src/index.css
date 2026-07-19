@@ -302,6 +302,18 @@ html.light .text-\[\#64748b\] {
   color: #94a3b8;
 }
 
+/* Light mode: violet & amber accents darken for contrast on light surfaces */
+html.light .text-\[\#a78bfa\] {
+  color: #7c3aed;
+}
+
+html.light .text-amber-300 {
+  color: #b45309;
+}
+
+html.light .text-amber-300\/80 {
+  color: rgba(180, 83, 9, 0.9);
+}
 html.light .star {
   background: transparent;
 }

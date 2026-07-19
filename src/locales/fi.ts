@@ -916,6 +916,7 @@ const fi: Record<string, string> = {
   'alerts.impact.label': 'Mitä tämä tarkoittaa sinulle',
   'alerts.liveUpdated': 'Live · päivitetty',
   'alerts.technical': 'Tekniset tiedot NOAAsta',
+  'alerts.showMore': 'Näytä {n} lisää',
   'alerts.etaBar': 'Saapuu ~{eta}h kuluttua',
   'alerts.arrivedBar': 'Aurinkomyrsky on saapunut',
   'alerts.impact.geoStorm.high': 'Revontulet näkyvissä Etelä-Euroopasta ja suuresta osasta Pohjois-Amerikkaa. Sähköverkko- ja GPS-häiriöt mahdollisia.',

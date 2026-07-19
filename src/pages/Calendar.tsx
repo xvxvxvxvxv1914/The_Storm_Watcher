@@ -343,11 +343,13 @@ export default function Calendar() {
       <div className="mt-8 glass-surface rounded-2xl p-5 border border-white/10 text-sm text-[#64748b] leading-relaxed">
         <p>
           {t('aurora.calendar.tipsKp5') || (
-            <><span className="text-white font-semibold">Kp ≥ 5</span> — visible at mid-latitudes (50°N+). &nbsp;</>
+            <><span className="text-white font-semibold">Kp ≥ 5</span> — visible at mid-latitudes (50°N+).</>
           )}
+          {' '}
           {t('aurora.calendar.tipsKp7') || (
-            <><span className="text-white font-semibold">Kp ≥ 7</span> — visible further south (45°N+). &nbsp;</>
+            <><span className="text-white font-semibold">Kp ≥ 7</span> — visible further south (45°N+).</>
           )}
+          {' '}
           {t('aurora.calendar.tipsBestViewing') || 'Best viewing: 10 PM – 2 AM local time, clear dark skies, away from city lights.'}
         </p>
       </div>

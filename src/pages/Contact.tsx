@@ -7,6 +7,18 @@ import StarField from '../components/StarField';
 import { useAuth } from '../contexts/AuthContext';
 import { logError } from '../utils/logger';
 
+// Break points after "@" and before the TLD so narrow cards wrap the address
+// at natural boundaries instead of mid-word.
+const WrappableEmail = ({ email }: { email: string }) => {
+  const [local, domain] = email.split('@');
+  const dot = domain.lastIndexOf('.');
+  return (
+    <>
+      {local}@<wbr />{domain.slice(0, dot)}<wbr />{domain.slice(dot)}
+    </>
+  );
+};
+
 const CATEGORIES = [
   { value: 'general',     label: 'General question' },
   { value: 'bug',         label: 'Bug report' },
@@ -89,7 +101,7 @@ const Contact = () => {
                   value={name}
                   onChange={e => setName(e.target.value)}
                   placeholder="Your name"
-                  className="w-full rounded-xl px-4 py-3 bg-white/5 border border-white/10 text-white placeholder-[#475569] focus:outline-none focus:border-[#f97316]/60 transition-colors"
+                  className="w-full rounded-xl px-4 py-3 bg-white/5 border border-white/10 text-white placeholder-[#475569] focus:outline-none focus:border-[#10b981]/60 transition-colors"
                 />
               </div>
               <div>
@@ -102,7 +114,7 @@ const Contact = () => {
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   placeholder="you@example.com"
-                  className="w-full rounded-xl px-4 py-3 bg-white/5 border border-white/10 text-white placeholder-[#475569] focus:outline-none focus:border-[#f97316]/60 transition-colors"
+                  className="w-full rounded-xl px-4 py-3 bg-white/5 border border-white/10 text-white placeholder-[#475569] focus:outline-none focus:border-[#10b981]/60 transition-colors"
                 />
               </div>
             </div>
@@ -118,12 +130,11 @@ const Contact = () => {
                     key={c.value}
                     type="button"
                     onClick={() => setCategory(c.value)}
-                    className="px-4 py-2 rounded-full text-sm font-semibold transition-all"
-                    style={
+                    className={`px-4 py-2 rounded-full text-sm font-semibold transition-all border ${
                       category === c.value
-                        ? { background: '#10b981', color: '#fff' }
-                        : { background: 'rgba(255,255,255,0.05)', color: '#94a3b8', border: '1px solid rgba(255,255,255,0.1)' }
-                    }
+                        ? 'bg-[#10b981] border-[#10b981] text-white'
+                        : 'bg-white/5 border-white/10 text-[#94a3b8] hover:bg-white/10 hover:text-white'
+                    }`}
                   >
                     {c.label}
                   </button>
@@ -142,7 +153,7 @@ const Contact = () => {
                 value={message}
                 onChange={e => setMessage(e.target.value)}
                 placeholder="Tell us what's on your mind..."
-                className="w-full rounded-xl px-4 py-3 bg-white/5 border border-white/10 text-white placeholder-[#475569] focus:outline-none focus:border-[#f97316]/60 transition-colors resize-none"
+                className="w-full rounded-xl px-4 py-3 bg-white/5 border border-white/10 text-white placeholder-[#475569] focus:outline-none focus:border-[#10b981]/60 transition-colors resize-none"
               />
             </div>
 
@@ -153,8 +164,7 @@ const Contact = () => {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-white transition-all hover:opacity-90 disabled:opacity-50"
-              style={{ background: 'linear-gradient(to right, #10b981, #059669)' }}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-white transition-all hover:opacity-90 disabled:opacity-50 bg-gradient-to-r from-[#10b981] to-[#059669]"
             >
               {submitting ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -188,9 +198,11 @@ const Contact = () => {
               className="glass-surface rounded-2xl p-4 border border-white/10 hover:border-white/20 transition-colors flex items-center gap-3"
             >
               <item.icon className="w-5 h-5 flex-shrink-0" style={{ color: item.color }} />
-              <div>
+              <div className="min-w-0">
                 <div className="text-xs font-bold text-white/50 uppercase tracking-wider">{item.label}</div>
-                <div className="text-xs text-[#94a3b8] break-all">{item.email}</div>
+                <div className="text-xs text-[#94a3b8] break-words">
+                  <WrappableEmail email={item.email} />
+                </div>
               </div>
             </a>
           ))}

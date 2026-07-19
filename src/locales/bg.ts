@@ -949,6 +949,7 @@ const bg: Record<string, string> = {
   'alerts.impact.label': 'Какво означава това за вас',
   'alerts.liveUpdated': 'На живо · обновено',
   'alerts.technical': 'Технически детайли от NOAA',
+  'alerts.showMore': 'Покажи още {n}',
   'alerts.etaBar': 'Пристига след ~{eta}ч',
   'alerts.arrivedBar': 'Слънчевата буря пристигна',
   'alerts.impact.geoStorm.high': 'Аврора видима от Южна Европа и Северна Америка. Възможни смущения в електрическата мрежа и GPS.',

@@ -927,6 +927,7 @@ const de: Record<string, string> = {
   'alerts.impact.label': 'Was das für Sie bedeutet',
   'alerts.liveUpdated': 'Live · aktualisiert',
   'alerts.technical': 'Technische Details von NOAA',
+  'alerts.showMore': '{n} weitere anzeigen',
   'alerts.etaBar': 'Ankunft in ~{eta}h',
   'alerts.arrivedBar': 'Sonnensturm ist angekommen',
   'alerts.impact.geoStorm.high': 'Aurora über Südeuropa und weiten Teilen Nordamerikas sichtbar. Stromnetz- und GPS-Störungen möglich.',

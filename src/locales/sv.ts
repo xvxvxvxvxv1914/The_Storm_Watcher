@@ -916,6 +916,7 @@ const sv: Record<string, string> = {
   'alerts.impact.label': 'Vad detta innebär för dig',
   'alerts.liveUpdated': 'Live · uppdaterad',
   'alerts.technical': 'Tekniska detaljer från NOAA',
+  'alerts.showMore': 'Visa {n} till',
   'alerts.etaBar': 'Anländer om ~{eta}h',
   'alerts.arrivedBar': 'Solstormen har anlänt',
   'alerts.impact.geoStorm.high': 'Norrsken synligt från södra Europa och stora delar av Nordamerika. Möjliga störningar i elnät och GPS.',

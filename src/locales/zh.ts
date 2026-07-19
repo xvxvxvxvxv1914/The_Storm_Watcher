@@ -924,6 +924,7 @@ const zh: Record<string, string> = {
   'alerts.impact.label': '这对您意味着什么',
   'alerts.liveUpdated': '实时 · 更新于',
   'alerts.technical': 'NOAA技术详情',
+  'alerts.showMore': '显示另外 {n} 条',
   'alerts.etaBar': '约{eta}小时后到达',
   'alerts.arrivedBar': '太阳风暴已到达',
   'alerts.impact.geoStorm.high': '极光可从南欧和北美大部分地区看到。可能出现电网和GPS故障。',

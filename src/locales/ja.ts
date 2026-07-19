@@ -924,6 +924,7 @@ const ja: Record<string, string> = {
   'alerts.impact.label': 'あなたへの影響',
   'alerts.liveUpdated': 'ライブ · 更新',
   'alerts.technical': 'NOAAの技術的詳細',
+  'alerts.showMore': 'さらに{n}件表示',
   'alerts.etaBar': '約{eta}時間後に到着',
   'alerts.arrivedBar': '太陽嵐が到着しました',
   'alerts.impact.geoStorm.high': '南欧および北米の広範囲でオーロラが見える可能性があります。電力網とGPSの障害が発生する恐れがあります。',

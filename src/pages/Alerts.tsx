@@ -241,6 +241,8 @@ const sevBg: Record<Severity, string> = {
   4: 'bg-red-500/10',
 };
 
+const WEEK_PREVIEW_COUNT = 8;
+
 const scaleColors = ['', 'bg-green-400', 'bg-yellow-400', 'bg-orange-400', 'bg-red-500', 'bg-red-700'];
 const scaleTxt    = ['', 'text-green-400', 'text-yellow-400', 'text-orange-400', 'text-red-500', 'text-red-700'];
 function NoaaScale({ letter, current, t }: { letter: string; current: number; t: (k: string) => string }) {
@@ -374,6 +376,7 @@ const Alerts = () => {
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [activeFilter, setActiveFilter] = useState<Filter>('all');
+  const [weekExpanded, setWeekExpanded] = useState(false);
 
   const fetchAlerts = useCallback(async (opts?: { silent?: boolean }) => {
     if (!opts?.silent) setLoading(true);
@@ -517,13 +520,17 @@ const Alerts = () => {
         {(['now', 'today', 'week'] as const).map(group => {
           const items = groups[group];
           if (!items.length) return null;
+          // The "Earlier This Week" archive can run to hundreds of NOAA bulletins
+          // during active periods — cap it behind a "show more" toggle.
+          const visibleItems = group === 'week' && !weekExpanded ? items.slice(0, WEEK_PREVIEW_COUNT) : items;
+          const hiddenCount = items.length - visibleItems.length;
           return (
             <div key={group}>
               <p className={`text-xs uppercase tracking-wider font-semibold mb-2 mt-5 first:mt-0 ${theme === 'light' ? 'text-slate-400' : 'text-slate-500'}`}>
                 {groupTitles[group]}
               </p>
               <div className="space-y-3">
-                {items.map(item => {
+                {visibleItems.map(item => {
                   const cfg = typeConfig[item.type];
                   const Icon = cfg.icon;
                   const isOpen = expanded[item.id];
@@ -605,6 +612,19 @@ const Alerts = () => {
                   );
                 })}
               </div>
+              {hiddenCount > 0 && (
+                <button
+                  onClick={() => setWeekExpanded(true)}
+                  className={`mt-3 w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-medium border transition-colors ${
+                    theme === 'light'
+                      ? 'border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+                      : 'border-white/10 text-[#94a3b8] hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <ChevronDown className="w-4 h-4" />
+                  {(t('alerts.showMore') || 'Show {n} more').replace('{n}', String(hiddenCount))}
+                </button>
+              )}
             </div>
           );
         })}
