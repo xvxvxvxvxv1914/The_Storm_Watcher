@@ -531,6 +531,7 @@
 			baseConfigurationReference = 958DCC722DB07C7200EA8C5F /* debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2W6YCTFKNA;
 				INFOPLIST_FILE = App/Info.plist;
@@ -553,6 +554,7 @@
 			baseConfigurationReference = 9A1BCC832DB07C7200EA8C5F /* release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2W6YCTFKNA;
 				INFOPLIST_FILE = App/Info.plist;
@@ -572,6 +574,7 @@
 		ED84FB4DC55722BFA587D07C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = StormWidget/StormWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2W6YCTFKNA;
 				INFOPLIST_FILE = StormWidget/Info.plist;
@@ -587,6 +590,7 @@
 		FE6E19A2528EB0E5A59DFFC5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = StormWidget/StormWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2W6YCTFKNA;
 				INFOPLIST_FILE = StormWidget/Info.plist;

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { PushNotifications } from '@capacitor/push-notifications';
-import { isIos } from '../utils/platform';
+import { isNative } from '../utils/platform';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { useSettings } from '../contexts/SettingsContext';
@@ -30,7 +30,9 @@ export function usePushNotifications() {
   const { hasPro } = usePaymentGate();
 
   useEffect(() => {
-    if (!isIos()) return;
+    // iOS registers with APNs; Android needs google-services.json (FCM) — without
+    // it register() throws and the catch below logs it, nothing else breaks.
+    if (!isNative()) return;
     // Push notifications are a Pro feature — skip registration for free users
     if (!hasPro) return;
 
@@ -80,7 +82,7 @@ export function usePushNotifications() {
 
   // Sync threshold + location changes to all existing device tokens in DB
   useEffect(() => {
-    if (!isIos() || !user?.id) return;
+    if (!isNative() || !user?.id) return;
     supabase
       .from('device_push_tokens')
       .update({
