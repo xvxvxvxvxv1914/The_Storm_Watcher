@@ -75,7 +75,7 @@ Custom service worker at `src/sw.ts` using Workbox. Heavy 3D chunks (`globe-vend
 `CapacitorHttp` is enabled globally — it patches `fetch()` on native to bypass WKWebView CORS for third-party APIs. This means native builds can call NOAA/GFZ/NIGGG directly without going through the Vercel proxy.
 
 ### i18n
-Translation keys live in `src/locales/{en,bg,de,es,fr,ja,ru,zh}.ts` as flat `Record<string, string>`. The `useLanguage()` hook provides `t(key)`. All 8 locales must stay in sync — there is a completeness test at `src/locales/localeCompleteness.test.ts`.
+Translation keys live in `src/locales/{en,bg,da,de,es,fi,fr,is,ja,ko,no,pl,ru,sv,uk,zh}.ts` as flat `Record<string, string>`. The `useLanguage()` hook provides `t(key)`. All 16 locales must stay in sync — there is a completeness test at `src/locales/localeCompleteness.test.ts`. FAQ long-form content lives separately in `src/content/faqContent.ts` (positionally indexed per language — edits must hit the same index in all 16 blocks).
 
 ### Build chunking
 Manual chunks in `vite.config.ts` keep the initial bundle small:
@@ -110,19 +110,16 @@ watchOS companion app за The Storm Watcher. Данните вече са в Ap
 
 ## TODO / Pending Work
 
-### Mobile одит 2026-06-11 — оставащи задачи (по приоритет)
-Одитът поправи: NSCameraUsageDescription, launch-time permission промпт, widget версии (project-level), storm safe-area падинг, deep link allowlist, дублирани push listener-и, autoVerify, счупен noaaApi тест.
+### Mobile одити 2026-06-11 и 2026-07-19/20 — статус
+Поправено дотук: NSCameraUsageDescription, launch-time permission промпт, widget версии, storm safe-area падинг, deep link allowlist, дублирани push listener-и, autoVerify, Kp 0.0 widget логика, пълна локализация на widget + Live Activity (16 езика), CFBundleLocalizations, InfoPlist.strings (16 lproj), universal links (AASA + entitlement + App.tsx handler), **CODE_SIGN_ENTITLEMENTS верзан** (беше сирак — build-овете се подписваха без app groups/aps!), Android FCM код (manifest permission, hook без iOS gate, FCM v1 в send-kp-alerts). Live Activity tap → /alerts е свободна страница (не paywall) — решено.
 
-**Остава:**
-1. **Android FCM push (критично)** — Android няма НИКАКВИ известия, дори за Pro:
-   - Добави `google-services.json` (Firebase Console) в `android/app/`
-   - Добави `<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />` в AndroidManifest.xml (Android 13+)
-   - Махни iOS gate-а в `src/hooks/usePushNotifications.ts` (`if (!isIos()) return`)
-   - Добави FCM изпращане в `supabase/functions/send-kp-alerts` (сега е само APNs)
-2. **Android Glance widget** — iOS има 6 widget формата + Live Activity, Android нула. Kotlin Glance widget с Kp + 24h прогноза; дизайнът копира iOS small/medium widget-а; същите NOAA endpoints.
-3. **Android 15 edge-to-edge тест** — targetSdk 35 игнорира `statusBarColor`; `env(safe-area-inset-top)` в Android WebView често е 0 → съдържанието може да влиза под status bar-а. Тест на API 35 емулатор/устройство.
-4. **Live Activity tap → paywall** — `stormwatcher://alerts` (Live Activity) и widget tap към `/aurora` са Pro-gated; free потребител от lock screen-а удря paywall. Реши: умишлен funnel или пренасочване към `/dashboard`.
-5. **Widget полиш** — (а) Kp = 0.0 се третира като "няма данни" (`ck > 0`/`v > 0` проверки в StormWidget.swift и AppDelegate.swift); (б) непреведени стрингове в widget-а: "No signal", "Kp SCALE", G-описанията в large widget ("G3 — Strong").
+**Остава (изисква акаунти/устройства):**
+1. **Xcode GUI build 1×** — auto-signing да добави Push Notifications + Associated Domains capabilities към App ID и да регенерира профила (headless не може). После тест: universal link от iMessage отваря приложението; Live Activity push токени би трябвало да проработят (ActivityInput error 0 вероятно е бил от неприлаганите entitlements).
+2. **Android FCM активация** — Firebase Console: `google-services.json` в `android/app/`; service account JSON като `GOOGLE_SERVICE_ACCOUNT` secret в Supabase; `supabase functions deploy send-kp-alerts`. Кодът е готов и guard-нат — без secret-а функцията е байт-идентична.
+3. **assetlinks.json** — още е с `YOUR_SHA256_FINGERPRINT_HERE`; SHA-256 от Play Console → Setup → App signing.
+4. **Android Glance widget** — iOS има 6 widget формата + Live Activity, Android нула. Kotlin Glance widget с Kp + 24h прогноза; дизайнът копира iOS small/medium widget-а; същите NOAA endpoints.
+5. **Android 15 edge-to-edge тест** — targetSdk 35 игнорира `statusBarColor`; `env(safe-area-inset-top)` в Android WebView често е 0. Тест на API 35 емулатор/устройство.
+6. **Push-to-start Live Activity (iOS 17.2+)** — сървърът да вдига Live Activity при буря без отворено приложение; тества се само в TestFlight (dev-signed build-ове не дават push токени).
 
 ### Mobile App Payments (преди пускане в App Store / Play Store)
 IAP инфраструктурата е готова — остава само plugin install + конфигурация в магазините:
