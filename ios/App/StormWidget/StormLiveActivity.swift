@@ -30,17 +30,9 @@ private func kpColor(_ kp: Double) -> Color {
 @available(iOS 16.2, *)
 private func gBadge(_ g: Int) -> String { g == 0 ? "ACTIVE" : "G\(g)" }
 
+// Localized storm phrase — WL lives in StormWidget.swift (same target).
 @available(iOS 16.2, *)
-private func gName(_ g: Int) -> String {
-    switch g {
-    case 5: return "Extreme storm"
-    case 4: return "Severe storm"
-    case 3: return "Strong storm"
-    case 2: return "Moderate storm"
-    case 1: return "Minor storm"
-    default: return "Geomagnetic activity"
-    }
-}
+private func gName(_ g: Int) -> String { WL.stormSubtitle(g) }
 
 // Reusable bits
 @available(iOS 16.2, *)

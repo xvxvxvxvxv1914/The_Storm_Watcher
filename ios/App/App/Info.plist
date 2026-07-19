@@ -10,6 +10,25 @@
 	<string>$(SENTRY_DSN)</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>bg</string>
+		<string>da</string>
+		<string>de</string>
+		<string>es</string>
+		<string>fi</string>
+		<string>fr</string>
+		<string>is</string>
+		<string>ja</string>
+		<string>ko</string>
+		<string>no</string>
+		<string>pl</string>
+		<string>ru</string>
+		<string>sv</string>
+		<string>uk</string>
+		<string>zh</string>
+	</array>
 	<key>CFBundleDisplayName</key>
         <string>The Storm Watcher</string>
 	<key>CFBundleExecutable</key>

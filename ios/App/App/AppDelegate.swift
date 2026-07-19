@@ -126,8 +126,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             guard let data,
                   let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]],
                   let last = json.last else { return }
-            if let v = last["estimated_kp"] as? Double, v > 0 { kp = v }
-            else if let v = last["kp_index"] as? Double       { kp = v }
+            // Kp 0.0 is a legitimate ultra-quiet reading — only the -1 sentinel
+            // (set above) means "no data".
+            if let v = last["estimated_kp"] as? Double, v >= 0 { kp = v }
+            else if let v = last["kp_index"] as? Double        { kp = v }
         }.resume()
 
         group.enter()

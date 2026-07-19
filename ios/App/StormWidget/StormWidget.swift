@@ -48,8 +48,9 @@ struct KpEntry: TimelineEntry {
 }
 
 // MARK: - Localization
+// Internal (not private) so StormLiveActivity.swift in the same target can use it.
 
-private struct WL {
+struct WL {
     static var lang: String {
         let code = Locale.preferredLanguages.first.map { String($0.prefix(2)) } ?? "en"
         let supported = ["bg","da","de","es","fi","fr","is","ja","ko","no","pl","ru","sv","uk","zh"]
@@ -135,6 +136,113 @@ private struct WL {
         default:   return "QUIET"
         }
     }
+    static var noSignal: String {
+        switch lang {
+        case "bg": return "Няма сигнал"
+        case "da": return "Intet signal"
+        case "de": return "Kein Signal"
+        case "es": return "Sin señal"
+        case "fi": return "Ei signaalia"
+        case "fr": return "Pas de signal"
+        case "is": return "Ekkert samband"
+        case "ja": return "信号なし"
+        case "ko": return "신호 없음"
+        case "no": return "Intet signal"
+        case "pl": return "Brak sygnału"
+        case "ru": return "Нет сигнала"
+        case "sv": return "Ingen signal"
+        case "uk": return "Немає сигналу"
+        case "zh": return "无信号"
+        default:   return "No signal"
+        }
+    }
+    static var kpScale: String {
+        switch lang {
+        case "bg": return "KP СКАЛА"
+        case "da": return "KP-SKALA"
+        case "de": return "KP-SKALA"
+        case "es": return "ESCALA KP"
+        case "fi": return "KP-ASTEIKKO"
+        case "fr": return "ÉCHELLE KP"
+        case "is": return "KP-KVARÐI"
+        case "ja": return "KPスケール"
+        case "ko": return "KP 척도"
+        case "no": return "KP-SKALA"
+        case "pl": return "SKALA KP"
+        case "ru": return "ШКАЛА KP"
+        case "sv": return "KP-SKALA"
+        case "uk": return "ШКАЛА KP"
+        case "zh": return "KP等级"
+        default:   return "Kp SCALE"
+        }
+    }
+    // Standalone G-storm adjectives, shown as "G3 — Strong" in the large widget.
+    static func stormAdjective(_ g: Int) -> String {
+        let idx = max(1, min(5, g)) - 1
+        let table: [String: [String]] = [
+            "bg": ["Слаба", "Умерена", "Силна", "Тежка", "Екстремна"],
+            "da": ["Mindre", "Moderat", "Kraftig", "Alvorlig", "Ekstrem"],
+            "de": ["Gering", "Mäßig", "Stark", "Schwer", "Extrem"],
+            "es": ["Menor", "Moderada", "Fuerte", "Severa", "Extrema"],
+            "fi": ["Vähäinen", "Kohtalainen", "Voimakas", "Vakava", "Äärimmäinen"],
+            "fr": ["Mineure", "Modérée", "Forte", "Sévère", "Extrême"],
+            "is": ["Minniháttar", "Miðlungs", "Sterkur", "Alvarlegur", "Öfgafullur"],
+            "ja": ["小規模", "中規模", "強", "激しい", "極端"],
+            "ko": ["약함", "보통", "강함", "심각", "극심"],
+            "no": ["Mindre", "Moderat", "Sterk", "Alvorlig", "Ekstrem"],
+            "pl": ["Słaba", "Umiarkowana", "Silna", "Poważna", "Ekstremalna"],
+            "ru": ["Слабая", "Умеренная", "Сильная", "Суровая", "Экстремальная"],
+            "sv": ["Mindre", "Måttlig", "Stark", "Allvarlig", "Extrem"],
+            "uk": ["Слабка", "Помірна", "Сильна", "Сувора", "Екстремальна"],
+            "zh": ["小型", "中等", "强烈", "严重", "极端"],
+        ]
+        let en = ["Minor", "Moderate", "Strong", "Severe", "Extreme"]
+        return (table[lang] ?? en)[idx]
+    }
+    // Full storm phrases for the Live Activity subtitle — written out per
+    // language because adjective/noun agreement varies (declensions).
+    static func stormSubtitle(_ g: Int) -> String {
+        guard (1...5).contains(g) else {
+            switch lang {
+            case "bg": return "Геомагнитна активност"
+            case "da": return "Geomagnetisk aktivitet"
+            case "de": return "Geomagnetische Aktivität"
+            case "es": return "Actividad geomagnética"
+            case "fi": return "Geomagneettinen aktiivisuus"
+            case "fr": return "Activité géomagnétique"
+            case "is": return "Jarðsegulvirkni"
+            case "ja": return "地磁気活動"
+            case "ko": return "지자기 활동"
+            case "no": return "Geomagnetisk aktivitet"
+            case "pl": return "Aktywność geomagnetyczna"
+            case "ru": return "Геомагнитная активность"
+            case "sv": return "Geomagnetisk aktivitet"
+            case "uk": return "Геомагнітна активність"
+            case "zh": return "地磁活动"
+            default:   return "Geomagnetic activity"
+            }
+        }
+        let idx = g - 1
+        let table: [String: [String]] = [
+            "bg": ["Слаба буря", "Умерена буря", "Силна буря", "Тежка буря", "Екстремна буря"],
+            "da": ["Mindre storm", "Moderat storm", "Kraftig storm", "Alvorlig storm", "Ekstrem storm"],
+            "de": ["Kleiner Sturm", "Mäßiger Sturm", "Starker Sturm", "Schwerer Sturm", "Extremer Sturm"],
+            "es": ["Tormenta menor", "Tormenta moderada", "Tormenta fuerte", "Tormenta severa", "Tormenta extrema"],
+            "fi": ["Vähäinen myrsky", "Kohtalainen myrsky", "Voimakas myrsky", "Vakava myrsky", "Äärimmäinen myrsky"],
+            "fr": ["Tempête mineure", "Tempête modérée", "Tempête forte", "Tempête sévère", "Tempête extrême"],
+            "is": ["Minniháttar stormur", "Miðlungs stormur", "Sterkur stormur", "Alvarlegur stormur", "Öfgafullur stormur"],
+            "ja": ["小規模な磁気嵐", "中規模の磁気嵐", "強い磁気嵐", "激しい磁気嵐", "極端な磁気嵐"],
+            "ko": ["약한 폭풍", "보통 폭풍", "강한 폭풍", "심각한 폭풍", "극심한 폭풍"],
+            "no": ["Mindre storm", "Moderat storm", "Sterk storm", "Alvorlig storm", "Ekstrem storm"],
+            "pl": ["Słaba burza", "Umiarkowana burza", "Silna burza", "Poważna burza", "Ekstremalna burza"],
+            "ru": ["Слабая буря", "Умеренная буря", "Сильная буря", "Суровая буря", "Экстремальная буря"],
+            "sv": ["Mindre storm", "Måttlig storm", "Stark storm", "Allvarlig storm", "Extrem storm"],
+            "uk": ["Слабка буря", "Помірна буря", "Сильна буря", "Сувора буря", "Екстремальна буря"],
+            "zh": ["小型磁暴", "中等磁暴", "强磁暴", "严重磁暴", "极端磁暴"],
+        ]
+        let en = ["Minor storm", "Moderate storm", "Strong storm", "Severe storm", "Extreme storm"]
+        return (table[lang] ?? en)[idx]
+    }
     static var widgetDescription: String {
         switch lang {
         case "bg": return "Kp индекс, слънчев вятър и 24-часова прогноза в реално време."
@@ -204,19 +312,21 @@ struct KpProvider: TimelineProvider {
 
     private func fetchAll(completion: @escaping (KpEntry) -> Void) {
         let group = DispatchGroup()
-        var kp = 0.0
-        var wind = 0
+        // -1 is the "no data" sentinel — Kp 0.0 is a legitimate ultra-quiet reading.
+        var kp = -1.0
+        var wind = -1
         var forecastPoints: [ForecastPoint] = []
 
-        // Use app-group cache for live Kp/wind if fresh
+        // Use app-group cache for live Kp/wind if fresh. `widget_updated` is only
+        // ever written together with a valid kp/wind pair, so freshness alone is
+        // enough — a cached Kp of 0.0 is real data, not a missing key.
         var usedCache = false
         if let defaults = UserDefaults(suiteName: appGroupID) {
             let updated = defaults.double(forKey: "widget_updated")
             let ck = defaults.double(forKey: "widget_kp")
             let cw = defaults.integer(forKey: "widget_wind")
             if updated > 0,
-               Date().timeIntervalSince1970 - updated < sharedDataMaxAge,
-               ck > 0 {
+               Date().timeIntervalSince1970 - updated < sharedDataMaxAge {
                 kp = ck
                 wind = cw
                 usedCache = true
@@ -232,8 +342,8 @@ struct KpProvider: TimelineProvider {
                 guard let data,
                       let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]],
                       let last = json.last else { return }
-                if let v = last["estimated_kp"] as? Double, v > 0 { kp = v }
-                else if let v = last["kp_index"] as? Double     { kp = v }
+                if let v = last["estimated_kp"] as? Double, v >= 0 { kp = v }
+                else if let v = last["kp_index"] as? Double        { kp = v }
             }.resume()
 
             group.enter()
@@ -280,7 +390,7 @@ struct KpProvider: TimelineProvider {
         group.notify(queue: .main) {
             let fmt = DateFormatter()
             fmt.timeStyle = .short
-            let isStale = kp <= 0 && wind <= 0
+            let isStale = kp < 0 && wind < 0
             completion(KpEntry(
                 date: Date(), kp: max(kp, 0), windSpeed: max(wind, 0),
                 stormLevel: isStale ? "---" : kpLevel(kp), stormColor: isStale ? .gray : kpColor(kp),
@@ -399,7 +509,7 @@ struct StormWidgetSmallView: View {
             // Wind + time
             HStack {
                 if entry.isStale {
-                    Label("No signal", systemImage: "wifi.slash")
+                    Label(WL.noSignal, systemImage: "wifi.slash")
                         .font(.system(size: 8.5))
                         .foregroundColor(.orange.opacity(0.7))
                 } else {
@@ -507,11 +617,11 @@ struct StormWidgetLargeView: View {
 
     private var gScale: String {
         switch entry.kp {
-        case 9...: return "G5 — Extreme"
-        case 8...: return "G4 — Severe"
-        case 7...: return "G3 — Strong"
-        case 6...: return "G2 — Moderate"
-        case 5...: return "G1 — Minor"
+        case 9...: return "G5 — \(WL.stormAdjective(5))"
+        case 8...: return "G4 — \(WL.stormAdjective(4))"
+        case 7...: return "G3 — \(WL.stormAdjective(3))"
+        case 6...: return "G2 — \(WL.stormAdjective(2))"
+        case 5...: return "G1 — \(WL.stormAdjective(1))"
         default:   return WL.quiet
         }
     }
@@ -576,7 +686,7 @@ struct StormWidgetLargeView: View {
 
             // Kp scale bar
             VStack(alignment: .leading, spacing: 4) {
-                Text("Kp SCALE")
+                Text(WL.kpScale)
                     .font(.system(size: 7.5, weight: .bold, design: .rounded))
                     .foregroundColor(Color.white.opacity(0.3))
                     .tracking(0.8)
@@ -674,7 +784,7 @@ struct StormWidgetRectangularView: View {
                     Image(systemName: "bolt.fill")
                         .font(.system(size: 9, weight: .bold))
                         .foregroundColor(entry.stormColor)
-                    Text("KP INDEX")
+                    Text(WL.kpIndex)
                         .font(.system(size: 8, weight: .bold, design: .rounded))
                         .foregroundColor(.secondary)
                         .tracking(0.5)
