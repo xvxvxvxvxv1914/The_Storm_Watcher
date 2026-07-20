@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { PushNotifications } from '@capacitor/push-notifications';
-import { isNative } from '../utils/platform';
+import { isNative, isAndroid } from '../utils/platform';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { useSettings } from '../contexts/SettingsContext';
@@ -30,13 +30,18 @@ export function usePushNotifications() {
   const { hasPro } = usePaymentGate();
 
   useEffect(() => {
-    // iOS registers with APNs; Android needs google-services.json (FCM) — without
-    // it register() throws and the catch below logs it, nothing else breaks.
     if (!isNative()) return;
     // Push notifications are a Pro feature — skip registration for free users
     if (!hasPro) return;
 
     async function register() {
+      // iOS registers with APNs. Android needs android/app/google-services.json,
+      // and without it register() does NOT reject — the native plugin throws
+      // IllegalStateException ("Default FirebaseApp is not initialized") on the
+      // CapacitorPlugins thread, which no JS catch can reach and which kills the
+      // process ~3s after launch. Skip it until the Firebase config is added.
+      if (isAndroid()) return;
+
       let permStatus = await PushNotifications.checkPermissions();
 
       if (permStatus.receive === 'prompt') {
