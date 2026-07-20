@@ -312,50 +312,34 @@ struct KpProvider: TimelineProvider {
 
     private func fetchAll(completion: @escaping (KpEntry) -> Void) {
         let group = DispatchGroup()
-        // -1 is the "no data" sentinel — Kp 0.0 is a legitimate ultra-quiet reading.
-        var kp = -1.0
-        var wind = -1
+        var kp = KpSource.noKp
+        var wind = KpSource.noWind
         var forecastPoints: [ForecastPoint] = []
 
-        // Use app-group cache for live Kp/wind if fresh. `widget_updated` is only
-        // ever written together with a valid kp/wind pair, so freshness alone is
-        // enough — a cached Kp of 0.0 is real data, not a missing key.
-        var usedCache = false
-        if let defaults = UserDefaults(suiteName: appGroupID) {
-            let updated = defaults.double(forKey: "widget_updated")
-            let ck = defaults.double(forKey: "widget_kp")
-            let cw = defaults.integer(forKey: "widget_wind")
-            if updated > 0,
-               Date().timeIntervalSince1970 - updated < sharedDataMaxAge {
-                kp = ck
-                wind = cw
-                usedCache = true
-            }
+        // Use the app-group cache for whichever of Kp / wind is still fresh, and
+        // fetch the rest ourselves. The timestamps are per-value, so a stale
+        // wind reading no longer forces a refetch of a perfectly good Kp.
+        // A cached Kp of 0.0 is real data, not a missing key — freshness alone
+        // decides, never the value.
+        let defaults = UserDefaults(suiteName: appGroupID)
+        let now = Date().timeIntervalSince1970
+        func isFresh(_ key: String) -> Bool {
+            guard let updated = defaults?.double(forKey: key), updated > 0 else { return false }
+            return now - updated < sharedDataMaxAge
         }
 
-        if !usedCache {
+        if isFresh(KpSource.CacheKey.kpUpdated), let d = defaults {
+            kp = d.double(forKey: KpSource.CacheKey.kp)
+        } else {
             group.enter()
-            URLSession.shared.dataTask(
-                with: URL(string: "https://services.swpc.noaa.gov/json/planetary_k_index_1m.json")!
-            ) { data, _, _ in
-                defer { group.leave() }
-                guard let data,
-                      let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]],
-                      let last = json.last else { return }
-                if let v = last["estimated_kp"] as? Double, v >= 0 { kp = v }
-                else if let v = last["kp_index"] as? Double        { kp = v }
-            }.resume()
+            KpSource.fetchKp { kp = $0; group.leave() }
+        }
 
+        if isFresh(KpSource.CacheKey.windUpdated), let d = defaults {
+            wind = d.integer(forKey: KpSource.CacheKey.wind)
+        } else {
             group.enter()
-            URLSession.shared.dataTask(
-                with: URL(string: "https://services.swpc.noaa.gov/json/rtsw/rtsw_wind_1m.json")!
-            ) { data, _, _ in
-                defer { group.leave() }
-                guard let data,
-                      let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else { return }
-                let active = json.first(where: { ($0["active"] as? Bool) == true }) ?? json.first
-                if let s = active?["proton_speed"] as? Double { wind = Int(s) }
-            }.resume()
+            KpSource.fetchWind { wind = $0; group.leave() }
         }
 
         // Always fetch forecast — changes every 3h regardless of cache

@@ -116,39 +116,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
     private func refreshWidgetData(completion: (() -> Void)?) {
         let group = DispatchGroup()
-        var kp = -1.0
-        var wind = -1
+        var kp = KpSource.noKp
+        var wind = KpSource.noWind
 
         group.enter()
-        let kpUrl = URL(string: "https://services.swpc.noaa.gov/json/planetary_k_index_1m.json")!
-        URLSession.shared.dataTask(with: kpUrl) { data, _, _ in
-            defer { group.leave() }
-            guard let data,
-                  let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]],
-                  let last = json.last else { return }
-            // Kp 0.0 is a legitimate ultra-quiet reading — only the -1 sentinel
-            // (set above) means "no data".
-            if let v = last["estimated_kp"] as? Double, v >= 0 { kp = v }
-            else if let v = last["kp_index"] as? Double        { kp = v }
-        }.resume()
+        KpSource.fetchKp { kp = $0; group.leave() }
 
         group.enter()
-        let windUrl = URL(string: "https://services.swpc.noaa.gov/json/rtsw/rtsw_wind_1m.json")!
-        URLSession.shared.dataTask(with: windUrl) { data, _, _ in
-            defer { group.leave() }
-            guard let data,
-                  let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else { return }
-            let active = json.first(where: { ($0["active"] as? Bool) == true }) ?? json.first
-            if let speed = active?["proton_speed"] as? Double { wind = Int(speed) }
-        }.resume()
+        KpSource.fetchWind { wind = $0; group.leave() }
 
         group.notify(queue: .main) { [weak self] in
             guard let self else { completion?(); return }
-            if kp >= 0, wind >= 0,
-               let defaults = UserDefaults(suiteName: self.appGroupID) {
-                defaults.set(kp, forKey: "widget_kp")
-                defaults.set(wind, forKey: "widget_wind")
-                defaults.set(Date().timeIntervalSince1970, forKey: "widget_updated")
+            if let defaults = UserDefaults(suiteName: self.appGroupID) {
+                let now = Date().timeIntervalSince1970
+                // Written independently: a wind outage must not stop a perfectly
+                // good Kp from reaching the widget (and vice versa). Each value
+                // carries its own timestamp so the widget can age them apart.
+                if kp >= 0 {
+                    defaults.set(kp, forKey: KpSource.CacheKey.kp)
+                    defaults.set(now, forKey: KpSource.CacheKey.kpUpdated)
+                }
+                if wind >= 0 {
+                    defaults.set(wind, forKey: KpSource.CacheKey.wind)
+                    defaults.set(now, forKey: KpSource.CacheKey.windUpdated)
+                }
             }
             WidgetCenter.shared.reloadTimelines(ofKind: "StormWidget")
             completion?()
