@@ -276,6 +276,19 @@ private func kpColor(_ kp: Double) -> Color {
     }
 }
 
+// Hard-stop colour bands matching the app's KpGauge track (0–9 axis):
+// green <4 calm, yellow 4–5 active, orange 5–7 storm, red 7–9 severe.
+private let kpScaleGradient = Gradient(stops: [
+    .init(color: .brandEmerald, location: 0),
+    .init(color: .brandEmerald, location: 4.0 / 9.0),
+    .init(color: .brandAmber,   location: 4.0 / 9.0),
+    .init(color: .brandAmber,   location: 5.0 / 9.0),
+    .init(color: .brandOrange,  location: 5.0 / 9.0),
+    .init(color: .brandOrange,  location: 7.0 / 9.0),
+    .init(color: .brandRed,     location: 7.0 / 9.0),
+    .init(color: .brandRed,     location: 1),
+])
+
 private func kpLevel(_ kp: Double) -> String {
     switch kp {
     case 9...: return "G5"
@@ -677,14 +690,14 @@ struct StormWidgetLargeView: View {
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
                         LinearGradient(
-                            colors: [.brandEmerald, .brandAmber, .brandOrange, .brandRed, Color(hex: "#7c3aed")],
+                            gradient: kpScaleGradient,
                             startPoint: .leading, endPoint: .trailing
                         )
                         .frame(height: 6)
                         .clipShape(Capsule())
                         .opacity(0.4)
                         LinearGradient(
-                            colors: [.brandEmerald, .brandAmber, .brandOrange, .brandRed, Color(hex: "#7c3aed")],
+                            gradient: kpScaleGradient,
                             startPoint: .leading, endPoint: .trailing
                         )
                         .frame(width: geo.size.width * CGFloat(kpFraction), height: 6)

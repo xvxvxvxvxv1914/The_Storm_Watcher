@@ -2,14 +2,15 @@ interface Props {
   kp: number;
 }
 
-// NOAA G-scale zones on the Kp 0–9 axis. Single source of truth so the
-// colour band and its label can't drift apart: Kp5=G1, 6=G2, 7=G3, 8=G4, 9=G5.
+// Colour zones on the Kp 0–9 axis — the single source of truth mirrored by the
+// big number, the storm button and the iOS widget. Warm colours start early:
+// green <4 (calm), yellow 4–5 (active), orange 5–7 (storm G1–G2), red 7–9 (severe G3–G5).
 // Aurora-green = calm (the signature colour); colour escalates with storm level.
 const ZONES = [
-  { label: 'Calm', from: 0, to: 5, color: '#10b981' },
-  { label: 'G1', from: 5, to: 6, color: '#eab308' },
-  { label: 'G2–G3', from: 6, to: 8, color: '#f97316' },
-  { label: 'G4–G5', from: 8, to: 9, color: '#ef4444' },
+  { label: 'Calm', from: 0, to: 4, color: '#10b981' },
+  { label: '', from: 4, to: 5, color: '#eab308' },
+  { label: 'G1–G2', from: 5, to: 7, color: '#f97316' },
+  { label: 'G3–G5', from: 7, to: 9, color: '#ef4444' },
 ];
 
 // Kp value → percentage along the 0–9 track.
@@ -24,14 +25,14 @@ export default function KpGauge({ kp }: Props) {
   const clamped = Math.max(0, Math.min(9, kp));
   const pct = pos(clamped);
   const markerColor =
-    kp >= 8 ? '#ef4444' : kp >= 6 ? '#f97316' : kp >= 5 ? '#eab308' : '#10b981';
+    kp >= 7 ? '#ef4444' : kp >= 5 ? '#f97316' : kp >= 4 ? '#eab308' : '#10b981';
 
   return (
     <div className="w-full max-w-sm mx-auto mt-8" aria-hidden="true">
       {/* track */}
       <div className="relative h-2.5 rounded-full" style={{ background: TRACK }}>
-        {/* per-G-level divider ticks (G1=5 … G4=8) */}
-        {[5, 6, 7, 8].map((k) => (
+        {/* divider ticks at the colour-band boundaries (4, 5, 7) */}
+        {[4, 5, 7].map((k) => (
           <span
             key={k}
             className="absolute top-0 h-full w-px bg-[#0a0a1a]/40"
@@ -52,7 +53,7 @@ export default function KpGauge({ kp }: Props) {
       {/* number scale */}
       <div className="flex justify-between mt-2.5 px-px text-[10px] font-mono text-[#475569]">
         {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
-          <span key={n} className={n === 5 || n === 8 ? 'text-[#64748b]' : ''}>
+          <span key={n} className={n === 5 || n === 7 ? 'text-[#64748b]' : ''}>
             {n}
           </span>
         ))}

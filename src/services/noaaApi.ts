@@ -303,13 +303,14 @@ export const getKpHistory3Day = (): Promise<{ time_tag: string; Kp: number }[]> 
     }
   }, nonEmpty);
 
+// Colour bands must mirror the KpGauge ZONES (the single source of truth):
+// green <4 calm, yellow 4–5 active, orange 5–7 storm, red 7–9 severe.
 export const getKpGradientStyle = (kp: number): React.CSSProperties => ({
   backgroundImage:
-    kp >= 7 ? 'linear-gradient(135deg, #ef4444, #dc2626)' :
-    kp >= 5 ? 'linear-gradient(135deg, #f97316, #ef4444)' :
-    kp >= 4 ? 'linear-gradient(135deg, #eab308, #f97316)' :
-    kp >= 2 ? 'linear-gradient(135deg, #10b981, #eab308)' :
-    'linear-gradient(135deg, #10b981, #059669)',
+    kp >= 7 ? 'linear-gradient(135deg, #ef4444, #dc2626)' :   // G3–G5 severe
+    kp >= 5 ? 'linear-gradient(135deg, #f97316, #ea580c)' :   // G1–G2 storm
+    kp >= 4 ? 'linear-gradient(135deg, #eab308, #ca8a04)' :   // active
+    'linear-gradient(135deg, #10b981, #059669)',              // calm
   WebkitBackgroundClip: 'text',
   WebkitTextFillColor: 'transparent',
   backgroundClip: 'text',

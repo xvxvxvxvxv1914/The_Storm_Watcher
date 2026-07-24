@@ -207,6 +207,15 @@ html.light .skeleton {
   animation: pulse-glow 2s infinite;
 }
 
+/* Glow that hugs the digit shapes (not a box) and pulses — for the big Kp number. */
+@keyframes pulse-number {
+  0%, 100% { filter: drop-shadow(0 0 6px rgba(249, 115, 22, 0.35)); }
+  50%      { filter: drop-shadow(0 0 22px rgba(249, 115, 22, 0.75)); }
+}
+.pulse-number {
+  animation: pulse-number 2s infinite;
+}
+
 .storm-banner {
   top: calc(env(safe-area-inset-top) + 3rem);
 }

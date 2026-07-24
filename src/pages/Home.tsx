@@ -328,9 +328,9 @@ const Home = () => {
                     <span className="text-xs text-amber-400/80">· {t('home.dataDelayed') || 'data may be delayed'}</span>
                   )}
                 </div>
-                <div className={`inline-block ${isStorm ? 'pulse-alert' : ''}`}>
+                <div className="inline-block">
                   <div
-                    className="text-8xl sm:text-[160px] font-bold leading-none"
+                    className={`text-8xl sm:text-[160px] font-bold leading-none ${isStorm ? 'pulse-number' : ''}`}
                     style={getKpGradientStyle(kpValue ?? 0)}
                   >
                     {kpValue?.toFixed(1) ?? '0.0'}
