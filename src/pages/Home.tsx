@@ -157,7 +157,8 @@ const Home = () => {
       `${((i / (data.length - 1)) * w).toFixed(1)},${(h - (Math.min(v, 9) / 9) * h).toFixed(1)}`
     ).join(' ');
     const max = Math.max(...data);
-    const color = max >= 5 ? '#f97316' : max >= 3 ? '#eab308' : '#10b981';
+    // Mirror the KpGauge bands: red 7+, orange 5–7, yellow 4–5, green <4.
+    const color = max >= 7 ? '#ef4444' : max >= 5 ? '#f97316' : max >= 4 ? '#eab308' : '#10b981';
     return (
       <div className="flex flex-col items-center gap-1 mt-4">
         <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} className="overflow-visible">
