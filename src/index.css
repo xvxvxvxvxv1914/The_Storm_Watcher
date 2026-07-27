@@ -207,6 +207,15 @@ html.light .skeleton {
   animation: pulse-glow 2s infinite;
 }
 
+/* Glow that hugs the digit shapes (not a box) and pulses — for the big Kp number. */
+@keyframes pulse-number {
+  0%, 100% { filter: drop-shadow(0 0 6px rgba(249, 115, 22, 0.35)); }
+  50%      { filter: drop-shadow(0 0 22px rgba(249, 115, 22, 0.75)); }
+}
+.pulse-number {
+  animation: pulse-number 2s infinite;
+}
+
 .storm-banner {
   top: calc(env(safe-area-inset-top) + 3rem);
 }
@@ -302,6 +311,18 @@ html.light .text-\[\#64748b\] {
   color: #94a3b8;
 }
 
+/* Light mode: violet & amber accents darken for contrast on light surfaces */
+html.light .text-\[\#a78bfa\] {
+  color: #7c3aed;
+}
+
+html.light .text-amber-300 {
+  color: #b45309;
+}
+
+html.light .text-amber-300\/80 {
+  color: rgba(180, 83, 9, 0.9);
+}
 html.light .star {
   background: transparent;
 }

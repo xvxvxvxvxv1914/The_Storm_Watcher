@@ -916,6 +916,7 @@ const pl: Record<string, string> = {
   'alerts.impact.label': 'Co to oznacza dla ciebie',
   'alerts.liveUpdated': 'Na żywo · zaktualizowano',
   'alerts.technical': 'Szczegóły techniczne z NOAA',
+  'alerts.showMore': 'Pokaż {n} więcej',
   'alerts.etaBar': 'Przybywa za ~{eta}h',
   'alerts.arrivedBar': 'Burza słoneczna przybyła',
   'alerts.impact.geoStorm.high': 'Zorza polarna widoczna z południa Europy i większości Ameryki Północnej. Możliwe zakłócenia sieci elektrycznej i GPS.',

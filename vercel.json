@@ -59,13 +59,22 @@
           "value": "noindex"
         }
       ]
+    },
+    {
+      "source": "/.well-known/apple-app-site-association",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        }
+      ]
     }
   ],
   "redirects": [
     {
-      "source": "/:path*",
+      "source": "/:path((?!\\.well-known/).*)",
       "has": [{ "type": "host", "value": "thestormwatcher.com" }],
-      "destination": "https://www.thestormwatcher.com/:path*",
+      "destination": "https://www.thestormwatcher.com/:path",
       "permanent": true
     }
   ],

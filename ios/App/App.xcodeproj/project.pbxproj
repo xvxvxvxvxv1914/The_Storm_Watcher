@@ -10,6 +10,8 @@
 		030AE3EC78B35D48801E07C6 /* StormLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1247939B22648E7DC12F3845 /* StormLiveActivity.swift */; };
 		1009ADBD41293A974E1A73DE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D8D90DF087D7DD743D2E2AE /* Foundation.framework */; };
 		258FC54E6DD01DC50E220FC5 /* StormActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1142A03FB0C079E649D7FC19 /* StormActivityAttributes.swift */; };
+		7C1A5E20B3D4419A8F0C2E12 /* KpSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A5E20B3D4419A8F0C2E11 /* KpSource.swift */; };
+		7C1A5E20B3D4419A8F0C2E13 /* KpSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A5E20B3D4419A8F0C2E11 /* KpSource.swift */; };
 		2FAD9763203C412B000D30F8 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
 		4D22ABE92AF431CB00220026 /* CapApp-SPM in Frameworks */ = {isa = PBXBuildFile; productRef = 4D22ABE82AF431CB00220026 /* CapApp-SPM */; };
 		50379B232058CBB4000EE86E /* capacitor.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 50379B222058CBB4000EE86E /* capacitor.config.json */; };
@@ -19,6 +21,7 @@
 		504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC3101FED79650016851F /* LaunchScreen.storyboard */; };
 		50B271D11FEDC1A000F3C39B /* public in Resources */ = {isa = PBXBuildFile; fileRef = 50B271D01FEDC1A000F3C39B /* public */; };
 		6FC48FCAF85EFC402BC1BE29 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A797BAB4578BF25154FA20E7 /* SwiftUI.framework */; };
+		8990DBC5E2DC3BCFA89289E3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 98C97383B35DF85A960D3F79 /* InfoPlist.strings */; };
 		A15A39C09A001FA4F93FC155 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 885BD254D35C263539A1E1CD /* WidgetKit.framework */; };
 		A28578B704472BD76E2BF114 /* StormWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B8681A45E2D9E1C1E5AB3AA9 /* StormWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		A69D32D11BDCBEDDA9B238AC /* AppReviewPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD1033693623CF43963DCF9 /* AppReviewPlugin.swift */; };
@@ -54,11 +57,19 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		064E22E8166E37263150E2DF /* en */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		0CD1033693623CF43963DCF9 /* AppReviewPlugin.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppReviewPlugin.swift; sourceTree = "<group>"; };
 		1142A03FB0C079E649D7FC19 /* StormActivityAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = StormActivityAttributes.swift; path = StormWidget/StormActivityAttributes.swift; sourceTree = "<group>"; };
+		7C1A5E20B3D4419A8F0C2E11 /* KpSource.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = KpSource.swift; path = StormWidget/KpSource.swift; sourceTree = "<group>"; };
 		1247939B22648E7DC12F3845 /* StormLiveActivity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = StormLiveActivity.swift; path = StormWidget/StormLiveActivity.swift; sourceTree = "<group>"; };
 		13F58B548E122DDD2ABE5FBA /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = Info.plist; path = StormWidget/Info.plist; sourceTree = "<group>"; };
+		244B26BD1D558096FAE8F995 /* pl */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		2D3881920628E6384C31FC20 /* uk */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
+		34BD7BCA4F8E5BCF3F55CDE2 /* ru */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		3B79632633811A926EF805FF /* is */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = is; path = is.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		3D2CCAEF2AEF5E46D8DA3756 /* sv */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		44CC5E5B1A5A95430ADC92D5 /* de */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4A6074084139212F00B8465A /* StormWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = StormWidget.swift; path = StormWidget/StormWidget.swift; sourceTree = "<group>"; };
 		4D71839B3019454BC121C482 /* StormLiveActivityPlugin.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StormLiveActivityPlugin.swift; sourceTree = "<group>"; };
 		4D8D90DF087D7DD743D2E2AE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
@@ -70,7 +81,13 @@
 		504EC3111FED79650016851F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		504EC3131FED79650016851F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50B271D01FEDC1A000F3C39B /* public */ = {isa = PBXFileReference; lastKnownFileType = folder; path = public; sourceTree = "<group>"; };
+		5823F178DDFEE3C95F77BAA1 /* bg */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = bg; path = bg.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		6D2E038668B04CA63D1EDD51 /* da */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		728E8CC6F05B79B2A53CC6FE /* fi */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = fi; path = fi.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		85AE536A62D62BAA8055C1CB /* ja */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		8783EF0AC4646B47FA1927EC /* no */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = no; path = no.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		885BD254D35C263539A1E1CD /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		949F220843EAE273EC4F9290 /* es */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		958DCC722DB07C7200EA8C5F /* debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = debug.xcconfig; path = ../debug.xcconfig; sourceTree = SOURCE_ROOT; };
 		9A1BCC832DB07C7200EA8C5F /* release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = release.xcconfig; path = ../release.xcconfig; sourceTree = SOURCE_ROOT; };
 		A797BAB4578BF25154FA20E7 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -78,6 +95,9 @@
 		AABB11223344556677889901 /* App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = App.entitlements; sourceTree = "<group>"; };
 		AABB11223344556677889902 /* StormWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = StormWidget.entitlements; path = StormWidget/StormWidget.entitlements; sourceTree = "<group>"; };
 		B8681A45E2D9E1C1E5AB3AA9 /* StormWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = StormWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC28F82F88FB7238A7FAA528 /* ko */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		EFDB6DC9605FD897A89D8859 /* zh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = zh; path = zh.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FA725B7BD4FFF3A6795A476D /* fr */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,6 +167,7 @@
 				AABB11223344556677889901 /* App.entitlements */,
 				4D71839B3019454BC121C482 /* StormLiveActivityPlugin.swift */,
 				0CD1033693623CF43963DCF9 /* AppReviewPlugin.swift */,
+				98C97383B35DF85A960D3F79 /* InfoPlist.strings */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -158,6 +179,7 @@
 				13F58B548E122DDD2ABE5FBA /* Info.plist */,
 				AABB11223344556677889902 /* StormWidget.entitlements */,
 				1142A03FB0C079E649D7FC19 /* StormActivityAttributes.swift */,
+				7C1A5E20B3D4419A8F0C2E11 /* KpSource.swift */,
 				1247939B22648E7DC12F3845 /* StormLiveActivity.swift */,
 			);
 			name = StormWidget;
@@ -253,6 +275,21 @@
 			knownRegions = (
 				en,
 				Base,
+				bg,
+				da,
+				de,
+				es,
+				fi,
+				fr,
+				is,
+				ja,
+				ko,
+				no,
+				pl,
+				ru,
+				sv,
+				uk,
+				zh,
 			);
 			mainGroup = 504EC2FB1FED79650016851F;
 			packageReferences = (
@@ -287,6 +324,7 @@
 				50379B232058CBB4000EE86E /* capacitor.config.json in Resources */,
 				504EC30D1FED79650016851F /* Main.storyboard in Resources */,
 				2FAD9763203C412B000D30F8 /* config.xml in Resources */,
+				8990DBC5E2DC3BCFA89289E3 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -301,6 +339,7 @@
 				AA99887766554433221100F2 /* ViewController.swift in Sources */,
 				CADA9556DD6BAD1538BDA7F1 /* StormLiveActivityPlugin.swift in Sources */,
 				E437AAE7F542C1B991659AB1 /* StormActivityAttributes.swift in Sources */,
+				7C1A5E20B3D4419A8F0C2E12 /* KpSource.swift in Sources */,
 				A69D32D11BDCBEDDA9B238AC /* AppReviewPlugin.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -311,6 +350,7 @@
 			files = (
 				C8CB2BF0C84A5B2025533CA0 /* StormWidget.swift in Sources */,
 				258FC54E6DD01DC50E220FC5 /* StormActivityAttributes.swift in Sources */,
+				7C1A5E20B3D4419A8F0C2E13 /* KpSource.swift in Sources */,
 				030AE3EC78B35D48801E07C6 /* StormLiveActivity.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -341,6 +381,29 @@
 				504EC3111FED79650016851F /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		98C97383B35DF85A960D3F79 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				064E22E8166E37263150E2DF /* en */,
+				5823F178DDFEE3C95F77BAA1 /* bg */,
+				6D2E038668B04CA63D1EDD51 /* da */,
+				44CC5E5B1A5A95430ADC92D5 /* de */,
+				949F220843EAE273EC4F9290 /* es */,
+				728E8CC6F05B79B2A53CC6FE /* fi */,
+				FA725B7BD4FFF3A6795A476D /* fr */,
+				3B79632633811A926EF805FF /* is */,
+				85AE536A62D62BAA8055C1CB /* ja */,
+				CC28F82F88FB7238A7FAA528 /* ko */,
+				8783EF0AC4646B47FA1927EC /* no */,
+				244B26BD1D558096FAE8F995 /* pl */,
+				34BD7BCA4F8E5BCF3F55CDE2 /* ru */,
+				3D2CCAEF2AEF5E46D8DA3756 /* sv */,
+				2D3881920628E6384C31FC20 /* uk */,
+				EFDB6DC9605FD897A89D8859 /* zh */,
+			);
+			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -474,6 +537,7 @@
 			baseConfigurationReference = 958DCC722DB07C7200EA8C5F /* debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2W6YCTFKNA;
 				INFOPLIST_FILE = App/Info.plist;
@@ -496,6 +560,7 @@
 			baseConfigurationReference = 9A1BCC832DB07C7200EA8C5F /* release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2W6YCTFKNA;
 				INFOPLIST_FILE = App/Info.plist;
@@ -515,6 +580,7 @@
 		ED84FB4DC55722BFA587D07C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = StormWidget/StormWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2W6YCTFKNA;
 				INFOPLIST_FILE = StormWidget/Info.plist;
@@ -530,6 +596,7 @@
 		FE6E19A2528EB0E5A59DFFC5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = StormWidget/StormWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2W6YCTFKNA;
 				INFOPLIST_FILE = StormWidget/Info.plist;

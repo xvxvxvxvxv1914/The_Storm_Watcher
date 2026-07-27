@@ -916,6 +916,7 @@ const is_: Record<string, string> = {
   'alerts.impact.label': 'Hvað þetta þýðir fyrir þig',
   'alerts.liveUpdated': 'Í beinni · uppfært',
   'alerts.technical': 'Tæknilegar upplýsingar frá NOAA',
+  'alerts.showMore': 'Sýna {n} í viðbót',
   'alerts.etaBar': 'Kemur ~{eta}k',
   'alerts.arrivedBar': 'Sólstormurinn er kominn',
   'alerts.impact.geoStorm.high': 'Norðurljós sýnileg frá Suður-Evrópu og stórum hluta Norður-Ameríku. Mögulegar truflanir á rafkerfi og GPS.',

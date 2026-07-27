@@ -924,6 +924,7 @@ const fr: Record<string, string> = {
   'alerts.impact.label': 'Ce que cela signifie pour vous',
   'alerts.liveUpdated': 'En direct · mis à jour',
   'alerts.technical': 'Détails techniques de la NOAA',
+  'alerts.showMore': 'Afficher {n} de plus',
   'alerts.etaBar': 'Arrivée dans ~{eta}h',
   'alerts.arrivedBar': 'La tempête solaire est arrivée',
   'alerts.impact.geoStorm.high': "Aurore visible depuis le sud de l'Europe et une grande partie de l'Amérique du Nord. Perturbations du réseau électrique et du GPS possibles.",

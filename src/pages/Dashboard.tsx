@@ -538,15 +538,16 @@ const Dashboard = () => {
 
             if (id === 'kp') return (
               <div key="kp" {...dragProps} data-tour="kp-card" className={`group relative glass-surface rounded-2xl p-3 sm:p-6 ${
-                kpValue >= 5 ? 'glow-red' : kpValue >= 4 ? 'glow-orange' : 'glow-green'
+                kpValue >= 7 ? 'glow-red' : kpValue >= 5 ? 'glow-orange' : 'glow-green'
               } hover:scale-105 transition-transform ${dropRing}`}>
                 {dragHandle}
                 <InfoTooltip text={t('dashboard.tooltip.kp')} />
                 <div className="flex items-center gap-2 mb-2 sm:mb-4">
+                  {/* Icon background mirrors the KpGauge bands (and the status badge below). */}
                   <div className={`w-8 h-8 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center ${
-                    kpValue >= 5 ? 'bg-gradient-to-br from-[#ef4444] to-[#dc2626]' :
-                    kpValue >= 4 ? 'bg-gradient-to-br from-[#f97316] to-[#ea580c]' :
-                    kpValue >= 2 ? 'bg-gradient-to-br from-[#eab308] to-[#10b981]' :
+                    kpValue >= 7 ? 'bg-gradient-to-br from-[#ef4444] to-[#dc2626]' :
+                    kpValue >= 5 ? 'bg-gradient-to-br from-[#f97316] to-[#ea580c]' :
+                    kpValue >= 4 ? 'bg-gradient-to-br from-[#eab308] to-[#ca8a04]' :
                     'bg-gradient-to-br from-[#10b981] to-[#059669]'
                   }`}>
                     <Activity className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
@@ -756,7 +757,8 @@ const Dashboard = () => {
               {stormEvents.map((ev, i) => {
                 const durationH = Math.round((ev.end.getTime() - ev.start.getTime()) / 3_600_000);
                 const g = ev.peakKp >= 9 ? 'G5' : ev.peakKp >= 8 ? 'G4' : ev.peakKp >= 7 ? 'G3' : ev.peakKp >= 6 ? 'G2' : 'G1';
-                const color = ev.peakKp >= 7 ? '#ef4444' : ev.peakKp >= 6 ? '#f97316' : '#eab308';
+                // Events only exist for Kp>=5, so red at G3+ (7) and orange for G1–G2 — matches the KpGauge bands.
+                const color = ev.peakKp >= 7 ? '#ef4444' : '#f97316';
                 return (
                   <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white/3 border border-white/5">
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 font-black text-sm text-white"

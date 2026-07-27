@@ -1,0 +1,9 @@
+/* Localized Info.plist strings — permission dialogs and home-screen quick actions. */
+
+"NSLocationWhenInUseUsageDescription" = "The Storm Watcher notar staðsetningu þína til að sýna staðbundna UV-vísitölu, sólarupprás/sólsetur og sýnileika norðurljósa þar sem þú ert.";
+"NSCameraUsageDescription" = "The Storm Watcher notar myndavélina fyrir norðurljósamyndir í samfélagsgalleríið og prófílmyndina þína.";
+"NSPhotoLibraryAddUsageDescription" = "The Storm Watcher vistar norðurljósamyndir í myndasafninu þínu.";
+"NSPhotoLibraryUsageDescription" = "The Storm Watcher fær aðgang að myndasafninu þínu til að deila norðurljósa- og veðurmyndum.";
+"Aurora Forecast" = "Norðurljósaspá";
+"Storm Alerts" = "Stormviðvaranir";
+"Log Mood" = "Skrá líðan";

@@ -1,0 +1,9 @@
+/* Localized Info.plist strings — permission dialogs and home-screen quick actions. */
+
+"NSLocationWhenInUseUsageDescription" = "The Storm Watcher używa Twojej lokalizacji, aby pokazywać lokalny indeks UV, godziny wschodu/zachodu słońca i widoczność zorzy tam, gdzie jesteś.";
+"NSCameraUsageDescription" = "The Storm Watcher używa aparatu do zdjęć zorzy do galerii społeczności i Twojego zdjęcia profilowego.";
+"NSPhotoLibraryAddUsageDescription" = "The Storm Watcher zapisuje zrzuty zorzy w Twojej bibliotece zdjęć.";
+"NSPhotoLibraryUsageDescription" = "The Storm Watcher uzyskuje dostęp do Twojej biblioteki zdjęć, aby udostępniać zdjęcia zorzy i pogody.";
+"Aurora Forecast" = "Prognoza zorzy";
+"Storm Alerts" = "Alerty burzowe";
+"Log Mood" = "Zapisz nastrój";

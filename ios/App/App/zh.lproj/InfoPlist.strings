@@ -1,0 +1,9 @@
+/* Localized Info.plist strings — permission dialogs and home-screen quick actions. */
+
+"NSLocationWhenInUseUsageDescription" = "The Storm Watcher 使用您的位置来显示当地紫外线指数、日出日落时间以及您所在地的极光可见度。";
+"NSCameraUsageDescription" = "The Storm Watcher 使用相机拍摄极光照片，用于社区图库和您的头像。";
+"NSPhotoLibraryAddUsageDescription" = "The Storm Watcher 将极光截图保存到您的照片图库。";
+"NSPhotoLibraryUsageDescription" = "The Storm Watcher 访问您的照片图库以分享极光和天气照片。";
+"Aurora Forecast" = "极光预报";
+"Storm Alerts" = "磁暴警报";
+"Log Mood" = "记录心情";

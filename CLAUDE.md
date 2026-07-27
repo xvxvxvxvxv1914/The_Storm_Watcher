@@ -2,6 +2,12 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Отговори
+
+Кратко и ясно. Без дълги обяснения, без изброяване на алтернативи, които няма да следваш. Казвай какво си направил и какъв е резултатът.
+
+Изключение: когато има намерен бъг, риск или нещо непотвърдено — това се казва изрично, дори да удължи отговора. Кратко не значи да се премълчава лоша новина.
+
 ## Commands
 
 ```bash
@@ -23,6 +29,39 @@ Mobile (requires Xcode):
 ```bash
 npm run ios:open     # Build + sync + open Xcode
 npm run ios:livereload  # Live reload on device
+```
+
+Android — gradle pins JDK 21, and the only system JDK is Temurin 25, so
+`./gradlew` fails with "Cannot find a Java installation matching {languageVersion=21}"
+unless you point it at Android Studio's bundled JBR:
+```bash
+npm run build && npx cap sync android
+cd android && JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home" \
+  ./gradlew installDebug     # assembleDebug to build without installing
+```
+
+iOS device build (headless). **The Apple team is free/personal**, which cannot sign
+Push Notifications or Associated Domains — a plain build fails at signing. Override
+the entitlements to app-groups-only (App Groups *is* provisioned); never edit
+`App.entitlements` itself:
+```bash
+npx cap sync ios
+cd ios/App && xcodebuild -project App.xcodeproj -scheme App -configuration Debug \
+  -destination 'id=<device-udid>' -allowProvisioningUpdates \
+  CODE_SIGN_ENTITLEMENTS=/tmp/AppGroupsOnly.entitlements build
+xcrun devicectl device install app --device <udid> <path>/App.app
+```
+Free-team provisioning profiles expire ~7 days after they are issued; the app stops
+launching until rebuilt. Profiles live in `~/Library/Developer/Xcode/UserData/Provisioning Profiles`
+(Xcode 16 moved them — the old `~/Library/MobileDevice/…` path is empty and misleading).
+
+Read the shared App Group cache off a connected device (useful for checking what the
+widget actually sees):
+```bash
+xcrun devicectl device copy from --device <udid> --user mobile \
+  --domain-type appGroupDataContainer --domain-identifier group.com.stormwatcher.app \
+  --source Library/Preferences/group.com.stormwatcher.app.plist --destination /tmp/ag.plist
+plutil -p /tmp/ag.plist
 ```
 
 ## Architecture
@@ -74,8 +113,20 @@ Custom service worker at `src/sw.ts` using Workbox. Heavy 3D chunks (`globe-vend
 ### Capacitor (mobile)
 `CapacitorHttp` is enabled globally — it patches `fetch()` on native to bypass WKWebView CORS for third-party APIs. This means native builds can call NOAA/GFZ/NIGGG directly without going through the Vercel proxy.
 
+### iOS widget data flow
+The widget does **not** receive data from the React app — there is no JS→widget channel. Two independent Swift paths fill it, and both must agree with what the app shows:
+
+1. `AppDelegate.refreshWidgetData()` — runs every 60s while the app is foregrounded, plus a `BGAppRefresh` task (~15 min, heavily throttled by iOS). Writes the App Group cache and calls `WidgetCenter.reloadTimelines(ofKind: "StormWidget")`.
+2. `KpProvider.fetchAll()` in `StormWidget.swift` — reads the cache when fresh (`sharedDataMaxAge`, 5 min) and otherwise fetches on its own. This is the path that runs hours after the app was last opened, so it is the one that decides what the widget usually displays.
+
+Both go through **`ios/App/StormWidget/KpSource.swift`**, a file shared by the App and StormWidget targets (like `StormActivityAttributes.swift` — one `PBXFileReference`, one `PBXBuildFile` per target). It mirrors the JS cascade in `getKpIndex`: **GFZ primary, NOAA fallback**.
+
+Keeping that source aligned is load-bearing, not cosmetic. GFZ publishes stable 3-hour bins; NOAA's `estimated_kp` is a per-minute estimate that swings between them (0.33 → 0.67 → 0.33 across consecutive minutes while GFZ held 0.333). When the widget fetched NOAA while the app read GFZ, the two surfaces showed different numbers. **Change one path's endpoint and you must change the other**, or the divergence comes straight back.
+
+Cache keys in `group.com.stormwatcher.app`: `widget_kp` / `widget_updated`, and `widget_wind` / `widget_wind_updated`. Kp and wind carry separate timestamps deliberately — they used to be written only as a pair, so a solar-wind outage discarded a perfectly good Kp. `-1` is the "no data" sentinel; **Kp 0.0 is a real ultra-quiet reading**, so freshness (never the value) decides whether the cache is usable.
+
 ### i18n
-Translation keys live in `src/locales/{en,bg,de,es,fr,ja,ru,zh}.ts` as flat `Record<string, string>`. The `useLanguage()` hook provides `t(key)`. All 8 locales must stay in sync — there is a completeness test at `src/locales/localeCompleteness.test.ts`.
+Translation keys live in `src/locales/{en,bg,da,de,es,fi,fr,is,ja,ko,no,pl,ru,sv,uk,zh}.ts` as flat `Record<string, string>`. The `useLanguage()` hook provides `t(key)`. All 16 locales must stay in sync — there is a completeness test at `src/locales/localeCompleteness.test.ts`. FAQ long-form content lives separately in `src/content/faqContent.ts` (positionally indexed per language — edits must hit the same index in all 16 blocks).
 
 ### Build chunking
 Manual chunks in `vite.config.ts` keep the initial bundle small:
@@ -103,26 +154,26 @@ watchOS companion app за The Storm Watcher. Данните вече са в Ap
 
 **Имплементация (всичко нативен Swift/SwiftUI):**
 1. Добави watchOS target в Xcode (`StormWatcherWatch` extension)
-2. App Group sharing — чете `widget_kp`, `widget_wind`, `widget_updated` от `group.com.stormwatcher.app`
+2. App Group sharing — чете `widget_kp`/`widget_updated` и `widget_wind`/`widget_wind_updated` от `group.com.stormwatcher.app`. Преизползвай `KpSource.swift` (виж „iOS widget data flow") вместо нов fetch — иначе часовникът ще показва различно число от приложението, точно както widget-ът правеше до 2026-07-20.
 3. WatchConnectivity (WCSession) за live sync от iOS при отворено приложение
 4. SwiftUI интерфейс: тъмен фон, aurora зелено (#10b981), orange (#f97316) за high Kp
 5. Complications в `CLKComplicationDescriptor` формат
 
 ## TODO / Pending Work
 
-### Mobile одит 2026-06-11 — оставащи задачи (по приоритет)
-Одитът поправи: NSCameraUsageDescription, launch-time permission промпт, widget версии (project-level), storm safe-area падинг, deep link allowlist, дублирани push listener-и, autoVerify, счупен noaaApi тест.
+### Mobile одити 2026-06-11 и 2026-07-19/20 — статус
+Поправено дотук: NSCameraUsageDescription, launch-time permission промпт, widget версии, storm safe-area падинг, deep link allowlist, дублирани push listener-и, autoVerify, Kp 0.0 widget логика, пълна локализация на widget + Live Activity (16 езика), CFBundleLocalizations, InfoPlist.strings (16 lproj), universal links (AASA + entitlement + App.tsx handler), **CODE_SIGN_ENTITLEMENTS верзан** (беше сирак — build-овете се подписваха без app groups/aps!), Android FCM код (manifest permission, hook без iOS gate, FCM v1 в send-kp-alerts). Live Activity tap → /alerts е свободна страница (не paywall) — решено.
 
-**Остава:**
-1. **Android FCM push (критично)** — Android няма НИКАКВИ известия, дори за Pro:
-   - Добави `google-services.json` (Firebase Console) в `android/app/`
-   - Добави `<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />` в AndroidManifest.xml (Android 13+)
-   - Махни iOS gate-а в `src/hooks/usePushNotifications.ts` (`if (!isIos()) return`)
-   - Добави FCM изпращане в `supabase/functions/send-kp-alerts` (сега е само APNs)
-2. **Android Glance widget** — iOS има 6 widget формата + Live Activity, Android нула. Kotlin Glance widget с Kp + 24h прогноза; дизайнът копира iOS small/medium widget-а; същите NOAA endpoints.
-3. **Android 15 edge-to-edge тест** — targetSdk 35 игнорира `statusBarColor`; `env(safe-area-inset-top)` в Android WebView често е 0 → съдържанието може да влиза под status bar-а. Тест на API 35 емулатор/устройство.
-4. **Live Activity tap → paywall** — `stormwatcher://alerts` (Live Activity) и widget tap към `/aurora` са Pro-gated; free потребител от lock screen-а удря paywall. Реши: умишлен funnel или пренасочване към `/dashboard`.
-5. **Widget полиш** — (а) Kp = 0.0 се третира като "няма данни" (`ck > 0`/`v > 0` проверки в StormWidget.swift и AppDelegate.swift); (б) непреведени стрингове в widget-а: "No signal", "Kp SCALE", G-описанията в large widget ("G3 — Strong").
+**Остава (изисква акаунти/устройства):**
+1. **Платено Apple Developer членство** — ПРЕДПОСТАВКА за всичко останало по iOS. Установено 2026-07-20: екип `2W6YCTFKNA` е **безплатен/личен**, не платен. Xcode отказва: „Personal development teams do not support the Associated Domains and Push Notifications capabilities".
+   Това обезсмисля предишната формулировка на тази точка („един Xcode GUI build да добави capability-тата") — GUI-ят удря същата стена, проблемът не е headless vs GUI, а правата на екипа. Блокира: push нотификации, universal links, Live Activity push токени (`ActivityInput error 0` вероятно е точно оттук), TestFlight и App Store.
+   Дотогава device build-овете минават с app-groups-only entitlements override (виж Commands) — App Groups работи, значи widget-ът и Live Activity Phase A са тестваеми.
+2. **Android FCM активация** — Firebase Console: `google-services.json` в `android/app/`; service account JSON като `GOOGLE_SERVICE_ACCOUNT` secret в Supabase; `supabase functions deploy send-kp-alerts`. Кодът е готов и guard-нат — без secret-а функцията е байт-идентична.
+   **ЗАДЪЛЖИТЕЛНО след добавяне на `google-services.json`:** махни `if (isAndroid()) return;` от `register()` в `src/hooks/usePushNotifications.ts`. Този gate е временен — без него `register()` хвърля native `IllegalStateException` („Default FirebaseApp is not initialized"), която JS не може да хване и която убива процеса ~3s след старт (потвърдено на Galaxy A34 / Android 16, 2026-07-20). Докато gate-ът стои, Android push не работи изобщо.
+3. **assetlinks.json** — още е с `YOUR_SHA256_FINGERPRINT_HERE`; SHA-256 от Play Console → Setup → App signing.
+4. **Android Glance widget** — iOS има 6 widget формата + Live Activity, Android нула. Kotlin Glance widget с Kp + 24h прогноза; дизайнът копира iOS small/medium widget-а; същите NOAA endpoints.
+5. ~~**Android 15 edge-to-edge тест**~~ — проверено 2026-07-20 на Galaxy A34 / **Android 16 (API 36)**, тъмна тема: header-ът започва под статус бара, таб барът стои над системната навигация, няма отрязване. Уговорка: гледан е един екран (UV Index), не пълен обход на всички страници и не в светла тема.
+6. **Push-to-start Live Activity (iOS 17.2+)** — сървърът да вдига Live Activity при буря без отворено приложение; тества се само в TestFlight (dev-signed build-ове не дават push токени).
 
 ### Mobile App Payments (преди пускане в App Store / Play Store)
 IAP инфраструктурата е готова — остава само plugin install + конфигурация в магазините:

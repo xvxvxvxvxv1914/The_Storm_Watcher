@@ -8,5 +8,11 @@
 	</array>
 	<key>aps-environment</key>
 	<string>production</string>
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:thestormwatcher.com</string>
+		<string>applinks:www.thestormwatcher.com</string>
+		<string>webcredentials:thestormwatcher.com</string>
+	</array>
 </dict>
 </plist>

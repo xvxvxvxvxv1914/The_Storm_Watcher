@@ -6,35 +6,33 @@ import { useLanguage } from '../contexts/LanguageContext';
 import StarField from '../components/StarField';
 import { faqContent } from '../content/faqContent';
 
-// English faqData is the canonical source for icons and category keys
-const faqData = [
-  { category: 'Aurora Basics', icon: <Sparkles className="w-5 h-5 text-[#10b981]" /> },
-  { category: 'Aurora Basics', icon: <Sparkles className="w-5 h-5 text-[#10b981]" /> },
-  { category: 'Kp Index', icon: <Zap className="w-5 h-5 text-[#f97316]" /> },
-  { category: 'Kp Index', icon: <Zap className="w-5 h-5 text-[#f97316]" /> },
-  { category: 'Solar Wind', icon: <Wind className="w-5 h-5 text-[#3b82f6]" /> },
-  { category: 'Solar Wind', icon: <Wind className="w-5 h-5 text-[#3b82f6]" /> },
-  { category: 'Viewing Tips', icon: <Eye className="w-5 h-5 text-[#a855f7]" /> },
-  { category: 'Viewing Tips', icon: <Eye className="w-5 h-5 text-[#a855f7]" /> },
-  { category: 'Space Weather', icon: <Sun className="w-5 h-5 text-[#fbbf24]" /> },
-  { category: 'Space Weather', icon: <Sun className="w-5 h-5 text-[#fbbf24]" /> },
-  { category: 'Moon & Darkness', icon: <Moon className="w-5 h-5 text-[#94a3b8]" /> },
-  { category: 'Kp Index', icon: <Zap className="w-5 h-5 text-[#f97316]" /> },
-  { category: 'Kp Index', icon: <Zap className="w-5 h-5 text-[#f97316]" /> },
-  { category: 'Kp Index', icon: <Zap className="w-5 h-5 text-[#f97316]" /> },
-  { category: 'Space Weather', icon: <Sun className="w-5 h-5 text-[#fbbf24]" /> },
-  { category: 'Space Weather', icon: <Sun className="w-5 h-5 text-[#fbbf24]" /> },
-  { category: 'Space Weather', icon: <Sun className="w-5 h-5 text-[#fbbf24]" /> },
-  { category: 'Solar Wind', icon: <Wind className="w-5 h-5 text-[#3b82f6]" /> },
-  { category: 'Solar Wind', icon: <Wind className="w-5 h-5 text-[#3b82f6]" /> },
-  { category: 'Aurora Basics', icon: <Sparkles className="w-5 h-5 text-[#10b981]" /> },
-  { category: 'Aurora Basics', icon: <Sparkles className="w-5 h-5 text-[#10b981]" /> },
-  { category: 'Viewing Tips', icon: <Eye className="w-5 h-5 text-[#a855f7]" /> },
-  { category: 'Viewing Tips', icon: <Eye className="w-5 h-5 text-[#a855f7]" /> },
-  { category: 'Viewing Tips', icon: <Eye className="w-5 h-5 text-[#a855f7]" /> },
-  { category: 'Location Guides', icon: <MapPin className="w-5 h-5 text-[#10b981]" /> },
-  { category: 'Location Guides', icon: <MapPin className="w-5 h-5 text-[#10b981]" /> },
+// Per-item category keys — positionally aligned with faqContent items in every language
+const faqCategories = [
+  'Aurora Basics',
+  'Aurora Basics',
+  'Solar Wind',
+  'Viewing Tips',
+  'Viewing Tips',
+  'Space Weather',
+  'Moon & Darkness',
+  'Kp Index',
+  'Kp Index',
+  'Kp Index',
+  'Space Weather',
+  'Space Weather',
+  'Space Weather',
+  'Solar Wind',
+  'Solar Wind',
+  'Aurora Basics',
+  'Aurora Basics',
+  'Viewing Tips',
+  'Viewing Tips',
+  'Viewing Tips',
+  'Location Guides',
+  'Location Guides',
 ];
+
+const categoryOrder = ['Aurora Basics', 'Kp Index', 'Solar Wind', 'Viewing Tips', 'Space Weather', 'Moon & Darkness', 'Location Guides'];
 
 const categoryIcons: Record<string, React.ReactNode> = {
   'Aurora Basics': <Sparkles className="w-5 h-5 text-[#10b981]" />,
@@ -66,8 +64,7 @@ const FAQ = () => {
     })),
   };
 
-  // Group by English category key (index in faqData) to preserve order
-  const categoryKeys = [...new Set(faqData.map(f => f.category))];
+  const categoryKeys = categoryOrder;
 
   return (
     <>
@@ -98,9 +95,9 @@ const FAQ = () => {
             {categories[categoryKey] ?? categoryKey}
           </h2>
           <div className="space-y-2">
-            {faqData
-              .map((meta, globalIndex) => ({ meta, globalIndex }))
-              .filter(({ meta }) => meta.category === categoryKey)
+            {faqCategories
+              .map((category, globalIndex) => ({ category, globalIndex }))
+              .filter(({ category }) => category === categoryKey)
               .map(({ globalIndex }) => {
                 const item = items[globalIndex];
                 if (!item) return null;

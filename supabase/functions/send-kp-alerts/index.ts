@@ -125,6 +125,93 @@ async function sendApns(
   }
 }
 
+// ── FCM (Android) helpers ────────────────────────────────────────────────────
+
+interface FcmServiceAccount {
+  project_id: string;
+  client_email: string;
+  private_key: string;
+}
+
+// OAuth2 access token from the Firebase service account (RS256 JWT bearer grant).
+async function getFcmAccessToken(sa: FcmServiceAccount): Promise<string> {
+  const pemBody = sa.private_key
+    .replace(/-----BEGIN PRIVATE KEY-----/g, '')
+    .replace(/-----END PRIVATE KEY-----/g, '')
+    .replace(/\\n/g, '')
+    .replace(/\s/g, '');
+  const keyBytes = Uint8Array.from(atob(pemBody), c => c.charCodeAt(0));
+
+  const privateKey = await crypto.subtle.importKey(
+    'pkcs8',
+    keyBytes,
+    { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
+    false,
+    ['sign'],
+  );
+
+  const b64url = (obj: object) =>
+    btoa(JSON.stringify(obj)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+
+  const nowSec = Math.floor(Date.now() / 1000);
+  const header = b64url({ alg: 'RS256', typ: 'JWT' });
+  const payload = b64url({
+    iss: sa.client_email,
+    scope: 'https://www.googleapis.com/auth/firebase.messaging',
+    aud: 'https://oauth2.googleapis.com/token',
+    iat: nowSec,
+    exp: nowSec + 3600,
+  });
+  const toSign = `${header}.${payload}`;
+
+  const sigRaw = await crypto.subtle.sign('RSASSA-PKCS1-v1_5', privateKey, new TextEncoder().encode(toSign));
+  const sigB64 = btoa(String.fromCharCode(...new Uint8Array(sigRaw)))
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+
+  const res = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+      assertion: `${toSign}.${sigB64}`,
+    }),
+  });
+  if (!res.ok) throw new Error(`FCM OAuth failed: ${res.status}`);
+  const { access_token } = await res.json() as { access_token: string };
+  return access_token;
+}
+
+async function sendFcm(
+  projectId: string,
+  accessToken: string,
+  deviceToken: string,
+  title: string,
+  body: string,
+  data: Record<string, string>,
+): Promise<{ ok: boolean; gone: boolean }> {
+  try {
+    const res = await fetch(`https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`, {
+      method: 'POST',
+      headers: {
+        'authorization': `Bearer ${accessToken}`,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        message: {
+          token: deviceToken,
+          notification: { title, body },
+          data,
+          android: { priority: 'HIGH', notification: { sound: 'default' } },
+        },
+      }),
+    });
+    // 404 = UNREGISTERED (token dead), 400 = invalid token format → drop it
+    return { ok: res.ok, gone: res.status === 404 || res.status === 400 };
+  } catch {
+    return { ok: false, gone: false };
+  }
+}
+
 // Storm threshold and G-level mapping mirror the client (useStormLiveActivity).
 const STORM_THRESHOLD = 5;
 function gLevelOf(kp: number): number {
@@ -192,6 +279,19 @@ Deno.serve(async (req: Request) => {
   const apnsBundleId = Deno.env.get('APNS_BUNDLE_ID') ?? 'com.stormwatcher.app';
 
   const apnsEnabled = !!(apnsP8Key && apnsKeyId && apnsTeamId);
+
+  // Android FCM — enabled once the GOOGLE_SERVICE_ACCOUNT secret (full service
+  // account JSON from Firebase Console) is configured.
+  let fcmSa: FcmServiceAccount | null = null;
+  const fcmSaRaw = Deno.env.get('GOOGLE_SERVICE_ACCOUNT');
+  if (fcmSaRaw) {
+    try {
+      fcmSa = JSON.parse(fcmSaRaw) as FcmServiceAccount;
+    } catch {
+      console.error('GOOGLE_SERVICE_ACCOUNT is not valid JSON — FCM disabled');
+    }
+  }
+  const fcmEnabled = !!fcmSa;
 
   if (!vapidPublicKey || !vapidPrivateKey) {
     console.error('VAPID keys not configured');
@@ -286,8 +386,8 @@ Deno.serve(async (req: Request) => {
     }
   }
 
-  // 3. Native push (device_push_tokens — iOS APNs)
-  if (apnsEnabled) {
+  // 3. Native push (device_push_tokens — iOS APNs + Android FCM)
+  if (apnsEnabled || fcmEnabled) {
     const { data: tokens, error: tokensError } = await supabase
       .from('device_push_tokens')
       .select('id, token, platform, threshold_kp, last_notified_at, lat, lon, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
@@ -298,33 +398,51 @@ Deno.serve(async (req: Request) => {
     if (tokensError) {
       console.error('Device tokens query failed:', tokensError.message);
     } else if (tokens && tokens.length > 0) {
-      const apnsJWT = await buildApnsJWT(apnsP8Key!, apnsKeyId!, apnsTeamId!);
+      const eligible = (tokens as unknown as DeviceToken[]).filter(t => {
+        if (t.platform === 'ios' && !apnsEnabled) return false;
+        if (t.platform === 'android' && !fcmEnabled) return false;
+        if (inQuietHours(t.profiles, t.tz_offset_min)) return false;
+        if (t.lat !== null && t.lon !== null) {
+          return calcAuroraVisibility(t.lat, t.lon, currentKp) > 0;
+        }
+        return true; // unknown location → send
+      });
+
+      const needApns = apnsEnabled && eligible.some(t => t.platform === 'ios');
+      const needFcm  = fcmEnabled  && eligible.some(t => t.platform === 'android');
+
+      const apnsJWT = needApns ? await buildApnsJWT(apnsP8Key!, apnsKeyId!, apnsTeamId!) : null;
+      let fcmToken: string | null = null;
+      if (needFcm) {
+        try {
+          fcmToken = await getFcmAccessToken(fcmSa!);
+        } catch (err) {
+          console.error('FCM OAuth failed:', err);
+        }
+      }
+
+      const title = `Geomagnetic Storm — Kp ${kpLabel}`;
       const expiredTokenIds: string[] = [];
 
       await Promise.allSettled(
-        (tokens as unknown as DeviceToken[]).filter(t => {
-          if (t.platform !== 'ios') return false;
-          if (inQuietHours(t.profiles, t.tz_offset_min)) return false;
-          if (t.lat !== null && t.lon !== null) {
-            return calcAuroraVisibility(t.lat, t.lon, currentKp) > 0;
+        eligible.map(async (t) => {
+          const body = `Kp has reached ${kpLabel}, above your threshold of ${t.threshold_kp}.`;
+          let result: { ok: boolean; gone: boolean };
+          if (t.platform === 'ios' && apnsJWT) {
+            result = await sendApns(t.token, apnsJWT, apnsBundleId, title, body, { url: '/dashboard', kp: currentKp });
+          } else if (t.platform === 'android' && fcmToken) {
+            // FCM data values must be strings
+            result = await sendFcm(fcmSa!.project_id, fcmToken, t.token, title, body, { url: '/dashboard', kp: String(currentKp) });
+          } else {
+            return;
           }
-          return true; // unknown location → send
-        }).map(async (t) => {
-          const { ok, gone } = await sendApns(
-            t.token,
-            apnsJWT,
-            apnsBundleId,
-            `Geomagnetic Storm — Kp ${kpLabel}`,
-            `Kp has reached ${kpLabel}, above your threshold of ${t.threshold_kp}.`,
-            { url: '/dashboard', kp: currentKp },
-          );
-          if (ok) {
+          if (result.ok) {
             await supabase
               .from('device_push_tokens')
               .update({ last_notified_at: now })
               .eq('id', t.id);
             nativeSent++;
-          } else if (gone) {
+          } else if (result.gone) {
             expiredTokenIds.push(t.id);
           }
         })
@@ -374,9 +492,9 @@ Deno.serve(async (req: Request) => {
     }
   }
 
-  console.log(`Kp=${kpLabel} | web=${sent} | native=${nativeSent} | liveActivity=${liveActivitySent} | apns=${apnsEnabled}`);
+  console.log(`Kp=${kpLabel} | web=${sent} | native=${nativeSent} | liveActivity=${liveActivitySent} | apns=${apnsEnabled} | fcm=${fcmEnabled}`);
   return new Response(
-    JSON.stringify({ sent, nativeSent, liveActivitySent, kp: currentKp, apnsEnabled }),
+    JSON.stringify({ sent, nativeSent, liveActivitySent, kp: currentKp, apnsEnabled, fcmEnabled }),
     { headers: { 'Content-Type': 'application/json' } }
   );
 });

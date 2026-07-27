@@ -1,11 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { isNative } from '../utils/platform';
 
 const CookieConsent = () => {
   const { t } = useLanguage();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    // Native apps declare data use via the App Store / Play privacy labels, not
+    // a web cookie banner — showing it in-app looks out of place and eats the
+    // bottom of every screen until dismissed.
+    if (isNative()) return;
     const consent = localStorage.getItem('cookie-consent');
     if (!consent) {
       // Small delay so it doesn't flash on first paint

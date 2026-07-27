@@ -2,16 +2,17 @@ import WidgetKit
 import SwiftUI
 import ActivityKit
 
-// Storm severity → brand colour. G5/G2 use one-off shades between the main
-// brand constants to keep the full gradient visually distinguishable.
+// Storm severity → brand colour. Matches the app's Kp bands (G1=Kp5 orange,
+// G3=Kp7 red); escalates orange→red with one-off deeper shades so all five
+// G-levels stay visually distinguishable.
 @available(iOS 16.2, *)
 private func gColor(_ g: Int) -> Color {
     switch g {
-    case 5: return Color(hex: "#dc2626") // extreme — deeper than brandRed
-    case 4: return .brandRed
-    case 3: return .brandOrange
-    case 2: return Color(hex: "#f59e0b") // moderate — between brandOrange and brandAmber
-    case 1: return .brandAmber
+    case 5: return Color(hex: "#b91c1c") // extreme — deepest red
+    case 4: return Color(hex: "#dc2626") // severe — deeper than brandRed
+    case 3: return .brandRed             // red band starts (Kp7)
+    case 2: return Color(hex: "#ea580c") // deep orange
+    case 1: return .brandOrange          // orange band starts (Kp5)
     default: return .brandEmerald
     }
 }
@@ -30,17 +31,9 @@ private func kpColor(_ kp: Double) -> Color {
 @available(iOS 16.2, *)
 private func gBadge(_ g: Int) -> String { g == 0 ? "ACTIVE" : "G\(g)" }
 
+// Localized storm phrase — WL lives in StormWidget.swift (same target).
 @available(iOS 16.2, *)
-private func gName(_ g: Int) -> String {
-    switch g {
-    case 5: return "Extreme storm"
-    case 4: return "Severe storm"
-    case 3: return "Strong storm"
-    case 2: return "Moderate storm"
-    case 1: return "Minor storm"
-    default: return "Geomagnetic activity"
-    }
-}
+private func gName(_ g: Int) -> String { WL.stormSubtitle(g) }
 
 // Reusable bits
 @available(iOS 16.2, *)

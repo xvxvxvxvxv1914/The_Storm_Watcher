@@ -3,7 +3,26 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDisplayName</key>
-	<string>StormWidget</string>
+	<string>Storm Watcher Widget</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>bg</string>
+		<string>da</string>
+		<string>de</string>
+		<string>es</string>
+		<string>fi</string>
+		<string>fr</string>
+		<string>is</string>
+		<string>ja</string>
+		<string>ko</string>
+		<string>no</string>
+		<string>pl</string>
+		<string>ru</string>
+		<string>sv</string>
+		<string>uk</string>
+		<string>zh</string>
+	</array>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

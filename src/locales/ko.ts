@@ -954,6 +954,7 @@ const ko: Record<string, string> = {
   'alerts.impact.label': '이것이 당신에게 의미하는 것',
   'alerts.liveUpdated': '라이브 · 업데이트',
   'alerts.technical': 'NOAA 기술 세부 정보',
+  'alerts.showMore': '{n}개 더 보기',
   'alerts.etaBar': '~{eta}시간 후 도착 예정',
   'alerts.arrivedBar': '태양 폭풍이 도착했습니다',
   'alerts.impact.geoStorm.high': '남부 유럽과 북미 대부분 지역에서 오로라가 관측될 수 있습니다. 전력망 및 GPS 장애 발생 가능.',

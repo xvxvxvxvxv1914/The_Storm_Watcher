@@ -916,6 +916,7 @@ const uk: Record<string, string> = {
   'alerts.impact.label': 'Що це означає для вас',
   'alerts.liveUpdated': 'Онлайн · оновлено',
   'alerts.technical': 'Технічні деталі NOAA',
+  'alerts.showMore': 'Показати ще {n}',
   'alerts.etaBar': 'Прибуває через ~{eta}год',
   'alerts.arrivedBar': 'Сонячна буря прибула',
   'alerts.impact.geoStorm.high': 'Полярне сяйво видно з Південної Європи та більшої частини Північної Америки. Можливі збої в електромережі та GPS.',

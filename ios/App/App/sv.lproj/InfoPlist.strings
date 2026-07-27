@@ -1,0 +1,9 @@
+/* Localized Info.plist strings — permission dialogs and home-screen quick actions. */
+
+"NSLocationWhenInUseUsageDescription" = "The Storm Watcher använder din plats för att visa lokalt UV-index, soluppgång/-nedgång och norrskenets synlighet där du är.";
+"NSCameraUsageDescription" = "The Storm Watcher använder kameran för norrskensbilder till communityns galleri och din profilbild.";
+"NSPhotoLibraryAddUsageDescription" = "The Storm Watcher sparar norrskensbilder i ditt fotobibliotek.";
+"NSPhotoLibraryUsageDescription" = "The Storm Watcher använder ditt fotobibliotek för att dela norrskens- och väderbilder.";
+"Aurora Forecast" = "Norrskensprognos";
+"Storm Alerts" = "Stormvarningar";
+"Log Mood" = "Logga humör";

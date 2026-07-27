@@ -924,6 +924,7 @@ const ru: Record<string, string> = {
   'alerts.impact.label': 'Что это означает для вас',
   'alerts.liveUpdated': 'Онлайн · обновлено',
   'alerts.technical': 'Технические данные NOAA',
+  'alerts.showMore': 'Показать ещё {n}',
   'alerts.etaBar': 'Прибывает через ~{eta}ч',
   'alerts.arrivedBar': 'Солнечный шторм прибыл',
   'alerts.impact.geoStorm.high': 'Северное сияние видно из Южной Европы и большей части Северной Америки. Возможны сбои в электросетях и GPS.',

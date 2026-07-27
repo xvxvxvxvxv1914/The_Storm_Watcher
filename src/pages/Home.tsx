@@ -157,7 +157,8 @@ const Home = () => {
       `${((i / (data.length - 1)) * w).toFixed(1)},${(h - (Math.min(v, 9) / 9) * h).toFixed(1)}`
     ).join(' ');
     const max = Math.max(...data);
-    const color = max >= 5 ? '#f97316' : max >= 3 ? '#eab308' : '#10b981';
+    // Mirror the KpGauge bands: red 7+, orange 5–7, yellow 4–5, green <4.
+    const color = max >= 7 ? '#ef4444' : max >= 5 ? '#f97316' : max >= 4 ? '#eab308' : '#10b981';
     return (
       <div className="flex flex-col items-center gap-1 mt-4">
         <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} className="overflow-visible">
@@ -328,9 +329,9 @@ const Home = () => {
                     <span className="text-xs text-amber-400/80">· {t('home.dataDelayed') || 'data may be delayed'}</span>
                   )}
                 </div>
-                <div className={`inline-block ${isStorm ? 'pulse-alert' : ''}`}>
+                <div className="inline-block">
                   <div
-                    className="text-8xl sm:text-[160px] font-bold leading-none"
+                    className={`text-8xl sm:text-[160px] font-bold leading-none ${isStorm ? 'pulse-number' : ''}`}
                     style={getKpGradientStyle(kpValue ?? 0)}
                   >
                     {kpValue?.toFixed(1) ?? '0.0'}
@@ -476,7 +477,7 @@ const Home = () => {
       {/* Storm Score */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="glass-surface rounded-3xl p-10 border border-[#f97316]/10 text-center">
-          <h2 className="text-3xl sm:text-2xl sm:text-4xl font-bold text-white mb-3 uppercase tracking-wide">
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3 uppercase tracking-wide">
             {t('home.stormScore.title')}
           </h2>
           <p className="text-[#94a3b8] max-w-xl mx-auto mb-10 leading-relaxed">
@@ -663,7 +664,7 @@ const Home = () => {
       {/* Features */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="text-center mb-14">
-          <h2 className="text-3xl sm:text-2xl sm:text-4xl font-bold text-white mb-4 uppercase tracking-wide">
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 uppercase tracking-wide">
             {t('home.features2.title')}
           </h2>
         </div>
@@ -745,12 +746,12 @@ const Home = () => {
               { name: 'ESA', sub: 'Space Weather Service', flag: 'eu' },
               { name: 'NIGGG', sub: 'Bulgaria Geophysics Institute', flag: 'bg' },
             ].map(source => (
-              <div key={source.name} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '16px 24px' }} className="relative text-left">
-                <img src={`https://flagcdn.com/32x24/${source.flag}.png`} alt={`${source.name} flag`} className="absolute top-3 right-3 rounded-sm shadow-sm" style={{ opacity: 0.8 }} width={32} height={24} />
-                <div className="text-xl font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.9)' }}>
+              <div key={source.name} className="relative text-left rounded-xl px-6 py-4 bg-white/[0.04] border border-white/8">
+                <img src={`https://flagcdn.com/32x24/${source.flag}.png`} alt={`${source.name} flag`} className="absolute top-3 right-3 rounded-sm shadow-sm opacity-80" width={32} height={24} />
+                <div className="text-xl font-semibold mb-1 text-white">
                   {source.name}
                 </div>
-                <div className="leading-snug" style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.75rem' }}>{source.sub}</div>
+                <div className="leading-snug text-xs text-white/50">{source.sub}</div>
               </div>
             ))}
           </div>
@@ -760,7 +761,7 @@ const Home = () => {
       {/* FAQ Section */}
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="text-center mb-14">
-          <h2 className="text-3xl sm:text-2xl sm:text-4xl font-bold text-white mb-4 uppercase tracking-wide">
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 uppercase tracking-wide">
             {t('home.faq.title')}
           </h2>
         </div>

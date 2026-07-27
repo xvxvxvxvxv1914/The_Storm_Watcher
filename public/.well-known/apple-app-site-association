@@ -1,11 +1,17 @@
 {
   "applinks": {
-    "apps": [],
     "details": [
       {
-        "appID": "TEAMID.com.stormwatcher.app",
-        "paths": ["*"]
+        "appIDs": ["2W6YCTFKNA.com.stormwatcher.app"],
+        "components": [
+          { "/": "/api/*", "exclude": true },
+          { "/": "/donki/*", "exclude": true },
+          { "/": "*" }
+        ]
       }
     ]
+  },
+  "webcredentials": {
+    "apps": ["2W6YCTFKNA.com.stormwatcher.app"]
   }
 }

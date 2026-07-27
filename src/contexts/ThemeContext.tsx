@@ -1,6 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { StatusBar, Style } from '@capacitor/status-bar';
+import { NavigationBar } from '@capgo/capacitor-navigation-bar';
+import { isAndroid } from '../utils/platform';
 
 type Theme = 'dark' | 'light';
 
@@ -28,6 +30,14 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     // Sync native status bar with theme (no-op on web)
     StatusBar.setStyle({ style: theme === 'light' ? Style.Light : Style.Dark }).catch(() => {});
     StatusBar.setBackgroundColor({ color: theme === 'light' ? '#eef2f8' : '#0a0a1a' }).catch(() => {});
+    // Android's system navigation bar isn't touched by the StatusBar plugin, so
+    // it otherwise stays dark (#0a0a1a) even in light theme. Colour it to match.
+    if (isAndroid()) {
+      NavigationBar.setNavigationBarColor({
+        color: theme === 'light' ? '#eef2f8' : '#0a0a1a',
+        darkButtons: theme === 'light',
+      }).catch(() => {});
+    }
   }, [theme]);
 
   const toggleTheme = () => setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));

@@ -21,12 +21,22 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!-- autoVerify applies only to http/https App Links, not custom schemes -->
+            <!-- Custom scheme: stormwatcher://alerts?kp=7 (widgets, push, OAuth). -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="stormwatcher" />
+            </intent-filter>
+            <!-- App Links: https://www.thestormwatcher.com/* opens the app.
+                 autoVerify checks /.well-known/assetlinks.json on the host — only
+                 www is declared because the apex 308-redirects to www. Needs the
+                 real release SHA-256 in assetlinks.json before verification passes. -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="www.thestormwatcher.com" />
             </intent-filter>
         </activity>
 
@@ -46,6 +56,8 @@
     <!-- Permissions -->
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Android 13+ runtime permission for push notifications (FCM) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-feature android:name="android.hardware.location.gps" android:required="false" />
