@@ -114,17 +114,18 @@ const DID_YOU_KNOW_KEYS = [
   'mood.fact.intuition',
 ];
 
+// Mirrors the KpGauge bands (see src/components/KpGauge.tsx).
 const getKpColor = (kp: number): string => {
   if (kp >= 7) return '#ef4444';
   if (kp >= 5) return '#f97316';
-  if (kp >= 3) return '#8b5cf6';
+  if (kp >= 4) return '#eab308';
   return '#10b981';
 };
 
 const getKpLabel = (kp: number, t: (k: string) => string) => {
   if (kp >= 7) return { label: t('mood.kp.severe') || 'Severe Storm', color: '#ef4444' };
   if (kp >= 5) return { label: t('mood.kp.storm') || 'Geomagnetic Storm', color: '#f97316' };
-  if (kp >= 3) return { label: t('mood.kp.unsettled') || 'Unsettled', color: '#8b5cf6' };
+  if (kp >= 4) return { label: t('mood.kp.unsettled') || 'Unsettled', color: '#eab308' };
   return { label: t('mood.kp.quiet') || 'Quiet', color: '#10b981' };
 };
 

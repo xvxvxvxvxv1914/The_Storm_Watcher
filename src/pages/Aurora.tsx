@@ -200,8 +200,8 @@ const Aurora = () => {
   const getVisibilityInfo = (kp: number) => {
     if (kp >= 7) return { latitude: 50, color: 'text-[#ef4444]', intensityKey: 'aurora.intensityVeryHigh', bgGlow: 'glow-red' };
     if (kp >= 6) return { latitude: 55, color: 'text-[#f97316]', intensityKey: 'aurora.intensityHigh', bgGlow: 'glow-orange' };
-    if (kp >= 5) return { latitude: 60, color: 'text-[#fbbf24]', intensityKey: 'aurora.intensityModerate', bgGlow: 'glow-orange' };
-    if (kp >= 4) return { latitude: 65, color: 'text-[#10b981]', intensityKey: 'aurora.intensityLow', bgGlow: 'glow-green' };
+    if (kp >= 5) return { latitude: 60, color: 'text-[#f97316]', intensityKey: 'aurora.intensityModerate', bgGlow: 'glow-orange' };
+    if (kp >= 4) return { latitude: 65, color: 'text-[#eab308]', intensityKey: 'aurora.intensityLow', bgGlow: 'glow-green' };
     return { latitude: 70, color: 'text-[#94a3b8]', intensityKey: 'aurora.intensityVeryLow', bgGlow: '' };
   };
 

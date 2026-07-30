@@ -32,10 +32,14 @@ const NIGHT_END = 6;
 const getKpColor = (kp: number) =>
   kp >= 7 ? '#ef4444' : kp >= 5 ? '#f97316' : kp >= 4 ? '#eab308' : kp >= 2 ? '#10b981' : '#059669';
 
+// G-scale is one level per Kp step from 5 up; colours follow the KpGauge bands.
 const getGLevel = (kp: number, t: (k: string) => string) => {
   if (kp >= 9) return { label: 'G5', color: '#dc2626' };
-  if (kp >= 7) return { label: 'G3', color: '#f97316' };
-  if (kp >= 5) return { label: 'G1', color: '#fbbf24' };
+  if (kp >= 8) return { label: 'G4', color: '#ef4444' };
+  if (kp >= 7) return { label: 'G3', color: '#ef4444' };
+  if (kp >= 6) return { label: 'G2', color: '#f97316' };
+  if (kp >= 5) return { label: 'G1', color: '#f97316' };
+  if (kp >= 4) return { label: 'Kp 4+', color: '#eab308' };
   if (kp >= 3) return { label: 'Kp 3+', color: '#10b981' };
   return { label: t('calendar.activity.quiet'), color: '#64748b' };
 };

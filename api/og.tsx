@@ -4,8 +4,10 @@ import React from 'react';
 
 export const config = { runtime: 'edge' };
 
+// Must mirror the KpGauge bands in src/components/KpGauge.tsx:
+// green <4 (calm), yellow 4–5 (active), orange 5–7 (G1–G2), red 7–9 (G3–G5).
 const KP_COLOR = (kp: number) =>
-  kp >= 7 ? '#ef4444' : kp >= 5 ? '#f97316' : kp >= 3 ? '#eab308' : '#10b981';
+  kp >= 7 ? '#ef4444' : kp >= 5 ? '#f97316' : kp >= 4 ? '#eab308' : '#10b981';
 
 const G_LEVEL = (kp: number) =>
   kp >= 9 ? 'G5' : kp >= 8 ? 'G4' : kp >= 7 ? 'G3' : kp >= 6 ? 'G2' : kp >= 5 ? 'G1' : null;
