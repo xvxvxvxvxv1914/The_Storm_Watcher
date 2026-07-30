@@ -26,12 +26,21 @@ const CATEGORIES = [
   { value: 'support',     label: 'Account support' },
 ];
 
+// Upper bounds mirror the DB-side CHECK constraint on contact_messages.
+// Keep in sync with the migration that enforces the same limits server-side.
+const MAX_NAME = 100;
+const MAX_EMAIL = 254;
+const MAX_MESSAGE = 5000;
+
 const Contact = () => {
   const { user } = useAuth();
   const [name, setName]         = useState('');
   const [email, setEmail]       = useState(user?.email ?? '');
   const [category, setCategory] = useState('general');
   const [message, setMessage]   = useState('');
+  // Honeypot: a real user never sees or fills this. A bot that auto-fills every
+  // field trips it, and we silently fake success without touching the DB.
+  const [website, setWebsite]   = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone]         = useState(false);
   const [error, setError]       = useState<string | null>(null);
@@ -41,11 +50,18 @@ const Contact = () => {
     setSubmitting(true);
     setError(null);
 
+    // Bot tripped the honeypot — pretend it worked, insert nothing.
+    if (website) {
+      setDone(true);
+      setSubmitting(false);
+      return;
+    }
+
     const { error: dbError } = await supabase.from('contact_messages').insert({
-      name: name.trim(),
-      email: email.trim(),
+      name: name.trim().slice(0, MAX_NAME),
+      email: email.trim().slice(0, MAX_EMAIL),
       category,
-      message: message.trim(),
+      message: message.trim().slice(0, MAX_MESSAGE),
       user_id: user?.id ?? null,
     });
 
@@ -98,6 +114,7 @@ const Contact = () => {
                 <input
                   type="text"
                   required
+                  maxLength={MAX_NAME}
                   value={name}
                   onChange={e => setName(e.target.value)}
                   placeholder="Your name"
@@ -111,6 +128,7 @@ const Contact = () => {
                 <input
                   type="email"
                   required
+                  maxLength={MAX_EMAIL}
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   placeholder="you@example.com"
@@ -150,10 +168,25 @@ const Contact = () => {
               <textarea
                 required
                 rows={6}
+                maxLength={MAX_MESSAGE}
                 value={message}
                 onChange={e => setMessage(e.target.value)}
                 placeholder="Tell us what's on your mind..."
                 className="w-full rounded-xl px-4 py-3 bg-white/5 border border-white/10 text-white placeholder-[#475569] focus:outline-none focus:border-[#10b981]/60 transition-colors resize-none"
+              />
+            </div>
+
+            {/* Honeypot — visually hidden, off-screen, excluded from tab order and
+                a11y tree. Real users never touch it; bots that fill every field do. */}
+            <div aria-hidden="true" className="absolute w-px h-px -left-[9999px] overflow-hidden">
+              <label htmlFor="website">Website</label>
+              <input
+                id="website"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                value={website}
+                onChange={e => setWebsite(e.target.value)}
               />
             </div>
 

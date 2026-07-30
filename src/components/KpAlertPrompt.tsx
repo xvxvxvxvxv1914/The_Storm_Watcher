@@ -40,12 +40,27 @@ export default function KpAlertPrompt() {
   const handleEnable = async () => {
     if (!isSupported) { setVisible(false); return; }
     const result = await Notification.requestPermission();
-    if (result === 'granted' && isSupported) {
-      new Notification(t('push.grantedTitle') || '🌌 Storm alerts enabled', {
+    if (result === 'granted') {
+      const title = t('push.grantedTitle') || '🌌 Storm alerts enabled';
+      const options: NotificationOptions = {
         body: t('push.grantedMsg') || "You'll receive alerts when Kp crosses your threshold.",
         icon: '/icons/icon-192.png',
         tag: 'kp-enabled',
-      });
+      };
+      // Android Chrome (and others) throw "Illegal constructor" on `new
+      // Notification()` even with permission — the only supported path there is
+      // ServiceWorkerRegistration.showNotification(). Prefer the SW, fall back to
+      // the constructor for browsers without one, and never let it throw.
+      try {
+        if ('serviceWorker' in navigator) {
+          const reg = await navigator.serviceWorker.ready;
+          await reg.showNotification(title, options);
+        } else {
+          new Notification(title, options);
+        }
+      } catch {
+        /* confirmation toast is best-effort; permission is already granted */
+      }
     }
     setVisible(false);
   };
