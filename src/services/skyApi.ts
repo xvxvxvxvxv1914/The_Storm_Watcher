@@ -1,5 +1,6 @@
 import { logError } from '../utils/logger';
 import { cached } from '../utils/apiCache';
+import { fetchJson } from '../utils/fetchJson';
 
 const TTL_SKY = 30 * 60 * 1000; // 30 min
 
@@ -10,18 +11,6 @@ export interface NightForecast {
   cloudCoverAvg: number | null; // null if location unknown
   isBest: boolean;
 }
-
-const fetchJson = async <T,>(url: string, timeoutMs = 10000): Promise<T> => {
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
-  try {
-    const res = await fetch(url, { signal: ctrl.signal });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json() as Promise<T>;
-  } finally {
-    clearTimeout(timer);
-  }
-};
 
 export interface SkyHour {
   time: string;

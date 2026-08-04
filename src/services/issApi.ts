@@ -1,21 +1,10 @@
 import * as satellite from 'satellite.js';
 import { logWarning } from '../utils/logger';
 import { cached } from '../utils/apiCache';
+import { fetchJson } from '../utils/fetchJson';
 
 const TTL_TLE    = 6 * 60 * 60 * 1000;  // 6 h — orbital elements change slowly
 const TTL_PASSES = 60 * 60 * 1000;       // 1 h
-
-const fetchJson = async <T,>(url: string, timeoutMs = 10000): Promise<T> => {
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
-  try {
-    const res = await fetch(url, { signal: ctrl.signal });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json() as Promise<T>;
-  } finally {
-    clearTimeout(timer);
-  }
-};
 
 export interface IssPosition {
   latitude: number;

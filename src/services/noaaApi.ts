@@ -1,5 +1,6 @@
 import type React from 'react';
 
+import { fetchJson } from '../utils/fetchJson';
 import { logWarning } from '../utils/logger';
 import { persistGet, persistSet } from '../utils/offlineCache';
 import { isNative } from '../utils/platform';
@@ -42,26 +43,8 @@ const cached = async <T,>(
 
 const nonEmpty = (data: unknown): boolean => Array.isArray(data) && data.length > 0;
 
-const getJson = async <T,>(url: string, timeoutMs = 10000, retries = 1): Promise<T> => {
-  const attempt = async (): Promise<T> => {
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), timeoutMs);
-    try {
-      const res = await fetch(url, { signal: ctrl.signal });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return res.json() as Promise<T>;
-    } finally {
-      clearTimeout(timer);
-    }
-  };
-  try {
-    return await attempt();
-  } catch (err) {
-    if (retries <= 0) throw err;
-    await new Promise(r => setTimeout(r, 1500));
-    return attempt();
-  }
-};
+const getJson = <T,>(url: string, timeoutMs = 10000, retries = 1): Promise<T> =>
+  fetchJson<T>(url, timeoutMs, retries);
 
 export interface KpIndexData {
   time_tag: string;
@@ -121,15 +104,7 @@ const getGfzKp3Day = (): Promise<GfzResponse> =>
     // Hard timeout so a cold-starting /api/gfz serverless function fails fast and
     // lets getKpIndex() fall back to NOAA, instead of hanging the homepage's Kp
     // poll indefinitely (a raw fetch has no timeout). The poll layer retries.
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 8000);
-    try {
-      const res = await fetch(url, { signal: ctrl.signal });
-      if (!res.ok) throw new Error(`GFZ HTTP ${res.status}`);
-      return (await res.json()) as GfzResponse;
-    } finally {
-      clearTimeout(timer);
-    }
+    return fetchJson<GfzResponse>(url, 8000);
   });
 
 export const getKpIndex = (): Promise<KpIndexData[]> =>

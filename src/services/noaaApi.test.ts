@@ -50,7 +50,14 @@ describe('NOAA cache + single-flight', () => {
     vi.unstubAllGlobals();
   });
 
-  const okJson = (data: unknown) => ({ ok: true, status: 200, json: async () => data });
+  // Mirrors a real Response: the services read the body with text() so the
+  // abort timer still covers the download (see utils/fetchJson).
+  const okJson = (data: unknown) => ({
+    ok: true,
+    status: 200,
+    text: async () => JSON.stringify(data),
+    json: async () => data,
+  });
 
   it('caches successive calls within TTL (1 fetch for 2 calls)', async () => {
     mockFetch.mockResolvedValue(okJson([{ time_tag: 't', kp_index: 3 }]));
