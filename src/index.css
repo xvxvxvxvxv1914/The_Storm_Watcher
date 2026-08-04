@@ -14,6 +14,9 @@ html {
   --tsw-fg-subtle:     #64748b;
   --tsw-surface-bg:    rgba(255, 255, 255, 0.03);
   --tsw-surface-border:rgba(255, 255, 255, 0.10);
+  /* Floating overlays (dropdowns). Kept in the same hue as --tsw-bg so they
+     read as a raised panel, not a blue one. */
+  --tsw-menu-bg:       rgba(8, 8, 16, 0.97);
 }
 
 html.light {
@@ -23,6 +26,7 @@ html.light {
   --tsw-fg-subtle:     #94a3b8;
   --tsw-surface-bg:    #ffffff;
   --tsw-surface-border:rgba(16, 185, 129, 0.12);
+  --tsw-menu-bg:       rgba(255, 255, 255, 0.97);
   color-scheme: light;
 }
 
