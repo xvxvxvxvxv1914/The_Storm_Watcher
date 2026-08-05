@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_description">Kp-индекс, солнечный ветер и прогноз на 24 часа.</string>
+    <string name="widget_kp_index">КП ИНДЕКС</string>
+    <string name="widget_forecast_24h">ПРОГНОЗ 24Ч</string>
+    <string name="widget_kp_scale">ШКАЛА KP</string>
+    <string name="widget_no_data">Нет данных</string>
+    <string name="widget_no_signal">Нет сигнала</string>
+    <string name="widget_quiet">СПОКОЙНО</string>
+    <string name="widget_storm_minor">Слабая</string>
+    <string name="widget_storm_moderate">Умеренная</string>
+    <string name="widget_storm_strong">Сильная</string>
+    <string name="widget_storm_severe">Суровая</string>
+    <string name="widget_storm_extreme">Экстремальная</string>
+</resources>

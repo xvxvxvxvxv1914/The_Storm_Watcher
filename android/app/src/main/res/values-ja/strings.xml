@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_description">ライブKp指数、太陽風、24時間予報。</string>
+    <string name="widget_kp_index">KP 指数</string>
+    <string name="widget_forecast_24h">24時間予報</string>
+    <string name="widget_kp_scale">KPスケール</string>
+    <string name="widget_no_data">データなし</string>
+    <string name="widget_no_signal">信号なし</string>
+    <string name="widget_quiet">静穏</string>
+    <string name="widget_storm_minor">小規模</string>
+    <string name="widget_storm_moderate">中規模</string>
+    <string name="widget_storm_strong">強</string>
+    <string name="widget_storm_severe">激しい</string>
+    <string name="widget_storm_extreme">極端</string>
+</resources>

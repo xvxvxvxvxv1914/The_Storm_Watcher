@@ -121,9 +121,31 @@ The widget does **not** receive data from the React app — there is no JS→wid
 
 Both go through **`ios/App/StormWidget/KpSource.swift`**, a file shared by the App and StormWidget targets (like `StormActivityAttributes.swift` — one `PBXFileReference`, one `PBXBuildFile` per target). It mirrors the JS cascade in `getKpIndex`: **GFZ primary, NOAA fallback**.
 
-Keeping that source aligned is load-bearing, not cosmetic. GFZ publishes stable 3-hour bins; NOAA's `estimated_kp` is a per-minute estimate that swings between them (0.33 → 0.67 → 0.33 across consecutive minutes while GFZ held 0.333). When the widget fetched NOAA while the app read GFZ, the two surfaces showed different numbers. **Change one path's endpoint and you must change the other**, or the divergence comes straight back.
+Keeping that source aligned is load-bearing, not cosmetic. GFZ publishes stable 3-hour bins; NOAA's `estimated_kp` is a per-minute estimate that swings between them (0.33 → 0.67 → 0.33 across consecutive minutes while GFZ held 0.333). When the widget fetched NOAA while the app read GFZ, the two surfaces showed different numbers. **There are now three implementations of this cascade** — `getKpIndex` in [src/services/noaaApi.ts](src/services/noaaApi.ts), `KpSource.swift`, and `KpSource.kt` (Android, see below). Change one endpoint and you must change all three, or the divergence comes straight back.
 
 Cache keys in `group.com.stormwatcher.app`: `widget_kp` / `widget_updated`, and `widget_wind` / `widget_wind_updated`. Kp and wind carry separate timestamps deliberately — they used to be written only as a pair, so a solar-wind outage discarded a perfectly good Kp. `-1` is the "no data" sentinel; **Kp 0.0 is a real ultra-quiet reading**, so freshness (never the value) decides whether the cache is usable.
+
+### Android widget (Glance)
+`android/app/src/main/java/com/stormwatcher/app/widget/` — a Jetpack Glance app
+widget, the Android counterpart of the iOS one. Three responsive layouts
+(2×2 / 4×2 / 4×4) instead of iOS's six families; Android has no lock-screen widgets.
+
+- **`KpSource.kt`** repeats the same GFZ→NOAA cascade as the Swift and JS versions
+  (see above). Plain `HttpURLConnection` + `org.json` — no HTTP or JSON library was
+  added for it.
+- There is **no App Group and no JS→widget channel here**. The widget is the only
+  writer of its `SharedPreferences` cache (`storm_widget`), which exists so several
+  widget instances updating together fetch once. Key names and the split Kp/wind
+  timestamps mirror iOS; `-1` is the "no data" sentinel and Kp 0.0 is real data.
+- `updatePeriodMillis` is 30 min — the platform floor. Smaller values are clamped
+  silently.
+- Kotlin and the Compose compiler are in the build **only** for this widget; the
+  Capacitor app itself is still Java. Both plugins are pinned to `kotlinVersion`
+  in `android/build.gradle` and must move together.
+- Widget strings live in `res/values*/strings.xml` across the same 16 locales as
+  the app. Adding those folders makes lint fail any untranslated string in
+  `values/strings.xml`, which is why the four Capacitor-generated ones are marked
+  `translatable="false"`.
 
 ### i18n
 Translation keys live in `src/locales/{en,bg,da,de,es,fi,fr,is,ja,ko,no,pl,ru,sv,uk,zh}.ts` as flat `Record<string, string>`. The `useLanguage()` hook provides `t(key)`. All 16 locales must stay in sync — there is a completeness test at `src/locales/localeCompleteness.test.ts`. FAQ long-form content lives separately in `src/content/faqContent.ts` (positionally indexed per language — edits must hit the same index in all 16 blocks).
@@ -171,7 +193,7 @@ watchOS companion app за The Storm Watcher. Данните вече са в Ap
 2. **Android FCM активация** — Firebase Console: `google-services.json` в `android/app/`; service account JSON като `GOOGLE_SERVICE_ACCOUNT` secret в Supabase; `supabase functions deploy send-kp-alerts`. Кодът е готов и guard-нат — без secret-а функцията е байт-идентична.
    **ЗАДЪЛЖИТЕЛНО след добавяне на `google-services.json`:** махни `if (isAndroid()) return;` от `register()` в `src/hooks/usePushNotifications.ts`. Този gate е временен — без него `register()` хвърля native `IllegalStateException` („Default FirebaseApp is not initialized"), която JS не може да хване и която убива процеса ~3s след старт (потвърдено на Galaxy A34 / Android 16, 2026-07-20). Докато gate-ът стои, Android push не работи изобщо.
 3. **assetlinks.json** — още е с `YOUR_SHA256_FINGERPRINT_HERE`; SHA-256 от Play Console → Setup → App signing.
-4. **Android Glance widget** — iOS има 6 widget формата + Live Activity, Android нула. Kotlin Glance widget с Kp + 24h прогноза; дизайнът копира iOS small/medium widget-а; същите NOAA endpoints.
+4. ~~**Android Glance widget**~~ — написан 2026-08-05 (виж „Android widget (Glance)"). Компилира се и се мърджва в манифеста, но **още не е пускан на екран** — няма свързано устройство. Първото пускане да провери: рендерира ли се на 2×2/4×2/4×4, минава ли мрежата от widget процеса, работи ли tap → `stormwatcher://dashboard`.
 5. ~~**Android 15 edge-to-edge тест**~~ — проверено 2026-07-20 на Galaxy A34 / **Android 16 (API 36)**, тъмна тема: header-ът започва под статус бара, таб барът стои над системната навигация, няма отрязване. Уговорка: гледан е един екран (UV Index), не пълен обход на всички страници и не в светла тема.
 6. **Push-to-start Live Activity (iOS 17.2+)** — сървърът да вдига Live Activity при буря без отворено приложение; тества се само в TestFlight (dev-signed build-ове не дават push токени).
 

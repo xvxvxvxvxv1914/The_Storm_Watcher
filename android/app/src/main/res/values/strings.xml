@@ -1,7 +1,27 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">The Storm Watcher</string>
-    <string name="title_activity_main">The Storm Watcher</string>
-    <string name="package_name">com.stormwatcher.app</string>
-    <string name="custom_url_scheme">com.stormwatcher.app</string>
+    <!-- translatable="false": the first two are the brand name, which stays in
+         English everywhere, and the last two are identifiers. Without the flag
+         lint fails the build with MissingTranslation as soon as any values-xx/
+         folder exists (the widget added fifteen of them). -->
+    <string name="app_name" translatable="false">The Storm Watcher</string>
+    <string name="title_activity_main" translatable="false">The Storm Watcher</string>
+    <string name="package_name" translatable="false">com.stormwatcher.app</string>
+    <string name="custom_url_scheme" translatable="false">com.stormwatcher.app</string>
+
+    <!-- Home-screen widget. Mirrors the WL table in ios/App/StormWidget/StormWidget.swift;
+         the two must stay in step so both platforms read the same on the same device. -->
+    <string name="widget_name" translatable="false">Storm Watcher</string>
+    <string name="widget_description">Live Kp index, solar wind and 24h forecast.</string>
+    <string name="widget_kp_index">KP INDEX</string>
+    <string name="widget_forecast_24h">FORECAST 24H</string>
+    <string name="widget_kp_scale">Kp SCALE</string>
+    <string name="widget_no_data">No data</string>
+    <string name="widget_no_signal">No signal</string>
+    <string name="widget_quiet">QUIET</string>
+    <string name="widget_storm_minor">Minor</string>
+    <string name="widget_storm_moderate">Moderate</string>
+    <string name="widget_storm_strong">Strong</string>
+    <string name="widget_storm_severe">Severe</string>
+    <string name="widget_storm_extreme">Extreme</string>
 </resources>

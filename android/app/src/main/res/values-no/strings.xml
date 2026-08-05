@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_description">Live Kp-indeks, solvind og 24t prognose.</string>
+    <string name="widget_kp_index">KP-INDEKS</string>
+    <string name="widget_forecast_24h">PROGNOSE 24T</string>
+    <string name="widget_kp_scale">KP-SKALA</string>
+    <string name="widget_no_data">Ingen data</string>
+    <string name="widget_no_signal">Intet signal</string>
+    <string name="widget_quiet">ROLIG</string>
+    <string name="widget_storm_minor">Mindre</string>
+    <string name="widget_storm_moderate">Moderat</string>
+    <string name="widget_storm_strong">Sterk</string>
+    <string name="widget_storm_severe">Alvorlig</string>
+    <string name="widget_storm_extreme">Ekstrem</string>
+</resources>

@@ -1,5 +1,9 @@
 apply plugin: 'com.android.application'
 apply plugin: 'io.sentry.android.gradle'
+// Kotlin + Compose compiler are needed only by the Glance widget under
+// src/main/java/com/stormwatcher/app/widget. The Capacitor app stays Java.
+apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 
 android {
     namespace = "com.stormwatcher.app"
@@ -23,6 +27,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    // Java 21 comes from capacitor.build.gradle (generated, applied at the end of
+    // this file); Kotlin has to be told separately or it defaults to a lower
+    // target and the two disagree at link time.
+    kotlin {
+        compilerOptions {
+            jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
+        }
+    }
 }
 
 repositories {
@@ -42,6 +54,9 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     implementation project(':capacitor-cordova-android-plugins')
     implementation 'io.sentry:sentry-android:7.14.0'
+    // Glance app widget (Kp + 24h forecast on the home screen).
+    implementation "androidx.glance:glance-appwidget:$glanceVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
 }
 
 apply from: 'capacitor.build.gradle'
