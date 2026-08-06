@@ -185,6 +185,24 @@ Manual chunks in `vite.config.ts` keep the initial bundle small:
 
 _(Add ideas and future feature plans here as they come up)_
 
+### Bz ранно предупреждение (предложено 2026-08-06)
+**Най-високата стойност от предложените — прави алармите изпреварващи вместо закъснели.**
+
+Kp е ретроспективен 3-часов индекс. Собственият ни FAQ го казва: устойчиво Bz под
+−10 nT дава **15–45 минути преднина**, преди Kp изобщо да мръдне. Приложението вече
+тегли Bz (`getMagField` → `bz_gsm`) и го показва на Dashboard-а, но `send-kp-alerts`
+филтрира **само** по Kp праг (`.lte('threshold_kp', currentKp)`). Тоест нотификацията
+пристига, след като бурята вече е в ход.
+
+Не иска нито нов източник на данни, нито ново разрешение:
+1. `send-kp-alerts` да чете и `rtsw_mag_1m.json`; праг напр. Bz ≤ −10 nT, задържано
+   N последователни минути (една минута шум не е събитие).
+2. Нов тип нотификация, отделен от Kp алармата и с отделен cooldown — иначе Bz
+   алармата ще изяде Kp алармата през същия 2-часов прозорец.
+3. Настройка в Settings (вкл./изкл. + праг), по подобие на `threshold_kp`.
+4. Текст, който казва че е *прогноза*, не измерване — иначе „Kp скочи" без Kp да е
+   скочил ще изглежда като бъг.
+
 ### Apple Watch App
 watchOS companion app за The Storm Watcher. Данните вече са в App Group (`group.com.stormwatcher.app`) от iOS widget-а.
 
@@ -202,6 +220,34 @@ watchOS companion app за The Storm Watcher. Данните вече са в Ap
 5. Complications в `CLKComplicationDescriptor` формат
 
 ## TODO / Pending Work
+
+### Одит 2026-08-06 — открито, но НЕ поправено
+Всичко останало от онази сесия е в main (`3cb7851`). Тези четири останаха:
+
+1. **Service worker-ът precache-ва всичките 16 езика.** Precache-ът е ~2.5 MB и включва
+   16-те локала (~800 KB) плюс, вече, 16-те FAQ и magnetic чънка и десетте статии.
+   Тоест PWA инсталацията тегли всеки език — точно това, което разделянето по езици
+   премахна за уеб посетителите. Фикс: `globIgnores` за локалите и content чънковете в
+   `vite.config.ts`, плюс runtime `CacheFirst` route за `/assets/*.js` в `src/sw.ts`,
+   за да се кешират реално ползваните. **Компромис срещу offline** — в момента precache-ът
+   е единственият SW-кеш за JS, така че смяна на език offline ще спре да работи.
+   Решение на потребителя, не рутинно.
+2. **`globe-vendor` е 1.26 MB** (373 KB gzip) — далеч най-голямото нещо в билда, само за
+   `/aurora`. Lazy е и е изключен от precache, но който отвори страницата, го плаща.
+   Да се провери дали `react-globe.gl` + `three-globe` могат да се орежат или заменят.
+3. **Четирите Kp каскади дрейфват.** На 2026-08-06 дрейфът се хвана два пъти в един ден
+   (widget-ите четяха `estimated_kp`; cron-ът беше NOAA-only). Няма как да се сподели код
+   между TS/Swift/Kotlin/Deno, но може да се сподели спецификация: JSON файл с
+   endpoint-ите и приоритета на полетата, срещу който JS версията се тества, плюс
+   checklist тук. Иначе третият дрейф е въпрос на време.
+4. **`api/cron/storm-alert.ts` е мъртъв код.** В `vercel.json` няма `crons` секция, значи
+   не се пуска. Пета Kp имплементация, пак само NOAA. Или се включва (и получава GFZ
+   каскадата), или се трие — код, който изглежда жив, но не е, е капан.
+
+Дребни, отбелязани в движение: rate-limit картите в `api/gfz.ts` и `api/niggg.ts` не
+трият изтекли записи (бавно натрупване за живота на lambda инстанцията); Sentry прави
+по едно issue на endpoint при NOAA авария, защото URL-ът е в текста на грешката
+(5 issue-та за една авария) — групирането може да се оправи с fingerprint.
 
 ### Mobile одити 2026-06-11 и 2026-07-19/20 — статус
 Поправено дотук: NSCameraUsageDescription, launch-time permission промпт, widget версии, storm safe-area падинг, deep link allowlist, дублирани push listener-и, autoVerify, Kp 0.0 widget логика, пълна локализация на widget + Live Activity (16 езика), CFBundleLocalizations, InfoPlist.strings (16 lproj), universal links (AASA + entitlement + App.tsx handler), **CODE_SIGN_ENTITLEMENTS верзан** (беше сирак — build-овете се подписваха без app groups/aps!), Android FCM код (manifest permission, hook без iOS gate, FCM v1 в send-kp-alerts). Live Activity tap → /alerts е свободна страница (не paywall) — решено.
