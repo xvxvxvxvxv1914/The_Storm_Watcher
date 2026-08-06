@@ -2,12 +2,61 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 // @deno-types="npm:@types/web-push"
 import webpush from 'npm:web-push';
 
+const GFZ_KP_URL = 'https://kp.gfz.de/app/json/';
 const NOAA_KP_URL = 'https://services.swpc.noaa.gov/json/planetary_k_index_1m.json';
 const COOLDOWN_MS = 2 * 60 * 60 * 1000; // 2 hours between alerts per subscription
 
 interface KpEntry {
   kp_index?: number;
   estimated_kp?: number;
+}
+
+interface GfzResponse {
+  datetime: string[];
+  // Trailing bins are null until GFZ publishes the period.
+  Kp: (number | null)[];
+}
+
+/**
+ * GFZ primary, NOAA fallback — the same cascade as `getKpIndex` in
+ * src/services/noaaApi.ts, KpSource.swift and KpSource.kt. This is the fourth
+ * copy; see the "iOS widget data flow" section of CLAUDE.md before touching it.
+ *
+ * The alert body says "Kp has reached X", and the user taps through to a screen
+ * reading GFZ. Sourcing X from NOAA alone made the two disagree — and worse,
+ * decided whether the alert fired at all: with a threshold of 5, GFZ 5.0 against
+ * NOAA 4.67 is a storm the app shows and the phone never announces. The two
+ * really do differ (2026-08-06: GFZ 0.333, NOAA kp_index 0).
+ */
+async function fetchCurrentKp(): Promise<number> {
+  const gfzEnd = new Date();
+  const gfzStart = new Date(gfzEnd.getTime() - 24 * 60 * 60 * 1000);
+  const iso = (d: Date) => d.toISOString().split('.')[0] + 'Z';
+
+  try {
+    const url = `${GFZ_KP_URL}?start=${encodeURIComponent(iso(gfzStart))}`
+      + `&end=${encodeURIComponent(iso(gfzEnd))}&index=Kp`;
+    const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
+    if (!res.ok) throw new Error(`GFZ ${res.status}`);
+    const data: GfzResponse = await res.json();
+    // Skip the bins GFZ has not published yet rather than reading them as 0 —
+    // Kp 0.0 is a real ultra-quiet value and would suppress every alert.
+    for (let i = (data.Kp?.length ?? 0) - 1; i >= 0; i--) {
+      const kp = data.Kp[i];
+      if (typeof kp === 'number' && kp >= 0) return kp;
+    }
+    throw new Error('GFZ returned no published bin');
+  } catch (err) {
+    console.warn('GFZ Kp unavailable, falling back to NOAA:', err);
+  }
+
+  const res = await fetch(NOAA_KP_URL, { signal: AbortSignal.timeout(8000) });
+  if (!res.ok) throw new Error(`NOAA ${res.status}`);
+  const data: KpEntry[] = await res.json();
+  if (data.length === 0) throw new Error('NOAA returned an empty series');
+  const latest = data[data.length - 1];
+  // kp_index (3-hour bin) first, matching every other surface.
+  return latest.kp_index ?? latest.estimated_kp ?? 0;
 }
 
 interface QuietProfile {
@@ -303,19 +352,13 @@ Deno.serve(async (req: Request) => {
 
   webpush.setVapidDetails(vapidEmail, vapidPublicKey, vapidPrivateKey);
 
-  // 1. Fetch current Kp from NOAA
+  // 1. Fetch current Kp — GFZ primary, NOAA fallback (see fetchCurrentKp).
   let currentKp = 0;
   try {
-    const res = await fetch(NOAA_KP_URL, { signal: AbortSignal.timeout(8000) });
-    if (!res.ok) throw new Error(`NOAA ${res.status}`);
-    const data: KpEntry[] = await res.json();
-    if (data.length > 0) {
-      const latest = data[data.length - 1];
-      currentKp = latest.kp_index ?? latest.estimated_kp ?? 0;
-    }
+    currentKp = await fetchCurrentKp();
   } catch (err) {
-    console.error('NOAA fetch failed:', err);
-    return new Response(JSON.stringify({ error: 'NOAA fetch failed' }), {
+    console.error('Kp fetch failed:', err);
+    return new Response(JSON.stringify({ error: 'Kp fetch failed' }), {
       status: 502,
       headers: { 'Content-Type': 'application/json' },
     });
