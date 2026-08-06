@@ -168,6 +168,28 @@ describe('NOAA cache + single-flight', () => {
     ]);
   });
 
+  // GFZ returns null for 3-hour bins it has not published yet. Mapping those to
+  // 0 appended a fake "Kp 0.0" — and because Kp 0.0 is a real ultra-quiet
+  // reading, nothing downstream could tell the two apart. Both widgets skip back
+  // to the last real bin (KpSource.swift / KpSource.kt), so the app was showing
+  // a different number than the widget on the same phone.
+  it('drops GFZ bins that have not been published yet', async () => {
+    mockFetch.mockResolvedValue(
+      okJson({
+        datetime: ['2026-08-06T00:00:00Z', '2026-08-06T03:00:00Z', '2026-08-06T06:00:00Z'],
+        Kp: [1.667, 2.333, null],
+        status: ['def', 'def', 'def'],
+      })
+    );
+    const { getKpIndex } = await import('./noaaApi');
+
+    const rows = await getKpIndex();
+    expect(rows).toEqual([
+      { time_tag: '2026-08-06T00:00:00', kp_index: 1.667 },
+      { time_tag: '2026-08-06T03:00:00', kp_index: 2.333 },
+    ]);
+  });
+
   it('kp forecast keeps only predicted rows', async () => {
     mockFetch.mockResolvedValue(
       okJson([

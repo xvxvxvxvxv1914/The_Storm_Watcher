@@ -143,10 +143,14 @@ object KpSource {
             val arr = JSONArray(body)
             if (arr.length() == 0) return NO_KP
             val last = arr.getJSONObject(arr.length() - 1)
-            val estimated = last.optDouble("estimated_kp", NO_KP)
-            if (estimated >= 0) return estimated
+            // `kp_index` first, matching the app (useKpLive.ts). `estimated_kp` is
+            // NOAA's per-minute estimate and swings between the 3-hour bins
+            // (0.33 → 0.67 → 0.33 while the bin holds 0.333) — reading it here
+            // put a different number on the widget than on the screen next to it.
             val index = last.optDouble("kp_index", NO_KP)
-            if (index >= 0) index else NO_KP
+            if (index >= 0) return index
+            val estimated = last.optDouble("estimated_kp", NO_KP)
+            if (estimated >= 0) estimated else NO_KP
         } catch (_: Exception) {
             NO_KP
         }

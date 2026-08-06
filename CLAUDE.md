@@ -123,6 +123,11 @@ Both go through **`ios/App/StormWidget/KpSource.swift`**, a file shared by the A
 
 Keeping that source aligned is load-bearing, not cosmetic. GFZ publishes stable 3-hour bins; NOAA's `estimated_kp` is a per-minute estimate that swings between them (0.33 → 0.67 → 0.33 across consecutive minutes while GFZ held 0.333). When the widget fetched NOAA while the app read GFZ, the two surfaces showed different numbers. **There are now three implementations of this cascade** — `getKpIndex` in [src/services/noaaApi.ts](src/services/noaaApi.ts), `KpSource.swift`, and `KpSource.kt` (Android, see below). Change one endpoint and you must change all three, or the divergence comes straight back.
 
+Endpoints are not the only thing that has to match — two field-level rules bit us on 2026-08-06, both producing a widget number that disagreed with the app on the same phone:
+
+- **NOAA fallback reads `kp_index` first, `estimated_kp` only as a backstop.** `estimated_kp` is the per-minute estimate; `kp_index` is the 3-hour bin, which is what GFZ (the primary) publishes. The widgets had the priority inverted.
+- **GFZ trailing bins arrive as `null` until the period closes — skip back to the last real value, never substitute 0.** The JS side mapped null to 0, and since Kp 0.0 is a real ultra-quiet reading, nothing downstream could tell a fabricated 0 from a genuine one. `src/services/noaaApi.test.ts` covers this.
+
 Cache keys in `group.com.stormwatcher.app`: `widget_kp` / `widget_updated`, and `widget_wind` / `widget_wind_updated`. Kp and wind carry separate timestamps deliberately — they used to be written only as a pair, so a solar-wind outage discarded a perfectly good Kp. `-1` is the "no data" sentinel; **Kp 0.0 is a real ultra-quiet reading**, so freshness (never the value) decides whether the cache is usable.
 
 ### Android widget (Glance)

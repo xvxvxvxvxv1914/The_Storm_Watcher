@@ -88,7 +88,8 @@ const GFZ_BASE = isNative() ? 'https://kp.gfz.de/app/json/' : '/api/gfz';
 
 interface GfzResponse {
   datetime: string[];
-  Kp: number[];
+  // Trailing bins are null until GFZ publishes the period — see getKpIndex.
+  Kp: (number | null)[];
   status: string[];
 }
 
@@ -111,10 +112,17 @@ export const getKpIndex = (): Promise<KpIndexData[]> =>
   cached('kp', TTL_FORECAST, async () => {
     try {
       const data = await getGfzKp3Day();
-      const result = (data.datetime ?? []).map((dt, i) => ({
-        time_tag: dt.replace('Z', ''),
-        kp_index: data.Kp[i] ?? 0,
-      }));
+      // Drop the bins GFZ has not published yet. They arrive as null, and
+      // mapping them to 0 put a fake "Kp 0.0" at the end of the series —
+      // indistinguishable from a genuine ultra-quiet reading, and disagreeing
+      // with both widgets, which skip back to the last real bin (KpSource.swift
+      // and KpSource.kt do exactly that).
+      const result = (data.datetime ?? []).flatMap((dt, i) => {
+        const kp = data.Kp?.[i];
+        return typeof kp === 'number' && kp >= 0
+          ? [{ time_tag: dt.replace('Z', ''), kp_index: kp }]
+          : [];
+      });
       persistSet('offline_kp', result).catch(() => {});
       return result;
     } catch {
