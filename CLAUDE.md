@@ -221,6 +221,15 @@ watchOS companion app за The Storm Watcher. Данните вече са в Ap
 
 ## TODO / Pending Work
 
+### ЧАКА DEPLOY — `send-kp-alerts` (от 2026-08-06)
+```bash
+supabase functions deploy send-kp-alerts --project-ref srzfoxlmhxyulrgkchjr
+```
+Кодът е в main (`0689998`), но edge функциите не се пускат от git — продукцията още
+върви със старата NOAA-only логика, тоест алармите още могат да мълчат при буря, която
+приложението показва (виж „iOS widget data flow" за защо GFZ и NOAA се разминават).
+Това е единственото нещо от сесията, което е написано, но не е живо.
+
 ### Одит 2026-08-06 — открито, но НЕ поправено
 Всичко останало от онази сесия е в main (`3cb7851`). Тези четири останаха:
 
