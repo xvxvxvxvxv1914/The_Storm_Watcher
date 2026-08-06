@@ -50,3 +50,27 @@ describe('BlogPost — lazily loaded article bodies', () => {
       'What is the Kp Index? A Complete Guide');
   });
 });
+
+describe('BlogPost — document language', () => {
+  // The prerendered HTML for an untranslated variant ships lang="en"; without
+  // this, LanguageContext leaves <html lang="da"> around an English article.
+  it('declares English while showing an untranslated article', async () => {
+    vi.mocked(useLanguage).mockReturnValue({ t: (k: string) => k, language: 'da', setLanguage: vi.fn() } as never);
+    document.documentElement.lang = 'da';
+
+    renderPost('aurora-forecast-explained');
+    await screen.findByRole('heading', { level: 1 });
+
+    expect(document.documentElement.lang).toBe('en');
+  });
+
+  it('leaves the language alone when the article really is translated', async () => {
+    vi.mocked(useLanguage).mockReturnValue({ t: (k: string) => k, language: 'bg', setLanguage: vi.fn() } as never);
+    document.documentElement.lang = 'bg';
+
+    renderPost('what-is-kp-index');
+    await screen.findByRole('heading', { level: 1 });
+
+    expect(document.documentElement.lang).toBe('bg');
+  });
+});

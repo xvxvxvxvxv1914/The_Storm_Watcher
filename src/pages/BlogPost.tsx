@@ -98,6 +98,21 @@ export default function BlogPost() {
     return () => { cancelled = true; };
   }, [load]);
 
+  // A variant with no translation renders the English article. The prerendered
+  // HTML says so (lang="en"), but LanguageContext then sets the document language
+  // from the URL on hydration — leaving <html lang="da"> wrapped around English
+  // prose, which a screen reader reads with Danish phonetics. Put it back while
+  // this page is the one showing.
+  //
+  // Keyed on `post` rather than the slug alone: the article loads asynchronously,
+  // so this effect settles after LanguageContext's, and its write is the one that
+  // survives a language switch.
+  useEffect(() => {
+    if (!post || hasTranslation(post.slug, language)) return;
+    document.documentElement.lang = 'en';
+    return () => { document.documentElement.lang = language; };
+  }, [post, language]);
+
   if (failed) return <AnimatedPage><div className="min-h-screen pt-32"><ErrorCard onRetry={load} /></div></AnimatedPage>;
 
   if (post === undefined) {
