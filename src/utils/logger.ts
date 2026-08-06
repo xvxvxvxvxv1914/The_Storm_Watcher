@@ -43,8 +43,27 @@ export const logWarning = (msg: string, err?: unknown) => {
     return;
   }
   if (err instanceof Error) {
-    captureException(err, { level: 'warning', extra: { msg } });
+    captureException(err, { level: 'warning', fingerprint: upstreamFingerprint(err, msg), extra: { msg } });
   } else {
     captureMessage(msg, { level: 'warning', extra: { err } });
   }
+};
+
+/**
+ * Groups upstream-fetch failures by *kind* rather than by URL.
+ *
+ * fetchJson names the endpoint in the message ("Empty body from
+ * https://…/rtsw_mag_1m.json") so a single report says which feed broke. The
+ * cost is that Sentry groups on that message: one NOAA outage opened five
+ * separate issues on 2026-08-05, none of them affecting a user, which is how a
+ * real error gets lost. The URL stays in the message and the breadcrumb; only
+ * the grouping key drops it, so one outage is now one issue.
+ */
+const UPSTREAM_FAILURE = /^(Empty body|Malformed JSON|HTTP \d+) from (https?:\/\/[^/]+)/;
+
+const upstreamFingerprint = (err: Error, msg: string): string[] | undefined => {
+  const match = UPSTREAM_FAILURE.exec(err.message);
+  if (!match) return undefined;
+  const [, kind, origin] = match;
+  return ['upstream-fetch', kind, origin, msg];
 };

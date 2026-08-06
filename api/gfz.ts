@@ -4,8 +4,21 @@ const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/;
 
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 
+// The map only ever grew: an entry per IP, never removed, for the whole life of
+// a warm lambda instance. Sweep expired entries when it gets large — the window
+// is 60s, so anything past resetAt is dead weight, and the check is O(n) only on
+// the rare call that crosses the threshold.
+const RATE_LIMIT_SWEEP_AT = 5_000;
+
 function isRateLimited(ip: string): boolean {
   const now = Date.now();
+
+  if (rateLimitMap.size > RATE_LIMIT_SWEEP_AT) {
+    for (const [key, entry] of rateLimitMap) {
+      if (now > entry.resetAt) rateLimitMap.delete(key);
+    }
+  }
+
   const entry = rateLimitMap.get(ip);
   if (!entry || now > entry.resetAt) {
     rateLimitMap.set(ip, { count: 1, resetAt: now + 60_000 });

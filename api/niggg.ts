@@ -15,8 +15,19 @@ function parseNigggDate(s: string): Date | null {
 // Per-IP rate limit: max 20 requests per minute per serverless instance
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 
+// Sweep expired entries once the map gets large — see api/gfz.ts. Without it the
+// map grows one entry per IP for the whole life of a warm lambda instance.
+const RATE_LIMIT_SWEEP_AT = 5_000;
+
 function isRateLimited(ip: string): boolean {
   const now = Date.now();
+
+  if (rateLimitMap.size > RATE_LIMIT_SWEEP_AT) {
+    for (const [key, entry] of rateLimitMap) {
+      if (now > entry.resetAt) rateLimitMap.delete(key);
+    }
+  }
+
   const entry = rateLimitMap.get(ip);
   if (!entry || now > entry.resetAt) {
     rateLimitMap.set(ip, { count: 1, resetAt: now + 60_000 });

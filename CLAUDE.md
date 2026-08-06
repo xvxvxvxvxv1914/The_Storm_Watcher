@@ -251,11 +251,6 @@ cron-ове (`storm-alert.ts` изтрит, `webhook-health.ts` вече е на
    `/aurora`. Lazy е и е изключен от precache, но който отвори страницата, го плаща.
    Да се провери дали `react-globe.gl` + `three-globe` могат да се орежат или заменят.
 
-Дребни, отбелязани в движение: rate-limit картите в `api/gfz.ts` и `api/niggg.ts` не
-трият изтекли записи (бавно натрупване за живота на lambda инстанцията); Sentry прави
-по едно issue на endpoint при NOAA авария, защото URL-ът е в текста на грешката
-(5 issue-та за една авария) — групирането може да се оправи с fingerprint.
-
 **Изисква ръчна стъпка:** `webhook-health` cron-ът иска `CRON_SECRET` в Vercel env —
 Vercel слага `Authorization` header-а само когато променливата съществува, иначе
 handler-ът връща 401 и предпазителят пак мълчи.
