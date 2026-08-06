@@ -159,6 +159,15 @@ Long-form page content lives in `src/content/`, **one file per language**: `faq/
 
 Both are consumed **positionally** — FAQ answers map to categories by index (`faqCategories` in `src/pages/FAQ.tsx`), magnetic sections to icons by index (`sectionMeta` in `src/pages/MagneticEffects.tsx`) — so adding or reordering an entry means touching the same index in all 16 files. `src/content/contentCompleteness.test.ts` enforces the parity and pins the expected counts; `src/pages/longFormContent.test.tsx` asserts the loaders actually resolve (a broken loader renders a permanent skeleton, not a build error).
 
+### Blog data
+Article bodies are 89% of the post payload, so they are split from the metadata the list page renders:
+
+- `src/data/blog/posts/*.ts` — one full post each, fetched on demand via `loadPost(slug, lang)` in `src/data/blog/loadPost.ts`.
+- `src/data/blog/metadata.ts` — **generated**, committed. Run `node scripts/generate-blog-metadata.mjs` after changing a post's title, description or translations; `blogMetadata.test.ts` fails on drift (same arrangement as `scripts/blog-translations.json`).
+- `src/data/blog/index.ts` — every post, eagerly. **Never import it from a page** — it pulls all ten bodies (152 kB) into that chunk. It is for build-time consumers only: the prerender script, the metadata generator, the coverage tests. `CATEGORY_LABELS` lives in `categories.ts` for the same reason.
+
+`/blog` went from ~157 kB to ~22 kB; a short article from ~157 kB to ~29 kB. `BlogPost` distinguishes "still loading" (`undefined`) from "no such slug" (`null`) — collapsing them into one falsy check redirects every visitor to `/blog` before the body arrives, which `BlogPost.test.tsx` checks.
+
 The FAQ's `FAQPage` JSON-LD is **not** rendered by React — `scripts/prerender-meta.mjs` injects it into each prerendered `/faq` HTML variant in that page's own language, so it needs no JS to be crawled and the structured data matches the visible Q&A (the old client-side version always declared the English questions, even on `/de/faq`).
 
 ### Build chunking

@@ -1,7 +1,13 @@
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { Clock, ArrowLeft, Info, AlertTriangle, Lightbulb, ChevronRight } from 'lucide-react';
-import { getBlogPost, getLocalizedBlogPost, getLocalizedBlogList, CATEGORY_LABELS } from '../data/blog';
-import type { BlogSection } from '../data/blog/types';
+// One post's body on demand, plus metadata for the "other articles" list —
+// never ../data/blog, which would pull all ten bodies into this chunk.
+import { loadPost, getLocalizedBlogMeta, hasTranslation } from '../data/blog/loadPost';
+import { CATEGORY_LABELS } from '../data/blog/categories';
+import ErrorCard from '../components/ErrorCard';
+import { Skeleton } from '../components/Skeleton';
+import type { BlogPost as BlogPostData, BlogSection } from '../data/blog/types';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { AnimatedPage } from '../components/AnimatedPage';
@@ -71,17 +77,52 @@ export default function BlogPost() {
   const { language } = useLanguage();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
-  const post = getLocalizedBlogPost(slug ?? '', language);
+  // undefined = still loading, null = no such slug. The distinction matters:
+  // redirecting on "not loaded yet" would bounce every visitor to /blog.
+  const [post, setPost] = useState<BlogPostData | null | undefined>(undefined);
+  const [failed, setFailed] = useState(false);
 
-  if (!post) return <Navigate to="/blog" replace />;
+  const load = useCallback(() => {
+    setFailed(false);
+    setPost(undefined);
+    return loadPost(slug ?? '', language);
+  }, [slug, language]);
+
+  useEffect(() => {
+    let cancelled = false;
+    load()
+      .then((p) => { if (!cancelled) setPost(p); })
+      // A failed chunk fetch is not a missing article — show a retry rather than
+      // redirecting to /blog as though the URL were wrong.
+      .catch(() => { if (!cancelled) setFailed(true); });
+    return () => { cancelled = true; };
+  }, [load]);
+
+  if (failed) return <AnimatedPage><div className="min-h-screen pt-32"><ErrorCard onRetry={load} /></div></AnimatedPage>;
+
+  if (post === undefined) {
+    return (
+      <AnimatedPage>
+        <div className="min-h-screen pt-24 pb-24 px-4">
+          <div className="max-w-2xl mx-auto space-y-4" aria-busy="true">
+            <Skeleton className="w-16 h-16 rounded-2xl" />
+            <Skeleton className="h-9 w-3/4" />
+            <Skeleton className="h-5 w-full" />
+            <Skeleton className="h-64 w-full rounded-2xl" />
+          </div>
+        </div>
+      </AnimatedPage>
+    );
+  }
+
+  if (post === null) return <Navigate to="/blog" replace />;
 
   // A language variant without a real translation renders the English body, so
   // it must canonicalize to the English URL (mirrors scripts/prerender-meta.mjs).
-  const hasOwnTranslation =
-    language === 'en' || Boolean(getBlogPost(post.slug)?.translations?.[language]);
+  const hasOwnTranslation = hasTranslation(post.slug, language);
 
   const cat = CATEGORY_CONFIG[post.category] ?? CATEGORY_CONFIG['guide'];
-  const otherPosts = getLocalizedBlogList(language).filter((p) => p.slug !== post.slug).slice(0, 3);
+  const otherPosts = getLocalizedBlogMeta(language).filter((p) => p.slug !== post.slug).slice(0, 3);
 
   const ogImage = `https://www.thestormwatcher.com/api/og?type=blog&title=${encodeURIComponent(post.title)}&emoji=${encodeURIComponent(post.coverEmoji)}&category=${post.category}`;
 
