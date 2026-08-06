@@ -12,12 +12,17 @@
  * payload (NOAA does this, and lossy mobile networks cut responses mid-stream)
  * indistinguishable from each other in Sentry.
  */
-export const fetchJson = async <T,>(url: string, timeoutMs = 10000, retries = 0): Promise<T> => {
+export const fetchJson = async <T,>(
+  url: string,
+  timeoutMs = 10000,
+  retries = 0,
+  headers?: Record<string, string>,
+): Promise<T> => {
   const attempt = async (): Promise<T> => {
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), timeoutMs);
     try {
-      const res = await fetch(url, { signal: ctrl.signal });
+      const res = await fetch(url, { signal: ctrl.signal, headers });
       if (!res.ok) throw new Error(`HTTP ${res.status} from ${url}`);
       const text = await res.text();
       if (!text.trim()) throw new Error(`Empty body from ${url}`);
