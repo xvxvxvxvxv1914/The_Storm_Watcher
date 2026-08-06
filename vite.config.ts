@@ -1,7 +1,11 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => ({
@@ -40,6 +44,17 @@ export default defineConfig(({ command }) => ({
     }),
   ],
   base: '/',
+  resolve: {
+    alias: {
+      // three-globe and three-render-objects import three's WebGPU build
+      // unconditionally, for paths this app never reaches (the heatmap layer's
+      // GPU compute, and a `useWebGPU` renderer flag nothing sets). That was
+      // 2.06 MB of the 3.63 MB of source in globe-vendor. The stubs throw if
+      // anything ever does reach them — see src/stubs/three-webgpu.ts.
+      'three/webgpu': path.resolve(__dirname, 'src/stubs/three-webgpu.ts'),
+      'three/tsl': path.resolve(__dirname, 'src/stubs/three-tsl.ts'),
+    },
+  },
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
