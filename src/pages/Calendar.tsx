@@ -5,7 +5,7 @@ import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { CalendarDays, Cloud, Sparkles, Download } from 'lucide-react';
 import { buildAuroraICS, downloadICS } from '../utils/icalExport';
 import { Link } from 'react-router-dom';
-import { getKpForecast, getKpGradientStyle } from '../services/noaaApi';
+import { getKpForecast, getKpGradientStyle, resolveKp } from '../services/noaaApi';
 import { getNightsCloudCover, type NightForecast } from '../services/skyApi';
 import { calcAuroraVisibility } from '../utils/auroraVisibility';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -59,7 +59,7 @@ export default function Calendar() {
     try {
       const kpData = await getKpForecast();
       const forecastData: ForecastItem[] = (kpData ?? []).map(item => ({
-        kp: item.kp_index || item.estimated_kp || 0,
+        kp: resolveKp(item) ?? 0,
         date: new Date(item.time_tag),
       }));
 

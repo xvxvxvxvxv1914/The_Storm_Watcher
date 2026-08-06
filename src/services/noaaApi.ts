@@ -52,6 +52,21 @@ export interface KpIndexData {
   estimated_kp?: number;
 }
 
+/**
+ * The Kp value of a row: `kp_index` (the 3-hour bin, what GFZ publishes) first,
+ * `estimated_kp` (NOAA's per-minute estimate) only as a backstop. See
+ * `kpSource.contract.json` — this ordering is the contract the widgets and the
+ * alert cron also follow.
+ *
+ * It exists because the same expression was written out at nine call sites in
+ * three different forms, and two of them used `||`, which treats a real
+ * ultra-quiet **Kp 0.0 as missing** and silently falls through to the estimate.
+ * Returns null when the row carries neither field; callers that need a number
+ * apply their own `?? 0`.
+ */
+export const resolveKp = (row?: Pick<KpIndexData, 'kp_index' | 'estimated_kp'> | null): number | null =>
+  row?.kp_index ?? row?.estimated_kp ?? null;
+
 export interface SolarWindData {
   time_tag: string;
   proton_speed: number;

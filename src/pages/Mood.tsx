@@ -12,7 +12,7 @@ import {
 import SvgDonut from '../components/charts/SvgDonut';
 import { supabase, getSessionId } from '../lib/supabase';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
-import { getKpIndex } from '../services/noaaApi';
+import { getKpIndex, resolveKp } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -328,7 +328,7 @@ const Mood = () => {
       const data = await getKpIndex();
       if (data && data.length > 0) {
         const latest = data[data.length - 1];
-        setCurrentKp(latest.kp_index || latest.estimated_kp || 0);
+        setCurrentKp(resolveKp(latest) ?? 0);
       }
     } catch (error) {
       logError('Error fetching Kp:', error);

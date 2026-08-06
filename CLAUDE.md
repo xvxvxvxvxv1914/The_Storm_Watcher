@@ -128,6 +128,10 @@ Both go through **`ios/App/StormWidget/KpSource.swift`**, a file shared by the A
 
 Keeping that source aligned is load-bearing, not cosmetic. GFZ publishes stable 3-hour bins; NOAA's `estimated_kp` is a per-minute estimate that swings between them (0.33 → 0.67 → 0.33 across consecutive minutes while GFZ held 0.333). When the widget fetched NOAA while the app read GFZ, the two surfaces showed different numbers. **There are now four implementations of this cascade** — `getKpIndex` in [src/services/noaaApi.ts](src/services/noaaApi.ts), `KpSource.swift`, `KpSource.kt` (Android, see below), and `fetchCurrentKp` in [supabase/functions/send-kp-alerts/index.ts](supabase/functions/send-kp-alerts/index.ts). Change one endpoint and you must change all four, or the divergence comes straight back. The cron is not cosmetic: its Kp decides *whether an alert fires at all*, so when it was NOAA-only a GFZ 5.0 / NOAA 4.67 split was a storm the app displayed and the phone never announced.
 
+The contract they share is [src/services/kpSource.contract.json](src/services/kpSource.contract.json) — endpoints, field priority and null handling in one place. `src/services/kpContract.test.ts` pins the TypeScript implementation to it; the Swift, Kotlin and Deno copies are checked against it by hand. **Read it before touching any of the four.**
+
+Inside the app, use `resolveKp(row)` from `noaaApi.ts` rather than writing the field priority out again. It used to be inline at nine call sites in three variants, two of which used `||` — which treats a genuine ultra-quiet **Kp 0.0 as missing** and silently shows the estimate instead.
+
 Endpoints are not the only thing that has to match — two field-level rules bit us on 2026-08-06, both producing a widget number that disagreed with the app on the same phone:
 
 - **NOAA fallback reads `kp_index` first, `estimated_kp` only as a backstop.** `estimated_kp` is the per-minute estimate; `kp_index` is the 3-hour bin, which is what GFZ (the primary) publishes. The widgets had the priority inverted.
@@ -237,19 +241,15 @@ supabase functions deploy send-kp-alerts --project-ref srzfoxlmhxyulrgkchjr
 
 ### Одит 2026-08-06 — остатък
 
-Затворено: SW precache-ът (виж „PWA / Service Worker" — 2586 → 1303 KiB) и мъртвите
-cron-ове (`storm-alert.ts` изтрит, `webhook-health.ts` вече е насрочен).
+Затворено: SW precache-ът (виж „PWA / Service Worker" — 2586 → 1303 KiB), мъртвите
+cron-ове (`storm-alert.ts` изтрит, `webhook-health.ts` вече е насрочен) и споделената Kp
+спецификация (`kpSource.contract.json` + `resolveKp`).
 
 Остава:
 
 1. **`globe-vendor` е 1.26 MB** (373 KB gzip) — далеч най-голямото нещо в билда, само за
    `/aurora`. Lazy е и е изключен от precache, но който отвори страницата, го плаща.
    Да се провери дали `react-globe.gl` + `three-globe` могат да се орежат или заменят.
-2. **Четирите Kp каскади дрейфват.** На 2026-08-06 дрейфът се хвана два пъти в един ден
-   (widget-ите четяха `estimated_kp`; cron-ът беше NOAA-only). Няма как да се сподели код
-   между TS/Swift/Kotlin/Deno, но може да се сподели спецификация: JSON файл с
-   endpoint-ите и приоритета на полетата, срещу който JS версията се тества, плюс
-   checklist тук. Иначе третият дрейф е въпрос на време.
 
 Дребни, отбелязани в движение: rate-limit картите в `api/gfz.ts` и `api/niggg.ts` не
 трият изтекли записи (бавно натрупване за живота на lambda инстанцията); Sentry прави

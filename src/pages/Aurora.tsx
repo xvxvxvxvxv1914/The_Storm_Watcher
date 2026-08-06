@@ -4,7 +4,7 @@ import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { MapPin, Eye, Sparkles, AlertTriangle, Check, Zap, Share2 } from 'lucide-react';
-import { getKpIndex, getAuroraModel, getMagField, getSolarWind, getWeatherData, getKpGradientStyle, type AuroraOvationPoint, type WeatherData } from '../services/noaaApi';
+import { getKpIndex, getAuroraModel, getMagField, getSolarWind, getWeatherData, getKpGradientStyle, resolveKp, type AuroraOvationPoint, type WeatherData } from '../services/noaaApi';
 import { calcAuroraVisibility } from '../utils/auroraVisibility';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
@@ -162,7 +162,7 @@ const Aurora = () => {
       const data = await getKpIndex();
       if (data && data.length > 0) {
         const latest = data[data.length - 1];
-        setKpValue(latest.kp_index ?? latest.estimated_kp ?? 0);
+        setKpValue(resolveKp(latest) ?? 0);
       } else {
         setKpValue(0);
       }

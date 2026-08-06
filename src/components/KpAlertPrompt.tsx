@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Bell, X, Zap } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { getKpIndex } from '../services/noaaApi';
+import { getKpIndex, resolveKp } from '../services/noaaApi';
 import { isNative } from '../utils/platform';
 
 const DISMISSED_KEY = 'tsw_kp_prompt_dismissed';
@@ -24,7 +24,7 @@ export default function KpAlertPrompt() {
       try {
         const entries = await getKpIndex();
         if (!entries.length) return;
-        const current = entries[entries.length - 1].kp_index ?? 0;
+        const current = resolveKp(entries[entries.length - 1]) ?? 0;
         if (current >= PROMPT_KP_THRESHOLD) {
           setKp(current);
           setVisible(true);

@@ -12,7 +12,7 @@ import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesCh
 import SvgBarChart from '../components/charts/SvgBarChart';
 import { Activity, Wind, Compass, Sun, Radio, MapPin, Download, Share2, GripVertical } from 'lucide-react';
 import { generateStormScoreImage } from '../utils/generateStormImage';
-import { getKpIndex, getSolarWind, getMagField, getXrayFlux, getKpHistory3Day, getKpForecast, getStormStatus, getXrayClass, getKpGradientStyle, latestSolarWindSpeed } from '../services/noaaApi';
+import { getKpIndex, getSolarWind, getMagField, getXrayFlux, getKpHistory3Day, getKpForecast, getStormStatus, getXrayClass, getKpGradientStyle, latestSolarWindSpeed, resolveKp } from '../services/noaaApi';
 import PlanGuard from '../components/PlanGuard';
 import { fetchNigggData, toDeltaSeries, getNigggStormStatus, type NigggDataPoint } from '../services/nigggApi';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -221,7 +221,7 @@ const Dashboard = () => {
 
       if (kpData && kpData.length > 0) {
         const latest = kpData[kpData.length - 1];
-        setKpValue(latest.kp_index ?? latest.estimated_kp ?? 0);
+        setKpValue(resolveKp(latest) ?? 0);
       } else {
         setKpValue(0);
       }
@@ -838,7 +838,7 @@ function ExportDataCard({ t }: { t: (k: string) => string }) {
         filename = `solar-wind-${today()}.csv`;
       } else {
         const rows = await getKpForecast();
-        csv = 'timestamp,kp_index\n' + rows.map(r => `${r.time_tag},${r.kp_index ?? r.estimated_kp ?? 0}`).join('\n');
+        csv = 'timestamp,kp_index\n' + rows.map(r => `${r.time_tag},${resolveKp(r) ?? 0}`).join('\n');
         filename = `kp-forecast-${today()}.csv`;
       }
 
