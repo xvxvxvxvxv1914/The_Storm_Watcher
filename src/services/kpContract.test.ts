@@ -85,6 +85,38 @@ describe('getKpIndex honours kpSource.contract.json', () => {
   });
 });
 
+/**
+ * resolveKp only helps if everyone calls it. The field priority was spelled out
+ * by hand at ten call sites; nine were converted and the tenth (useKpAlert) was
+ * missed because the sweep that found them scanned too narrow a set of paths.
+ * A grep is a blunt instrument, but it is the only thing that catches the
+ * eleventh — a type cannot express "do not write this expression".
+ */
+describe('no hand-rolled Kp field resolution outside noaaApi', () => {
+  it('every consumer goes through resolveKp', async () => {
+    const { readdirSync, readFileSync, statSync } = await import('fs');
+    const { join } = await import('path');
+
+    const walk = (dir: string): string[] =>
+      readdirSync(dir).flatMap((entry) => {
+        const full = join(dir, entry);
+        if (statSync(full).isDirectory()) return walk(full);
+        return /\.tsx?$/.test(entry) && !/\.test\.tsx?$/.test(entry) ? [full] : [];
+      });
+
+    const src = join(__dirname, '..');
+    const offenders = walk(src).filter((file) => {
+      if (file.endsWith(join('services', 'noaaApi.ts'))) return false; // defines it
+      return /\bkp_index\s*(\?\?|\|\|)|\bestimated_kp\b/.test(readFileSync(file, 'utf-8'));
+    });
+
+    expect(
+      offenders.map(f => f.slice(src.length + 1)),
+      'these files pick the Kp field by hand — use resolveKp() from noaaApi',
+    ).toEqual([]);
+  });
+});
+
 describe('resolveKp', () => {
   it('prefers kp_index over estimated_kp', async () => {
     const { resolveKp } = await import('./noaaApi');
