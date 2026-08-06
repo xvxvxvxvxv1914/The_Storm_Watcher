@@ -18,7 +18,12 @@ npm run lint         # ESLint (0 warnings allowed in pre-commit hook)
 npm run test         # Vitest watch mode
 npm run test:run     # Vitest single run (CI)
 npm run test:e2e     # Playwright end-to-end tests
+PW_CHANNEL=chrome npm run test:e2e   # ...against an installed Chrome
 ```
+
+The bundled Playwright browser is a large download and can fail to install on
+this machine; `PW_CHANNEL=chrome` runs the suite against Google Chrome instead.
+CI leaves it unset and uses the pinned browser.
 
 Run a single test file:
 ```bash
