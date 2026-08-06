@@ -1,9 +1,11 @@
+import { useState, useEffect } from 'react';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { Heart, Brain, Moon, AlertTriangle, Shield, Activity } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import StarField from '../components/StarField';
-import { magneticContent } from '../content/magneticEffectsContent';
+import { Skeleton } from '../components/Skeleton';
+import { loadMagnetic, type MagneticLangContent } from '../content/magneticEffectsContent';
 import { useKpLive } from '../hooks/useKpLive';
 import { getStormStatus, getKpGradientStyle } from '../services/noaaApi';
 
@@ -18,9 +20,18 @@ const sectionMeta = [
 
 export default function MagneticEffects() {
   const { language, t } = useLanguage();
-  const lang = magneticContent[language] ? language : 'en';
-  const c = magneticContent[lang];
+  const [c, setC] = useState<MagneticLangContent | null>(null);
   const kp = useKpLive();
+
+  useEffect(() => {
+    let cancelled = false;
+    setC(null);
+    loadMagnetic(language)
+      .then(content => { if (!cancelled) setC(content); })
+      .catch(() => { /* leave the skeleton up rather than an empty page */ });
+    return () => { cancelled = true; };
+  }, [language]);
+
   const storm = kp !== null ? getStormStatus(kp) : null;
 
   const kpMessage = kp === null ? null
@@ -47,8 +58,17 @@ export default function MagneticEffects() {
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-bold uppercase tracking-widest mb-6">
               <Heart className="w-3.5 h-3.5" /> {t('effects.healthScience') || 'Health & Science'}
             </div>
-            <h1 className="text-4xl md:text-5xl font-black text-white mb-4 leading-tight">{c.title}</h1>
-            <p className="text-lg text-[#94a3b8] leading-relaxed">{c.subtitle}</p>
+            {c ? (
+              <>
+                <h1 className="text-4xl md:text-5xl font-black text-white mb-4 leading-tight">{c.title}</h1>
+                <p className="text-lg text-[#94a3b8] leading-relaxed">{c.subtitle}</p>
+              </>
+            ) : (
+              <>
+                <Skeleton className="h-12 w-3/4 mx-auto mb-4" />
+                <Skeleton className="h-6 w-full mx-auto" />
+              </>
+            )}
           </div>
 
           {/* Live Kp widget */}
@@ -74,8 +94,10 @@ export default function MagneticEffects() {
           )}
 
           {/* Sections */}
-          <div className="space-y-10">
-            {c.sections.map((section, i) => (
+          <div className="space-y-10" aria-busy={c ? undefined : true}>
+            {!c ? sectionMeta.map((_, i) => (
+              <Skeleton key={i} className="h-56 w-full rounded-2xl" />
+            )) : c.sections.map((section, i) => (
               <div key={i} className="glass-surface rounded-2xl p-4 sm:p-8 border border-white/5">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 rounded-xl" style={{ background: sectionMeta[i].color + '20', color: sectionMeta[i].color }}>
@@ -93,7 +115,7 @@ export default function MagneticEffects() {
           </div>
 
           {/* Sources */}
-          <p className="mt-10 text-xs text-[#475569] leading-relaxed text-center italic">{c.sources}</p>
+          {c && <p className="mt-10 text-xs text-[#475569] leading-relaxed text-center italic">{c.sources}</p>}
         </div>
       </div>
     </>

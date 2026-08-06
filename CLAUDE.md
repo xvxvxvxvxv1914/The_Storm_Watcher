@@ -148,7 +148,13 @@ widget, the Android counterpart of the iOS one. Three responsive layouts
   `translatable="false"`.
 
 ### i18n
-Translation keys live in `src/locales/{en,bg,da,de,es,fi,fr,is,ja,ko,no,pl,ru,sv,uk,zh}.ts` as flat `Record<string, string>`. The `useLanguage()` hook provides `t(key)`. All 16 locales must stay in sync — there is a completeness test at `src/locales/localeCompleteness.test.ts`. FAQ long-form content lives separately in `src/content/faqContent.ts` (positionally indexed per language — edits must hit the same index in all 16 blocks).
+Translation keys live in `src/locales/{en,bg,da,de,es,fi,fr,is,ja,ko,no,pl,ru,sv,uk,zh}.ts` as flat `Record<string, string>`. The `useLanguage()` hook provides `t(key)`. All 16 locales must stay in sync — there is a completeness test at `src/locales/localeCompleteness.test.ts`.
+
+Long-form page content lives in `src/content/`, **one file per language**: `faq/{lang}.ts` (FAQ) and `magnetic/{lang}.ts` (Magnetic Effects). `faqContent.ts` / `magneticEffectsContent.ts` keep only the types plus a `loadFaq(lang)` / `loadMagnetic(lang)` dynamic-import loader, mirroring how `LanguageContext` loads `src/locales/`. They used to be single `Record<lang, …>` literals, which shipped all 16 translations (176 kB + 90 kB) in the route chunk to render one; the split cut the FAQ page's JS from 176 kB to ~17 kB.
+
+Both are consumed **positionally** — FAQ answers map to categories by index (`faqCategories` in `src/pages/FAQ.tsx`), magnetic sections to icons by index (`sectionMeta` in `src/pages/MagneticEffects.tsx`) — so adding or reordering an entry means touching the same index in all 16 files. `src/content/contentCompleteness.test.ts` enforces the parity and pins the expected counts; `src/pages/longFormContent.test.tsx` asserts the loaders actually resolve (a broken loader renders a permanent skeleton, not a build error).
+
+The FAQ's `FAQPage` JSON-LD is **not** rendered by React — `scripts/prerender-meta.mjs` injects it into each prerendered `/faq` HTML variant in that page's own language, so it needs no JS to be crawled and the structured data matches the visible Q&A (the old client-side version always declared the English questions, even on `/de/faq`).
 
 ### Build chunking
 Manual chunks in `vite.config.ts` keep the initial bundle small:

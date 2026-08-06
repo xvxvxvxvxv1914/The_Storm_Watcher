@@ -10,7 +10,7 @@
  * get pre-populated translated meta on first fetch.
  */
 
-import { readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { build } from 'esbuild';
@@ -23,6 +23,21 @@ const BASE_URL = 'https://www.thestormwatcher.com';
 const baseHtml = readFileSync(join(distDir, 'index.html'), 'utf-8');
 const langs = Object.keys(LANG_CODES);
 
+/** Bundles a TypeScript module with esbuild in-memory and imports the result. */
+async function loadTs(...pathSegments) {
+  const result = await build({
+    entryPoints: [join(__dirname, '..', ...pathSegments)],
+    bundle: true,
+    format: 'esm',
+    platform: 'neutral',
+    write: false,
+    logLevel: 'silent',
+  });
+  const dataUrl = 'data:text/javascript;base64,'
+    + Buffer.from(result.outputFiles[0].text).toString('base64');
+  return import(dataUrl);
+}
+
 /**
  * Loads src/data/blog (TypeScript) by bundling it with esbuild in-memory.
  * Blog post bodies are translated per-post via each post's `translations`
@@ -33,21 +48,45 @@ const langs = Object.keys(LANG_CODES);
  * generator; src/data/blog/blogTranslations.test.ts keeps it in sync.)
  */
 async function loadBlogPosts() {
-  const result = await build({
-    entryPoints: [join(__dirname, '..', 'src', 'data', 'blog', 'index.ts')],
-    bundle: true,
-    format: 'esm',
-    platform: 'neutral',
-    write: false,
-    logLevel: 'silent',
-  });
-  const dataUrl = 'data:text/javascript;base64,'
-    + Buffer.from(result.outputFiles[0].text).toString('base64');
-  return (await import(dataUrl)).blogPosts;
+  return (await loadTs('src', 'data', 'blog', 'index.ts')).blogPosts;
 }
 
 const blogPosts = await loadBlogPosts();
 const postByUrlSlug = new Map(blogPosts.map((p) => [p.slug, p]));
+
+/**
+ * FAQPage structured data, one entry per language.
+ *
+ * The /faq page loads only the visitor's translation at runtime (src/content/faq/),
+ * so the JSON-LD is emitted here instead of by React. That also fixes what the
+ * client-side version got wrong: it always declared the *English* questions, even
+ * on /de/faq, where Google saw structured data that did not match the visible page.
+ */
+async function buildFaqJsonLd() {
+  const byLang = {};
+  for (const lang of langs) {
+    const file = join(__dirname, '..', 'src', 'content', 'faq', `${lang}.ts`);
+    const content = existsSync(file)
+      ? (await loadTs('src', 'content', 'faq', `${lang}.ts`)).default
+      : null;
+    if (!content) continue;
+    const jsonLd = {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: content.items.map((item) => ({
+        '@type': 'Question',
+        name: item.question,
+        acceptedAnswer: { '@type': 'Answer', text: item.answer },
+      })),
+    };
+    // `<` escaped so a `</script>` inside an answer cannot close the tag early.
+    const json = JSON.stringify(jsonLd).replace(/</g, '\\u003c');
+    byLang[lang] = `  <script type="application/ld+json">${json}</script>`;
+  }
+  return byLang;
+}
+
+const faqJsonLd = await buildFaqJsonLd();
 
 // The blog index page has English-only meta (hardcoded in src/pages/Blog.tsx),
 // so its localized variants are treated as duplicates of the English page.
@@ -146,6 +185,12 @@ function buildHtml(routePath, lang, slug) {
   // Insert correct hreflang block before </head>
   if (hreflang) {
     html = html.replace('</head>', `${hreflang}\n</head>`);
+  }
+
+  // FAQPage structured data, in the language this variant actually renders.
+  if (routePath === '/faq') {
+    const block = faqJsonLd[isDuplicateOfEnglish ? 'en' : lang] ?? faqJsonLd.en;
+    if (block) html = html.replace('</head>', `${block}\n</head>`);
   }
 
   return html;
