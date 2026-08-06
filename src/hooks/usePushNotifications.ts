@@ -14,11 +14,16 @@ const tzOffsetMin = () => -new Date().getTimezoneOffset();
 async function saveToken(
   userId: string, token: string, platform: string,
   thresholdKp: number, lat: number | null, lon: number | null,
+  bzAlertsEnabled: boolean, bzThreshold: number,
 ) {
   const { error } = await supabase
     .from('device_push_tokens')
     .upsert(
-      { user_id: userId, token, platform, threshold_kp: thresholdKp, lat, lon, tz_offset_min: tzOffsetMin(), updated_at: new Date().toISOString() },
+      {
+        user_id: userId, token, platform, threshold_kp: thresholdKp, lat, lon,
+        bz_alerts_enabled: bzAlertsEnabled, bz_threshold: bzThreshold,
+        tz_offset_min: tzOffsetMin(), updated_at: new Date().toISOString(),
+      },
       { onConflict: 'user_id,token' }
     );
   if (error) logError('Failed to save push token', error);
@@ -59,7 +64,7 @@ export function usePushNotifications() {
       PushNotifications.addListener('registration', async ({ value: token }) => {
         if (!user?.id) return;
         const platform = /iphone|ipad|ipod/i.test(navigator.userAgent) ? 'ios' : 'android';
-        await saveToken(user.id, token, platform, settings.kpThreshold, settings.preferredLat, settings.preferredLon);
+        await saveToken(user.id, token, platform, settings.kpThreshold, settings.preferredLat, settings.preferredLon, settings.bzAlertsEnabled, settings.bzThreshold);
       }),
       PushNotifications.addListener('registrationError', ({ error }) => {
         logError('Push registration error', error);
@@ -85,13 +90,17 @@ export function usePushNotifications() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id, hasPro]);
 
-  // Sync threshold + location changes to all existing device tokens in DB
+  // Sync alert preferences + location to all existing device tokens in DB.
+  // Every field written here must also appear in the dependency array, or a
+  // change to it sits in localStorage and never reaches the cron that reads it.
   useEffect(() => {
     if (!isNative() || !user?.id) return;
     supabase
       .from('device_push_tokens')
       .update({
         threshold_kp: settings.kpThreshold,
+        bz_alerts_enabled: settings.bzAlertsEnabled,
+        bz_threshold: settings.bzThreshold,
         lat: settings.preferredLat,
         lon: settings.preferredLon,
         tz_offset_min: tzOffsetMin(),
@@ -99,5 +108,8 @@ export function usePushNotifications() {
       })
       .eq('user_id', user.id)
       .then(({ error }) => { if (error) logError('Failed to sync push settings', error); });
-  }, [user?.id, settings.kpThreshold, settings.preferredLat, settings.preferredLon]);
+  }, [
+    user?.id, settings.kpThreshold, settings.preferredLat, settings.preferredLon,
+    settings.bzAlertsEnabled, settings.bzThreshold,
+  ]);
 }

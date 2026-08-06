@@ -1,6 +1,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 // @deno-types="npm:@types/web-push"
 import webpush from 'npm:web-push';
+import { BZ_SUSTAINED_MIN, sustainedBz, type MagRow } from './bz.ts';
 
 const GFZ_KP_URL = 'https://kp.gfz.de/app/json/';
 const NOAA_KP_URL = 'https://services.swpc.noaa.gov/json/planetary_k_index_1m.json';
@@ -59,6 +60,22 @@ async function fetchCurrentKp(): Promise<number> {
   return latest.kp_index ?? latest.estimated_kp ?? 0;
 }
 
+// ── Bz early warning ─────────────────────────────────────────────────────────
+
+const NOAA_MAG_URL = 'https://services.swpc.noaa.gov/json/rtsw/rtsw_mag_1m.json';
+
+/** Sustained Bz, or null when the feed is unavailable — never blocks Kp alerts. */
+async function fetchSustainedBz(): Promise<number | null> {
+  try {
+    const res = await fetch(NOAA_MAG_URL, { signal: AbortSignal.timeout(8000) });
+    if (!res.ok) throw new Error(`NOAA mag ${res.status}`);
+    return sustainedBz(await res.json() as MagRow[]);
+  } catch (err) {
+    console.warn('Bz feed unavailable, skipping early warning:', err);
+    return null;
+  }
+}
+
 interface QuietProfile {
   quiet_start: number | null;
   quiet_end: number | null;
@@ -70,6 +87,9 @@ interface PushSub {
   p256dh: string;
   auth: string;
   threshold_kp: number;
+  bz_alerts_enabled: boolean;
+  bz_threshold: number;
+  last_bz_notified_at: string | null;
   lat: number | null;
   lon: number | null;
   tz_offset_min: number | null;
@@ -81,7 +101,10 @@ interface DeviceToken {
   token: string;
   platform: 'ios' | 'android';
   threshold_kp: number;
+  bz_alerts_enabled: boolean;
+  bz_threshold: number;
   last_notified_at: string | null;
+  last_bz_notified_at: string | null;
   lat: number | null;
   lon: number | null;
   tz_offset_min: number | null;
@@ -352,10 +375,14 @@ Deno.serve(async (req: Request) => {
 
   webpush.setVapidDetails(vapidEmail, vapidPublicKey, vapidPrivateKey);
 
-  // 1. Fetch current Kp — GFZ primary, NOAA fallback (see fetchCurrentKp).
+  // 1. Fetch current Kp — GFZ primary, NOAA fallback (see fetchCurrentKp) — and
+  // the sustained Bz used for the early warning. Bz is fetched alongside rather
+  // than after, and its failure is non-fatal: a missing IMF feed must never stop
+  // the Kp alerts, which are the ones users already rely on.
   let currentKp = 0;
+  let bz: number | null = null;
   try {
-    currentKp = await fetchCurrentKp();
+    [currentKp, bz] = await Promise.all([fetchCurrentKp(), fetchSustainedBz()]);
   } catch (err) {
     console.error('Kp fetch failed:', err);
     return new Response(JSON.stringify({ error: 'Kp fetch failed' }), {
@@ -380,7 +407,7 @@ Deno.serve(async (req: Request) => {
   // Trialing users are also included (trialing = pro access).
   const { data: subs, error: subsError } = await supabase
     .from('push_subscriptions')
-    .select('id, endpoint, p256dh, auth, threshold_kp, lat, lon, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
+    .select('id, endpoint, p256dh, auth, threshold_kp, bz_alerts_enabled, bz_threshold, last_bz_notified_at, lat, lon, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
     .lte('threshold_kp', currentKp)
     .or(`last_notified_at.is.null,last_notified_at.lt.${cooldownCutoff}`)
     .or('profiles.plan.in.(pro,premium),profiles.subscription_status.eq.trialing', { referencedTable: 'profiles' });
@@ -433,7 +460,7 @@ Deno.serve(async (req: Request) => {
   if (apnsEnabled || fcmEnabled) {
     const { data: tokens, error: tokensError } = await supabase
       .from('device_push_tokens')
-      .select('id, token, platform, threshold_kp, last_notified_at, lat, lon, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
+      .select('id, token, platform, threshold_kp, bz_alerts_enabled, bz_threshold, last_notified_at, last_bz_notified_at, lat, lon, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
       .lte('threshold_kp', currentKp)
       .or(`last_notified_at.is.null,last_notified_at.lt.${cooldownCutoff}`)
       .or('profiles.plan.in.(pro,premium),profiles.subscription_status.eq.trialing', { referencedTable: 'profiles' });
@@ -535,9 +562,109 @@ Deno.serve(async (req: Request) => {
     }
   }
 
-  console.log(`Kp=${kpLabel} | web=${sent} | native=${nativeSent} | liveActivity=${liveActivitySent} | apns=${apnsEnabled} | fcm=${fcmEnabled}`);
+  // 5. Bz early warning — the one alert in here that is ahead of the storm
+  // rather than behind it. Kp is a 3-hour retrospective index, so a Kp alert
+  // always reports a storm already under way; a sustained southward Bz precedes
+  // the Kp rise by roughly 15-45 minutes.
+  //
+  // Deliberately separate from the Kp pass in three ways:
+  //  - its own cooldown column, so an early warning cannot swallow the Kp alert
+  //    for the very storm it predicted;
+  //  - opt-in per subscription (bz_alerts_enabled), because this is a forecast
+  //    and a user who did not ask for predictions should not get them;
+  //  - wording that says "may" and names Bz, so a notification arriving while
+  //    the app still shows a low Kp reads as a forecast rather than a bug.
+  let bzSent = 0;
+
+  // Thresholds are constrained to [-50, 0), so a sustained Bz that is not
+  // southward can never match one — skip the two queries entirely rather than
+  // asking the database five times an hour for a row that cannot exist.
+  if (bz !== null && bz < 0) {
+    const bzLabel = bz.toFixed(1);
+    const bzCooldownCutoff = cooldownCutoff;
+
+    const [webRes, nativeRes] = await Promise.all([
+      supabase
+        .from('push_subscriptions')
+        .select('id, endpoint, p256dh, auth, bz_threshold, lat, lon, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
+        .eq('bz_alerts_enabled', true)
+        .gte('bz_threshold', bz)   // threshold is negative; Bz at or below it fires
+        .or(`last_bz_notified_at.is.null,last_bz_notified_at.lt.${bzCooldownCutoff}`)
+        .or('profiles.plan.in.(pro,premium),profiles.subscription_status.eq.trialing', { referencedTable: 'profiles' }),
+      (apnsEnabled || fcmEnabled)
+        ? supabase
+            .from('device_push_tokens')
+            .select('id, token, platform, bz_threshold, lat, lon, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
+            .eq('bz_alerts_enabled', true)
+            .gte('bz_threshold', bz)
+            .or(`last_bz_notified_at.is.null,last_bz_notified_at.lt.${bzCooldownCutoff}`)
+            .or('profiles.plan.in.(pro,premium),profiles.subscription_status.eq.trialing', { referencedTable: 'profiles' })
+        : Promise.resolve({ data: [], error: null }),
+    ]);
+
+    const title = `Aurora watch — Bz ${bzLabel} nT`;
+    const body = `The interplanetary magnetic field has been southward at ${bzLabel} nT for ${BZ_SUSTAINED_MIN} minutes. `
+      + `Geomagnetic activity may pick up in the next 15–45 minutes — this is a forecast, not a measured Kp reading.`;
+
+    if (webRes.error) {
+      console.error('Bz web query failed:', webRes.error.message);
+    } else {
+      const eligible = ((webRes.data ?? []) as unknown as PushSub[])
+        .filter(s => !inQuietHours(s.profiles, s.tz_offset_min));
+
+      await Promise.allSettled(eligible.map(async (sub) => {
+        try {
+          await webpush.sendNotification(
+            { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
+            JSON.stringify({ title, body, url: '/dashboard', bz }),
+          );
+          await supabase.from('push_subscriptions').update({ last_bz_notified_at: now }).eq('id', sub.id);
+          bzSent++;
+        } catch (err: unknown) {
+          const status = (err as { statusCode?: number }).statusCode;
+          // Expired endpoints are reaped by the Kp pass; don't double-delete here.
+          if (status !== 410 && status !== 404) console.error(`Bz web push failed for ${sub.id}:`, err);
+        }
+      }));
+    }
+
+    if (nativeRes.error) {
+      console.error('Bz device query failed:', nativeRes.error.message);
+    } else if ((nativeRes.data ?? []).length > 0) {
+      const eligible = ((nativeRes.data ?? []) as unknown as DeviceToken[]).filter(t => {
+        if (t.platform === 'ios' && !apnsEnabled) return false;
+        if (t.platform === 'android' && !fcmEnabled) return false;
+        return !inQuietHours(t.profiles, t.tz_offset_min);
+      });
+
+      const apnsJWT = eligible.some(t => t.platform === 'ios')
+        ? await buildApnsJWT(apnsP8Key!, apnsKeyId!, apnsTeamId!) : null;
+      let fcmToken: string | null = null;
+      if (eligible.some(t => t.platform === 'android')) {
+        try { fcmToken = await getFcmAccessToken(fcmSa!); }
+        catch (err) { console.error('FCM OAuth failed (Bz):', err); }
+      }
+
+      await Promise.allSettled(eligible.map(async (t) => {
+        let result: { ok: boolean; gone: boolean };
+        if (t.platform === 'ios' && apnsJWT) {
+          result = await sendApns(t.token, apnsJWT, apnsBundleId, title, body, { url: '/dashboard', bz });
+        } else if (t.platform === 'android' && fcmToken) {
+          result = await sendFcm(fcmSa!.project_id, fcmToken, t.token, title, body, { url: '/dashboard', bz: String(bz) });
+        } else {
+          return;
+        }
+        if (result.ok) {
+          await supabase.from('device_push_tokens').update({ last_bz_notified_at: now }).eq('id', t.id);
+          bzSent++;
+        }
+      }));
+    }
+  }
+
+  console.log(`Kp=${kpLabel} | bz=${bz ?? 'n/a'} | web=${sent} | native=${nativeSent} | bz_alerts=${bzSent} | liveActivity=${liveActivitySent} | apns=${apnsEnabled} | fcm=${fcmEnabled}`);
   return new Response(
-    JSON.stringify({ sent, nativeSent, liveActivitySent, kp: currentKp, apnsEnabled, fcmEnabled }),
+    JSON.stringify({ sent, nativeSent, bzSent, liveActivitySent, kp: currentKp, bz, apnsEnabled, fcmEnabled }),
     { headers: { 'Content-Type': 'application/json' } }
   );
 });

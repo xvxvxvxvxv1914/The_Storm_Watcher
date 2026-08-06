@@ -161,6 +161,15 @@ widget, the Android counterpart of the iOS one. Three responsive layouts
   `values/strings.xml`, which is why the four Capacitor-generated ones are marked
   `translatable="false"`.
 
+### Bz ранно предупреждение (реализирано 2026-08-06)
+Единствената аларма, която изпреварва бурята. Kp е ретроспективен 3-часов индекс, значи Kp алармата винаги съобщава за буря, която вече тече; устойчиво южно Bz предхожда покачването на Kp с 15–45 минути.
+
+- Математиката е в [supabase/functions/send-kp-alerts/bz.ts](supabase/functions/send-kp-alerts/bz.ts) — **без Deno/npm импорти**, за да е тестваема с vitest (`bz.test.ts`; `vitest.config.ts` включва `supabase/functions/**`). Останалата част от edge функцията не е тестваема тук.
+- `sustainedBz` връща **най-слабата** проба в прозореца, за да отговаря едно сравнение на „било ли е Bz под X през целия прозорец". Връща `null` при непълен прозорец или при дупка във feed-а — иначе „устойчиво 15 минути" тихо се изражда в „някога през последния час".
+- NOAA rtsw feed-ът е **newest-first** (потвърдено на живо), затова редовете се сортират, а не се реже краят.
+- Три неща я държат отделна от Kp алармата: собствена cooldown колона (`last_bz_notified_at`) — иначе прогнозата изяжда Kp алармата за същата буря; opt-in (`bz_alerts_enabled`, по подразбиране изключено); и текст, който казва „may" и назовава Bz, защото известието идва докато Kp още е ниско.
+- Праговете са ограничени в `[-50, 0)` от DB constraint; при неюжно Bz секцията изобщо не пуска заявки.
+
 ### i18n
 Translation keys live in `src/locales/{en,bg,da,de,es,fi,fr,is,ja,ko,no,pl,ru,sv,uk,zh}.ts` as flat `Record<string, string>`. The `useLanguage()` hook provides `t(key)`. All 16 locales must stay in sync — there is a completeness test at `src/locales/localeCompleteness.test.ts`.
 
@@ -193,24 +202,6 @@ Manual chunks in `vite.config.ts` keep the initial bundle small:
 ## Ideas / Future Plans
 
 _(Add ideas and future feature plans here as they come up)_
-
-### Bz ранно предупреждение (предложено 2026-08-06)
-**Най-високата стойност от предложените — прави алармите изпреварващи вместо закъснели.**
-
-Kp е ретроспективен 3-часов индекс. Собственият ни FAQ го казва: устойчиво Bz под
-−10 nT дава **15–45 минути преднина**, преди Kp изобщо да мръдне. Приложението вече
-тегли Bz (`getMagField` → `bz_gsm`) и го показва на Dashboard-а, но `send-kp-alerts`
-филтрира **само** по Kp праг (`.lte('threshold_kp', currentKp)`). Тоест нотификацията
-пристига, след като бурята вече е в ход.
-
-Не иска нито нов източник на данни, нито ново разрешение:
-1. `send-kp-alerts` да чете и `rtsw_mag_1m.json`; праг напр. Bz ≤ −10 nT, задържано
-   N последователни минути (една минута шум не е събитие).
-2. Нов тип нотификация, отделен от Kp алармата и с отделен cooldown — иначе Bz
-   алармата ще изяде Kp алармата през същия 2-часов прозорец.
-3. Настройка в Settings (вкл./изкл. + праг), по подобие на `threshold_kp`.
-4. Текст, който казва че е *прогноза*, не измерване — иначе „Kp скочи" без Kp да е
-   скочил ще изглежда като бъг.
 
 ### Apple Watch App
 watchOS companion app за The Storm Watcher. Данните вече са в App Group (`group.com.stormwatcher.app`) от iOS widget-а.
