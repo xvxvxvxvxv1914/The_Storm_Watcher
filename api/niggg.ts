@@ -43,10 +43,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ error: 'Invalid date parameters' });
   }
 
-  const upstream = await fetch(
-    `https://pagmag.ngic.bg/assets/php/datacalendar26.php?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`
-  );
+  // Bounded upstream call — NIGGG is a single university host with no SLA, and
+  // an unbounded fetch here pins the function open until Vercel's own limit.
+  // AbortSignal.timeout covers the body read too, so `.text()` stays inside it.
+  let upstream: Response;
+  let text: string;
+  try {
+    upstream = await fetch(
+      `https://pagmag.ngic.bg/assets/php/datacalendar26.php?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`,
+      { signal: AbortSignal.timeout(10000) },
+    );
+    text = await upstream.text();
+  } catch {
+    return res.status(504).json({ error: 'Upstream timeout' });
+  }
 
-  const text = await upstream.text();
   res.status(upstream.status).send(text);
 }

@@ -12,6 +12,8 @@ export async function sendEmail({
   html: string;
   from?: string;
 }): Promise<void> {
+  // Callers are Stripe webhook handlers, where a hang costs a webhook retry —
+  // bound the call rather than letting Vercel's function limit decide.
   const res = await fetch(RESEND_API_URL, {
     method: 'POST',
     headers: {
@@ -19,6 +21,7 @@ export async function sendEmail({
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ from, to, subject, html }),
+    signal: AbortSignal.timeout(10000),
   });
 
   if (!res.ok) {
