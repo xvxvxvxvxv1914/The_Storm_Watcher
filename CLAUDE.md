@@ -108,7 +108,12 @@ All NOAA/external fetches go through an in-memory TTL cache + single-flight dedu
 - Key tables: `profiles` (plan, stripe fields), `mood_entries`, `push_subscriptions`, `favorite_locations`, `stripe_processed_events`
 
 ### PWA / Service Worker
-Custom service worker at `src/sw.ts` using Workbox. Heavy 3D chunks (`globe-vendor`, `three-vendor`, `charts-vendor`) are excluded from precaching — they're loaded on-demand and cached by the browser separately.
+Custom service worker at `src/sw.ts` using Workbox. Two groups are excluded from the precache:
+
+- **Heavy 3D chunks** (`globe-vendor`, `three-vendor`, `charts-vendor`, `map-vendor`) — loaded on demand, left to the browser cache.
+- **`assets/ondemand/**`** — the 16 locales, the 16 FAQ and magnetic translations and the ten blog articles. These are cached at runtime by a `CacheFirst` route in `src/sw.ts` instead, so a page works offline once it has been opened online. Precaching them made the install 2.6 MB, of which 1.3 MB was content a visitor uses one sixteenth of — undoing for PWA users exactly what splitting these files won for web visitors. **The tradeoff is deliberate:** a language or article never opened while online is not available offline.
+
+`chunkFileNames` in `vite.config.ts` routes those modules into `assets/ondemand/` **so the exclusion can be by path, not by filename** — `is-<hash>.js` could be the Icelandic locale or a chunk from a package called `is`, and precaching the wrong set fails silently either way. The two lists must stay in sync.
 
 ### Capacitor (mobile)
 `CapacitorHttp` is enabled globally — it patches `fetch()` on native to bypass WKWebView CORS for third-party APIs. This means native builds can call NOAA/GFZ/NIGGG directly without going through the Vercel proxy.
@@ -230,33 +235,30 @@ supabase functions deploy send-kp-alerts --project-ref srzfoxlmhxyulrgkchjr
 приложението показва (виж „iOS widget data flow" за защо GFZ и NOAA се разминават).
 Това е единственото нещо от сесията, което е написано, но не е живо.
 
-### Одит 2026-08-06 — открито, но НЕ поправено
-Всичко останало от онази сесия е в main (`3cb7851`). Тези четири останаха:
+### Одит 2026-08-06 — остатък
 
-1. **Service worker-ът precache-ва всичките 16 езика.** Precache-ът е ~2.5 MB и включва
-   16-те локала (~800 KB) плюс, вече, 16-те FAQ и magnetic чънка и десетте статии.
-   Тоест PWA инсталацията тегли всеки език — точно това, което разделянето по езици
-   премахна за уеб посетителите. Фикс: `globIgnores` за локалите и content чънковете в
-   `vite.config.ts`, плюс runtime `CacheFirst` route за `/assets/*.js` в `src/sw.ts`,
-   за да се кешират реално ползваните. **Компромис срещу offline** — в момента precache-ът
-   е единственият SW-кеш за JS, така че смяна на език offline ще спре да работи.
-   Решение на потребителя, не рутинно.
-2. **`globe-vendor` е 1.26 MB** (373 KB gzip) — далеч най-голямото нещо в билда, само за
+Затворено: SW precache-ът (виж „PWA / Service Worker" — 2586 → 1303 KiB) и мъртвите
+cron-ове (`storm-alert.ts` изтрит, `webhook-health.ts` вече е насрочен).
+
+Остава:
+
+1. **`globe-vendor` е 1.26 MB** (373 KB gzip) — далеч най-голямото нещо в билда, само за
    `/aurora`. Lazy е и е изключен от precache, но който отвори страницата, го плаща.
    Да се провери дали `react-globe.gl` + `three-globe` могат да се орежат или заменят.
-3. **Четирите Kp каскади дрейфват.** На 2026-08-06 дрейфът се хвана два пъти в един ден
+2. **Четирите Kp каскади дрейфват.** На 2026-08-06 дрейфът се хвана два пъти в един ден
    (widget-ите четяха `estimated_kp`; cron-ът беше NOAA-only). Няма как да се сподели код
    между TS/Swift/Kotlin/Deno, но може да се сподели спецификация: JSON файл с
    endpoint-ите и приоритета на полетата, срещу който JS версията се тества, плюс
    checklist тук. Иначе третият дрейф е въпрос на време.
-4. **`api/cron/storm-alert.ts` е мъртъв код.** В `vercel.json` няма `crons` секция, значи
-   не се пуска. Пета Kp имплементация, пак само NOAA. Или се включва (и получава GFZ
-   каскадата), или се трие — код, който изглежда жив, но не е, е капан.
 
 Дребни, отбелязани в движение: rate-limit картите в `api/gfz.ts` и `api/niggg.ts` не
 трият изтекли записи (бавно натрупване за живота на lambda инстанцията); Sentry прави
 по едно issue на endpoint при NOAA авария, защото URL-ът е в текста на грешката
 (5 issue-та за една авария) — групирането може да се оправи с fingerprint.
+
+**Изисква ръчна стъпка:** `webhook-health` cron-ът иска `CRON_SECRET` в Vercel env —
+Vercel слага `Authorization` header-а само когато променливата съществува, иначе
+handler-ът връща 401 и предпазителят пак мълчи.
 
 ### Mobile одити 2026-06-11 и 2026-07-19/20 — статус
 Поправено дотук: NSCameraUsageDescription, launch-time permission промпт, widget версии, storm safe-area падинг, deep link allowlist, дублирани push listener-и, autoVerify, Kp 0.0 widget логика, пълна локализация на widget + Live Activity (16 езика), CFBundleLocalizations, InfoPlist.strings (16 lproj), universal links (AASA + entitlement + App.tsx handler), **CODE_SIGN_ENTITLEMENTS верзан** (беше сирак — build-овете се подписваха без app groups/aps!), Android FCM код (manifest permission, hook без iOS gate, FCM v1 в send-kp-alerts). Live Activity tap → /alerts е свободна страница (не paywall) — решено.

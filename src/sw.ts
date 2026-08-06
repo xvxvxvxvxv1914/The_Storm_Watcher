@@ -2,7 +2,7 @@
 import { clientsClaim, setCacheNameDetails } from 'workbox-core';
 import { precacheAndRoute, cleanupOutdatedCaches } from 'workbox-precaching';
 import { registerRoute, setCatchHandler, NavigationRoute } from 'workbox-routing';
-import { NetworkFirst, StaleWhileRevalidate } from 'workbox-strategies';
+import { NetworkFirst, StaleWhileRevalidate, CacheFirst } from 'workbox-strategies';
 import { ExpirationPlugin } from 'workbox-expiration';
 
 declare const self: ServiceWorkerGlobalScope & {
@@ -37,6 +37,27 @@ const navRoute = new NavigationRoute(navigationStrategy, {
   denylist: [/^\/api\//, /^\/donki\//, /\.\w{2,5}$/],
 });
 registerRoute(navRoute);
+
+// ───────────────────────────────────────────────────────────────
+// On-demand chunks: the 16 locales, the 16 FAQ/magnetic translations and the
+// ten blog articles (assets/ondemand/, see chunkFileNames in vite.config.ts).
+//
+// These are deliberately NOT precached — they were 1.3 MB of a 2.6 MB install
+// for content a visitor uses one sixteenth of. CacheFirst instead: the first
+// online visit to a page stores its chunk, and that page then works offline.
+// The tradeoff is explicit — a language or article never opened while online is
+// not available offline, where precaching made all of them available.
+//
+// CacheFirst is safe here only because the filenames are content-hashed: a new
+// build produces new names, so a cached entry can never go stale.
+// ───────────────────────────────────────────────────────────────
+registerRoute(
+  ({ url }) => url.origin === self.location.origin && url.pathname.startsWith('/assets/ondemand/'),
+  new CacheFirst({
+    cacheName: 'tsw-ondemand',
+    plugins: [new ExpirationPlugin({ maxEntries: 60, maxAgeSeconds: 60 * 60 * 24 * 30, purgeOnQuotaError: true })],
+  })
+);
 
 // ───────────────────────────────────────────────────────────────
 // API caching strategies
