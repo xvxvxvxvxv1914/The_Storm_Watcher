@@ -623,7 +623,11 @@ const Mood = () => {
               className={`glass-surface rounded-3xl p-5 sm:p-6 border ${surfaceBorder}`}
             >
               <h2 className={`text-base font-bold mb-1 ${textPrimary}`}>{t('mood.rateTitle')}</h2>
-              <p className={`text-xs mb-5 ${textMuted}`}>{t('mood.symptomsQuestion')}</p>
+              {/* The symptoms question belongs to the symptom chips below, which
+                  only appear once a mood is picked. Sitting here it asked about
+                  symptoms that were nowhere on screen. mood.subtitle already
+                  existed in all 16 locales, unused. */}
+              <p className={`text-xs mb-5 ${textMuted}`}>{t('mood.subtitle')}</p>
 
               {/* Mood picker — bigger, 2 rows on mobile (3+2) for visual balance */}
               <div className="grid grid-cols-5 gap-2 mb-5">
@@ -673,6 +677,7 @@ const Mood = () => {
                     className="overflow-hidden"
                   >
                     <div className="space-y-3 pt-1">
+                      <p className={`text-xs ${textMuted}`}>{t('mood.symptomsQuestion')}</p>
                       <div>
                         <p className={`text-[10px] uppercase tracking-wider font-semibold mb-2 ${textMuted}`}>{t('mood.physical')}</p>
                         <div className="flex flex-wrap gap-1.5">

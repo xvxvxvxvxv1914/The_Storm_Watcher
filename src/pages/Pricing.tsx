@@ -275,7 +275,12 @@ export default function Pricing() {
           </button>
           <div className="flex items-center gap-2">
             <span className={`text-sm font-medium ${billing === 'yearly' ? 'text-white' : 'text-[#64748b]'}`}>{t('pricing.yearly') || 'Yearly'}</span>
-            <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: '#15803d22', color: '#4ade80' }}>
+            {/* #4ade80 on the light chip is 1.55:1 — the discount badge was the
+                least readable thing in the pricing header. */}
+            <span
+              className="text-xs font-bold px-2 py-0.5 rounded-full"
+              style={{ background: '#15803d22', color: theme === 'light' ? '#15803d' : '#4ade80' }}
+            >
               {t('pricing.save25') || 'Save 25%'}
             </span>
           </div>

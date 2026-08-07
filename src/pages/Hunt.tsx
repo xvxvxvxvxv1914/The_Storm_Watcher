@@ -85,7 +85,7 @@ function fmtCooldown(ms: number): string {
 
 export default function Hunt() {
   const { user, profile } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { settings } = useSettings();
   const kp = useKpLive();
 
@@ -470,7 +470,7 @@ export default function Hunt() {
                     </span>
                     <span className="flex items-center gap-3">
                       {s.kp_at_sighting !== null && <span className="text-[#f97316] font-bold">Kp {s.kp_at_sighting.toFixed(1)}</span>}
-                      <span>{new Date(s.created_at).toLocaleDateString()}</span>
+                      <span>{new Date(s.created_at).toLocaleDateString(language)}</span>
                     </span>
                   </div>
                 </SwipeToDelete>
@@ -554,7 +554,7 @@ export default function Hunt() {
                   {s.kp_at_sighting !== null && (
                     <span className="text-[#f97316] text-xs font-bold">Kp {s.kp_at_sighting.toFixed(1)}</span>
                   )}
-                  <span className="text-[#475569] text-xs">{new Date(s.created_at).toLocaleDateString()}</span>
+                  <span className="text-[#475569] text-xs">{new Date(s.created_at).toLocaleDateString(language)}</span>
                 </div>
               </div>
             ))}
