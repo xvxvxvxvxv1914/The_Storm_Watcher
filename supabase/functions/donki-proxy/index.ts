@@ -12,6 +12,10 @@ function corsHeaders(req: Request): Record<string, string> {
   return {
     'Access-Control-Allow-Origin': ALLOWED_ORIGINS.has(origin) ? origin : 'https://thestormwatcher.com',
     'Access-Control-Allow-Headers': 'content-type, authorization',
+    // The ACAO above varies by request Origin while responses are sent with
+    // `Cache-Control: public, max-age=300` — without Vary a cache can hand a
+    // second origin the first origin's ACAO and fail its CORS check.
+    'Vary': 'Origin',
   };
 }
 

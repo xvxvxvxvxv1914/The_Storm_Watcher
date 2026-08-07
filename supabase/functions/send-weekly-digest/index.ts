@@ -1,11 +1,53 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import {
+  countStormEpisodes,
+  parseGfzBins,
+  parseNoaaBins,
+  type GfzResponse,
+  type NoaaKpBin,
+} from './kpWindow.ts';
 
+const GFZ_KP_URL = 'https://kp.gfz.de/app/json/';
 const NOAA_KP_URL  = 'https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json';
-const NOAA_LIVE_URL = 'https://services.swpc.noaa.gov/json/planetary_k_index_1m.json';
 const BASE_URL = 'https://www.thestormwatcher.com';
 const FROM = 'The Storm Watcher <hello@thestormwatcher.com>';
 
-interface KpHistEntry { kp_index?: number; estimated_kp?: number }
+const WINDOW_DAYS = 7;
+
+/**
+ * The last 7 days of published 3-hour Kp bins, oldest first.
+ *
+ * GFZ primary, NOAA fallback — the same cascade as getKpIndex, KpSource.swift,
+ * KpSource.kt and send-kp-alerts (see src/services/kpSource.contract.json).
+ * Trailing GFZ bins are null until the period closes and are skipped, never
+ * read as 0: Kp 0.0 is a real ultra-quiet reading.
+ *
+ * The fallback is the 7-day *product* rather than the contract's
+ * planetary_k_index_1m.json because the 1m feed carries no history.
+ */
+async function fetchKpWindow(): Promise<number[]> {
+  const end = new Date();
+  const start = new Date(end.getTime() - WINDOW_DAYS * 24 * 60 * 60 * 1000);
+  const iso = (d: Date) => d.toISOString().split('.')[0] + 'Z';
+
+  try {
+    const url = `${GFZ_KP_URL}?start=${encodeURIComponent(iso(start))}`
+      + `&end=${encodeURIComponent(iso(end))}&index=Kp`;
+    const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
+    if (!res.ok) throw new Error(`GFZ ${res.status}`);
+    const bins = parseGfzBins(await res.json() as GfzResponse);
+    if (bins.length === 0) throw new Error('GFZ returned no published bin');
+    return bins;
+  } catch (err) {
+    console.warn('GFZ Kp unavailable, falling back to NOAA:', err);
+  }
+
+  const res = await fetch(NOAA_KP_URL, { signal: AbortSignal.timeout(8000) });
+  if (!res.ok) throw new Error(`NOAA ${res.status}`);
+  const bins = parseNoaaBins(await res.json() as NoaaKpBin[]);
+  if (bins.length === 0) throw new Error('NOAA returned no usable bin');
+  return bins;
+}
 
 function stormLevel(kp: number): string {
   if (kp >= 9) return 'G5 — Extreme';
@@ -23,8 +65,10 @@ function kpColor(kp: number): string {
   return '#10b981';
 }
 
+const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
+
 async function sendEmail(to: string, subject: string, html: string, resendKey: string): Promise<void> {
-  const res = await fetch('https://api.resend.com/emails', {
+  const post = () => fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${resendKey}`,
@@ -32,6 +76,12 @@ async function sendEmail(to: string, subject: string, html: string, resendKey: s
     },
     body: JSON.stringify({ from: FROM, to, subject, html }),
   });
+
+  let res = await post();
+  if (res.status === 429) {
+    await sleep(1500);
+    res = await post();
+  }
   if (!res.ok) {
     const body = await res.text();
     throw new Error(`Resend ${res.status}: ${body}`);
@@ -39,7 +89,6 @@ async function sendEmail(to: string, subject: string, html: string, resendKey: s
 }
 
 function buildEmail(
-  email: string,
   currentKp: number,
   maxKp: number,
   stormCount: number,
@@ -106,7 +155,7 @@ function buildEmail(
                   </td>
                   <td width="4%"></td>
                   <td width="48%" style="background:#0f1a2e;border:1px solid #1e293b;border-radius:12px;padding:16px;text-align:center;">
-                    <div style="font-size:11px;color:#64748b;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px;">Peak Kp (3 days)</div>
+                    <div style="font-size:11px;color:#64748b;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px;">Peak Kp (7 days)</div>
                     <div style="font-size:28px;font-weight:800;color:${color};">${maxKp.toFixed(1)}</div>
                     <div style="font-size:11px;color:#475569;margin-top:4px;">${level}</div>
                   </td>
@@ -174,45 +223,31 @@ Deno.serve(async (req: Request) => {
     });
   }
 
-  // 1. Fetch live Kp
-  let currentKp = 0;
+  // 1. One 7-day window of published Kp bins gives current, peak and episodes.
+  //    A digest that cannot state the week's activity is not worth sending, so
+  //    a total failure here aborts instead of mailing "quiet week" to everyone.
+  let bins: number[];
   try {
-    const res = await fetch(NOAA_LIVE_URL, { signal: AbortSignal.timeout(8000) });
-    if (res.ok) {
-      const data: KpHistEntry[] = await res.json();
-      if (data.length > 0) {
-        const latest = data[data.length - 1];
-        currentKp = latest.kp_index ?? latest.estimated_kp ?? 0;
-      }
-    }
-  } catch { /* non-fatal */ }
+    bins = await fetchKpWindow();
+  } catch (err) {
+    console.error('Kp window unavailable, skipping digest:', err);
+    return new Response(JSON.stringify({ error: 'Kp data unavailable', sent: 0 }), {
+      status: 503, headers: { 'Content-Type': 'application/json' },
+    });
+  }
 
-  // 2. Fetch 3-day Kp history for max/storm count
-  let maxKp = currentKp;
-  let stormCount = 0;
-  try {
-    const res = await fetch(NOAA_KP_URL, { signal: AbortSignal.timeout(8000) });
-    if (res.ok) {
-      const raw: unknown[][] = await res.json();
-      // Skip header row (index 0)
-      for (let i = 1; i < raw.length; i++) {
-        const kp = parseFloat(String(raw[i][1]));
-        if (!isNaN(kp)) {
-          if (kp > maxKp) maxKp = kp;
-          if (kp >= 5) stormCount++;
-        }
-      }
-    }
-  } catch { /* non-fatal */ }
+  const currentKp = bins[bins.length - 1];
+  const maxKp = Math.max(...bins);
+  const stormCount = countStormEpisodes(bins);
 
-  // 3. Build week label
+  // 2. Build week label
   const now = new Date();
   const weekStart = new Date(now);
-  weekStart.setDate(now.getDate() - 7);
+  weekStart.setDate(now.getDate() - WINDOW_DAYS);
   const fmt = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   const weekLabel = `${fmt(weekStart)} – ${fmt(now)}, ${now.getFullYear()}`;
 
-  // 4. Query opted-in users
+  // 3. Query opted-in users
   const supabase = createClient(
     Deno.env.get('SUPABASE_URL')!,
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
@@ -221,7 +256,8 @@ Deno.serve(async (req: Request) => {
   const { data: users, error } = await supabase
     .from('profiles')
     .select('id, email')
-    .eq('weekly_digest', true);
+    .eq('weekly_digest', true)
+    .not('email', 'is', null);
 
   if (error) {
     console.error('DB query failed:', error.message);
@@ -236,23 +272,24 @@ Deno.serve(async (req: Request) => {
     });
   }
 
-  // 5. Send emails
+  // 4. Send emails — sequentially, ~1.7/s. Resend's free tier allows 2 requests
+  //    per second; firing the whole list at once turned the overflow into 429s
+  //    that were counted as "failed" and never retried.
   let sent = 0;
   let failed = 0;
   const subject = `Space Weather Digest — ${fmt(weekStart)}`;
+  const html = buildEmail(currentKp, maxKp, stormCount, weekLabel);
 
-  await Promise.allSettled(
-    users.map(async (u: { id: string; email: string }) => {
-      try {
-        const html = buildEmail(u.email, currentKp, maxKp, stormCount, weekLabel);
-        await sendEmail(u.email, subject, html, resendKey);
-        sent++;
-      } catch (err) {
-        console.error(`Email failed for ${u.id}:`, err);
-        failed++;
-      }
-    })
-  );
+  for (const u of users as { id: string; email: string }[]) {
+    try {
+      await sendEmail(u.email, subject, html, resendKey);
+      sent++;
+    } catch (err) {
+      console.error(`Email failed for ${u.id}:`, err);
+      failed++;
+    }
+    await sleep(600);
+  }
 
   console.log(`Digest sent=${sent} failed=${failed} kp=${currentKp.toFixed(1)} maxKp=${maxKp.toFixed(1)} storms=${stormCount}`);
   return new Response(
