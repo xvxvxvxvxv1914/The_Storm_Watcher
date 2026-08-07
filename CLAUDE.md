@@ -166,6 +166,13 @@ widget, the Android counterpart of the iOS one. Three responsive layouts
   `values/strings.xml`, which is why the four Capacitor-generated ones are marked
   `translatable="false"`.
 
+### Изтриване на акаунт
+`delete-account` проверява JWT-то с anon клиент и трие само `user.id`, така че никой не може да изтрие чужд акаунт. Всички таблици с лични данни имат `ON DELETE CASCADE` към `auth.users` (пряко или през `profiles`), с едно нарочно изключение:
+
+`contact_messages.user_id` е `ON DELETE SET NULL`, за да оцелее историята на поддръжката. Но `name` и `email` са **отделни колони, не FK** — нулирането на връзката оставяше идентификаторите в таблицата и правеше изтриването да изглежда пълно, без да е. Функцията вече ги замества с `[deleted]` / `deleted@account.invalid` (запазена `.invalid` зона) преди да изтрие акаунта, и **отказва цялата операция**, ако анонимизирането не мине — половинчато изтриване е по-лошо от такова, което може да се повтори.
+
+`mood_entries` няма FK към `auth.users` по замисъл — псевдонимна е (`user_session_id` + `ip_hash`), не е свързана със самоличност.
+
 ### Web push (браузър)
 Сървърната половина съществуваше отдавна и беше **мъртва**: таблица `push_subscriptions` с пълни RLS политики, VAPID ключове в edge функцията, `push` handler в `src/sw.ts`, `VITE_VAPID_PUBLIC_KEY` подаван от CI — и `send-kp-alerts`, което честно я заявява на всеки 5 минути. Никой никога не викаше `pushManager.subscribe()`, значи заявката винаги връщаше нула реда.
 
