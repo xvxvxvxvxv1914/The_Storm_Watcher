@@ -234,30 +234,35 @@ watchOS companion app за The Storm Watcher. Данните вече са в Ap
 
 ## TODO / Pending Work
 
-### ЧАКА DEPLOY — `send-kp-alerts` (от 2026-08-06)
-```bash
-supabase functions deploy send-kp-alerts --project-ref srzfoxlmhxyulrgkchjr
-```
-Кодът е в main (`0689998`), но edge функциите не се пускат от git — продукцията още
-върви със старата NOAA-only логика, тоест алармите още могат да мълчат при буря, която
-приложението показва (виж „iOS widget data flow" за защо GFZ и NOAA се разминават).
-Това е единственото нещо от сесията, което е написано, но не е живо.
+### Одит 2026-08-06 — затворен
+Всичко от онзи одит е поправено и е в main. `send-kp-alerts` е deploy-нато (v9,
+проверено в продукция) и вече носи GFZ каскадата + Bz алармата. Затворени също:
+SW precache 2586 → 1303 KiB, `globe-vendor` 1257 → 633 kB, мъртвите cron-ове,
+`kpSource.contract.json` + `resolveKp`, Sentry fingerprint, rate-limit sweep.
 
-### Одит 2026-08-06 — остатък
+### Чака решение — езикът на браузъра пише върху английските URL-и
+`LanguageContext` избира език по реда: URL префикс → запазено предпочитание →
+`navigator.language`. Третата стъпка се прилага и върху URL-и, които вече са
+езиково определени, затова каноничният английски `/faq` рендира български на
+bg-BG браузър и немски на de-DE (възпроизведено в Chrome с три локала). Prerender-нат
+файл на същата страница казва `lang="en"` и `canonical=/faq`.
 
-Затворено: SW precache-ът (виж „PWA / Service Worker" — 2586 → 1303 KiB), мъртвите
-cron-ове (`storm-alert.ts` изтрит, `webhook-health.ts` вече е насрочен) и споделената Kp
-спецификация (`kpSource.contract.json` + `resolveKp`).
+Резултат: `/faq` и `/bg/faq` сервират едно и също на български посетител, докато
+hreflang клъстерът ги обявява за различни версии — дублирано съдържание върху две
+URL-а. Не е регресия; така е открай време.
 
-Остава:
+Предложение: при първо посещение на непрефиксиран URL с не-английски браузър —
+**redirect** към префиксирания, вместо тиха смяна на съдържанието. URL и съдържание
+се изравняват, canonical/hreflang стават верни, потребителят пак получава езика си.
+Но е redirect със SEO последствия → решение на потребителя, не рутинна поправка.
 
-1. **`globe-vendor` е 1.26 MB** (373 KB gzip) — далеч най-голямото нещо в билда, само за
-   `/aurora`. Lazy е и е изключен от precache, но който отвори страницата, го плаща.
-   Да се провери дали `react-globe.gl` + `three-globe` могат да се орежат или заменят.
-
-**Изисква ръчна стъпка:** `webhook-health` cron-ът иска `CRON_SECRET` в Vercel env —
-Vercel слага `Authorization` header-а само когато променливата съществува, иначе
-handler-ът връща 401 и предпазителят пак мълчи.
+### Чакат по една променлива в Vercel env
+- **`VITE_VAPID_PUBLIC_KEY`** — довършеният уеб push (`src/hooks/useWebPush.ts`) е
+  инертен без нея; остава само алармата в отворен таб. Стойността е публичният VAPID
+  ключ, същият, който CI вече подава като secret.
+- **`CRON_SECRET`** — `webhook-health` cron-ът връща 401 без нея, тоест предпазителят
+  за тихо падналия Stripe webhook пак мълчи. Vercel слага `Authorization` header-а
+  само когато променливата съществува.
 
 ### Mobile одити 2026-06-11 и 2026-07-19/20 — статус
 Поправено дотук: NSCameraUsageDescription, launch-time permission промпт, widget версии, storm safe-area падинг, deep link allowlist, дублирани push listener-и, autoVerify, Kp 0.0 widget логика, пълна локализация на widget + Live Activity (16 езика), CFBundleLocalizations, InfoPlist.strings (16 lproj), universal links (AASA + entitlement + App.tsx handler), **CODE_SIGN_ENTITLEMENTS верзан** (беше сирак — build-овете се подписваха без app groups/aps!), Android FCM код (manifest permission, hook без iOS gate, FCM v1 в send-kp-alerts). Live Activity tap → /alerts е свободна страница (не paywall) — решено.
