@@ -290,6 +290,48 @@ watchOS companion app за The Storm Watcher. Данните вече са в Ap
 
 ## TODO / Pending Work
 
+### Докъде стигнахме (2026-08-08) — Android сесия на устройство
+
+Първата сесия със **свързан Galaxy A34 (Android 16, API 36)**. Свършено и
+проверено на екран: widget layout-ът, пълен Material 3 скин за Android (виж
+„Android Material skin"), и обход на Home/Dashboard/Forecast/Alerts/Settings/
+Pricing/Aurora/UV/FAQ/ISS/Mood/Sky в **двете теми**.
+
+`typecheck` и `lint` чисти. **312/313 unit теста.** Падащият е
+`blogMetadata.test.ts` и е **Windows-специфичен, не регресия**: `core.autocrlf=true`
+дава `metadata.ts` с CRLF, генераторът бълва LF, байтовото сравнение гърми.
+Проверено чрез stash на цялото дърво — пада и без никакви промени. Не пипай
+файла, за да го „поправиш" — ще счупиш CI на Linux.
+
+**Пуснато в main (2026-08-08).** Merge-ът прекара не само Android работата:
+staging беше напред с 34 комита, значи в production отидоха и седмичният
+дайджест (`kpWindow.ts`), DONKI native fix-ът, `submit-mood`, `donki-proxy`,
+`middleware.ts` и промени в Alerts/Mood/Dashboard/Hunt/ISS. `20260605000002_weekly_digest_cron_MANUAL.sql`
+е в main, но `_MANUAL` значи че **не се прилага само** — включването праща
+истински имейли.
+
+**Отворено след тази сесия:**
+
+1. **Widget-ът спря да се рендира и причината е неизвестна.** След преинсталация
+   изчезна от началния екран, докато инстанцията остава bound (`id=11`, host view
+   401×216dp) и Glance продължава да push-ва RemoteViews **без изключение никъде в
+   logcat** (`updateAppWidget() appWidgetIds = [11]`). Махането на `cornerRadius`
+   не помогна — тоест хипотезата беше грешна. Най-вероятно launcher състояние след
+   `isProviderChange` (логът показва `getDefaultView`), но това е предположение.
+   **Следваща стъпка: махни widget-а от екрана и го сложи наново.** Ако пак е
+   празен — проблемът е в кода, не в launcher-а.
+2. **16 KB page size — ще блокира Play Store.** Устройството хвърля системен диалог
+   „Android App Compatibility": `libsentry.so`, `libsentry-android.so` и
+   `libdatastore_shared_counter.so` не са 16 KB подравнени. Google изисква това за
+   приложения към Android 15+. Иска ъпгрейд на Sentry Android SDK и на
+   androidx.datastore (Glance го тегли транзитивно).
+3. **`.env` тук е с placeholder Supabase** (`https://placeholder.supabase.co`).
+   Logcat: `Unable to resolve host`. В локалните Android build-ове backend-ът е
+   мъртъв — sign in, mood, профил, favourites не работят. NOAA/GFZ минават, защото
+   не са през Supabase.
+4. **`ScrollToTop` покрива текст** на Home (отряза „Northern" на „Norther").
+   Съществуващо на всички платформи, не е от редизайна — не е пипано.
+
 ### Докъде стигнахме (2026-08-07)
 Одитът на шестте edge функции е **завършен**. 313 unit + 23 e2e теста минават локално.
 `send-kp-alerts` (v9), `delete-account` и `verify-iap` са deploy-нати и проверени.
@@ -405,7 +447,13 @@ URL-а. Не е регресия; така е открай време.
 2. **Android FCM активация** — Firebase Console: `google-services.json` в `android/app/`; service account JSON като `GOOGLE_SERVICE_ACCOUNT` secret в Supabase; `supabase functions deploy send-kp-alerts`. Кодът е готов и guard-нат — без secret-а функцията е байт-идентична.
    **ЗАДЪЛЖИТЕЛНО след добавяне на `google-services.json`:** махни `if (isAndroid()) return;` от `register()` в `src/hooks/usePushNotifications.ts`. Този gate е временен — без него `register()` хвърля native `IllegalStateException` („Default FirebaseApp is not initialized"), която JS не може да хване и която убива процеса ~3s след старт (потвърдено на Galaxy A34 / Android 16, 2026-07-20). Докато gate-ът стои, Android push не работи изобщо.
 3. **assetlinks.json** — още е с `YOUR_SHA256_FINGERPRINT_HERE`; SHA-256 от Play Console → Setup → App signing.
-4. ~~**Android Glance widget**~~ — написан 2026-08-05 (виж „Android widget (Glance)"). Компилира се и се мърджва в манифеста, но **още не е пускан на екран** — няма свързано устройство. Първото пускане да провери: рендерира ли се на 2×2/4×2/4×4, минава ли мрежата от widget процеса, работи ли tap → `stormwatcher://dashboard`.
+4. **Android Glance widget** — пуснат на екран 2026-08-08 (Galaxy A34). Потвърдено
+   работещо: рендерира се на 4×2, мрежата минава от widget процеса (Kp 5.7, wind
+   356 km/s, 8 прогнозни стълба — реални данни през GFZ), tap отваря приложението.
+   Поправени тогава: празната долна половина (`SizeMode.Responsive` даваше bucket
+   размера, не клетката) и скалата, която рендираше 5 сегмента от 18. **Не е
+   потвърдено на 2×2 и 4×4** — и виж отворена точка 1 по-горе: след последната
+   преинсталация widget-ът спря да се появява по неизвестна причина.
 5. ~~**Android 15 edge-to-edge тест**~~ — проверено 2026-07-20 на Galaxy A34 / **Android 16 (API 36)**, тъмна тема: header-ът започва под статус бара, таб барът стои над системната навигация, няма отрязване. Уговорка: гледан е един екран (UV Index), не пълен обход на всички страници и не в светла тема.
 6. **Push-to-start Live Activity (iOS 17.2+)** — сървърът да вдига Live Activity при буря без отворено приложение; тества се само в TestFlight (dev-signed build-ове не дават push токени).
 
