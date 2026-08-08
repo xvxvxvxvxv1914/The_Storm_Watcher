@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_description">Indeks Kp na żywo, wiatr słoneczny i prognoza 24h.</string>
+    <string name="widget_kp_index">INDEKS KP</string>
+    <string name="widget_forecast_24h">PROGNOZA 24H</string>
+    <string name="widget_kp_scale">SKALA KP</string>
+    <string name="widget_no_data">Brak danych</string>
+    <string name="widget_no_signal">Brak sygnału</string>
+    <string name="widget_quiet">SPOKOJNY</string>
+    <string name="widget_storm_minor">Słaba</string>
+    <string name="widget_storm_moderate">Umiarkowana</string>
+    <string name="widget_storm_strong">Silna</string>
+    <string name="widget_storm_severe">Poważna</string>
+    <string name="widget_storm_extreme">Ekstremalna</string>
+</resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_description">Live Kp-indeksi, aurinkotuuli ja 24h ennuste.</string>
+    <string name="widget_kp_index">KP-INDEKSI</string>
+    <string name="widget_forecast_24h">ENNUSTE 24H</string>
+    <string name="widget_kp_scale">KP-ASTEIKKO</string>
+    <string name="widget_no_data">Ei tietoja</string>
+    <string name="widget_no_signal">Ei signaalia</string>
+    <string name="widget_quiet">RAUHALLINEN</string>
+    <string name="widget_storm_minor">Vähäinen</string>
+    <string name="widget_storm_moderate">Kohtalainen</string>
+    <string name="widget_storm_strong">Voimakas</string>
+    <string name="widget_storm_severe">Vakava</string>
+    <string name="widget_storm_extreme">Äärimmäinen</string>
+</resources>

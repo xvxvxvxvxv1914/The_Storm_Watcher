@@ -14,6 +14,13 @@ export interface UserSettings {
   //            update the location when the user has moved (travel).
   // 'manual' — the user pinned a location in Settings; never override it.
   locationMode: 'auto' | 'manual';
+  // Bz early warning — a *forecast* alert, off unless the user asks for it.
+  // Kp alerts report a storm already under way; a sustained southward Bz
+  // precedes the Kp rise by roughly 15-45 minutes.
+  bzAlertsEnabled: boolean;
+  // nT, always negative — southward is what matters. -10 is the value the FAQ
+  // quotes as the point where a lead time is worth acting on.
+  bzThreshold: number;
 }
 
 const DEFAULTS: UserSettings = {
@@ -23,6 +30,8 @@ const DEFAULTS: UserSettings = {
   preferredLon: null,
   preferredLocationName: '',
   locationMode: 'auto',
+  bzAlertsEnabled: false,
+  bzThreshold: -10,
 };
 
 const STORAGE_KEY = 'tsw_settings';

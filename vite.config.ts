@@ -1,7 +1,11 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => ({
@@ -14,8 +18,17 @@ export default defineConfig(({ command }) => ({
       registerType: 'autoUpdate',
       injectManifest: {
         globPatterns: ['**/*.{js,css,html,ico,svg,woff2}'],
-        // Exclude heavy 3D chunks — only needed on Aurora page, let browser cache them
-        globIgnores: ['**/globe-vendor*', '**/three-vendor*', '**/charts-vendor*', '**/map-vendor*'],
+        globIgnores: [
+          // Heavy 3D chunks — only needed on /aurora, let the browser cache them
+          '**/globe-vendor*', '**/three-vendor*', '**/charts-vendor*', '**/map-vendor*',
+          // Per-language and per-article chunks (see `ondemand` in chunkFileNames).
+          // A visitor uses one of 16 locales and reads one of ten articles, but the
+          // precache pulled all of them: 1.3 MB of the 2.6 MB install, undoing for
+          // PWA users exactly what splitting these files won for web visitors.
+          // src/sw.ts caches them at runtime instead, so whatever is actually
+          // opened still works offline afterwards.
+          '**/assets/ondemand/**',
+        ],
         maximumFileSizeToCacheInBytes: 2 * 1024 * 1024,
       },
       // Manifest is served from public/manifest.json; vite-plugin-pwa skips generation.
@@ -31,6 +44,17 @@ export default defineConfig(({ command }) => ({
     }),
   ],
   base: '/',
+  resolve: {
+    alias: {
+      // three-globe and three-render-objects import three's WebGPU build
+      // unconditionally, for paths this app never reaches (the heatmap layer's
+      // GPU compute, and a `useWebGPU` renderer flag nothing sets). That was
+      // 2.06 MB of the 3.63 MB of source in globe-vendor. The stubs throw if
+      // anything ever does reach them — see src/stubs/three-webgpu.ts.
+      'three/webgpu': path.resolve(__dirname, 'src/stubs/three-webgpu.ts'),
+      'three/tsl': path.resolve(__dirname, 'src/stubs/three-tsl.ts'),
+    },
+  },
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
@@ -40,6 +64,16 @@ export default defineConfig(({ command }) => ({
   build: {
     rollupOptions: {
       output: {
+        // Chunks that exist per language or per article go in their own folder so
+        // the service worker can exclude them from precaching by path instead of
+        // guessing from filenames — `is-<hash>.js` could be the Icelandic locale
+        // or a chunk from a package called `is`, and precaching the wrong set is
+        // silent either way. Keep this in sync with `globIgnores` above.
+        chunkFileNames(chunkInfo) {
+          const id = chunkInfo.facadeModuleId ?? '';
+          const onDemand = /[\\/]src[\\/](locales|content[\\/](faq|magnetic)|data[\\/]blog[\\/]posts)[\\/]/.test(id);
+          return onDemand ? 'assets/ondemand/[name]-[hash].js' : 'assets/[name]-[hash].js';
+        },
         manualChunks: {
           'three-vendor':   ['three'],
           'globe-vendor':   ['react-globe.gl', 'three-globe'],

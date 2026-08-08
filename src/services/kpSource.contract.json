@@ -1,0 +1,21 @@
+{
+  "$comment": "The Kp lookup exists four times — src/services/noaaApi.ts (getKpIndex), ios/App/StormWidget/KpSource.swift, android/app/src/main/java/com/stormwatcher/app/widget/KpSource.kt and supabase/functions/send-kp-alerts/index.ts (fetchCurrentKp). They cannot share code across TS/Swift/Kotlin/Deno, so they share this instead. src/services/kpContract.test.ts asserts the TypeScript one matches; the other three are checked by hand against this file. Both drifts found on 2026-08-06 would have been caught by reading it.",
+  "primary": {
+    "name": "GFZ Potsdam",
+    "url": "https://kp.gfz.de/app/json/",
+    "query": { "index": "Kp", "start": "<ISO8601 UTC, no fractional seconds>", "end": "<now>" },
+    "responseShape": { "datetime": "string[]", "Kp": "(number | null)[]" },
+    "pick": "last element whose Kp is a number >= 0",
+    "nullHandling": "SKIP_BACK",
+    "$comment": "Trailing bins are null until GFZ publishes the period. Never substitute 0 — Kp 0.0 is a real ultra-quiet reading, so a fabricated 0 is indistinguishable from a genuine one and silently suppresses storm alerts."
+  },
+  "fallback": {
+    "name": "NOAA SWPC",
+    "url": "https://services.swpc.noaa.gov/json/planetary_k_index_1m.json",
+    "pick": "last element",
+    "fieldPriority": ["kp_index", "estimated_kp"],
+    "$comment": "kp_index is the 3-hour bin — the same quantity GFZ publishes. estimated_kp is a per-minute estimate that swings between bins (0.33 -> 0.67 -> 0.33 while the bin holds 0.333), so reading it first puts a different number on each surface."
+  },
+  "noDataSentinel": -1,
+  "$comment2": "-1 means 'no data'. 0.0 is real data. Freshness, never the value, decides whether a cached Kp is usable."
+}

@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Bell, BellOff, Check } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useAuth } from '../contexts/AuthContext';
+import { useWebPush } from '../hooks/useWebPush';
 import { isNative } from '../utils/platform';
 
 const isSupported =
@@ -8,6 +10,8 @@ const isSupported =
 
 const PushNotificationBell = () => {
   const { t } = useLanguage();
+  const { user } = useAuth();
+  const { subscribed, busy, subscribe, unsubscribe, canSubscribe } = useWebPush();
   const [permission, setPermission] = useState<NotificationPermission>('default');
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -16,7 +20,18 @@ const PushNotificationBell = () => {
   }, []);
 
   const handleClick = useCallback(async () => {
-    if (!isSupported || permission === 'denied') return;
+    if (!isSupported || permission === 'denied' || busy) return;
+
+    // Granting permission alone only enables the in-tab alert (useKpAlert).
+    // Real push — alerts with the tab closed, including the Bz early warning —
+    // needs a browser subscription stored server-side, which requires a signed-in
+    // user because the row is owned by auth.uid() under RLS.
+    if (canSubscribe && user?.id) {
+      if (subscribed) await unsubscribe();
+      else await subscribe();
+      setPermission(Notification.permission);
+      return;
+    }
 
     if (permission === 'granted') {
       // Can't programmatically revoke — guide user
@@ -27,14 +42,24 @@ const PushNotificationBell = () => {
 
     const result = await Notification.requestPermission();
     setPermission(result);
-  }, [permission]);
+  }, [permission, busy, canSubscribe, user?.id, subscribed, subscribe, unsubscribe]);
 
   if (!isSupported) return null;
 
   const isDenied = permission === 'denied';
   const isEnabled = permission === 'granted';
 
-  const tooltip = isEnabled
+  // Two different promises, and the bell must not overstate which one is live:
+  // a stored subscription means alerts arrive with the tab closed, permission
+  // alone means only while it is open, and without a signed-in user no
+  // subscription can exist at all (the row is owned by auth.uid() under RLS).
+  // All three strings already existed in all 16 locales from an earlier design;
+  // push.signInRequired had never been wired up to anything.
+  const tooltip = subscribed
+    ? (t('push.subscribed') || 'Click to unsubscribe')
+    : canSubscribe && !user?.id
+    ? (t('push.signInRequired') || 'Sign in to enable storm alerts')
+    : isEnabled
     ? (t('push.enabled') || 'Storm alerts enabled — alerts fire while this tab is open')
     : isDenied
     ? (t('push.denied') || 'Notifications blocked — enable in browser settings')

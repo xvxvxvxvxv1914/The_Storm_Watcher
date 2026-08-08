@@ -42,9 +42,11 @@ export default function Settings() {
 
   const [kpThreshold, setKpThreshold] = useState(settings.kpThreshold);
   const [unitSystem, setUnitSystem] = useState(settings.unitSystem);
+  const [bzAlertsEnabled, setBzAlertsEnabled] = useState(settings.bzAlertsEnabled);
+  const [bzThreshold, setBzThreshold] = useState(settings.bzThreshold);
 
   const handleSave = () => {
-    updateSettings({ kpThreshold, unitSystem });
+    updateSettings({ kpThreshold, unitSystem, bzAlertsEnabled, bzThreshold });
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
   };
@@ -241,6 +243,68 @@ export default function Settings() {
             <p className="text-xs text-[#64748b]">
               {t('settings.kpThresholdNote') || 'Push notifications require enabling them first via the bell icon in the navigation bar.'}
             </p>
+
+            {/* Bz early warning — ahead of the storm, unlike the Kp alert above.
+                Off by default and clearly labelled a forecast: it fires while Kp
+                is still low, which would otherwise look like a bug. */}
+            {hasPro && (
+              <div className="mt-5 pt-5 border-t border-white/10">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="min-w-0">
+                    <span className="text-sm text-white font-medium">
+                      {t('settings.bzAlerts') || 'Bz early warning'}
+                    </span>
+                    <p className="text-xs text-[#94a3b8] mt-0.5">
+                      {t('settings.bzAlertsDesc')
+                        || 'Alert me when the magnetic field turns sustainedly southward — typically 15–45 minutes before Kp rises.'}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={bzAlertsEnabled}
+                    aria-label={t('settings.bzAlerts') || 'Bz early warning'}
+                    onClick={() => setBzAlertsEnabled(v => !v)}
+                    className={`relative w-11 h-6 rounded-full transition-colors flex-shrink-0 ${bzAlertsEnabled ? 'bg-[#f97316]' : 'bg-white/15'}`}
+                  >
+                    <span
+                      className={`absolute top-0.5 w-5 h-5 rounded-full bg-white transition-transform ${bzAlertsEnabled ? 'translate-x-[22px]' : 'translate-x-0.5'}`}
+                    />
+                  </button>
+                </div>
+
+                {bzAlertsEnabled && (
+                  <div className="mt-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm text-[#94a3b8]">
+                        {t('settings.bzThreshold') || 'Bz threshold'}
+                      </span>
+                      <span className="text-sm font-bold text-[#f97316]">{bzThreshold} nT</span>
+                    </div>
+                    {/* Stored negative; the slider runs strongest-first so dragging
+                        right always means "warn me more readily". */}
+                    <input
+                      type="range"
+                      min={-20}
+                      max={-5}
+                      step={1}
+                      value={bzThreshold}
+                      onChange={e => setBzThreshold(Number(e.target.value))}
+                      className="w-full accent-[#f97316]"
+                      aria-label={t('settings.bzThreshold') || 'Bz threshold'}
+                    />
+                    <div className="flex justify-between text-xs text-[#64748b] mt-1">
+                      <span>−20 nT</span>
+                      <span>−5 nT</span>
+                    </div>
+                    <p className="text-xs text-[#64748b] mt-2">
+                      {t('settings.bzForecastNote')
+                        || 'This is a forecast, not a measured Kp reading — it can arrive while the Kp index is still low.'}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Quiet hours — suppress storm pushes during the local window */}
             {profile && (

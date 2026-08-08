@@ -1,5 +1,6 @@
 import type React from 'react';
 
+import { fetchJson } from '../utils/fetchJson';
 import { logWarning } from '../utils/logger';
 import { persistGet, persistSet } from '../utils/offlineCache';
 import { isNative } from '../utils/platform';
@@ -42,32 +43,29 @@ const cached = async <T,>(
 
 const nonEmpty = (data: unknown): boolean => Array.isArray(data) && data.length > 0;
 
-const getJson = async <T,>(url: string, timeoutMs = 10000, retries = 1): Promise<T> => {
-  const attempt = async (): Promise<T> => {
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), timeoutMs);
-    try {
-      const res = await fetch(url, { signal: ctrl.signal });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return res.json() as Promise<T>;
-    } finally {
-      clearTimeout(timer);
-    }
-  };
-  try {
-    return await attempt();
-  } catch (err) {
-    if (retries <= 0) throw err;
-    await new Promise(r => setTimeout(r, 1500));
-    return attempt();
-  }
-};
+const getJson = <T,>(url: string, timeoutMs = 10000, retries = 1): Promise<T> =>
+  fetchJson<T>(url, timeoutMs, retries);
 
 export interface KpIndexData {
   time_tag: string;
   kp_index: number;
   estimated_kp?: number;
 }
+
+/**
+ * The Kp value of a row: `kp_index` (the 3-hour bin, what GFZ publishes) first,
+ * `estimated_kp` (NOAA's per-minute estimate) only as a backstop. See
+ * `kpSource.contract.json` — this ordering is the contract the widgets and the
+ * alert cron also follow.
+ *
+ * It exists because the same expression was written out at nine call sites in
+ * three different forms, and two of them used `||`, which treats a real
+ * ultra-quiet **Kp 0.0 as missing** and silently falls through to the estimate.
+ * Returns null when the row carries neither field; callers that need a number
+ * apply their own `?? 0`.
+ */
+export const resolveKp = (row?: Pick<KpIndexData, 'kp_index' | 'estimated_kp'> | null): number | null =>
+  row?.kp_index ?? row?.estimated_kp ?? null;
 
 export interface SolarWindData {
   time_tag: string;
@@ -105,7 +103,8 @@ const GFZ_BASE = isNative() ? 'https://kp.gfz.de/app/json/' : '/api/gfz';
 
 interface GfzResponse {
   datetime: string[];
-  Kp: number[];
+  // Trailing bins are null until GFZ publishes the period — see getKpIndex.
+  Kp: (number | null)[];
   status: string[];
 }
 
@@ -121,25 +120,24 @@ const getGfzKp3Day = (): Promise<GfzResponse> =>
     // Hard timeout so a cold-starting /api/gfz serverless function fails fast and
     // lets getKpIndex() fall back to NOAA, instead of hanging the homepage's Kp
     // poll indefinitely (a raw fetch has no timeout). The poll layer retries.
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 8000);
-    try {
-      const res = await fetch(url, { signal: ctrl.signal });
-      if (!res.ok) throw new Error(`GFZ HTTP ${res.status}`);
-      return (await res.json()) as GfzResponse;
-    } finally {
-      clearTimeout(timer);
-    }
+    return fetchJson<GfzResponse>(url, 8000);
   });
 
 export const getKpIndex = (): Promise<KpIndexData[]> =>
   cached('kp', TTL_FORECAST, async () => {
     try {
       const data = await getGfzKp3Day();
-      const result = (data.datetime ?? []).map((dt, i) => ({
-        time_tag: dt.replace('Z', ''),
-        kp_index: data.Kp[i] ?? 0,
-      }));
+      // Drop the bins GFZ has not published yet. They arrive as null, and
+      // mapping them to 0 put a fake "Kp 0.0" at the end of the series —
+      // indistinguishable from a genuine ultra-quiet reading, and disagreeing
+      // with both widgets, which skip back to the last real bin (KpSource.swift
+      // and KpSource.kt do exactly that).
+      const result = (data.datetime ?? []).flatMap((dt, i) => {
+        const kp = data.Kp?.[i];
+        return typeof kp === 'number' && kp >= 0
+          ? [{ time_tag: dt.replace('Z', ''), kp_index: kp }]
+          : [];
+      });
       persistSet('offline_kp', result).catch(() => {});
       return result;
     } catch {

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_description">Live Kp-Index, Sonnenwind und 24h-Prognose.</string>
+    <string name="widget_kp_index">KP-INDEX</string>
+    <string name="widget_forecast_24h">PROGNOSE 24H</string>
+    <string name="widget_kp_scale">KP-SKALA</string>
+    <string name="widget_no_data">Keine Daten</string>
+    <string name="widget_no_signal">Kein Signal</string>
+    <string name="widget_quiet">RUHIG</string>
+    <string name="widget_storm_minor">Gering</string>
+    <string name="widget_storm_moderate">Mäßig</string>
+    <string name="widget_storm_strong">Stark</string>
+    <string name="widget_storm_severe">Schwer</string>
+    <string name="widget_storm_extreme">Extrem</string>
+</resources>

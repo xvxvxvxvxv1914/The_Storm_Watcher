@@ -4,7 +4,7 @@ import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { Cloud, Eye, Droplets, Star } from 'lucide-react';
 import { getSkyVisibility, SkyData } from '../services/skyApi';
-import { getKpIndex } from '../services/noaaApi';
+import { getKpIndex, resolveKp } from '../services/noaaApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import LocationPicker from '../components/LocationPicker';
@@ -59,7 +59,7 @@ const SkyVisibility = () => {
     setError(false);
     try {
     const kpData = await getKpIndex().catch(() => []);
-    const kp = kpData.length ? (kpData[kpData.length - 1].kp_index ?? 0) : 0;
+    const kp = resolveKp(kpData[kpData.length - 1]) ?? 0;
     const data = await getSkyVisibility(lat, lon, kp);
     if (!data) throw new Error('no data');
     setSky(data);

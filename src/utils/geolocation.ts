@@ -1,5 +1,6 @@
 import { Geolocation } from '@capacitor/geolocation';
 import { isNative, isIos } from './platform';
+import { fetchJson } from './fetchJson';
 
 export interface GeoPosition {
   coords: { latitude: number; longitude: number; accuracy: number };
@@ -113,9 +114,11 @@ export async function getApproxLocationByIP(): Promise<ResolvedLocation | null> 
   ipLookupInFlight = (async () => {
     for (const provider of IP_PROVIDERS) {
       try {
-        const res = await fetch(provider.url);
-        if (!res.ok) continue;
-        const loc = provider.parse(await res.json());
+        // Per-provider timeout is what makes the fallback chain work: a bare
+        // fetch() never gives up, so a stalled ipapi.co (it throttles) meant
+        // geojs.io was never tried and `ipLookupInFlight` stayed pending
+        // forever — every later caller awaited the same dead promise.
+        const loc = provider.parse(await fetchJson<Record<string, unknown>>(provider.url, 5000));
         if (!loc) continue;
         try { localStorage.setItem(IP_CACHE_KEY, JSON.stringify({ at: Date.now(), loc })); } catch { /* full */ }
         return loc;

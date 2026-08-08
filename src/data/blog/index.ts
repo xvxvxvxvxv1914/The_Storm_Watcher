@@ -1,3 +1,11 @@
+/**
+ * Every post, eagerly. **Do not import this from a page** — it pulls all ten
+ * article bodies (152 kB) into whatever chunk reaches it. It exists for
+ * build-time consumers that pay no download cost: scripts/prerender-meta.mjs,
+ * scripts/generate-blog-metadata.mjs and the coverage tests.
+ *
+ * Pages use `./loadPost` (one post, on demand) and `./metadata` (the list).
+ */
 import type { BlogPost } from './types';
 import whatIsKpIndex from './posts/what-is-kp-index';
 import whatIsGeomagneticStorm from './posts/what-is-geomagnetic-storm';
@@ -43,9 +51,4 @@ export function getLocalizedBlogList(lang: string): BlogPost[] {
   });
 }
 
-export const CATEGORY_LABELS: Record<BlogPost['category'], string> = {
-  'space-weather': 'Space Weather',
-  'aurora': 'Aurora',
-  'solar': 'Solar Activity',
-  'guide': 'Guide',
-};
+export { CATEGORY_LABELS } from './categories';

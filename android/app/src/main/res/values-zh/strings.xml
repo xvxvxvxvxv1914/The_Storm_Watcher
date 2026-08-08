@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_description">实时Kp指数、太阳风和24小时预报。</string>
+    <string name="widget_kp_index">KP指数</string>
+    <string name="widget_forecast_24h">24小时预报</string>
+    <string name="widget_kp_scale">KP等级</string>
+    <string name="widget_no_data">暂无数据</string>
+    <string name="widget_no_signal">无信号</string>
+    <string name="widget_quiet">平静</string>
+    <string name="widget_storm_minor">小型</string>
+    <string name="widget_storm_moderate">中等</string>
+    <string name="widget_storm_strong">强烈</string>
+    <string name="widget_storm_severe">严重</string>
+    <string name="widget_storm_extreme">极端</string>
+</resources>

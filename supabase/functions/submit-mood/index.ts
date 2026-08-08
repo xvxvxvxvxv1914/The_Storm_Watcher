@@ -59,9 +59,12 @@ Deno.serve(async (req: Request) => {
   const safeSymptoms = Array.isArray(symptoms)
     ? (symptoms as unknown[]).filter((s): s is string => typeof s === 'string').slice(0, 20)
     : [];
+  // Stays null when the client had no Kp. Kp 0.0 is a real ultra-quiet reading,
+  // so a substituted 0 is indistinguishable from a genuine one — and this column
+  // is the input to the mood/Kp correlation the table exists for.
   const safeKp = typeof kp_index === 'number' && isFinite(kp_index)
     ? Math.max(0, Math.min(9, kp_index))
-    : 0;
+    : null;
 
   const supabase = createClient(
     Deno.env.get('SUPABASE_URL')!,
@@ -71,14 +74,23 @@ Deno.serve(async (req: Request) => {
   const todayMidnight = new Date();
   todayMidnight.setUTCHours(0, 0, 0, 0);
 
-  const { data: existing } = await supabase
+  // limit(1), not maybeSingle(): a session with two rows today makes maybeSingle
+  // fail, and the failure was discarded — the guard opened instead of closing.
+  const { data: existing, error: lookupError } = await supabase
     .from('mood_entries')
     .select('id')
     .eq('user_session_id', session_id)
     .gte('created_at', todayMidnight.toISOString())
-    .maybeSingle();
+    .limit(1);
 
-  if (existing) {
+  if (lookupError) {
+    return new Response(JSON.stringify({ error: 'Database error' }), {
+      status: 500,
+      headers: { ...CORS, 'Content-Type': 'application/json' },
+    });
+  }
+
+  if (existing && existing.length > 0) {
     return new Response(JSON.stringify({ error: 'already_submitted' }), {
       status: 429,
       headers: { ...CORS, 'Content-Type': 'application/json' },

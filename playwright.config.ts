@@ -12,7 +12,17 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
   projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    {
+      name: 'chromium',
+      use: {
+        ...devices['Desktop Chrome'],
+        // CI runs `playwright install chromium` and uses the bundled build.
+        // Locally that download is large and can fail; PW_CHANNEL=chrome runs
+        // the suite against an installed Chrome instead. Unset by default so CI
+        // keeps using the pinned browser.
+        ...(process.env.PW_CHANNEL ? { channel: process.env.PW_CHANNEL } : {}),
+      },
+    },
   ],
   webServer: {
     // Port 5174 avoids conflict with the regular dev server on 5173.

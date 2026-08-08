@@ -36,7 +36,7 @@ import { resolveLocation } from '../utils/geolocation';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 
 const ISS = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { settings } = useSettings();
   const { theme } = useTheme();
   const globeContainerRef = useRef<HTMLDivElement>(null);
@@ -190,7 +190,7 @@ const ISS = () => {
               {posError ? (t('iss.signalLost') || 'Signal lost — last known position') : t('iss.updates5s')}
             </span>
             {lastUpdated && (
-              <span className="ml-auto text-xs text-[#475569]">{lastUpdated.toLocaleTimeString()}</span>
+              <span className="ml-auto text-xs text-[#475569]">{lastUpdated.toLocaleTimeString(language)}</span>
             )}
           </div>
 

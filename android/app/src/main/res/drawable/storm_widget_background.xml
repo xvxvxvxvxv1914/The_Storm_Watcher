@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Deep-space navy with rounded corners, matching the iOS widget container.
+     A drawable rather than GlanceModifier.cornerRadius() because that modifier
+     is a no-op below API 31 and minSdk here is 26. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#0A0E27" />
+    <corners android:radius="20dp" />
+</shape>

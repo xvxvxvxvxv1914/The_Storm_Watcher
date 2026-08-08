@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_description">실시간 Kp 지수, 태양풍, 24시간 예보.</string>
+    <string name="widget_kp_index">KP 지수</string>
+    <string name="widget_forecast_24h">24시간 예보</string>
+    <string name="widget_kp_scale">KP 척도</string>
+    <string name="widget_no_data">데이터 없음</string>
+    <string name="widget_no_signal">신호 없음</string>
+    <string name="widget_quiet">조용함</string>
+    <string name="widget_storm_minor">약함</string>
+    <string name="widget_storm_moderate">보통</string>
+    <string name="widget_storm_strong">강함</string>
+    <string name="widget_storm_severe">심각</string>
+    <string name="widget_storm_extreme">극심</string>
+</resources>

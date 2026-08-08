@@ -68,8 +68,12 @@ enum KpSource {
             guard let data,
                   let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]],
                   let last = json.last else { completion(noKp); return }
-            if let v = last["estimated_kp"] as? Double, v >= 0 { completion(v) }
-            else if let v = last["kp_index"] as? Double, v >= 0 { completion(v) }
+            // `kp_index` first, matching the app (useKpLive.ts). `estimated_kp` is
+            // NOAA's per-minute estimate and swings between the 3-hour bins
+            // (0.33 → 0.67 → 0.33 while the bin holds 0.333) — reading it here
+            // put a different number on the widget than on the screen next to it.
+            if let v = last["kp_index"] as? Double, v >= 0 { completion(v) }
+            else if let v = last["estimated_kp"] as? Double, v >= 0 { completion(v) }
             else { completion(noKp) }
         }.resume()
     }

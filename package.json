@@ -56,8 +56,7 @@
     "satellite.js": "^4.1.4",
     "solar-calculator": "^0.3.0",
     "stripe": "^22.1.0",
-    "three": "^0.184.0",
-    "twitter-api-v2": "^1.29.0"
+    "three": "^0.184.0"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
@@ -76,7 +75,8 @@
     "tar": ">=7.4.3",
     "uuid": ">=11.1.1",
     "path-to-regexp": ">=6.3.0",
-    "minimatch": ">=3.1.4"
+    "minimatch": ">=3.1.4",
+    "sharp": ">=0.35.0"
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.5",

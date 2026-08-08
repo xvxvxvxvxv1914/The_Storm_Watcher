@@ -48,6 +48,21 @@
             <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
         </provider>
 
+        <!-- Home-screen widget (Kp + 24h forecast). exported="false" is what the
+             AppWidget docs prescribe since API 31: the framework binds the
+             provider directly rather than broadcasting to a third party. -->
+        <receiver
+            android:name=".widget.StormWidgetReceiver"
+            android:label="@string/widget_name"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/storm_widget_info" />
+        </receiver>
+
         <meta-data android:name="io.sentry.dsn" android:value="https://de558fb5e979298f9299cb1353fd1fcb@o4511450965213184.ingest.de.sentry.io/4511450970128464" />
         <meta-data android:name="io.sentry.traces-sample-rate" android:value="0.1" />
         <meta-data android:name="io.sentry.environment" android:value="production" />

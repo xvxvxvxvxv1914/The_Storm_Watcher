@@ -1,18 +1,16 @@
+import { fetchJson } from '../utils/fetchJson';
 import { logError } from '../utils/logger';
+import { isNative } from '../utils/platform';
 
-const DONKI_BASE = import.meta.env.VITE_DONKI_BASE_URL ?? '/donki';
+// `/donki` is a Vercel rewrite, so it only exists on the web. On native it
+// resolved against the Capacitor origin (capacitor://localhost/donki) and 404'd
+// on every call — CME and flare lists were silently empty on iOS and Android.
+// CapacitorHttp bypasses CORS there, so go straight to the upstream, the same
+// way nigggApi does.
+const DONKI_UPSTREAM = 'https://kauai.ccmc.gsfc.nasa.gov/DONKI/WS/get';
 
-const fetchJson = async <T,>(url: string, timeoutMs = 10000): Promise<T> => {
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
-  try {
-    const res = await fetch(url, { signal: ctrl.signal });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json() as Promise<T>;
-  } finally {
-    clearTimeout(timer);
-  }
-};
+const DONKI_BASE = import.meta.env.VITE_DONKI_BASE_URL
+  ?? (isNative() ? DONKI_UPSTREAM : '/donki');
 
 export interface CmeAnalysis {
   isMostAccurate: boolean;

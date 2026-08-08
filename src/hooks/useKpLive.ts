@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getKpIndex } from '../services/noaaApi';
+import { getKpIndex, resolveKp } from '../services/noaaApi';
 
 // Status of the live Kp poll, so the UI can tell "still loading" apart from
 // "genuinely failed". The old hook only exposed `number | null`, which forced
@@ -86,7 +86,7 @@ async function poll() {
     try {
       const data = await getKpIndex();
       const latest = data.at(-1);
-      const kp = latest?.kp_index ?? latest?.estimated_kp ?? null;
+      const kp = resolveKp(latest);
       if (typeof kp === 'number') {
         value = kp;
         status = 'ready';

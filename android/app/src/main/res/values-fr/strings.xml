@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_description">Indice Kp en direct, vent solaire et prévision 24h.</string>
+    <string name="widget_kp_index">INDICE KP</string>
+    <string name="widget_forecast_24h">PRÉVISION 24H</string>
+    <string name="widget_kp_scale">ÉCHELLE KP</string>
+    <string name="widget_no_data">Pas de données</string>
+    <string name="widget_no_signal">Pas de signal</string>
+    <string name="widget_quiet">CALME</string>
+    <string name="widget_storm_minor">Mineure</string>
+    <string name="widget_storm_moderate">Modérée</string>
+    <string name="widget_storm_strong">Forte</string>
+    <string name="widget_storm_severe">Sévère</string>
+    <string name="widget_storm_extreme">Extrême</string>
+</resources>

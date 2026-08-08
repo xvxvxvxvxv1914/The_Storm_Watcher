@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { Clock, ChevronRight, Rss } from 'lucide-react';
-import { getLocalizedBlogList, CATEGORY_LABELS } from '../data/blog';
+// Metadata only — the list renders titles and descriptions, never article bodies.
+import { getLocalizedBlogMeta } from '../data/blog/loadPost';
+import { CATEGORY_LABELS } from '../data/blog/categories';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { AnimatedPage } from '../components/AnimatedPage';
@@ -19,7 +21,7 @@ export default function Blog() {
   const { language } = useLanguage();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
-  const posts = getLocalizedBlogList(language);
+  const posts = getLocalizedBlogMeta(language);
 
   return (
     <AnimatedPage>

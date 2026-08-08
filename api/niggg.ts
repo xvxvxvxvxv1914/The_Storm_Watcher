@@ -15,8 +15,19 @@ function parseNigggDate(s: string): Date | null {
 // Per-IP rate limit: max 20 requests per minute per serverless instance
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 
+// Sweep expired entries once the map gets large — see api/gfz.ts. Without it the
+// map grows one entry per IP for the whole life of a warm lambda instance.
+const RATE_LIMIT_SWEEP_AT = 5_000;
+
 function isRateLimited(ip: string): boolean {
   const now = Date.now();
+
+  if (rateLimitMap.size > RATE_LIMIT_SWEEP_AT) {
+    for (const [key, entry] of rateLimitMap) {
+      if (now > entry.resetAt) rateLimitMap.delete(key);
+    }
+  }
+
   const entry = rateLimitMap.get(ip);
   if (!entry || now > entry.resetAt) {
     rateLimitMap.set(ip, { count: 1, resetAt: now + 60_000 });
@@ -43,10 +54,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ error: 'Invalid date parameters' });
   }
 
-  const upstream = await fetch(
-    `https://pagmag.ngic.bg/assets/php/datacalendar26.php?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`
-  );
+  // Bounded upstream call — NIGGG is a single university host with no SLA, and
+  // an unbounded fetch here pins the function open until Vercel's own limit.
+  // AbortSignal.timeout covers the body read too, so `.text()` stays inside it.
+  let upstream: Response;
+  let text: string;
+  try {
+    upstream = await fetch(
+      `https://pagmag.ngic.bg/assets/php/datacalendar26.php?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`,
+      { signal: AbortSignal.timeout(10000) },
+    );
+    text = await upstream.text();
+  } catch {
+    return res.status(504).json({ error: 'Upstream timeout' });
+  }
 
-  const text = await upstream.text();
   res.status(upstream.status).send(text);
 }

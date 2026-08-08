@@ -1,12 +1,44 @@
+# Policy: search engines welcome, AI *training* crawlers blocked, AI *search /
+# agent* crawlers allowed.
+#
+# This mirrors what Cloudflare's managed robots.txt currently serves, so the
+# zone's `is_robots_txt_managed` setting can be turned off without changing the
+# declared policy. Until it is turned off, Cloudflare replaces this file
+# wholesale at the edge — and its version drops the Sitemap line at the bottom.
+
 User-agent: *
-Disallow:
+Content-Signal: search=yes,ai-train=no,use=reference
+Allow: /
+
+# --- AI training crawlers: blocked ---
+User-agent: Amazonbot
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: CloudflareBrowserRenderingCrawler
+Disallow: /
 
 User-agent: Google-Extended
-Allow: /
+Disallow: /
 
 User-agent: GPTBot
-Allow: /
+Disallow: /
 
+User-agent: meta-externalagent
+Disallow: /
+
+# --- AI search / on-demand agents: allowed (they cite and link back) ---
 User-agent: ChatGPT-User
 Allow: /
 
@@ -14,12 +46,6 @@ User-agent: OAI-SearchBot
 Allow: /
 
 User-agent: PerplexityBot
-Allow: /
-
-User-agent: ClaudeBot
-Allow: /
-
-User-agent: Amazonbot
 Allow: /
 
 Sitemap: https://www.thestormwatcher.com/sitemap.xml

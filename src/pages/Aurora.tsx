@@ -4,7 +4,7 @@ import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { MapPin, Eye, Sparkles, AlertTriangle, Check, Zap, Share2 } from 'lucide-react';
-import { getKpIndex, getAuroraModel, getMagField, getSolarWind, getWeatherData, getKpGradientStyle, type AuroraOvationPoint, type WeatherData } from '../services/noaaApi';
+import { getKpIndex, getAuroraModel, getMagField, getSolarWind, getWeatherData, getKpGradientStyle, resolveKp, type AuroraOvationPoint, type WeatherData } from '../services/noaaApi';
 import { calcAuroraVisibility } from '../utils/auroraVisibility';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
@@ -162,7 +162,7 @@ const Aurora = () => {
       const data = await getKpIndex();
       if (data && data.length > 0) {
         const latest = data[data.length - 1];
-        setKpValue(latest.kp_index ?? latest.estimated_kp ?? 0);
+        setKpValue(resolveKp(latest) ?? 0);
       } else {
         setKpValue(0);
       }
@@ -200,8 +200,8 @@ const Aurora = () => {
   const getVisibilityInfo = (kp: number) => {
     if (kp >= 7) return { latitude: 50, color: 'text-[#ef4444]', intensityKey: 'aurora.intensityVeryHigh', bgGlow: 'glow-red' };
     if (kp >= 6) return { latitude: 55, color: 'text-[#f97316]', intensityKey: 'aurora.intensityHigh', bgGlow: 'glow-orange' };
-    if (kp >= 5) return { latitude: 60, color: 'text-[#fbbf24]', intensityKey: 'aurora.intensityModerate', bgGlow: 'glow-orange' };
-    if (kp >= 4) return { latitude: 65, color: 'text-[#10b981]', intensityKey: 'aurora.intensityLow', bgGlow: 'glow-green' };
+    if (kp >= 5) return { latitude: 60, color: 'text-[#f97316]', intensityKey: 'aurora.intensityModerate', bgGlow: 'glow-orange' };
+    if (kp >= 4) return { latitude: 65, color: 'text-[#eab308]', intensityKey: 'aurora.intensityLow', bgGlow: 'glow-green' };
     return { latitude: 70, color: 'text-[#94a3b8]', intensityKey: 'aurora.intensityVeryLow', bgGlow: '' };
   };
 

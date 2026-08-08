@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_description">Kp-vísitala í beinni, sólvindur og 24h spá.</string>
+    <string name="widget_kp_index">KP-VÍSITALA</string>
+    <string name="widget_forecast_24h">SPÁ 24H</string>
+    <string name="widget_kp_scale">KP-KVARÐI</string>
+    <string name="widget_no_data">Engin gögn</string>
+    <string name="widget_no_signal">Ekkert samband</string>
+    <string name="widget_quiet">RÓLEGT</string>
+    <string name="widget_storm_minor">Minniháttar</string>
+    <string name="widget_storm_moderate">Miðlungs</string>
+    <string name="widget_storm_strong">Sterkur</string>
+    <string name="widget_storm_severe">Alvarlegur</string>
+    <string name="widget_storm_extreme">Öfgafullur</string>
+</resources>

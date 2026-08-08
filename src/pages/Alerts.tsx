@@ -245,7 +245,12 @@ const WEEK_PREVIEW_COUNT = 8;
 
 const scaleColors = ['', 'bg-green-400', 'bg-yellow-400', 'bg-orange-400', 'bg-red-500', 'bg-red-700'];
 const scaleTxt    = ['', 'text-green-400', 'text-yellow-400', 'text-orange-400', 'text-red-500', 'text-red-700'];
-function NoaaScale({ letter, current, t }: { letter: string; current: number; t: (k: string) => string }) {
+// green-400/yellow-400 read at 1.7:1 on the light card — the level the alert is
+// actually reporting was the least legible thing on it. Darkened per level for
+// light mode; the bar keeps the bright colour, only the text moves.
+const scaleTxtLight = ['', 'text-green-700', 'text-yellow-700', 'text-orange-700', 'text-red-600', 'text-red-800'];
+
+function NoaaScale({ letter, current, t, theme }: { letter: string; current: number; t: (k: string) => string; theme: string }) {
   const max = 5;
   const safe = Math.min(Math.max(current, 1), max);
   const gLabels = ['', t('alerts.scale.minor'), t('alerts.scale.moderate'), t('alerts.scale.strong'), t('alerts.scale.severe'), t('alerts.scale.extreme')];
@@ -253,17 +258,19 @@ function NoaaScale({ letter, current, t }: { letter: string; current: number; t:
   const flareLetters = ['A', 'C', 'M', 'X', ''] as const;
   const flareLabel   = ['', 'C', 'M', 'X', 'X+'] as const;
   const labels = letter === 'F' ? fLabels : gLabels;
+  const txt = theme === 'light' ? scaleTxtLight : scaleTxt;
+  const idleTxt = theme === 'light' ? 'text-slate-400' : 'text-white/25';
   return (
     <div className="flex items-center gap-1 mt-2">
       {Array.from({ length: max }, (_, i) => i + 1).map(n => (
         <div key={n} className="flex flex-col items-center gap-1">
           <div className={`h-1.5 w-7 sm:w-8 rounded-full ${n <= safe ? scaleColors[safe] : 'bg-white/10'}`} />
-          <span className={`text-[9px] font-bold hidden sm:block ${n === safe ? scaleTxt[safe] : 'text-white/25'}`}>
+          <span className={`text-[9px] font-bold hidden sm:block ${n === safe ? txt[safe] : idleTxt}`}>
             {letter === 'F' ? (flareLetters[n - 1] ?? '') : `${letter}${n}`}
           </span>
         </div>
       ))}
-      <span className={`ml-2 text-xs font-bold ${scaleTxt[safe]}`}>
+      <span className={`ml-2 text-xs font-bold ${txt[safe]}`}>
         {letter === 'F' ? (flareLabel[safe - 1] ?? '') : `${letter}${safe}`} · {labels[safe] ?? ''}
       </span>
     </div>
@@ -557,7 +564,7 @@ const Alerts = () => {
                             </div>
 
                             {/* Scale */}
-                            {item.scale && <NoaaScale letter={item.scale.letter} current={item.scale.current} t={t} />}
+                            {item.scale && <NoaaScale letter={item.scale.letter} current={item.scale.current} t={t} theme={theme} />}
 
                             {/* CME ETA bar */}
                             {item.type === 'cme' && item.eta !== null && item.eta !== undefined && item.eta > 0 && (

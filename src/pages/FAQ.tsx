@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { ChevronDown, Zap, Sun, Eye, Sparkles, Wind, Moon, MapPin } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import StarField from '../components/StarField';
-import { faqContent } from '../content/faqContent';
+import { Skeleton } from '../components/Skeleton';
+import { loadFaq, type FaqLangContent } from '../content/faqContent';
 
 // Per-item category keys — positionally aligned with faqContent items in every language
 const faqCategories = [
@@ -47,22 +48,22 @@ const categoryIcons: Record<string, React.ReactNode> = {
 const FAQ = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const { language } = useLanguage();
+  const [langContent, setLangContent] = useState<FaqLangContent | null>(null);
 
-  const langContent = faqContent[language] ?? faqContent['en'];
-  const items = langContent.items;
-  const categories = langContent.categories;
+  // The FAQPage JSON-LD is injected into the prerendered HTML at build time
+  // (scripts/prerender-meta.mjs) — in the page's own language, so the structured
+  // data matches the visible Q&A instead of always declaring the English one.
+  useEffect(() => {
+    let cancelled = false;
+    setLangContent(null);
+    loadFaq(language)
+      .then(content => { if (!cancelled) setLangContent(content); })
+      .catch(() => { /* leave the skeleton up rather than an empty page */ });
+    return () => { cancelled = true; };
+  }, [language]);
 
-  // JSON-LD always in English for SEO
-  const enItems = faqContent['en'].items;
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: enItems.map(f => ({
-      '@type': 'Question',
-      name: f.question,
-      acceptedAnswer: { '@type': 'Answer', text: f.answer },
-    })),
-  };
+  const items = langContent?.items;
+  const categories = langContent?.categories;
 
   const categoryKeys = categoryOrder;
 
@@ -74,21 +75,29 @@ const FAQ = () => {
         title="Aurora FAQ — Northern Lights Guide | The Storm Watcher"
         description="Everything you need to know about the Northern Lights, Kp index, solar wind, and how to see the aurora. Expert answers to common space weather questions."
         path="/faq"
-      >
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
-      </PageMeta>
+      />
       <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'FAQ', path: '/faq' }]} />
 
       <div className="text-center mb-6 md:mb-12">
         <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4 uppercase tracking-wide">
           Aurora FAQ
         </h1>
-        <p className="text-[#94a3b8] text-lg max-w-xl mx-auto">
-          {langContent.subtitle}
-        </p>
+        {langContent ? (
+          <p className="text-[#94a3b8] text-lg max-w-xl mx-auto">
+            {langContent.subtitle}
+          </p>
+        ) : (
+          <Skeleton className="h-6 w-full max-w-xl mx-auto" />
+        )}
       </div>
 
-      {categoryKeys.map(categoryKey => (
+      {!items || !categories ? (
+        <div className="space-y-2" aria-busy="true">
+          {faqCategories.map((_, i) => (
+            <Skeleton key={i} className="h-14 w-full rounded-2xl" />
+          ))}
+        </div>
+      ) : categoryKeys.map(categoryKey => (
         <div key={categoryKey} className="mb-8">
           <h2 className="text-sm font-bold text-[#f97316] uppercase tracking-widest mb-4 flex items-center gap-2">
             {categoryIcons[categoryKey]}

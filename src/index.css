@@ -14,6 +14,9 @@ html {
   --tsw-fg-subtle:     #64748b;
   --tsw-surface-bg:    rgba(255, 255, 255, 0.03);
   --tsw-surface-border:rgba(255, 255, 255, 0.10);
+  /* Floating overlays (dropdowns). Kept in the same hue as --tsw-bg so they
+     read as a raised panel, not a blue one. */
+  --tsw-menu-bg:       rgba(8, 8, 16, 0.97);
 }
 
 html.light {
@@ -23,6 +26,7 @@ html.light {
   --tsw-fg-subtle:     #94a3b8;
   --tsw-surface-bg:    #ffffff;
   --tsw-surface-border:rgba(16, 185, 129, 0.12);
+  --tsw-menu-bg:       rgba(255, 255, 255, 0.97);
   color-scheme: light;
 }
 
@@ -323,6 +327,25 @@ html.light .text-amber-300 {
 html.light .text-amber-300\/80 {
   color: rgba(180, 83, 9, 0.9);
 }
+
+/* Light mode: the 100–300 tints are dark-mode text colours. On the light
+   background — or on the /10-tinted chips they usually sit in — they land
+   between 1.2:1 and 1.8:1 and effectively vanish. The alert "what this means
+   for you" text and blog article h3 headings were unreadable this way.
+   Same hue, darkened to carry on a light surface.
+   text-slate-200 is deliberately absent: its only use is OfflineBanner, which
+   sits on bg-slate-800 in both themes. */
+html.light .text-gray-200     { color: #334155; }
+html.light .text-slate-100    { color: #1e293b; }
+html.light .text-red-200      { color: #991b1b; }
+html.light .text-orange-200   { color: #9a3412; }
+html.light .text-orange-300   { color: #c2410c; }
+html.light .text-emerald-200  { color: #065f46; }
+html.light .text-emerald-300  { color: #047857; }
+html.light .text-blue-200     { color: #1e40af; }
+html.light .text-blue-300     { color: #1d4ed8; }
+html.light .text-purple-300   { color: #7e22ce; }
+html.light .text-violet-300   { color: #6d28d9; }
 html.light .star {
   background: transparent;
 }

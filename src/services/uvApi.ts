@@ -1,20 +1,9 @@
 import { logError } from '../utils/logger';
 import { cached } from '../utils/apiCache';
+import { fetchJson } from '../utils/fetchJson';
 
 const TTL_UV  = 30 * 60 * 1000; // 30 min
 const TTL_SUN = 60 * 60 * 1000; // 60 min — sunrise/sunset barely changes
-
-const fetchJson = async <T,>(url: string, timeoutMs = 10000): Promise<T> => {
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
-  try {
-    const res = await fetch(url, { signal: ctrl.signal });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json() as Promise<T>;
-  } finally {
-    clearTimeout(timer);
-  }
-};
 
 export interface UvHourlyData {
   time: string;     // locale-formatted for display

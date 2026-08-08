@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Haptics, NotificationType } from '@capacitor/haptics';
-import { getKpIndex } from '../services/noaaApi';
+import { getKpIndex, resolveKp } from '../services/noaaApi';
 import { useSettings } from '../contexts/SettingsContext';
 import { calcAuroraVisibility } from '../utils/auroraVisibility';
 
@@ -34,7 +34,8 @@ export function useKpAlert() {
       try {
         const entries = await getKpIndex();
         if (!entries.length) return;
-        const kp = entries[entries.length - 1].kp_index ?? 0;
+        const kp = resolveKp(entries[entries.length - 1]);
+        if (kp === null) return;
         if (kp < thresholdRef.current) return;
 
         // Skip if aurora has 0% visibility at the user's saved location

@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom';
 import { usePaymentGate } from '../hooks/usePaymentGate';
 import {
   getKpForecast, getKpHistory3Day, get27DayOutlook, getStormStatus, getKpGradientStyle,
-  getSpaceWeatherOutlook, type SpaceWeatherOutlook, type DayOutlook,
+  getSpaceWeatherOutlook, resolveKp, type SpaceWeatherOutlook, type DayOutlook,
 } from '../services/noaaApi';
 import { getNightsCloudCover, type NightForecast } from '../services/skyApi';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -63,7 +63,7 @@ const Forecast = () => {
         return {
           time: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
           fullTime: date.toLocaleString(),
-          kp: item.kp_index ?? item.estimated_kp ?? 0,
+          kp: resolveKp(item) ?? 0,
           date: date,
         };
       });

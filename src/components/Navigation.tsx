@@ -188,7 +188,7 @@ const Navigation = () => {
                   <div
                     className="absolute left-0 mt-3 w-96 rounded-xl shadow-2xl py-2 border border-[#10b981]/20"
                     style={{
-                      backgroundColor: theme === 'dark' ? 'rgba(10,10,26,0.95)' : 'rgba(255,255,255,0.97)',
+                      backgroundColor: 'var(--tsw-menu-bg)',
                       backdropFilter: 'blur(16px)',
                     }}
                   >
@@ -240,7 +240,7 @@ const Navigation = () => {
                 <div
                   className="absolute right-0 mt-2 w-48 rounded-xl shadow-2xl py-2 border border-[#f97316]/20"
                   style={{
-                    backgroundColor: theme === 'dark' ? 'rgba(10,10,26,0.95)' : 'rgba(255,255,255,0.97)',
+                    backgroundColor: 'var(--tsw-menu-bg)',
                     backdropFilter: 'blur(16px)',
                   }}
                 >
@@ -295,7 +295,7 @@ const Navigation = () => {
                   <div
                     className="absolute right-0 mt-2 w-56 rounded-xl shadow-2xl py-2 border border-[#f97316]/20"
                     style={{
-                      backgroundColor: theme === 'dark' ? 'rgba(10,10,26,0.95)' : 'rgba(255,255,255,0.97)',
+                      backgroundColor: 'var(--tsw-menu-bg)',
                       backdropFilter: 'blur(16px)',
                     }}
                   >
