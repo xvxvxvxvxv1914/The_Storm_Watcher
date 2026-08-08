@@ -295,7 +295,10 @@ const Mood = () => {
   const { theme } = useTheme();
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
-  const [currentKp, setCurrentKp] = useState<number>(0);
+  // null = Kp not resolved yet. The gauge falls back to 0 for display, but the
+  // submitted entry keeps the null — a fabricated 0 would be filed as a genuine
+  // ultra-quiet reading in the mood/Kp correlation.
+  const [currentKp, setCurrentKp] = useState<number | null>(null);
   const [stats, setStats] = useState<MoodStats[]>([]);
   const [personalEntries, setPersonalEntries] = useState<PersonalEntry[]>([]);
   const [hasSubmittedToday, setHasSubmittedToday] = useState(false);
@@ -328,7 +331,7 @@ const Mood = () => {
       const data = await getKpIndex();
       if (data && data.length > 0) {
         const latest = data[data.length - 1];
-        setCurrentKp(resolveKp(latest) ?? 0);
+        setCurrentKp(resolveKp(latest));
       }
     } catch (error) {
       logError('Error fetching Kp:', error);
@@ -486,7 +489,8 @@ const Mood = () => {
     return count;
   }, [personalEntries]);
 
-  const kpStatus = getKpLabel(currentKp, t);
+  const displayKp = currentKp ?? 0;
+  const kpStatus = getKpLabel(displayKp, t);
   const isDark = theme === 'dark';
   const textPrimary = isDark ? 'text-white' : 'text-slate-900';
   const textMuted = isDark ? 'text-white/50' : 'text-slate-500';
@@ -500,7 +504,7 @@ const Mood = () => {
     </div>
   );
 
-  const kpColor = getKpColor(currentKp);
+  const kpColor = getKpColor(displayKp);
 
   return (
     <div className="min-h-screen pt-20 pb-32 md:pt-24 md:pb-20 relative overflow-hidden">
@@ -536,7 +540,7 @@ const Mood = () => {
         >
           <p className={`text-xs uppercase tracking-widest font-semibold mb-2 ${textMuted}`}>{t(getTimeGreeting())}</p>
           <div className="flex justify-center mb-3">
-            <CosmicOrb kp={currentKp} size={180} />
+            <CosmicOrb kp={displayKp} size={180} />
           </div>
           <h1 className={`text-2xl sm:text-3xl font-bold mb-1 ${textPrimary}`}>{t('mood.heroTitle')}</h1>
           <div className="flex items-center justify-center gap-2 mt-2">
@@ -619,7 +623,11 @@ const Mood = () => {
               className={`glass-surface rounded-3xl p-5 sm:p-6 border ${surfaceBorder}`}
             >
               <h2 className={`text-base font-bold mb-1 ${textPrimary}`}>{t('mood.rateTitle')}</h2>
-              <p className={`text-xs mb-5 ${textMuted}`}>{t('mood.symptomsQuestion')}</p>
+              {/* The symptoms question belongs to the symptom chips below, which
+                  only appear once a mood is picked. Sitting here it asked about
+                  symptoms that were nowhere on screen. mood.subtitle already
+                  existed in all 16 locales, unused. */}
+              <p className={`text-xs mb-5 ${textMuted}`}>{t('mood.subtitle')}</p>
 
               {/* Mood picker — bigger, 2 rows on mobile (3+2) for visual balance */}
               <div className="grid grid-cols-5 gap-2 mb-5">
@@ -669,6 +677,7 @@ const Mood = () => {
                     className="overflow-hidden"
                   >
                     <div className="space-y-3 pt-1">
+                      <p className={`text-xs ${textMuted}`}>{t('mood.symptomsQuestion')}</p>
                       <div>
                         <p className={`text-[10px] uppercase tracking-wider font-semibold mb-2 ${textMuted}`}>{t('mood.physical')}</p>
                         <div className="flex flex-wrap gap-1.5">

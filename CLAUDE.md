@@ -123,6 +123,46 @@ Custom service worker at `src/sw.ts` using Workbox. Two groups are excluded from
 ### Capacitor (mobile)
 `CapacitorHttp` is enabled globally — it patches `fetch()` on native to bypass WKWebView CORS for third-party APIs. This means native builds can call NOAA/GFZ/NIGGG directly without going through the Vercel proxy.
 
+### Android Material skin (Android build only)
+
+The same React bundle serves web, iOS and Android, so the Android app gets a
+Material 3 look through a **scoped CSS layer plus two component branches** — no
+fork, no second build.
+
+- `applyPlatformClass()` (`src/utils/platform.ts`) puts `md3` on `<html>` when
+  Capacitor reports Android. It runs in `main.tsx` **before `createRoot`**, not in
+  an effect: set later, the iOS chrome paints for a frame and then swaps. In dev
+  only, `?md3=1` / `?md3=0` forces it either way for browser checks.
+- `src/styles/material.css` is the whole skin, every rule scoped under `html.md3`.
+  Web and iOS never match those selectors, so this file cannot regress them.
+- Components read `isMaterial()` (reads the class, so the dev override applies to
+  JSX too) — `Navigation` renders an M3 top app bar, `BottomTabBar` an M3
+  navigation bar with the active-indicator pill, `StarField` returns null.
+
+**Colour carries meaning — flatten gradients to their own hue, never to a token.**
+The storm badge on Home picks its gradient from the Kp bands (red 7+, orange 5+,
+yellow 4+, green below), the same bands as the gauge and both widgets. A first
+version mapped the orange and green gradients onto `--md-primary`, which turned a
+live G1 badge green: it flattened the severity signal along with the gradient.
+Every `from-[…]` now flattens to that exact colour.
+
+Two more traps, both found only on a device:
+
+- **No `letter-spacing` on `body`.** M3's per-role tracking looks right in
+  isolation but inherits everywhere and *adds* to Tailwind's `tracking-wide`, which
+  this app puts on 10px labels. Inside the three-up card grid that was enough to
+  wrap "Peak Kp · 7 days" onto two lines.
+- **The fixed nav wrapper carries the safe-area inset, so it — not the bar inside
+  it — must be painted.** Left transparent, page content scrolls up into the
+  status-bar strip and shows above the app bar.
+
+Verify on a device, not by reading CSS. `adb shell am start -a
+android.intent.action.VIEW -d "stormwatcher://<route>"` navigates without synthetic
+taps, and sampling pixels out of `screencap` beats judging a downscaled screenshot
+by eye — that is how the storm badge was confirmed as `#F97316` against the gauge
+band. Note `uiautomator dump` is useless here: WebView content has no accessibility
+tree, so the dump shows one opaque `android.webkit.WebView` node.
+
 ### iOS widget data flow
 The widget does **not** receive data from the React app — there is no JS→widget channel. Two independent Swift paths fill it, and both must agree with what the app shows:
 
@@ -251,15 +291,79 @@ watchOS companion app за The Storm Watcher. Данните вече са в Ap
 ## TODO / Pending Work
 
 ### Докъде стигнахме (2026-08-07)
-Всичко е в `main` (`29a7112`), работното дърво е чисто, 300 unit + 23 e2e теста минават локално.
-Edge функциите `send-kp-alerts` (v9), `delete-account` и `verify-iap` са deploy-нати и проверени.
+Одитът на шестте edge функции е **завършен**. 313 unit + 23 e2e теста минават локално.
+`send-kp-alerts` (v9), `delete-account` и `verify-iap` са deploy-нати и проверени.
 
-**Следващата задача, прекъсната по средата:** одит на останалите три edge функции —
-`submit-mood`, `donki-proxy`, `send-weekly-digest`. Първите две вече одитирани
-(`delete-account`, `verify-iap`) извадиха по един реален проблем всяка, така че си струва.
+**Още не са deploy-нати:** `submit-mood` и `send-weekly-digest` (поправките от долния
+раздел са само в кода).
 
-**Не е проверено:** дали CI е зелен след 24-те днешни комита. На машината няма `gh` CLI;
+**Не е проверено:** дали CI е зелен след днешните комити. На машината няма `gh` CLI;
 локално всичко минава, но това не е runner-ът.
+
+### Седмичният дайджест никога не е тръгвал (одит 2026-08-07)
+Settings показва превключвател „Weekly digest", функцията е deploy-ната (v1) — и
+**нито едно писмо не е излизало**. Три независими причини, всяка достатъчна:
+
+1. **Няма cron.** `SELECT * FROM cron.job` съдържа само `send-kp-alerts-every-5min`;
+   `20260605000002_weekly_digest_cron_MANUAL.sql` никога не е пускана.
+2. **Дори пусната, щеше да върне 401.** Функцията е deploy-ната с `verify_jwt: true`,
+   а cron-ът праща само `x-cron-secret` — gateway-ът отказва преди функцията да тръгне.
+   `send-kp-alerts` работи именно защото е `verify_jwt: false` → deploy с `--no-verify-jwt`.
+3. **И секретът щеше да е null** — `current_setting('app.cron_secret', true)` е NULL,
+   освен ако GUC-ът не е зададен; работещият cron вместо това вписва стойността.
+
+Поправеният MANUAL файл описва и трите. **Не е приложен** — включването праща
+истински имейли, значи е решение на потребителя. Към момента 0 профила са opt-in.
+
+Освен това вътре в самата функция (щяха да важат от първото писмо нататък):
+- **Историята се четеше като масив от масиви с header ред.** NOAA
+  `products/noaa-planetary-k-index.json` връща **обекти** (`{time_tag, Kp}`) и няма
+  header, така че `raw[i][1]` даваше NaN на всеки ред: peak Kp тихо ставаше равен на
+  текущия, а броят бури — винаги 0. Седмицата 31.07–07.08 връхна на Kp 5.67 и пак
+  щеше да се съобщи като „no major storms".
+- **Kp идваше само от NOAA** — пета имплементация на каскадата извън договора. Сега
+  минава през GFZ → NOAA (`kpWindow.ts`, тестван).
+- **Бурите се брояха на 3-часови кошчета**, не на епизоди: една 12-часова G1 е
+  „4 geomagnetic storm events".
+- **Етикетът казваше „Peak Kp (3 days)"** върху 7-дневен прозорец (177 ч).
+- **Всички писма тръгваха наведнъж** — Resend на безплатен план дава 2 заявки/сек,
+  значи излишъкът се връщаше 429 и се броеше за „failed" без повторен опит. Сега
+  е последователно, ~1.7/сек, с един повторен опит при 429.
+
+### DONKI на мобилно устройство изобщо не работеше
+`donkiApi.ts` ползваше `/donki` — Vercel rewrite, който съществува само в уеб. На
+native се разрешаваше спрямо Capacitor origin-а (`capacitor://localhost/donki`) и
+връщаше 404 при всяко извикване, а `catch` връщаше `[]`: списъците с CME и изригвания
+бяха постоянно празни на iOS и Android. Сега на native се вика upstream-ът директно
+(CapacitorHttp заобикаля CORS), точно както прави `nigggApi`.
+
+Затова и **`donki-proxy` не се вика от никого** — уеб минава през rewrite-а, native
+вече отива директно. Функцията стои deploy-ната (`verify_jwt: true`); може да се
+изтрие, но това е решение на потребителя.
+
+### Светлата тема: приглушеният цвят е обърнат — чака решение
+Визуален одит 2026-08-07 (30 маршрута × тъмна/светла, десктоп + мобилно): 0 console
+грешки, 0 хоризонтално преливане, всички заглавия верни. Поправено е всичко под
+2:1 контраст (виж комита). Остава едно, което е дизайнерско, не поправка:
+
+`html.light .text-\[\#64748b\] { color: #94a3b8 }` в `index.css` прави приглушения
+текст **по-светъл** върху по-светлия фон. На `#eef2f8` това е **2.56:1** — под AA
+(4.5:1) — и оттам идват почти всички останали ~84 слаби места: футър линкове,
+подписи под графики, етикети в Settings. Обръщането към по-тъмно (напр. `#475569`,
+~7:1) ги затваря наведнъж, но променя вида на цялата светла тема — затова не е
+пипнато.
+
+### `mood_entries.ip_hash` е мъртва колона — чака решение
+Колоната е декларирана в първата миграция изрично „for rate limiting", но
+`submit-mood` (единственият писач, RLS INSERT политиката е свалена през
+`20260514000000`) никога не я пише. Значи ограничението „по едно на ден" виси
+изцяло на `user_session_id` — UUID, който клиентът си генерира сам: изчистен
+localStorage или подменен UUID дава неограничени записи в данните, които хранят
+корелацията настроение/Kp.
+
+Не е поправено нарочно: попълването на `ip_hash` въвежда събиране на нов
+идентификатор, а Privacy страницата **не споменава IP адреси изобщо**. Или се
+пише колоната и се обявява в политиката, или колоната се маха.
 
 ### Одит 2026-08-06 — затворен
 Всичко от онзи одит е поправено и е в main. `send-kp-alerts` е deploy-нато (v9,

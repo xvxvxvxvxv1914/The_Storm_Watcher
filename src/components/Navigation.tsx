@@ -7,8 +7,10 @@ import { useTheme } from '../contexts/ThemeContext';
 import PushNotificationBell from './PushNotificationBell';
 import { useKpLive } from '../hooks/useKpLive';
 import { switchLangUrl, persistLanguage, hreflangCode } from '../utils/langUrl';
+import { isMaterial } from '../utils/platform';
 
 const Navigation = () => {
+  const md3 = isMaterial();
   const stormKp = useKpLive();
   const isStorm = stormKp !== null && stormKp >= 5;
 
@@ -88,9 +90,53 @@ const Navigation = () => {
   const isMoreActive = moreLinks.some(link => isActive(link.to));
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 ${md3 ? 'md-top-bar-wrap' : ''}`}
+      style={{ paddingTop: 'env(safe-area-inset-top)' }}
+    >
 
-      {/* Mobile: floating pill matching bottom tab bar */}
+      {/* Android: Material 3 top app bar — full-bleed, seated on the surface,
+          title left-aligned at title-large. The floating translucent pill below
+          is the iOS/web treatment and stays for those platforms. */}
+      {md3 ? (
+        <div className="lg:hidden md-top-bar flex items-center justify-between px-4" style={{ height: 64 }}>
+          <Link
+            to="/"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="flex items-center gap-2 min-w-0"
+          >
+            <img src="/logos/icon.svg" alt="" className="w-10 h-10 shrink-0" />
+            <span
+              className="truncate"
+              style={{ fontSize: 22, lineHeight: '28px', fontWeight: 600, color: 'var(--md-on-surface)' }}
+            >
+              Storm Watcher
+            </span>
+          </Link>
+          <div className="flex items-center gap-1 shrink-0">
+            {user ? (
+              <PushNotificationBell />
+            ) : (
+              <Link
+                to="/auth"
+                className="flex items-center justify-center px-4"
+                style={{
+                  height: 40,
+                  borderRadius: 999,
+                  background: 'var(--md-primary)',
+                  color: 'var(--md-on-primary)',
+                  fontSize: 14,
+                  fontWeight: 500,
+                  letterSpacing: '0.00625rem',
+                }}
+              >
+                {t('auth.signIn')}
+              </Link>
+            )}
+          </div>
+        </div>
+      ) : (
+      /* Mobile: floating pill matching bottom tab bar */
       <div className="lg:hidden flex items-center justify-between mx-3 mt-2 px-4 py-2.5 rounded-full" style={{
         background: theme === 'light' ? 'rgba(242,242,247,0.82)' : 'rgba(18,18,30,0.82)',
         backdropFilter: 'blur(10px) saturate(180%)',
@@ -126,6 +172,7 @@ const Navigation = () => {
           )}
         </div>
       </div>
+      )}
 
       {/* Desktop: full-width glass bar */}
       <div className="hidden lg:block glass-surface">

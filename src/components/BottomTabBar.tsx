@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -7,6 +7,8 @@ import {
   User, LogOut, SlidersHorizontal, Globe, ChevronRight,
   Magnet, HelpCircle, Camera, Trophy, Video, CalendarDays, CreditCard,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import { isMaterial } from '../utils/platform';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -25,7 +27,68 @@ const tabs = [
 
 const moreRoutes = ['/alerts', '/mood', '/uv', '/sun', '/sky', '/iss', '/magnetic-effects', '/faq', '/profile', '/settings', '/gallery', '/hunt', '/livestream', '/calendar', '/pricing'];
 
+/**
+ * One destination in the Material navigation bar.
+ *
+ * The indicator is a background on the icon's own box rather than an absolutely
+ * positioned sibling — `installRipple` skips any control containing an absolute
+ * child (it would be clipped by the ripple's overflow), and a navigation bar is
+ * exactly where the ripple should fire.
+ */
+const MaterialDestination = ({
+  active, icon: Icon, label, to, onSelect, ...aria
+}: {
+  active: boolean;
+  icon: LucideIcon;
+  label: string;
+  to?: string;
+  onSelect: () => void;
+} & React.AriaAttributes) => {
+  const body = (
+    <>
+      <span
+        className="flex items-center justify-center md-nav-indicator"
+        style={{
+          width: 64,
+          height: 32,
+          borderRadius: 999,
+          background: active ? 'var(--md-primary-container)' : 'transparent',
+        }}
+      >
+        <Icon
+          size={24}
+          strokeWidth={active ? 2.2 : 1.8}
+          style={{ color: active ? 'var(--md-on-primary-container)' : 'var(--md-on-surface-variant)' }}
+        />
+      </span>
+      <span
+        className="text-center"
+        style={{
+          // M3 label-medium, and the weight — not the size — carries selection,
+          // so the label never reflows when the active tab changes.
+          fontSize: 12,
+          lineHeight: '16px',
+          letterSpacing: '0.03125rem',
+          fontWeight: active ? 600 : 500,
+          color: active ? 'var(--md-on-surface)' : 'var(--md-on-surface-variant)',
+        }}
+      >
+        {label}
+      </span>
+    </>
+  );
+
+  const className = 'flex-1 flex flex-col items-center justify-center gap-1 min-w-0';
+
+  return to ? (
+    <Link to={to} onClick={onSelect} className={className} {...aria}>{body}</Link>
+  ) : (
+    <button type="button" onClick={onSelect} className={className} {...aria}>{body}</button>
+  );
+};
+
 const BottomTabBar = () => {
+  const md3 = isMaterial();
   const [moreOpen, setMoreOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
 
@@ -90,7 +153,39 @@ const BottomTabBar = () => {
 
   return (
     <>
-      {/* Floating pill tab bar */}
+      {md3 ? (
+        /* Material 3 navigation bar: full-bleed, 80dp, tonal surface. The active
+           destination is marked by a 64x32 indicator pill behind its icon — the
+           single clearest signal that this is an Android app and not an iOS one.
+           No floating pill, no blur, no drop shadow: Material seats the bar on
+           the surface rather than hovering it above the content. */
+        <nav
+          className="lg:hidden fixed bottom-0 left-0 right-0 z-50 md-nav flex items-stretch"
+          style={{ paddingBottom: 'env(safe-area-inset-bottom)', height: 'calc(80px + env(safe-area-inset-bottom))' }}
+          aria-label="Main navigation"
+        >
+          {tabs.map(({ to, icon: Icon, labelKey }) => (
+            <MaterialDestination
+              key={to}
+              to={to}
+              active={location.pathname === to}
+              icon={Icon}
+              label={t(labelKey)}
+              onSelect={hapticLight}
+            />
+          ))}
+          <MaterialDestination
+            active={isMoreActive}
+            icon={MoreHorizontal}
+            label={t('nav.more') || 'More'}
+            onSelect={() => { hapticLight(); setMoreOpen(true); }}
+            aria-label="Open more menu"
+            aria-expanded={moreOpen}
+            aria-haspopup="menu"
+          />
+        </nav>
+      ) : (
+      /* Floating pill tab bar */
       <nav
         className="lg:hidden fixed bottom-0 left-0 right-0 z-50 flex justify-center pointer-events-none"
         // translateZ pins the bar to its own compositor layer — without it the
@@ -153,6 +248,7 @@ const BottomTabBar = () => {
           </button>
         </div>
       </nav>
+      )}
 
 
       {/* More bottom sheet */}

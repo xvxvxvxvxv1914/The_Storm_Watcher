@@ -111,7 +111,7 @@ const isInNigggBbox = (lat: number, lon: number) =>
   lat >= 35 && lat <= 48 && lon >= 14 && lon <= 42;
 
 const Dashboard = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { profile } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -496,7 +496,9 @@ const Dashboard = () => {
               {t('dashboard.title')}
             </h1>
             <p className="text-[#94a3b8] text-lg flex items-center gap-3">
-              {t('dashboard.lastUpdated')}: {lastUpdated.toLocaleTimeString()}
+              {/* Explicit locale: the bare call follows the OS, so an English page
+                  on a Bulgarian machine printed "18:14:58 ч." */}
+              {t('dashboard.lastUpdated')}: {lastUpdated.toLocaleTimeString(language)}
               <span className="inline-flex items-center gap-1.5 text-xs text-[#10b981] font-bold uppercase tracking-wider">
                 <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse" />
                 {t('dashboard.live')}
