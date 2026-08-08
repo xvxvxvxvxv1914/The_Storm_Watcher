@@ -1,0 +1,474 @@
+/*
+ * Material 3 skin — Android build only.
+ * ---------------------------------------------------------------------------
+ * Everything here is scoped under `html.md3`, a class `applyPlatformClass()` sets
+ * only when Capacitor reports the Android platform. Web and iOS never match these
+ * selectors and keep the existing look, so this file cannot regress them.
+ *
+ * What changes is the *form language*, not the brand: aurora emerald and solar
+ * orange stay, the deep-space background stays. What goes is the iOS vocabulary —
+ * floating pill bars, translucent blur, glow shadows, hairline borders — replaced
+ * by Material's: full-width navigation with an active indicator, tonal surface
+ * elevation instead of blur, Roboto, the M3 shape scale, and a touch ripple.
+ *
+ * Specificity note: `html.md3 .foo` is (0,2,1) and beats a bare Tailwind utility
+ * at (0,1,0), so ordering against Tailwind's layers does not matter. `!important`
+ * appears only where index.css already used it for the same utility.
+ */
+
+/* ── Tokens ──────────────────────────────────────────────────────────────── */
+
+html.md3 {
+  /* Surfaces. M3 conveys depth with tonal steps, not shadow — each container
+     level is a lighter tint of the same hue, so cards read as raised without a
+     border or a blur. */
+  --md-surface:                  #0a0d14;
+  --md-surface-container-lowest: #05070c;
+  --md-surface-container-low:    #11151e;
+  --md-surface-container:        #161a24;
+  --md-surface-container-high:   #20242f;
+  --md-surface-container-highest:#2a2f3b;
+
+  --md-on-surface:          #e4e7ee;
+  /* M3 keeps the secondary text tone far brighter than the old #64748b. That is
+     the token most of this app's "muted" text lands on, and it is the reason the
+     Android build does not inherit the light-theme contrast problem. */
+  --md-on-surface-variant:  #c3c8d2;
+  --md-outline:             #8d919c;
+  --md-outline-variant:     #3f444d;
+
+  --md-primary:             #10b981;
+  --md-on-primary:          #00281c;
+  --md-primary-container:   rgba(16, 185, 129, 0.22);
+  --md-on-primary-container:#7ff0c4;
+
+  --md-secondary:           #f97316;
+  --md-on-secondary:        #2b1200;
+
+  --md-error:               #ffb4ab;
+  --md-scrim:               rgba(0, 0, 0, 0.55);
+
+  /* State layers — M3 fixed opacities for hover/focus/press. */
+  --md-state-hover:   rgba(227, 230, 238, 0.08);
+  --md-state-press:   rgba(227, 230, 238, 0.12);
+  --md-ripple-color:  rgba(227, 230, 238, 0.22);
+
+  /* Shape scale. */
+  --md-shape-xs:   4px;
+  --md-shape-sm:   8px;
+  --md-shape-md:  12px;
+  --md-shape-lg:  16px;
+  --md-shape-xl:  28px;
+
+  /* Navigation bar is 80dp; content clears it plus the gesture inset. */
+  --md-nav-height: 80px;
+  --md-top-bar-height: 64px;
+
+  --md-easing: cubic-bezier(0.2, 0, 0, 1);
+}
+
+html.md3.light {
+  --md-surface:                  #f7f9fc;
+  --md-surface-container-lowest: #ffffff;
+  --md-surface-container-low:    #f1f4f9;
+  --md-surface-container:        #ebeff5;
+  --md-surface-container-high:   #e5eaf1;
+  --md-surface-container-highest:#dfe4ed;
+
+  --md-on-surface:          #191c20;
+  --md-on-surface-variant:  #43474e;
+  --md-outline:             #73777f;
+  --md-outline-variant:     #c3c7cf;
+
+  --md-primary:             #00695c;
+  --md-on-primary:          #ffffff;
+  --md-primary-container:   rgba(0, 105, 92, 0.14);
+  --md-on-primary-container:#00382e;
+
+  --md-secondary:           #a54800;
+  --md-on-secondary:        #ffffff;
+
+  --md-error:               #ba1a1a;
+  --md-scrim:               rgba(0, 0, 0, 0.35);
+
+  --md-state-hover:   rgba(25, 28, 32, 0.08);
+  --md-state-press:   rgba(25, 28, 32, 0.12);
+  --md-ripple-color:  rgba(25, 28, 32, 0.18);
+}
+
+/* ── Typography ──────────────────────────────────────────────────────────── */
+
+/* Roboto is the Android system face — resolved locally, no webfont request. The
+   Space Grotesk <link> in index.html stays for web/iOS; it simply is not used
+   here. `*` matches the existing base rule's specificity trick in index.css. */
+html.md3 * {
+  font-family: Roboto, 'Noto Sans', system-ui, -apple-system, sans-serif;
+}
+
+html.md3 body {
+  background: var(--md-surface);
+  color: var(--md-on-surface);
+  /* M3 body-large */
+  font-size: 16px;
+  line-height: 24px;
+}
+
+/* Deliberately no `letter-spacing` cascade. M3's per-role tracking is tempting to
+   apply on `body`, but it inherits into every descendant and *adds* to Tailwind's
+   `tracking-wide/wider`, which the app uses on small labels. At 10px inside a
+   three-up card grid that extra half-pixel per character is enough to wrap
+   "Peak Kp · 7 days" onto two lines. Tracking is set only on the few elements
+   this skin styles directly (nav labels, filled buttons). */
+
+html.md3 h1 { font-weight: 700; }
+html.md3 h2 { font-weight: 700; }
+html.md3 h3 { font-weight: 600; }
+
+/* ── Surfaces ────────────────────────────────────────────────────────────── */
+
+/* The signature swap: glass → tonal. No backdrop blur (expensive on mid-range
+   Android and not part of the Material vocabulary), no hairline border. */
+html.md3 .glass-surface {
+  background: var(--md-surface-container) !important;
+  border: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+}
+
+/* Tailwind translucent-white fills are what the app builds cards from. Map each
+   step onto the matching tonal container so cards gain Material depth instead of
+   a wash of white at low alpha. */
+html.md3 .bg-white\/\[0\.02\],
+html.md3 .bg-white\/\[0\.03\],
+html.md3 .bg-white\/3      { background-color: var(--md-surface-container-low) !important; }
+html.md3 .bg-white\/\[0\.04\],
+html.md3 .bg-white\/\[0\.06\],
+html.md3 .bg-white\/4,
+html.md3 .bg-white\/5      { background-color: var(--md-surface-container) !important; }
+html.md3 .bg-white\/\[0\.08\],
+html.md3 .bg-white\/8,
+html.md3 .bg-white\/10     { background-color: var(--md-surface-container-high) !important; }
+html.md3 .bg-white\/12,
+html.md3 .bg-white\/15,
+html.md3 .bg-white\/20,
+html.md3 .bg-white\/25     { background-color: var(--md-surface-container-highest) !important; }
+
+/* Borders become outline-variant where they survive at all. Material uses them
+   sparingly — dividers and outlined components, not every card. */
+html.md3 .border-white\/5,
+html.md3 .border-white\/6,
+html.md3 .border-white\/8,
+html.md3 .border-white\/10,
+html.md3 .border-white\/12 { border-color: var(--md-outline-variant) !important; }
+html.md3 .border-white\/20,
+html.md3 .border-white\/25,
+html.md3 .border-white\/30,
+html.md3 .border-white\/40 { border-color: var(--md-outline) !important; }
+
+/* ── Shape scale ─────────────────────────────────────────────────────────── */
+
+html.md3 .rounded-lg   { border-radius: var(--md-shape-sm); }
+html.md3 .rounded-xl   { border-radius: var(--md-shape-md); }
+html.md3 .rounded-2xl  { border-radius: var(--md-shape-lg); }
+html.md3 .rounded-3xl  { border-radius: var(--md-shape-xl); }
+/* rounded-full is left alone: chips, avatars and FABs are fully round in M3 too. */
+
+/* ── Text tones ──────────────────────────────────────────────────────────── */
+
+/* Dark theme only. In light theme index.css already remaps `text-white` for the
+   tags that need it; widening that here would also repaint `text-white` sitting
+   on genuinely dark chips, where the label has to stay light. */
+html.md3:not(.light) .text-white         { color: var(--md-on-surface); }
+html.md3:not(.light) .text-\[\#f8fafc\]  { color: var(--md-on-surface); }
+html.md3 .text-\[\#94a3b8\],
+html.md3 .text-\[\#64748b\],
+html.md3 .text-white\/70,
+html.md3 .text-white\/60     { color: var(--md-on-surface-variant) !important; }
+html.md3 .text-white\/50,
+html.md3 .text-white\/40,
+html.md3 .text-white\/25     { color: var(--md-outline) !important; }
+
+/* index.css remaps `text-white` to a dark ink across the whole light theme. That
+   is right for text on the page and wrong for a label sitting on a dark fill: the
+   selected Alerts filter chip is `bg-slate-900 text-white`, and the remap left it
+   near-black on near-black. Restore the light ink wherever the fill really is
+   dark. (The same bug exists on the web build; corrected here for Android only,
+   since the shared rule is out of this redesign's scope.) */
+/* The element itself only — never its descendants. The chip nests a count badge
+   on its own white pill (`bg-white text-slate-900`); a descendant selector turned
+   that white-on-white and the number vanished. The label is a bare text node, so
+   it picks this up by inheritance without help. */
+html.md3.light [class~='bg-slate-900'],
+html.md3.light [class~='bg-slate-800'] {
+  color: #ffffff !important;
+}
+
+/* ── Elevation, not glow ─────────────────────────────────────────────────── */
+
+/* The glow utilities are a neon/iOS device. Material expresses the same emphasis
+   with a tonal surface plus a real shadow, so the glows are dropped outright. */
+html.md3 .glow-orange,
+html.md3 .glow-red,
+html.md3 .glow-purple,
+html.md3 .glow-green {
+  box-shadow: none;
+}
+
+html.md3 .shadow-lg,
+html.md3 .shadow-xl,
+html.md3 .shadow-2xl {
+  box-shadow:
+    0 1px 3px 1px rgba(0, 0, 0, 0.15),
+    0 1px 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+
+/* A two-stop gradient fill is not a Material control, so every brand gradient is
+   flattened — but each one flattens to *its own* leading colour, never to
+   `--md-primary`.
+ *
+ * That distinction is the whole rule. Several of these gradients are not
+ * decoration: the storm badge on Home picks its gradient from the Kp bands
+ * (red 7+, orange 5+, yellow 4+, green below), the same bands the gauge and the
+ * widgets use. An earlier version of this file mapped the orange and green
+ * gradients onto the primary token, which turned a G1 storm badge green — it
+ * flattened the severity signal along with the gradient. Colour here carries
+ * meaning; only the gradient goes. */
+html.md3 [class*='bg-gradient-to'][class*='from-[#ef4444]'] { background-color: #ef4444 !important; }
+html.md3 [class*='bg-gradient-to'][class*='from-[#f97316]'] { background-color: #f97316 !important; }
+html.md3 [class*='bg-gradient-to'][class*='from-[#eab308]'] { background-color: #eab308 !important; }
+html.md3 [class*='bg-gradient-to'][class*='from-[#f59e0b]'] { background-color: #f59e0b !important; }
+html.md3 [class*='bg-gradient-to'][class*='from-[#fbbf24]'] { background-color: #fbbf24 !important; }
+html.md3 [class*='bg-gradient-to'][class*='from-[#10b981]'] { background-color: #10b981 !important; }
+html.md3 [class*='bg-gradient-to'][class*='from-[#06b6d4]'] { background-color: #06b6d4 !important; }
+html.md3 [class*='bg-gradient-to'][class*='from-[#7c3aed]'] { background-color: #7c3aed !important; }
+html.md3 [class*='bg-gradient-to'][class*='from-[#8b5cf6]'] { background-color: #8b5cf6 !important; }
+html.md3 [class*='bg-gradient-to'][class*='from-[#ec4899]'] { background-color: #ec4899 !important; }
+
+html.md3 [class*='bg-gradient-to'] {
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+/* Bright brand fills carry white labels in the web build, and on a filled control
+   that fails badly: white is 2.6:1 on #10b981, 2.9:1 on #f97316 and 1.9:1 on
+   #eab308, against the 4.5:1 both Material and WCAG expect. The fill is left
+   exactly as it is — only the ink flips, so the Kp severity colour still reads.
+ *
+ * `~=` matches the class as a whole token, so the tinted `bg-[#10b981]/10` chips
+ * (emerald text on a 10% wash) are not caught by this; `*=` would have hit them
+ * and turned their labels unreadable. */
+html.md3 [class~='bg-[#10b981]'], html.md3 [class~='bg-[#10b981]'] *,
+html.md3 [class~='bg-[#f97316]'], html.md3 [class~='bg-[#f97316]'] *,
+html.md3 [class~='bg-[#eab308]'], html.md3 [class~='bg-[#eab308]'] *,
+html.md3 [class~='from-[#10b981]'], html.md3 [class~='from-[#10b981]'] *,
+html.md3 [class~='from-[#f97316]'], html.md3 [class~='from-[#f97316]'] *,
+html.md3 [class~='from-[#eab308]'], html.md3 [class~='from-[#eab308]'] *,
+html.md3 [class~='from-[#fbbf24]'], html.md3 [class~='from-[#fbbf24]'] *,
+html.md3 [class~='from-[#f59e0b]'], html.md3 [class~='from-[#f59e0b]'] * {
+  color: #06231a !important;
+}
+
+html.md3 button:disabled,
+html.md3 [role='button'][aria-disabled='true'] {
+  opacity: 0.38; /* M3 disabled-content opacity */
+}
+
+/* ── Text fields ─────────────────────────────────────────────────────────── */
+
+/* M3 outlined text field: 4dp corners, 1dp outline that thickens to 2dp primary
+   on focus. Replaces the rounded translucent pills the web build uses. */
+html.md3 input:not([type='checkbox']):not([type='radio']):not([type='range']),
+html.md3 textarea,
+html.md3 select {
+  background-color: transparent !important;
+  border: 1px solid var(--md-outline) !important;
+  border-radius: var(--md-shape-xs) !important;
+  color: var(--md-on-surface) !important;
+  font-size: 16px; /* below 16px Android WebView zooms the field on focus */
+  line-height: 24px;
+}
+
+html.md3 input:focus,
+html.md3 textarea:focus,
+html.md3 select:focus {
+  border-color: var(--md-primary) !important;
+  border-width: 2px !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+html.md3 input::placeholder,
+html.md3 textarea::placeholder {
+  color: var(--md-on-surface-variant) !important;
+}
+
+/* ── Focus ───────────────────────────────────────────────────────────────── */
+
+html.md3 *:focus-visible {
+  outline: 3px solid var(--md-primary);
+  outline-offset: 2px;
+}
+
+/* ── Decorative background layers ────────────────────────────────────────── */
+
+/* Star field, solar orbs and drifting particles are the space-app flourish. They
+   are pure decoration over what Material treats as a flat surface, and they cost
+   compositing on every frame — off on Android. */
+html.md3 .star-field,
+html.md3 .solar-orb,
+html.md3 .magnetic-orb,
+html.md3 .solar-particle {
+  display: none !important;
+}
+
+/* ── Navigation bar (bottom) ─────────────────────────────────────────────── */
+
+html.md3 .md-nav {
+  background: var(--md-surface-container);
+  height: var(--md-nav-height);
+}
+
+/* The active indicator pill behind the icon. Its box and fill are set inline by
+   MaterialDestination (the fill has to switch per destination); this rule only
+   supplies the transition, so selection fades rather than snaps. */
+html.md3 .md-nav-indicator {
+  transition: background-color 150ms var(--md-easing);
+}
+
+/* ── Top app bar ─────────────────────────────────────────────────────────── */
+
+/* The wrapper carries the safe-area inset, so it — not the bar inside it — has to
+   be painted. Left transparent, page content scrolls up into the status-bar strip
+   and shows through above the app bar. Material runs edge-to-edge: the app bar's
+   surface continues behind the status bar. */
+html.md3 .md-top-bar-wrap {
+  background: var(--md-surface);
+}
+
+html.md3 .md-top-bar {
+  background: var(--md-surface);
+  height: var(--md-top-bar-height);
+}
+
+/* Raised state once the page scrolls, per M3's scrolled top app bar. */
+html.md3 .md-top-bar[data-scrolled='true'] {
+  background: var(--md-surface-container);
+}
+
+/* Content clears the 80dp bar plus the gesture inset. The web build's `pb-24`
+   was sized for the floating pill, which sits 12px off the bottom edge. */
+html.md3 main {
+  padding-bottom: calc(var(--md-nav-height) + env(safe-area-inset-bottom) + 8px) !important;
+}
+
+/* ── Bottom sheet ────────────────────────────────────────────────────────── */
+
+/* M3 bottom sheets use the extra-large corner on the leading edge only. */
+html.md3 .bottom-sheet-enter {
+  border-top-left-radius: var(--md-shape-xl);
+  border-top-right-radius: var(--md-shape-xl);
+  background: var(--md-surface-container-low);
+}
+
+/* ── Storm banner ────────────────────────────────────────────────────────── */
+
+/* The web banner is a three-stop rainbow gradient with a pulsing glow. Material
+   states the same urgency with a flat error container and no animation — the
+   pulse in particular is the kind of motion M3 reserves for progress, not for
+   a persistent status strip. */
+/* Scoped to `[role="alert"]` so it hits the page-top banner only. The Kp>=7 storm
+   badge on Home carries `pulse-alert` too, and it must keep the band red that the
+   gauge and the widgets use — the extra attribute also makes this rule outrank the
+   gradient-flattening block above, which would otherwise repaint the banner. */
+html.md3 [role='alert'].pulse-alert {
+  animation: none !important;
+  background-image: none !important;
+  background-color: #8c1d18 !important;
+  color: #ffdad6;
+}
+
+html.md3.light [role='alert'].pulse-alert {
+  background-color: #ffdad6 !important;
+  color: #410002;
+}
+
+/* The badge keeps its severity colour; only the pulse goes. */
+html.md3 .pulse-alert {
+  animation: none !important;
+}
+
+html.md3 [role='alert'].pulse-alert span,
+html.md3 [role='alert'].pulse-alert svg {
+  color: inherit !important;
+}
+
+/* The big Kp readout's pulsing drop-shadow is the same neon device. */
+html.md3 .pulse-number {
+  animation: none !important;
+  filter: none !important;
+}
+
+/* ── Card headings vs. the info affordance ───────────────────────────────── */
+
+/* The dashboard stat cards pin an info button at top-right and give the heading
+   no room for it. Roboto sets these uppercase labels wider than Space Grotesk
+   did, so "BZ COMPONENT" ran under the button. Reserving the gutter fixes it
+   without touching the shared markup.
+   `:has()` needs Chrome 105+; on an older WebView the rule is simply dropped and
+   the heading behaves as it does on web today. */
+html.md3 .glass-surface:has(> .absolute.top-3.right-3) h3 {
+  padding-right: 32px;
+}
+
+/* ── Floating action button ──────────────────────────────────────────────── */
+
+/* M3 FAB: surface-container-high, 16dp corner, level-3 shadow — not a glowing
+   translucent circle. It must also clear the 80dp navigation bar. */
+html.md3 .fixed.rounded-full[aria-label],
+html.md3 button.fixed.rounded-full {
+  background: var(--md-surface-container-high) !important;
+  color: var(--md-on-surface) !important;
+  border: none !important;
+  border-radius: var(--md-shape-lg) !important;
+  box-shadow:
+    0 4px 8px 3px rgba(0, 0, 0, 0.15),
+    0 1px 3px 0 rgba(0, 0, 0, 0.3) !important;
+  bottom: calc(var(--md-nav-height) + env(safe-area-inset-bottom) + 16px) !important;
+}
+
+/* ── Ripple ──────────────────────────────────────────────────────────────── */
+
+html.md3 .md-ripple-host {
+  position: relative;
+  overflow: hidden;
+}
+
+html.md3 .md-ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  background: var(--md-ripple-color);
+  pointer-events: none;
+  animation: md-ripple-in 450ms var(--md-easing) forwards;
+}
+
+@keyframes md-ripple-in {
+  to {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+/* The scale-down press effect is the iOS idiom; Material presses with a ripple
+   and a state layer, so the transform is suppressed where both would fire. */
+html.md3 .active\:scale-\[0\.88\]:active,
+html.md3 .active\:scale-95:active {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.md3 .md-ripple { display: none; }
+}

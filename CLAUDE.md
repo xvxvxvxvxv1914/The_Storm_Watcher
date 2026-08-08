@@ -123,6 +123,46 @@ Custom service worker at `src/sw.ts` using Workbox. Two groups are excluded from
 ### Capacitor (mobile)
 `CapacitorHttp` is enabled globally — it patches `fetch()` on native to bypass WKWebView CORS for third-party APIs. This means native builds can call NOAA/GFZ/NIGGG directly without going through the Vercel proxy.
 
+### Android Material skin (Android build only)
+
+The same React bundle serves web, iOS and Android, so the Android app gets a
+Material 3 look through a **scoped CSS layer plus two component branches** — no
+fork, no second build.
+
+- `applyPlatformClass()` (`src/utils/platform.ts`) puts `md3` on `<html>` when
+  Capacitor reports Android. It runs in `main.tsx` **before `createRoot`**, not in
+  an effect: set later, the iOS chrome paints for a frame and then swaps. In dev
+  only, `?md3=1` / `?md3=0` forces it either way for browser checks.
+- `src/styles/material.css` is the whole skin, every rule scoped under `html.md3`.
+  Web and iOS never match those selectors, so this file cannot regress them.
+- Components read `isMaterial()` (reads the class, so the dev override applies to
+  JSX too) — `Navigation` renders an M3 top app bar, `BottomTabBar` an M3
+  navigation bar with the active-indicator pill, `StarField` returns null.
+
+**Colour carries meaning — flatten gradients to their own hue, never to a token.**
+The storm badge on Home picks its gradient from the Kp bands (red 7+, orange 5+,
+yellow 4+, green below), the same bands as the gauge and both widgets. A first
+version mapped the orange and green gradients onto `--md-primary`, which turned a
+live G1 badge green: it flattened the severity signal along with the gradient.
+Every `from-[…]` now flattens to that exact colour.
+
+Two more traps, both found only on a device:
+
+- **No `letter-spacing` on `body`.** M3's per-role tracking looks right in
+  isolation but inherits everywhere and *adds* to Tailwind's `tracking-wide`, which
+  this app puts on 10px labels. Inside the three-up card grid that was enough to
+  wrap "Peak Kp · 7 days" onto two lines.
+- **The fixed nav wrapper carries the safe-area inset, so it — not the bar inside
+  it — must be painted.** Left transparent, page content scrolls up into the
+  status-bar strip and shows above the app bar.
+
+Verify on a device, not by reading CSS. `adb shell am start -a
+android.intent.action.VIEW -d "stormwatcher://<route>"` navigates without synthetic
+taps, and sampling pixels out of `screencap` beats judging a downscaled screenshot
+by eye — that is how the storm badge was confirmed as `#F97316` against the gauge
+band. Note `uiautomator dump` is useless here: WebView content has no accessibility
+tree, so the dump shows one opaque `android.webkit.WebView` node.
+
 ### iOS widget data flow
 The widget does **not** receive data from the React app — there is no JS→widget channel. Two independent Swift paths fill it, and both must agree with what the app shows:
 

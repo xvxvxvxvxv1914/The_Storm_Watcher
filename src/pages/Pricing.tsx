@@ -3,7 +3,7 @@ import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import StarField from '../components/StarField';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { isNative } from '../utils/platform';
+import { isNative, isMaterial } from '../utils/platform';
 import { Check, Zap, Star, CreditCard, Sparkles, Smartphone, RefreshCw } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -54,6 +54,7 @@ export default function Pricing() {
   const { t } = useLanguage();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  const md3 = isMaterial();
   const navigate = useNavigate();
   const location = useLocation();
   const [billing, setBilling] = useState<Billing>('monthly');
@@ -179,8 +180,19 @@ export default function Pricing() {
                         key={billing}
                         onClick={() => iap.purchase(plan, billing)}
                         disabled={iap.purchasing !== null}
-                        className="py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 disabled:opacity-50"
-                        style={{ background: `linear-gradient(to right, ${color}, ${plan === 'pro' ? '#fbbf24' : '#6d28d9'})` }}
+                        className={`py-2.5 rounded-xl text-sm font-bold transition-all hover:opacity-90 disabled:opacity-50 ${md3 ? '' : 'text-white'}`}
+                        // A two-stop gradient is not a Material control. On Android
+                        // this becomes an M3 filled button: the tier's solid colour,
+                        // fully rounded, with the label flipped to dark on Pro's
+                        // orange — white on #f97316 is about 2.9:1 and fails AA.
+                        // The gradient is left untouched for web and iOS.
+                        style={md3
+                          ? {
+                              background: color,
+                              color: plan === 'pro' ? '#2b1200' : '#ffffff',
+                              borderRadius: 999,
+                            }
+                          : { background: `linear-gradient(to right, ${color}, ${plan === 'pro' ? '#fbbf24' : '#6d28d9'})` }}
                       >
                         {isPurchasing ? '…' : billing === 'monthly'
                           ? (t('pricing.monthly') || 'Monthly')

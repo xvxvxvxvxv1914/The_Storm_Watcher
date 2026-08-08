@@ -3,8 +3,16 @@ import { createRoot } from 'react-dom/client';
 import { registerSW } from 'virtual:pwa-register';
 import App from './App.tsx';
 import './index.css';
+import './styles/material.css';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { loadSentry, disableSentry, captureException } from './utils/sentryLazy';
+import { applyPlatformClass } from './utils/platform';
+import { installRipple } from './utils/ripple';
+
+// Before createRoot, not in an effect: the Material skin has to be on the html
+// element for the first paint, or the iOS chrome renders for a frame and swaps.
+applyPlatformClass();
+if (document.documentElement.classList.contains('md3')) installRipple();
 
 // Service worker is only useful for web/PWA — skip on native Capacitor (files are local)
 if (!('Capacitor' in window)) {

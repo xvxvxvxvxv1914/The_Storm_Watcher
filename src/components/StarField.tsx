@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
+import { isMaterial } from '../utils/platform';
 
 interface Star {
   x: number;
@@ -114,7 +115,11 @@ export default function StarField() {
     };
   }, [theme]);
 
-  if (theme === 'light') return null;
+  // Material treats the page as a flat surface; a drifting star field is the
+  // space-app flourish that belongs to the web/iOS skin. Returning null rather
+  // than hiding the canvas in CSS also stops the requestAnimationFrame loop —
+  // the effect above bails as soon as the ref is empty.
+  if (theme === 'light' || isMaterial()) return null;
 
   return (
     <canvas
