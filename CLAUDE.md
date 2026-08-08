@@ -36,14 +36,63 @@ npm run ios:open     # Build + sync + open Xcode
 npm run ios:livereload  # Live reload on device
 ```
 
-Android — gradle pins JDK 21, and the only system JDK is Temurin 25, so
-`./gradlew` fails with "Cannot find a Java installation matching {languageVersion=21}"
-unless you point it at Android Studio's bundled JBR:
+Android **on macOS** — gradle pins JDK 21, and the only system JDK there is
+Temurin 25, so `./gradlew` fails with "Cannot find a Java installation matching
+{languageVersion=21}" unless you point it at Android Studio's bundled JBR:
 ```bash
 npm run build && npx cap sync android
 cd android && JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home" \
   ./gradlew installDebug     # assembleDebug to build without installing
 ```
+
+Android **on the Windows machine** — none of that applies: Temurin **21** is the
+system JDK and is already on PATH, so `gradlew.bat` runs with no `JAVA_HOME`
+override and there is no Android Studio to borrow a JBR from. Only the SDK is
+installed, and `adb` is not on PATH:
+```powershell
+npm run build; npx cap sync android
+$env:ANDROID_HOME = "$env:LOCALAPPDATA\Android\Sdk"
+cd android; .\gradlew.bat assembleDebug --console=plain
+& "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" install -r `
+  app\build\outputs\apk\debug\app-debug.apk
+```
+A first clean build is ~4 min (Kotlin + the Compose compiler for the Glance
+widget); incremental ones are 10-25s.
+
+**Installing over a build signed on the Mac fails** with
+`INSTALL_FAILED_UPDATE_INCOMPATIBLE` — the two machines have different debug
+keystores. The only way through is `adb uninstall com.stormwatcher.app` first,
+which wipes the app's data on the device (settings, saved location, local cache).
+
+### Driving the device from the terminal
+
+Synthetic swipes and taps are unreliable on One UI — they open the app drawer,
+land on the wrong home page, or hit a widget and launch the app. Navigate the
+app by deep link instead, which goes straight to the route:
+```powershell
+& $adb shell am start -a android.intent.action.VIEW -d "stormwatcher://forecast" com.stormwatcher.app
+```
+Screenshots must go through device storage. `adb exec-out screencap -p > out.png`
+**corrupts the file in PowerShell** — the redirect adds a BOM and re-encodes the
+binary, and the result is not a valid PNG:
+```powershell
+& $adb shell screencap -p /sdcard/s.png; & $adb pull /sdcard/s.png out.png; & $adb shell rm /sdcard/s.png
+```
+The screen sleeps between steps and blanks the capture; `adb shell svc power
+stayon true` holds it while the device is charging (**set it back to `false`
+afterwards**).
+
+Judge colour by sampling pixels out of the PNG, not by eye — screenshots are
+1080px downscaled in review, and that is how the widget's Kp scale was caught
+rendering 5 segments instead of 18, and how the storm badge was confirmed as
+`#F97316` against the gauge band. `uiautomator dump` is useless for anything
+inside the app: WebView exposes no accessibility tree, so the dump contains one
+opaque `android.webkit.WebView` node and none of the page's text.
+
+A debuggable build also raises a system "Android App Compatibility" dialog on
+every fresh install (the 16 KB page-size warning). It covers the page and will
+silently invalidate a screenshot or a pixel sample taken right after installing —
+dismiss it before capturing.
 
 iOS device build (headless). **The Apple team is free/personal**, which cannot sign
 Push Notifications or Associated Domains — a plain build fails at signing. Override
