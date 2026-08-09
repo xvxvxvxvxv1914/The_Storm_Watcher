@@ -43,4 +43,6 @@ test-results
 playwright-report
 playwright/.cache
 .vercel
-.env.test
+# .env.test is COMMITTED on purpose: it holds no secrets, only
+# VITE_PAYMENTS_ENABLED=true for the e2e plan-guard tests. Ignoring it meant
+# CI (and any fresh clone) ran e2e with the gates open and 3 tests red.
