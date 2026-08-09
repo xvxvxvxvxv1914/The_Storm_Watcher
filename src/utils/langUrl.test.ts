@@ -4,6 +4,7 @@ import {
   langBasename,
   stripLangPrefix,
   localizedPath,
+  languageRedirectPath,
 } from './langUrl';
 
 describe('langFromPath', () => {
@@ -50,5 +51,25 @@ describe('localizedPath', () => {
     for (const route of ['/', '/sky', '/blog/what-is-kp-index']) {
       expect(stripLangPrefix(localizedPath('de', route))).toBe(route);
     }
+  });
+});
+
+describe('languageRedirectPath', () => {
+  it('moves an unprefixed URL to the visitor language', () => {
+    expect(languageRedirectPath('/faq', null, 'bg-BG')).toBe('/bg/faq');
+    expect(languageRedirectPath('/', null, 'de-DE')).toBe('/de');
+    expect(languageRedirectPath('/faq', 'bg', 'en-US')).toBe('/bg/faq'); // saved wins
+  });
+  it('never redirects an already prefixed URL', () => {
+    expect(languageRedirectPath('/bg/faq', null, 'bg-BG')).toBeNull();
+    expect(languageRedirectPath('/de/sky', 'bg', 'bg-BG')).toBeNull();
+  });
+  it('a saved en is an explicit choice and beats the browser language', () => {
+    expect(languageRedirectPath('/faq', 'en', 'bg-BG')).toBeNull();
+  });
+  it('stays put for English and unsupported languages', () => {
+    expect(languageRedirectPath('/faq', null, 'en-GB')).toBeNull();
+    expect(languageRedirectPath('/faq', null, 'pt-BR')).toBeNull(); // unsupported
+    expect(languageRedirectPath('/faq', 'garbage', 'bg-BG')).toBeNull();
   });
 });

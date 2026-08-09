@@ -68,6 +68,31 @@ export const switchLangUrl = (lang: string): string => {
 };
 
 /**
+ * Where an unprefixed URL must redirect so URL and content agree, or null.
+ *
+ * An unprefixed URL is canonical English. Resolving the saved preference or
+ * the browser language *on top of it* made `/faq` and `/bg/faq` serve the same
+ * Bulgarian page to a bg-BG visitor while hreflang declared them different
+ * versions — duplicate content on two URLs, and a prerendered `lang="en"` page
+ * whose visible text was not English. Instead of silently swapping content,
+ * move the visitor to the URL that already means their language.
+ *
+ * A saved 'en' is an explicit choice (the switcher persists before navigating)
+ * and wins over the browser language — that is the escape hatch back to the
+ * English root. Unsupported or garbage values redirect nowhere.
+ */
+export const languageRedirectPath = (
+  pathname: string,
+  saved: string | null,
+  navigatorLang: string,
+): string | null => {
+  if (langFromPath(pathname)) return null;
+  const lang = saved ?? navigatorLang.slice(0, 2).toLowerCase();
+  if (!PREFIX_SET.has(lang)) return null; // 'en' or unsupported
+  return localizedPath(lang, pathname || '/');
+};
+
+/**
  * Persist the language choice before navigating to a localized URL. Persisting
  * first ensures the English root (no prefix) shows English on reload instead of
  * falling back to the previous saved language.

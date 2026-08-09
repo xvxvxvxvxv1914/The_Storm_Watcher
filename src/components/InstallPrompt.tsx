@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Download, X } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { isNative } from '../utils/platform';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -18,9 +19,11 @@ export default function InstallPrompt() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // Inside Capacitor / standalone PWA — no prompt needed
+    // Inside Capacitor / standalone PWA — no prompt needed. isNative(), not
+    // `'Capacitor' in window`: the global exists on web too, so that check
+    // suppressed the install prompt for every web visitor.
     if (window.matchMedia('(display-mode: standalone)').matches) return;
-    if ('Capacitor' in window) return;
+    if (isNative()) return;
 
     const dismissedAt = Number(localStorage.getItem(DISMISSED_KEY) ?? '0');
     const cooldown = COOLDOWN_DAYS * 24 * 60 * 60 * 1000;

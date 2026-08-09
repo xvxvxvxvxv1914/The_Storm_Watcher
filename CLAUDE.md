@@ -64,6 +64,12 @@ widget); incremental ones are 10-25s.
 keystores. The only way through is `adb uninstall com.stormwatcher.app` first,
 which wipes the app's data on the device (settings, saved location, local cache).
 
+Two more Windows-machine facts: `core.autocrlf=true` there makes
+`blogMetadata.test.ts` fail (CRLF file vs LF generator output, byte comparison)
+— **do not "fix" the file, that breaks CI on Linux**; and its `.env` holds a
+placeholder Supabase URL, so sign-in/mood/profile are dead in local Android
+builds while NOAA/GFZ still work.
+
 ### Driving the device from the terminal
 
 Synthetic swipes and taps are unreliable on One UI — they open the app drawer,
@@ -144,7 +150,7 @@ All NOAA/external fetches go through an in-memory TTL cache + single-flight dedu
 |---------|--------|-------|
 | `noaaApi.ts` | NOAA SWPC + GFZ | Kp index (GFZ primary, NOAA fallback), solar wind, X-ray, aurora OVATION model, 3-day outlook |
 | `nigggApi.ts` | NIGGG Bulgaria | Local magnetic field (H/F components). On native Capacitor, calls the endpoint directly; on web goes through `/api/niggg` Vercel rewrite |
-| `donkiApi.ts` | NOAA DONKI | CME/solar flare alerts, proxied via `/donki` |
+| `donkiApi.ts` | NOAA DONKI | CME/solar flare alerts. Web goes through the `/donki` Vercel rewrite; native calls the upstream directly (CapacitorHttp) — the rewrite does not exist under `capacitor://localhost` |
 | `uvApi.ts` | Open-Meteo | UV index by coords |
 | `skyApi.ts` | Open-Meteo | Cloud cover + astronomy data |
 | `issApi.ts` | Where The ISS At | ISS position |
@@ -157,12 +163,25 @@ All NOAA/external fetches go through an in-memory TTL cache + single-flight dedu
 `PlanGuard` component wraps routes/sections that require `pro` or `premium`. It reads `profile.plan` from AuthContext. When `VITE_PAYMENTS_ENABLED !== 'true'`, all content is accessible regardless of plan — useful for development.
 
 ### Supabase backend
-- **Edge Functions** in `supabase/functions/`: `delete-account`, `donki-proxy`, `send-kp-alerts` (cron), `submit-mood`
+- **Edge Functions** in `supabase/functions/`: `delete-account`, `send-kp-alerts` (cron), `submit-mood`, `send-weekly-digest`, `verify-iap` (`donki-proxy` deleted 2026-08-09 — nothing called it)
 - **Migrations** in `supabase/migrations/` — run sequentially; `_MANUAL` suffix means the SQL must be applied manually in the Supabase dashboard (cron job setup)
 - Key tables: `profiles` (plan, stripe fields), `mood_entries`, `push_subscriptions`, `favorite_locations`, `stripe_processed_events`
 
 ### PWA / Service Worker
-Custom service worker at `src/sw.ts` using Workbox. Two groups are excluded from the precache:
+Custom service worker at `src/sw.ts` using Workbox.
+
+**Platform guard gotcha (битото 2026-08-09):** `window.Capacitor` съществува **и на
+web** — `@capacitor/core` дефинира глобала при import, а целият модулен граф се
+изпълнява преди тялото на `main.tsx`. Guard-ът `!('Capacitor' in window)` около
+`registerSW()` беше винаги false, тоест **SW-ът не се е регистрирал за нито един
+web посетител от 2026-05-26 (`edca150`)**: без offline, без precache, а web push
+handler-ът в `sw.ts` беше недостижим. Същият грешен тест държеше PWA install
+промпта изключен и пускаше нативния 1.9s splash на всяко зареждане. Всичко е на
+`isNative()` от `src/utils/platform.ts` сега — **никога не проверявай
+`'Capacitor' in window'`**; проверено на prod build: 1 регистрация, промптът и
+splash-ът са с web поведение.
+
+Two groups are excluded from the precache:
 
 - **Heavy 3D chunks** (`globe-vendor`, `three-vendor`, `charts-vendor`, `map-vendor`) — loaded on demand, left to the browser cache.
 - **`assets/ondemand/**`** — the 16 locales, the 16 FAQ and magnetic translations and the ten blog articles. These are cached at runtime by a `CacheFirst` route in `src/sw.ts` instead, so a page works offline once it has been opened online. Precaching them made the install 2.6 MB, of which 1.3 MB was content a visitor uses one sixteenth of — undoing for PWA users exactly what splitting these files won for web visitors. **The tradeoff is deliberate:** a language or article never opened while online is not available offline.
@@ -247,6 +266,11 @@ widget, the Android counterpart of the iOS one. Three responsive layouts
   timestamps mirror iOS; `-1` is the "no data" sentinel and Kp 0.0 is real data.
 - `updatePeriodMillis` is 30 min — the platform floor. Smaller values are clamped
   silently.
+- Device lessons (2026-08-08): `SizeMode.Responsive` hands the composable the
+  **bucket** size, not the cell — sizing to it left the bottom half of the 4×2
+  empty; and Glance silently drops children beyond a container's limit, which is
+  how the Kp scale rendered 5 of its 18 segments. Both fixed in
+  `71a5a17`/`794f0a3`.
 - Kotlin and the Compose compiler are in the build **only** for this widget; the
   Capacitor app itself is still Java. Both plugins are pinned to `kotlinVersion`
   in `android/build.gradle` and must move together.
@@ -269,10 +293,10 @@ widget, the Android counterpart of the iOS one. Three responsive layouts
 
 `contact_messages.user_id` е `ON DELETE SET NULL`, за да оцелее историята на поддръжката. Но `name` и `email` са **отделни колони, не FK** — нулирането на връзката оставяше идентификаторите в таблицата и правеше изтриването да изглежда пълно, без да е. Функцията вече ги замества с `[deleted]` / `deleted@account.invalid` (запазена `.invalid` зона) преди да изтрие акаунта, и **отказва цялата операция**, ако анонимизирането не мине — половинчато изтриване е по-лошо от такова, което може да се повтори.
 
-`mood_entries` няма FK към `auth.users` по замисъл — псевдонимна е (`user_session_id` + `ip_hash`), не е свързана със самоличност.
+`mood_entries` няма FK към `auth.users` по замисъл — псевдонимна е (само `user_session_id`; мъртвата `ip_hash` е махната 2026-08-09 по решение на потребителя — писането ѝ значеше събиране на IP, което Privacy не обявява). **Съзнателна последица:** дневният лимит „едно на ден" виси на клиентски UUID и е заобиколим с изчистен localStorage; ако mood данните някога станат важни, чистият път е гласуване само за влезли потребители.
 
 ### Web push (браузър)
-Сървърната половина съществуваше отдавна и беше **мъртва**: таблица `push_subscriptions` с пълни RLS политики, VAPID ключове в edge функцията, `push` handler в `src/sw.ts`, `VITE_VAPID_PUBLIC_KEY` подаван от CI — и `send-kp-alerts`, което честно я заявява на всеки 5 минути. Никой никога не викаше `pushManager.subscribe()`, значи заявката винаги връщаше нула реда.
+Сървърната половина съществуваше отдавна и беше **мъртва**: таблица `push_subscriptions` с пълни RLS политики, VAPID ключове в edge функцията, `push` handler в `src/sw.ts`, `VITE_VAPID_PUBLIC_KEY` подаван от CI — и `send-kp-alerts`, което честно я заявява на всеки 5 минути. Никой никога не викаше `pushManager.subscribe()`, значи заявката винаги връщаше нула реда. (Втората пречка — SW-ът изобщо не се регистрираше на web, виж „Platform guard gotcha" — падна на 2026-08-09; сега липсва само env променливата.)
 
 - [src/hooks/useWebPush.ts](src/hooks/useWebPush.ts) прави абонамента и записва реда. Иска **влязъл потребител** — редът е собственост на `auth.uid()` под RLS.
 - Без `VITE_VAPID_PUBLIC_KEY` хукът връща `unconfigured` и не прави нищо; остава само алармата в отворен таб (`useKpAlert`).
@@ -290,6 +314,16 @@ widget, the Android counterpart of the iOS one. Three responsive layouts
 
 ### i18n
 Translation keys live in `src/locales/{en,bg,da,de,es,fi,fr,is,ja,ko,no,pl,ru,sv,uk,zh}.ts` as flat `Record<string, string>`. The `useLanguage()` hook provides `t(key)`. All 16 locales must stay in sync — there is a completeness test at `src/locales/localeCompleteness.test.ts`.
+
+**URL ↔ language contract (от 2026-08-09):** непрефиксиран URL е каноничен
+английски. Посетител, чийто език (запазен избор или `navigator.language`) е друг,
+се пренасочва към префиксирания URL от `main.tsx` **преди `createRoot`** —
+`languageRedirectPath` в [src/utils/langUrl.ts](src/utils/langUrl.ts), тестван в
+`langUrl.test.ts`. Правила: префиксиран URL никога не се пипа; запазено `en` е
+изричен избор (превключвателят го записва преди навигация) и бие браузърния език
+— това е пътят обратно към английския root; боклук в localStorage не пренасочва.
+Само web — native няма префикси. Преди това `/faq` рендираше български на bg-BG
+браузър върху prerender с `lang="en"` — дублирано съдържание на две URL-а.
 
 Long-form page content lives in `src/content/`, **one file per language**: `faq/{lang}.ts` (FAQ) and `magnetic/{lang}.ts` (Magnetic Effects). `faqContent.ts` / `magneticEffectsContent.ts` keep only the types plus a `loadFaq(lang)` / `loadMagnetic(lang)` dynamic-import loader, mirroring how `LanguageContext` loads `src/locales/`. They used to be single `Record<lang, …>` literals, which shipped all 16 translations (176 kB + 90 kB) in the route chunk to render one; the split cut the FAQ page's JS from 176 kB to ~17 kB.
 
@@ -339,187 +373,64 @@ watchOS companion app за The Storm Watcher. Данните вече са в Ap
 
 ## TODO / Pending Work
 
-### Докъде стигнахме (2026-08-08) — Android сесия на устройство
+### Какво остава — актуално към 2026-08-09
 
-Първата сесия със **свързан Galaxy A34 (Android 16, API 36)**. Свършено и
-проверено на екран: widget layout-ът, пълен Material 3 скин за Android (виж
-„Android Material skin"), и обход на Home/Dashboard/Forecast/Alerts/Settings/
-Pricing/Aurora/UV/FAQ/ISS/Mood/Sky в **двете теми**.
+Кодова работа няма. Всичко долу иска или потребителя, или устройство/акаунт.
 
-`typecheck` и `lint` чисти. **312/313 unit теста.** Падащият е
-`blogMetadata.test.ts` и е **Windows-специфичен, не регресия**: `core.autocrlf=true`
-дава `metadata.ts` с CRLF, генераторът бълва LF, байтовото сравнение гърми.
-Проверено чрез stash на цялото дърво — пада и без никакви промени. Не пипай
-файла, за да го „поправиш" — ще счупиш CI на Linux.
+**При потребителя (минути):**
+- **Vercel env:** `VITE_VAPID_PUBLIC_KEY` (web push — хукът и SW-ът са готови;
+  стойността е публичният VAPID ключ, същият който CI подава като secret) и
+  `CRON_SECRET` (без нея `webhook-health` връща 401 и предпазителят за тихо
+  паднал Stripe webhook мълчи; Vercel слага Authorization header-а само когато
+  променливата съществува).
+- **Merge staging → main** — комитите от 09.08: CI fix, възкресеният SW +
+  InstallPrompt + splash, езиковият redirect, 16 KB, приглушеният цвят,
+  `ip_hash`, `donki-proxy`, npm audit → 0. Гаси и 3-те Dependabot аларми на
+  main (фиксът е в staging). Само по изрична команда на потребителя.
+- **CI: провери първия run след поправките.** CI не е бил зелен от 26 април
+  (~712 поредни червени; никой не е гледал). Unit-env причината е поправена
+  09.08 (`0a38290` — hermetic placeholder env в ci.yml, `src/lib/supabase.ts`
+  хвърля при import без него). E2E стъпката никога не е стигана на зелен
+  runner — може да крие следваща изненада.
 
-**Пуснато в main (2026-08-08).** Merge-ът прекара не само Android работата:
-staging беше напред с 34 комита, значи в production отидоха и седмичният
-дайджест (`kpWindow.ts`), DONKI native fix-ът, `submit-mood`, `donki-proxy`,
-`middleware.ts` и промени в Alerts/Mood/Dashboard/Hunt/ISS. `20260605000002_weekly_digest_cron_MANUAL.sql`
-е в main, но `_MANUAL` значи че **не се прилага само** — включването праща
-истински имейли.
+**Едно останало решение на потребителя:**
+- **Cron на седмичния дайджест.** Функцията е поправена и deploy-ната правилно
+  (v2, `verify_jwt: false`); остава `20260605000002_weekly_digest_cron_MANUAL.sql`
+  — cron + GUC секрет, описани в самия файл. Включването праща истински имейли;
+  0 профила opt-in към 08.08. Логично след Vercel env-овете (Resend е готов).
 
-**Отворено след тази сесия:**
+**Наблюдение, без действие:**
+- **GSC възстановяване.** 141 indexed / 647 not е щетата от Cloudflare 403 към
+  Googlebot (05.07–05.08; коренът решен 05.08 — виж паметта gsc-googlebot-403).
+  Sitemap ресубмитнат 08.08, Request indexing пуснат за `/`, `/blog`, `/aurora`,
+  `/bg`. Признак за възстановяване: нова дата в Sitemaps → `last_downloaded`;
+  пълното отнема седмици. Нов проблем е само ако `last_crawled` > 05.08 пак
+  показва ACCESS_FORBIDDEN.
 
-1. **Widget-ът спря да се рендира и причината е неизвестна.** След преинсталация
-   изчезна от началния екран, докато инстанцията остава bound (`id=11`, host view
-   401×216dp) и Glance продължава да push-ва RemoteViews **без изключение никъде в
-   logcat** (`updateAppWidget() appWidgetIds = [11]`). Махането на `cornerRadius`
-   не помогна — тоест хипотезата беше грешна. Най-вероятно launcher състояние след
-   `isProviderChange` (логът показва `getDefaultView`), но това е предположение.
-   **Следваща стъпка: махни widget-а от екрана и го сложи наново.** Ако пак е
-   празен — проблемът е в кода, не в launcher-а.
-2. **16 KB page size — ще блокира Play Store.** Устройството хвърля системен диалог
-   „Android App Compatibility": `libsentry.so`, `libsentry-android.so` и
-   `libdatastore_shared_counter.so` не са 16 KB подравнени. Google изисква това за
-   приложения към Android 15+. Иска ъпгрейд на Sentry Android SDK и на
-   androidx.datastore (Glance го тегли транзитивно).
-3. **`.env` тук е с placeholder Supabase** (`https://placeholder.supabase.co`).
-   Logcat: `Unable to resolve host`. В локалните Android build-ове backend-ът е
-   мъртъв — sign in, mood, профил, favourites не работят. NOAA/GFZ минават, защото
-   не са през Supabase.
-4. **`ScrollToTop` покрива текст** на Home (отряза „Northern" на „Norther").
-   Съществуващо на всички платформи, не е от редизайна — не е пипано.
+**Иска устройството (Galaxy A34, Windows машината):**
+- **Widget-ът спря да се рендира, причина неизвестна.** След преинсталация
+  изчезна от началния екран, докато инстанцията остава bound (`id=11`, host view
+  401×216dp) и Glance продължава да push-ва RemoteViews без изключение в logcat
+  (`updateAppWidget() appWidgetIds = [11]`). `cornerRadius` хипотезата отпадна.
+  **Следваща стъпка: махни widget-а от екрана и го сложи наново** — ако пак е
+  празен, проблемът е в кода, не в launcher-а. Преди мистерията беше потвърден
+  работещ на 4×2 (реални данни, tap отваря приложението); 2×2 и 4×4 не са
+  проверявани.
+- **16 KB потвърждение.** Кодът е готов (sentry-android 7.22.5 +
+  datastore-preferences 1.1.7; трите `.so` проверени `align 0x4000` в APK-то).
+  Диалогът „Android App Compatibility" на устройството може да не изчезне за
+  debuggable билд — важното за Play е подравняването.
 
-### Докъде стигнахме (2026-08-07)
-Одитът на шестте edge функции е **завършен**. 313 unit + 23 e2e теста минават локално.
-`send-kp-alerts` (v9), `delete-account` и `verify-iap` са deploy-нати и проверени.
-
-**Още не са deploy-нати:** `submit-mood` и `send-weekly-digest` (поправките от долния
-раздел са само в кода).
-
-**Не е проверено:** дали CI е зелен след днешните комити. На машината няма `gh` CLI;
-локално всичко минава, но това не е runner-ът.
-
-### Седмичният дайджест никога не е тръгвал (одит 2026-08-07)
-Settings показва превключвател „Weekly digest", функцията е deploy-ната (v1) — и
-**нито едно писмо не е излизало**. Три независими причини, всяка достатъчна:
-
-1. **Няма cron.** `SELECT * FROM cron.job` съдържа само `send-kp-alerts-every-5min`;
-   `20260605000002_weekly_digest_cron_MANUAL.sql` никога не е пускана.
-2. **Дори пусната, щеше да върне 401.** Функцията е deploy-ната с `verify_jwt: true`,
-   а cron-ът праща само `x-cron-secret` — gateway-ът отказва преди функцията да тръгне.
-   `send-kp-alerts` работи именно защото е `verify_jwt: false` → deploy с `--no-verify-jwt`.
-3. **И секретът щеше да е null** — `current_setting('app.cron_secret', true)` е NULL,
-   освен ако GUC-ът не е зададен; работещият cron вместо това вписва стойността.
-
-Поправеният MANUAL файл описва и трите. **Не е приложен** — включването праща
-истински имейли, значи е решение на потребителя. Към момента 0 профила са opt-in.
-
-Освен това вътре в самата функция (щяха да важат от първото писмо нататък):
-- **Историята се четеше като масив от масиви с header ред.** NOAA
-  `products/noaa-planetary-k-index.json` връща **обекти** (`{time_tag, Kp}`) и няма
-  header, така че `raw[i][1]` даваше NaN на всеки ред: peak Kp тихо ставаше равен на
-  текущия, а броят бури — винаги 0. Седмицата 31.07–07.08 връхна на Kp 5.67 и пак
-  щеше да се съобщи като „no major storms".
-- **Kp идваше само от NOAA** — пета имплементация на каскадата извън договора. Сега
-  минава през GFZ → NOAA (`kpWindow.ts`, тестван).
-- **Бурите се брояха на 3-часови кошчета**, не на епизоди: една 12-часова G1 е
-  „4 geomagnetic storm events".
-- **Етикетът казваше „Peak Kp (3 days)"** върху 7-дневен прозорец (177 ч).
-- **Всички писма тръгваха наведнъж** — Resend на безплатен план дава 2 заявки/сек,
-  значи излишъкът се връщаше 429 и се броеше за „failed" без повторен опит. Сега
-  е последователно, ~1.7/сек, с един повторен опит при 429.
-
-### DONKI на мобилно устройство изобщо не работеше
-`donkiApi.ts` ползваше `/donki` — Vercel rewrite, който съществува само в уеб. На
-native се разрешаваше спрямо Capacitor origin-а (`capacitor://localhost/donki`) и
-връщаше 404 при всяко извикване, а `catch` връщаше `[]`: списъците с CME и изригвания
-бяха постоянно празни на iOS и Android. Сега на native се вика upstream-ът директно
-(CapacitorHttp заобикаля CORS), точно както прави `nigggApi`.
-
-Затова и **`donki-proxy` не се вика от никого** — уеб минава през rewrite-а, native
-вече отива директно. Функцията стои deploy-ната (`verify_jwt: true`); може да се
-изтрие, но това е решение на потребителя.
-
-### Светлата тема: приглушеният цвят е обърнат — чака решение
-Визуален одит 2026-08-07 (30 маршрута × тъмна/светла, десктоп + мобилно): 0 console
-грешки, 0 хоризонтално преливане, всички заглавия верни. Поправено е всичко под
-2:1 контраст (виж комита). Остава едно, което е дизайнерско, не поправка:
-
-`html.light .text-\[\#64748b\] { color: #94a3b8 }` в `index.css` прави приглушения
-текст **по-светъл** върху по-светлия фон. На `#eef2f8` това е **2.56:1** — под AA
-(4.5:1) — и оттам идват почти всички останали ~84 слаби места: футър линкове,
-подписи под графики, етикети в Settings. Обръщането към по-тъмно (напр. `#475569`,
-~7:1) ги затваря наведнъж, но променя вида на цялата светла тема — затова не е
-пипнато.
-
-**Втори случай от същото семейство, намерен 2026-08-08 — важи и за web.** Блокът
-`html.light … .text-white { color: #1e293b }` в `index.css` пребоядисва всяко
-`text-white` в тъмно за цялата светла тема. Това е вярно за текст върху
-страницата и **грешно за етикет върху тъмен фон**: активният филтърен чип в
-Alerts е `bg-slate-900 text-white`, значи в светла тема е почти черно върху
-почти черно. Възпроизведено на устройство; същото е и в браузъра.
-
-Поправено е **само за Android** (`html.md3.light [class~='bg-slate-900']` в
-`material.css`), защото общото правило е в споделения `index.css` и пипането му
-излиза извън обхвата на Android редизайна. Уловка при поправката: първият опит
-хвана и наследниците със селектор ` *` и скри брояча вътре в чипа, който седи на
-собствен бял pill — правилото трябва да е **само върху самия елемент**, етикетът
-го наследява като текстов възел. Ако някой поправя това глобално за web, търси и
-другите `text-white` върху тъмни запълвания, не само този чип.
-
-### `mood_entries.ip_hash` е мъртва колона — чака решение
-Колоната е декларирана в първата миграция изрично „for rate limiting", но
-`submit-mood` (единственият писач, RLS INSERT политиката е свалена през
-`20260514000000`) никога не я пише. Значи ограничението „по едно на ден" виси
-изцяло на `user_session_id` — UUID, който клиентът си генерира сам: изчистен
-localStorage или подменен UUID дава неограничени записи в данните, които хранят
-корелацията настроение/Kp.
-
-Не е поправено нарочно: попълването на `ip_hash` въвежда събиране на нов
-идентификатор, а Privacy страницата **не споменава IP адреси изобщо**. Или се
-пише колоната и се обявява в политиката, или колоната се маха.
-
-### Одит 2026-08-06 — затворен
-Всичко от онзи одит е поправено и е в main. `send-kp-alerts` е deploy-нато (v9,
-проверено в продукция) и вече носи GFZ каскадата + Bz алармата. Затворени също:
-SW precache 2586 → 1303 KiB, `globe-vendor` 1257 → 633 kB, мъртвите cron-ове,
-`kpSource.contract.json` + `resolveKp`, Sentry fingerprint, rate-limit sweep.
-
-### Чака решение — езикът на браузъра пише върху английските URL-и
-`LanguageContext` избира език по реда: URL префикс → запазено предпочитание →
-`navigator.language`. Третата стъпка се прилага и върху URL-и, които вече са
-езиково определени, затова каноничният английски `/faq` рендира български на
-bg-BG браузър и немски на de-DE (възпроизведено в Chrome с три локала). Prerender-нат
-файл на същата страница казва `lang="en"` и `canonical=/faq`.
-
-Резултат: `/faq` и `/bg/faq` сервират едно и също на български посетител, докато
-hreflang клъстерът ги обявява за различни версии — дублирано съдържание върху две
-URL-а. Не е регресия; така е открай време.
-
-Предложение: при първо посещение на непрефиксиран URL с не-английски браузър —
-**redirect** към префиксирания, вместо тиха смяна на съдържанието. URL и съдържание
-се изравняват, canonical/hreflang стават верни, потребителят пак получава езика си.
-Но е redirect със SEO последствия → решение на потребителя, не рутинна поправка.
-
-### Чакат по една променлива в Vercel env
-- **`VITE_VAPID_PUBLIC_KEY`** — довършеният уеб push (`src/hooks/useWebPush.ts`) е
-  инертен без нея; остава само алармата в отворен таб. Стойността е публичният VAPID
-  ключ, същият, който CI вече подава като secret.
-- **`CRON_SECRET`** — `webhook-health` cron-ът връща 401 без нея, тоест предпазителят
-  за тихо падналия Stripe webhook пак мълчи. Vercel слага `Authorization` header-а
-  само когато променливата съществува.
-
-### Mobile одити 2026-06-11 и 2026-07-19/20 — статус
-Поправено дотук: NSCameraUsageDescription, launch-time permission промпт, widget версии, storm safe-area падинг, deep link allowlist, дублирани push listener-и, autoVerify, Kp 0.0 widget логика, пълна локализация на widget + Live Activity (16 езика), CFBundleLocalizations, InfoPlist.strings (16 lproj), universal links (AASA + entitlement + App.tsx handler), **CODE_SIGN_ENTITLEMENTS верзан** (беше сирак — build-овете се подписваха без app groups/aps!), Android FCM код (manifest permission, hook без iOS gate, FCM v1 в send-kp-alerts). Live Activity tap → /alerts е свободна страница (не paywall) — решено.
-
-**Остава (изисква акаунти/устройства):**
+### Mobile — иска акаунти (статус от одитите 2026-06-11 / 07-19/20)
+Всичко кодово по тези одити е поправено (детайлите — в git историята).
+Остава само външното:
 1. **Платено Apple Developer членство** — ПРЕДПОСТАВКА за всичко останало по iOS. Установено 2026-07-20: екип `2W6YCTFKNA` е **безплатен/личен**, не платен. Xcode отказва: „Personal development teams do not support the Associated Domains and Push Notifications capabilities".
    Това обезсмисля предишната формулировка на тази точка („един Xcode GUI build да добави capability-тата") — GUI-ят удря същата стена, проблемът не е headless vs GUI, а правата на екипа. Блокира: push нотификации, universal links, Live Activity push токени (`ActivityInput error 0` вероятно е точно оттук), TestFlight и App Store.
    Дотогава device build-овете минават с app-groups-only entitlements override (виж Commands) — App Groups работи, значи widget-ът и Live Activity Phase A са тестваеми.
 2. **Android FCM активация** — Firebase Console: `google-services.json` в `android/app/`; service account JSON като `GOOGLE_SERVICE_ACCOUNT` secret в Supabase; `supabase functions deploy send-kp-alerts`. Кодът е готов и guard-нат — без secret-а функцията е байт-идентична.
    **ЗАДЪЛЖИТЕЛНО след добавяне на `google-services.json`:** махни `if (isAndroid()) return;` от `register()` в `src/hooks/usePushNotifications.ts`. Този gate е временен — без него `register()` хвърля native `IllegalStateException` („Default FirebaseApp is not initialized"), която JS не може да хване и която убива процеса ~3s след старт (потвърдено на Galaxy A34 / Android 16, 2026-07-20). Докато gate-ът стои, Android push не работи изобщо.
 3. **assetlinks.json** — още е с `YOUR_SHA256_FINGERPRINT_HERE`; SHA-256 от Play Console → Setup → App signing.
-4. **Android Glance widget** — пуснат на екран 2026-08-08 (Galaxy A34). Потвърдено
-   работещо: рендерира се на 4×2, мрежата минава от widget процеса (Kp 5.7, wind
-   356 km/s, 8 прогнозни стълба — реални данни през GFZ), tap отваря приложението.
-   Поправени тогава: празната долна половина (`SizeMode.Responsive` даваше bucket
-   размера, не клетката) и скалата, която рендираше 5 сегмента от 18. **Не е
-   потвърдено на 2×2 и 4×4** — и виж отворена точка 1 по-горе: след последната
-   преинсталация widget-ът спря да се появява по неизвестна причина.
-5. ~~**Android 15 edge-to-edge тест**~~ — проверено 2026-07-20 на Galaxy A34 / **Android 16 (API 36)**, тъмна тема: header-ът започва под статус бара, таб барът стои над системната навигация, няма отрязване. Уговорка: гледан е един екран (UV Index), не пълен обход на всички страници и не в светла тема.
-6. **Push-to-start Live Activity (iOS 17.2+)** — сървърът да вдига Live Activity при буря без отворено приложение; тества се само в TestFlight (dev-signed build-ове не дават push токени).
+4. **Push-to-start Live Activity (iOS 17.2+)** — сървърът да вдига Live Activity при буря без отворено приложение; тества се само в TestFlight (dev-signed build-ове не дават push токени).
 
 ### Mobile App Payments (преди пускане в App Store / Play Store)
 IAP инфраструктурата е готова — остава само plugin install + конфигурация в магазините:
