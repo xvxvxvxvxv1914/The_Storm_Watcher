@@ -322,8 +322,11 @@ html.light .text-\[\#94a3b8\] {
   color: #64748b;
 }
 
+/* #94a3b8 would be *lighter* than in dark mode — 2.56:1 on #eef2f8, below AA.
+   #475569 is ~6.7:1: still reads as muted, but passes. This is the tier used by
+   footer links, chart captions and Settings labels (~84 places). */
 html.light .text-\[\#64748b\] {
-  color: #94a3b8;
+  color: #475569;
 }
 
 /* Light mode: violet & amber accents darken for contrast on light surfaces */
