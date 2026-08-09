@@ -270,6 +270,17 @@ html.light button.text-white {
   color: #1e293b;
 }
 
+/* The override above is for text sitting on the page surface. A label on a
+   deliberately dark fill must stay white — repainted, the active filter chip
+   in Alerts (bg-slate-900 text-white) was near-black on near-black. Element
+   only, no descendants: children (the count pill) carry their own colours.
+   Android has the same rule scoped under html.md3 in material.css. */
+html.light .text-white.bg-slate-900,
+html.light .text-white.bg-slate-800,
+html.light .text-white.bg-black {
+  color: #ffffff;
+}
+
 /* Form fields must follow the theme text colour. The .text-white override
    above does not target form controls, so typed text in inputs/textareas/
    selects stayed white → invisible on the light surface. */
