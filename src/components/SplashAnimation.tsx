@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
 import { getKpIndex, getSolarWind, getMagField, getAlerts, getKpForecast, getAuroraModel } from '../services/noaaApi';
+import { isNative } from '../utils/platform';
 
 const SPLASH_KEY = 'splash_shown';
-const isNativePlatform = typeof window !== 'undefined' && 'Capacitor' in window;
+// isNative(), not `'Capacitor' in window` — the global exists on web too, which
+// made every web load take the once-per-session native splash (1.9s, never skipped).
+const isNativePlatform = isNative();
 
 function prefetchCoreData() {
   // Fire all main API calls in parallel — results warm the TTL cache so

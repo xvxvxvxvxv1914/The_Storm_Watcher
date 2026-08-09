@@ -157,12 +157,25 @@ All NOAA/external fetches go through an in-memory TTL cache + single-flight dedu
 `PlanGuard` component wraps routes/sections that require `pro` or `premium`. It reads `profile.plan` from AuthContext. When `VITE_PAYMENTS_ENABLED !== 'true'`, all content is accessible regardless of plan — useful for development.
 
 ### Supabase backend
-- **Edge Functions** in `supabase/functions/`: `delete-account`, `donki-proxy`, `send-kp-alerts` (cron), `submit-mood`
+- **Edge Functions** in `supabase/functions/`: `delete-account`, `send-kp-alerts` (cron), `submit-mood`, `send-weekly-digest`, `verify-iap` (`donki-proxy` deleted 2026-08-09 — nothing called it)
 - **Migrations** in `supabase/migrations/` — run sequentially; `_MANUAL` suffix means the SQL must be applied manually in the Supabase dashboard (cron job setup)
 - Key tables: `profiles` (plan, stripe fields), `mood_entries`, `push_subscriptions`, `favorite_locations`, `stripe_processed_events`
 
 ### PWA / Service Worker
-Custom service worker at `src/sw.ts` using Workbox. Two groups are excluded from the precache:
+Custom service worker at `src/sw.ts` using Workbox.
+
+**Platform guard gotcha (битото 2026-08-09):** `window.Capacitor` съществува **и на
+web** — `@capacitor/core` дефинира глобала при import, а целият модулен граф се
+изпълнява преди тялото на `main.tsx`. Guard-ът `!('Capacitor' in window)` около
+`registerSW()` беше винаги false, тоест **SW-ът не се е регистрирал за нито един
+web посетител от 2026-05-26 (`edca150`)**: без offline, без precache, а web push
+handler-ът в `sw.ts` беше недостижим. Същият грешен тест държеше PWA install
+промпта изключен и пускаше нативния 1.9s splash на всяко зареждане. Всичко е на
+`isNative()` от `src/utils/platform.ts` сега — **никога не проверявай
+`'Capacitor' in window'`**; проверено на prod build: 1 регистрация, промптът и
+splash-ът са с web поведение.
+
+Two groups are excluded from the precache:
 
 - **Heavy 3D chunks** (`globe-vendor`, `three-vendor`, `charts-vendor`, `map-vendor`) — loaded on demand, left to the browser cache.
 - **`assets/ondemand/**`** — the 16 locales, the 16 FAQ and magnetic translations and the ten blog articles. These are cached at runtime by a `CacheFirst` route in `src/sw.ts` instead, so a page works offline once it has been opened online. Precaching them made the install 2.6 MB, of which 1.3 MB was content a visitor uses one sixteenth of — undoing for PWA users exactly what splitting these files won for web visitors. **The tradeoff is deliberate:** a language or article never opened while online is not available offline.
@@ -441,9 +454,9 @@ native се разрешаваше спрямо Capacitor origin-а (`capacitor:
 бяха постоянно празни на iOS и Android. Сега на native се вика upstream-ът директно
 (CapacitorHttp заобикаля CORS), точно както прави `nigggApi`.
 
-Затова и **`donki-proxy` не се вика от никого** — уеб минава през rewrite-а, native
-вече отива директно. Функцията стои deploy-ната (`verify_jwt: true`); може да се
-изтрие, но това е решение на потребителя.
+Затова и **`donki-proxy` не се викаше от никого** — уеб минава през rewrite-а,
+native вече отива директно. Изтрита 2026-08-09 (одобрено от потребителя): и от
+Supabase (`supabase functions delete`), и от `supabase/functions/`.
 
 ### Светлата тема: приглушеният цвят — РЕШЕНО 2026-08-09
 Визуален одит 2026-08-07 (30 маршрута × тъмна/светла, десктоп + мобилно): 0 console
@@ -499,21 +512,23 @@ localStorage или подменен UUID дава неограничени за
 SW precache 2586 → 1303 KiB, `globe-vendor` 1257 → 633 kB, мъртвите cron-ове,
 `kpSource.contract.json` + `resolveKp`, Sentry fingerprint, rate-limit sweep.
 
-### Чака решение — езикът на браузъра пише върху английските URL-и
-`LanguageContext` избира език по реда: URL префикс → запазено предпочитание →
-`navigator.language`. Третата стъпка се прилага и върху URL-и, които вече са
-езиково определени, затова каноничният английски `/faq` рендира български на
-bg-BG браузър и немски на de-DE (възпроизведено в Chrome с три локала). Prerender-нат
-файл на същата страница казва `lang="en"` и `canonical=/faq`.
+### Езиков redirect на непрефиксираните URL-и — РЕШЕНО 2026-08-09
+Историята: `LanguageContext` избираше език по реда URL префикс → запазено
+предпочитание → `navigator.language`, и последните две стъпки се прилагаха и
+върху каноничния английски `/faq` — той рендираше български на bg-BG браузър,
+докато prerender-натият файл казва `lang="en"` и `canonical=/faq`: дублирано
+съдържание върху две URL-а.
 
-Резултат: `/faq` и `/bg/faq` сервират едно и също на български посетител, докато
-hreflang клъстерът ги обявява за различни версии — дублирано съдържание върху две
-URL-а. Не е регресия; така е открай време.
-
-Предложение: при първо посещение на непрефиксиран URL с не-английски браузър —
-**redirect** към префиксирания, вместо тиха смяна на съдържанието. URL и съдържание
-се изравняват, canonical/hreflang стават верни, потребителят пак получава езика си.
-Но е redirect със SEO последствия → решение на потребителя, не рутинна поправка.
+Потребителят одобри redirect-а. `languageRedirectPath` в
+[src/utils/langUrl.ts](src/utils/langUrl.ts) (тестван в `langUrl.test.ts`) решава,
+`main.tsx` го изпълнява с `location.replace` **преди `createRoot`** — същият
+модел като `applyPlatformClass`. Правила: префиксиран URL никога не се пипа;
+запазено `en` е изричен избор (превключвателят го записва преди навигация) и
+бие браузърния език — това е обратният път към английския root; боклук в
+localStorage не пренасочва наникъде. Само web — на native няма префикси.
+Проверено на prod build с Playwright: bg първо посещение `/faq` → `/bg/faq`;
+запазено `en` + bg браузър → остава `/faq`; `/de/faq` на bg браузър → остава.
+Crawler-ите обхождат с английски локал и не задействат нищо — canonical се пази.
 
 ### Чакат по една променлива в Vercel env
 - **`VITE_VAPID_PUBLIC_KEY`** — довършеният уеб push (`src/hooks/useWebPush.ts`) е

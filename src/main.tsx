@@ -6,16 +6,41 @@ import './index.css';
 import './styles/material.css';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { loadSentry, disableSentry, captureException } from './utils/sentryLazy';
-import { applyPlatformClass } from './utils/platform';
+import { applyPlatformClass, isNative } from './utils/platform';
 import { installRipple } from './utils/ripple';
+import { languageRedirectPath } from './utils/langUrl';
 
 // Before createRoot, not in an effect: the Material skin has to be on the html
 // element for the first paint, or the iOS chrome renders for a frame and swaps.
 applyPlatformClass();
 if (document.documentElement.classList.contains('md3')) installRipple();
 
-// Service worker is only useful for web/PWA — skip on native Capacitor (files are local)
-if (!('Capacitor' in window)) {
+// URL and language must agree before anything renders: an unprefixed URL is
+// canonical English, so a visitor whose language resolves to another locale is
+// moved to the prefixed URL instead of silently getting translated content on
+// the English one (duplicate content across two URLs — see langUrl.ts). Native
+// has no URL prefixes, so the check is web-only — and the guard must be
+// isNative(), not `'Capacitor' in window`: @capacitor/core defines the global
+// on web too. Crawlers fetch with English locales and never trigger this,
+// keeping the prerendered canonical intact.
+if (!isNative()) {
+  let saved: string | null = null;
+  try { saved = localStorage.getItem('language'); } catch { /* storage may be blocked */ }
+  const target = languageRedirectPath(
+    window.location.pathname,
+    saved,
+    navigator.language || navigator.languages?.[0] || 'en',
+  );
+  if (target) {
+    window.location.replace(target + window.location.search + window.location.hash);
+  }
+}
+
+// Service worker is only useful for web/PWA — skip on native Capacitor (files
+// are local). isNative(), not `'Capacitor' in window`: @capacitor/core defines
+// the global on web too, so that check disabled the SW for every web visitor
+// from 2026-05-26 (edca150) until it was caught on 2026-08-09.
+if (!isNative()) {
   registerSW({ immediate: true });
 } else {
   // Native app: disable pinch-zoom of the whole UI (standard app behavior;
