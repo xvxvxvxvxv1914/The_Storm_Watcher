@@ -29,6 +29,11 @@ jobs:
 
       - name: Unit tests
         run: npm run test:run
+        env:
+          # src/lib/supabase.ts throws at import when these are absent; unit tests
+          # mock all network, so hermetic placeholders beat depending on secrets.
+          VITE_SUPABASE_URL: https://placeholder.supabase.co
+          VITE_SUPABASE_ANON_KEY: placeholder-anon-key
 
       - name: Build
         run: npm run build
