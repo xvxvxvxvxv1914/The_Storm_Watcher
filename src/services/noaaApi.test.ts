@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { getStormStatus, getXrayClass } from './noaaApi';
+import { getStormStatus, getXrayClass, latestSolarWindSpeed } from './noaaApi';
 
 describe('getStormStatus', () => {
   it.each([
@@ -205,5 +205,43 @@ describe('NOAA cache + single-flight', () => {
       { time_tag: 'b', kp_index: 4 },
       { time_tag: 'c', kp_index: 5 },
     ]);
+  });
+});
+
+// The rtsw feed is sorted ascending by the service, so "newest" is the last
+// element. Samples can lack a speed: null in the feed, or a NaN that fetchJson
+// repaired into one. Picking the newest active row and *then* finding it empty
+// discarded thousands of good samples behind it.
+describe('latestSolarWindSpeed', () => {
+  const row = (time_tag: string, proton_speed: number, active: boolean) =>
+    ({ time_tag, proton_speed, proton_density: 5, active }) as never;
+
+  it('takes the newest active sample', () => {
+    expect(latestSolarWindSpeed([
+      row('t1', 400, true),
+      row('t2', 423, true),
+      row('t3', 999, false), // trailing samples are frequently not yet validated
+    ])).toBe(423);
+  });
+
+  it('skips back past an active sample with no reading', () => {
+    expect(latestSolarWindSpeed([
+      row('t1', 400, true),
+      row('t2', 423, true),
+      row('t3', null as unknown as number, true), // was NaN in the raw feed
+    ])).toBe(423);
+  });
+
+  it('falls back to the newest usable sample when none are active', () => {
+    expect(latestSolarWindSpeed([
+      row('t1', 400, false),
+      row('t2', 418, false),
+    ])).toBe(418);
+  });
+
+  it('returns 0 rather than a fabricated number when nothing is usable', () => {
+    expect(latestSolarWindSpeed([])).toBe(0);
+    expect(latestSolarWindSpeed(null)).toBe(0);
+    expect(latestSolarWindSpeed([row('t1', null as unknown as number, true)])).toBe(0);
   });
 });

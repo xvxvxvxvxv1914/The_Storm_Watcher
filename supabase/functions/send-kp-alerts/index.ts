@@ -1,7 +1,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 // @deno-types="npm:@types/web-push"
 import webpush from 'npm:web-push';
-import { BZ_SUSTAINED_MIN, sustainedBz, type MagRow } from './bz.ts';
+import { BZ_SUSTAINED_MIN, sustainedBz, repairNonStandardJson, type MagRow } from './bz.ts';
 
 const GFZ_KP_URL = 'https://kp.gfz.de/app/json/';
 const NOAA_KP_URL = 'https://services.swpc.noaa.gov/json/planetary_k_index_1m.json';
@@ -69,7 +69,16 @@ async function fetchSustainedBz(): Promise<number | null> {
   try {
     const res = await fetch(NOAA_MAG_URL, { signal: AbortSignal.timeout(8000) });
     if (!res.ok) throw new Error(`NOAA mag ${res.status}`);
-    return sustainedBz(await res.json() as MagRow[]);
+    // Read as text and repair before parsing: NOAA emits bare NaN, which makes
+    // res.json() reject the whole document and takes the early warning with it.
+    const text = await res.text();
+    let rows: MagRow[];
+    try {
+      rows = JSON.parse(text) as MagRow[];
+    } catch {
+      rows = JSON.parse(repairNonStandardJson(text)) as MagRow[];
+    }
+    return sustainedBz(rows);
   } catch (err) {
     console.warn('Bz feed unavailable, skipping early warning:', err);
     return null;

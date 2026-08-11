@@ -195,8 +195,14 @@ export const getSolarWind = (): Promise<SolarWindData[]> =>
 // (Home previously took the raw last sample → mismatched the Dashboard).
 export const latestSolarWindSpeed = (data: SolarWindData[] | null | undefined): number => {
   if (!data || data.length === 0) return 0;
-  const active = data.findLast(d => d.active) ?? data[data.length - 1];
-  return active.proton_speed || 0;
+  // Newest active sample *that carries a reading*. Any sample can be missing a
+  // speed — null in the feed, or the NaN repaired into one by fetchJson — and
+  // stopping at the newest active row only to find it empty threw away the
+  // 3589 good ones behind it. Falls back to the newest usable sample of any
+  // kind, then to 0.
+  const usable = (d: SolarWindData) => Number.isFinite(d.proton_speed) && d.proton_speed > 0;
+  const row = data.findLast(d => d.active && usable(d)) ?? data.findLast(usable);
+  return row?.proton_speed ?? 0;
 };
 
 export const getMagField = (): Promise<MagFieldData[]> =>
