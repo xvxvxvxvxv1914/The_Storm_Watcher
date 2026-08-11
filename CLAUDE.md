@@ -279,6 +279,76 @@ widget, the Android counterpart of the iOS one. Three responsive layouts
   `values/strings.xml`, which is why the four Capacitor-generated ones are marked
   `translatable="false"`.
 
+### Apple Watch (реализирано 2026-08-11)
+Два нови таргета в същия `App.xcodeproj`: **`StormWatcherWatch`** (watchOS 10+
+SwiftUI приложение) и **`StormWatchComplications`** (WidgetKit разширение,
+вградено в него). Часовниковото приложение се вгражда в iOS бъндъла под
+`App.app/Watch/`. Билд с `-destination`, **не** с `-sdk` — `-sdk iphonesimulator`
+пренаписва SDK-то и за watch таргетите и ги компилира срещу iOS:
+```bash
+xcodebuild -project App.xcodeproj -scheme App -destination 'generic/platform=iOS Simulator' build
+xcodebuild -project App.xcodeproj -target StormWatcherWatch -sdk watchsimulator build   # само часовника
+```
+
+**Часовникът тегли сам — не чете App Group-а на телефона.** Планът тук казваше
+обратното; App Group се споделя между приложение и разширения **на едно
+устройство**, а часовникът е друго устройство. По онзи дизайн екранът щеше да е
+празен, докато някой не отвори телефона. Съгласуваността идва от това, че и
+двете страни минават през `KpSource.swift` — GFZ → NOAA, същият приоритет на
+полетата. App Group-ът се ползва, но локално на часовника: приложението пише
+кеша, complication-ът го чете, за да не тегли всеки процес отделно. Ако
+entitlement-ът липсва (безплатният Apple екип не може да provision-ва app groups
+за тези bundle ID-та), `UserDefaults(suiteName:)` връща nil и двете страни просто
+теглят — влошено, не счупено.
+
+**`ios/App/Shared/StormShared.swift`** е новият споделен файл (палитра, Kp
+лентите `kpColor`/`kpLevel`/`kpScaleGradient`, `WL` преводите за 16 езика,
+`appGroupID`). Изнесен е от `StormWidget.swift`, защото иначе часовникът щеше да
+е пето копие на лентите. При изнасянето излезе, че `StormLiveActivity.swift` е
+държал **собствено копие** на `kpColor` с коментар „mirrors kpColor() in
+StormWidget.swift" — идентично тогава, на един edit от това да не бъде. Махнато.
+
+Дребни капани, платени в брой:
+- **`.backgroundTask(.appRefresh)` чупи компилатора** (Xcode 26 / Swift 5.10):
+  „failed to produce diagnostic for expression" върху целия `body`, без да сочи
+  накъде. Фонoвото опресняване минава през `WKApplicationDelegate.handle(_:)`.
+- **`CFBundleExecutable` в Info.plist на разширението не е по избор** — без него
+  installd отказва **цялото** часовниково приложение, а съобщението сочи `.appex`-а.
+- `CFBundleLocalizations` трябва да изброи 16-те езика и в двата plist-а, иначе
+  `Locale.preferredLanguages` се свежда до единствения известен език и `WL`
+  отговаря на английски навсякъде.
+- Проектът пише в **`ios/App/build`** (Capacitor SYMROOT), не в DerivedData;
+  `xcodebuild clean` и триенето на DerivedData не пипат това и билдът тихо ползва
+  стар Info.plist. Ако промяна в plist не се появява — трий `ios/App/build`.
+
+Непокрито нарочно: WatchConnectivity (часовникът тегли сам, WCSession би спестил
+батерия само когато телефонът е наблизо) и тактилната аларма по потребителски
+праг — прагът живее в localStorage на JS приложението и без WCSession часовникът
+не го знае.
+
+### NOAA сервира невалиден JSON — `NaN` (открито 2026-08-11)
+`rtsw_wind_1m.json` съдържа голи `NaN` стойности за изпуснати проби:
+```
+{"time_tag": "...", "active": true, "proton_speed": NaN, ...}
+```
+RFC 8259 няма NaN. `JSONSerialization` и `JSON.parse` отхвърлят **целия
+документ** — една лоша проба от 3590 реда и слънчевият вятър изчезва. Измерено
+на живо: 8 срещания, парсването спира на байт 2593196 от 2662008.
+
+Коварното е, че Python приема NaN по подразбиране, значи проверка със скрипт
+показва напълно здрав feed.
+
+- **Поправено (Swift):** `KpSource.repairingNaN(_:)` заменя `: NaN` / `: Infinity`
+  с `: null` преди парсване — null вече значи „няма проба" за всички читатели.
+  Съвпадението само след `:` пази низ, който съдържа „NaN". Плюс: вятърът вече
+  взима най-новата активна проба **със стойност**, вместо да се предаде, ако
+  точно най-новата е празна.
+- **НЕ е поправено:** `getSolarWind` в [src/services/noaaApi.ts](src/services/noaaApi.ts)
+  хваща грешката и връща offline кеша или `[]` — тоест **уеб приложението показва
+  стар или нулев слънчев вятър точно сега**. `rtsw_mag_1m.json` беше чист при
+  проверката (0 срещания), значи Bz алармата и mag графиката са наред *днес*, но
+  са същото семейство feed-ове и същият риск.
+
 ### IAP валидация (`verify-iap`)
 Одитирана 2026-08-07, преди пускане — IAP още не е активен (плъгинът не е инсталиран), значи нищо от долното не е било експлоатирано.
 
@@ -355,22 +425,6 @@ Manual chunks in `vite.config.ts` keep the initial bundle small:
 
 _(Add ideas and future feature plans here as they come up)_
 
-### Apple Watch App
-watchOS companion app за The Storm Watcher. Данните вече са в App Group (`group.com.stormwatcher.app`) от iOS widget-а.
-
-**Планирано съдържание:**
-- Главен екран: Kp index (голям) + solar wind speed + storm status (G0–G5)
-- Complication за watch face (Corner, Circular, Graphic Rectangular) с Kp
-- Фонова refresh на данните на всеки 15 мин (Background App Refresh)
-- Тактилна нотификация при Kp > потребителски праг
-
-**Имплементация (всичко нативен Swift/SwiftUI):**
-1. Добави watchOS target в Xcode (`StormWatcherWatch` extension)
-2. App Group sharing — чете `widget_kp`/`widget_updated` и `widget_wind`/`widget_wind_updated` от `group.com.stormwatcher.app`. Преизползвай `KpSource.swift` (виж „iOS widget data flow") вместо нов fetch — иначе часовникът ще показва различно число от приложението, точно както widget-ът правеше до 2026-07-20.
-3. WatchConnectivity (WCSession) за live sync от iOS при отворено приложение
-4. SwiftUI интерфейс: тъмен фон, aurora зелено (#10b981), orange (#f97316) за high Kp
-5. Complications в `CLKComplicationDescriptor` формат
-
 ## TODO / Pending Work
 
 ### Какво остава — актуално към 2026-08-09
@@ -412,6 +466,22 @@ watchOS companion app за The Storm Watcher. Данните вече са в Ap
   `CRON_SECRET` е в Supabase от 04-25 — литералът се чете от съществуващия
   `send-kp-alerts-every-5min` ред в `cron.job` (той **не** ползва GUC, въпреки
   каквото пише MANUAL файлът), така че не се налага да се задава `app.cron_secret`.
+
+**Намерено 2026-08-11, чака решение:**
+- **Уеб слънчевият вятър е счупен в продукция** от `NaN` в NOAA feed-а (виж
+  „NOAA сервира невалиден JSON"). Swift страната е поправена, защото часовникът
+  не тръгваше без това; `src/services/noaaApi.ts` не е пипан — там `getSolarWind`
+  тихо пада към offline кеша. Поправката е същата: почисти `NaN`/`Infinity` към
+  `null` преди парсване, за `getSolarWind` и `getMagField`, плюс тест.
+
+**Иска устройство (Apple Watch):**
+- Часовниковото приложение е проверено само в симулатор (watchOS 26.5). На
+  истински часовник иска сдвоено устройство и подписване, а **безплатният Apple
+  екип най-вероятно няма да provision-ва App Groups за двата нови bundle ID-та**
+  (`…watchkitapp`, `…watchkitapp.complications`). Кодът работи и без тях — просто
+  и приложението, и complication-ът теглят поотделно.
+- Complication-ите са билднати и вградени, но **не са слагани на циферблат** —
+  това иска ръчна стъпка на часовника.
 
 **Наблюдение, без действие:**
 - **GSC възстановяване.** 141 indexed / 647 not е щетата от Cloudflare 403 към
