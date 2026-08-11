@@ -378,11 +378,16 @@ watchOS companion app за The Storm Watcher. Данните вече са в Ap
 Кодова работа няма. Всичко долу иска или потребителя, или устройство/акаунт.
 
 **При потребителя (минути):**
-- **Vercel env:** `VITE_VAPID_PUBLIC_KEY` (web push — хукът и SW-ът са готови;
-  стойността е публичният VAPID ключ, същият който CI подава като secret) и
+- **Vercel env:** `VITE_VAPID_PUBLIC_KEY` (web push — хукът и SW-ът са готови) и
   `CRON_SECRET` (без нея `webhook-health` връща 401 и предпазителят за тихо
   паднал Stripe webhook мълчи; Vercel слага Authorization header-а само когато
   променливата съществува).
+  **Откъде е стойността на VAPID (поправено 2026-08-09):** по-ранната бележка тук
+  казваше „същият ключ, който CI подава като secret" — това е грешно, трите
+  `VITE_*` repo secret-а никога не са съществували (виж `3816754`). Истинското
+  копие е в **Supabase → Edge Functions → Secrets → `VAPID_PUBLIC_KEY`**,
+  създадено 2026-04-25 заедно с `VAPID_PRIVATE_KEY`. `supabase secrets list`
+  показва само дайджести, не стойности — трябва дашбордът.
 - **Merge staging → main** — комитите от 09.08: CI fix, възкресеният SW +
   InstallPrompt + splash, езиковият redirect, 16 KB, приглушеният цвят,
   `ip_hash`, `donki-proxy`, npm audit → 0. Гаси и 3-те Dependabot аларми на
@@ -395,9 +400,18 @@ watchOS companion app за The Storm Watcher. Данните вече са в Ap
 
 **Едно останало решение на потребителя:**
 - **Cron на седмичния дайджест.** Функцията е поправена и deploy-ната правилно
-  (v2, `verify_jwt: false`); остава `20260605000002_weekly_digest_cron_MANUAL.sql`
-  — cron + GUC секрет, описани в самия файл. Включването праща истински имейли;
-  0 профила opt-in към 08.08. Логично след Vercel env-овете (Resend е готов).
+  (v2, `verify_jwt: false`). Включването праща истински имейли; 0 профила opt-in
+  към 08.08.
+  **Блокер, намерен 2026-08-09: `RESEND_API_KEY` липсва в Supabase secrets.**
+  Функцията го чете и без него връща 500 „RESEND_API_KEY not configured" —
+  тоест cron-ът щеше да гърми всеки понеделник, тихо. Ключът съществува, но е
+  **във Vercel** (`api/lib/resend.ts` го ползва за Stripe писмата), а Supabase е
+  отделно хранилище. Стъпка 1 е да се копира там:
+  `supabase secrets set RESEND_API_KEY=<от Vercel> --project-ref srzfoxlmhxyulrgkchjr`.
+  Останалото е автоматизирано: `pg_cron` и `pg_net` вече са включени, а
+  `CRON_SECRET` е в Supabase от 04-25 — литералът се чете от съществуващия
+  `send-kp-alerts-every-5min` ред в `cron.job` (той **не** ползва GUC, въпреки
+  каквото пише MANUAL файлът), така че не се налага да се задава `app.cron_secret`.
 
 **Наблюдение, без действие:**
 - **GSC възстановяване.** 141 indexed / 647 not е щетата от Cloudflare 403 към
