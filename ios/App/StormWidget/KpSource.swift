@@ -17,12 +17,49 @@ enum KpSource {
     static let noKp: Double = -1
     static let noWind: Int = -1
 
-    private static let timeout: TimeInterval = 8
+    private static let timeout: TimeInterval = 20
 
-    private static var session: URLSession {
+    /// `let`, not a computed `var`. As a computed property this handed out a new
+    /// URLSession per call and kept a reference to none of them; small responses
+    /// beat the deallocation, the 2.6 MB solar-wind feed did not, and on the
+    /// watch it failed every time while Kp succeeded. One retained session also
+    /// means one connection pool instead of one per request.
+    private static let session: URLSession = {
         let cfg = URLSessionConfiguration.ephemeral
         cfg.timeoutIntervalForRequest = timeout
+        cfg.waitsForConnectivity = false
         return URLSession(configuration: cfg)
+    }()
+
+    // MARK: - Malformed upstream JSON
+
+    /// NOAA's rtsw feeds emit bare `NaN` for dropped samples:
+    ///
+    ///     {"time_tag": "...", "active": true, "proton_speed": NaN, ...}
+    ///
+    /// RFC 8259 has no NaN, so this is not JSON, and `JSONSerialization` rejects
+    /// the **entire document** — one bad sample among 3590 rows and the whole
+    /// solar-wind reading disappears. Observed live on 2026-08-11: 8 occurrences
+    /// in one payload, parse aborting at byte 2593196 of 2662008.
+    ///
+    /// Python accepts NaN by default, which is why inspecting the feed with a
+    /// script suggests nothing is wrong. `JSON.parse` rejects it too, so the web
+    /// app hits the same wall.
+    ///
+    /// Mapping it to `null` is the honest repair: null is what the feed already
+    /// uses for "no sample", and every reader here treats it as missing.
+    /// Matching only after `:` keeps a string that happens to contain NaN safe.
+    static func repairingNaN(_ data: Data) -> Data {
+        guard let text = String(data: data, encoding: .utf8), text.contains("NaN") || text.contains("Infinity") else {
+            return data
+        }
+        var fixed = text
+        for (bad, good) in [(": NaN", ": null"), (":NaN", ":null"),
+                            (": -Infinity", ": null"), (":-Infinity", ":null"),
+                            (": Infinity", ": null"), (":Infinity", ":null")] {
+            fixed = fixed.replacingOccurrences(of: bad, with: good)
+        }
+        return Data(fixed.utf8)
     }
 
     // MARK: - Kp
@@ -66,7 +103,7 @@ enum KpSource {
         let url = URL(string: "https://services.swpc.noaa.gov/json/planetary_k_index_1m.json")!
         session.dataTask(with: url) { data, _, _ in
             guard let data,
-                  let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]],
+                  let json = try? JSONSerialization.jsonObject(with: repairingNaN(data)) as? [[String: Any]],
                   let last = json.last else { completion(noKp); return }
             // `kp_index` first, matching the app (useKpLive.ts). `estimated_kp` is
             // NOAA's per-minute estimate and swings between the 3-hour bins
@@ -85,11 +122,21 @@ enum KpSource {
         let url = URL(string: "https://services.swpc.noaa.gov/json/rtsw/rtsw_wind_1m.json")!
         session.dataTask(with: url) { data, _, _ in
             guard let data,
-                  let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]]
+                  let json = try? JSONSerialization.jsonObject(with: repairingNaN(data)) as? [[String: Any]]
             else { completion(noWind); return }
-            let active = json.first(where: { ($0["active"] as? Bool) == true }) ?? json.first
-            guard let speed = active?["proton_speed"] as? Double else { completion(noWind); return }
-            completion(Int(speed))
+            // Newest active sample *that carries a reading*. The feed is
+            // newest-first, its trailing samples are often active:false (not yet
+            // validated), and any sample can have no speed — null, or the NaN
+            // repaired into one above. Stopping at the newest active row and
+            // then finding it empty threw away 3589 perfectly good ones.
+            func speed(_ row: [String: Any]) -> Double? {
+                guard let v = row["proton_speed"] as? Double, v.isFinite, v > 0 else { return nil }
+                return v
+            }
+            let newestActive = json.first { ($0["active"] as? Bool) == true && speed($0) != nil }
+            guard let row = newestActive ?? json.first(where: { speed($0) != nil }),
+                  let v = speed(row) else { completion(noWind); return }
+            completion(Int(v))
         }.resume()
     }
 

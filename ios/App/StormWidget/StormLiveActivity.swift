@@ -17,16 +17,9 @@ private func gColor(_ g: Int) -> Color {
     }
 }
 
-// Kp number colour — mirrors kpColor() in StormWidget.swift.
-@available(iOS 16.2, *)
-private func kpColor(_ kp: Double) -> Color {
-    switch kp {
-    case 7...: return .brandRed
-    case 5...: return .brandOrange
-    case 4...: return .brandAmber
-    default:   return .brandEmerald
-    }
-}
+// kpColor() now comes from Shared/StormShared.swift. It used to be copied here
+// with a comment saying it mirrored the one in StormWidget.swift — identical at
+// the time, and one edit away from not being.
 
 @available(iOS 16.2, *)
 private func gBadge(_ g: Int) -> String { g == 0 ? "ACTIVE" : "G\(g)" }
