@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { fetchJson } from './fetchJson';
+import { fetchJson, repairNonStandardJson } from './fetchJson';
 
 /** A fetch that resolves headers immediately but never finishes the body. */
 function stallingBody(signal: AbortSignal) {
@@ -75,5 +75,49 @@ describe('fetchJson', () => {
   it('returns the parsed payload on success', async () => {
     vi.stubGlobal('fetch', vi.fn(() => jsonBody('{"kp":4.33}')));
     await expect(fetchJson<{ kp: number }>('https://example.test/ok')).resolves.toEqual({ kp: 4.33 });
+  });
+
+  // NOAA's rtsw feeds emit bare NaN for dropped samples. JSON.parse rejects the
+  // whole document, so one bad sample among thousands used to wipe out the
+  // entire solar-wind reading (live on 2026-08-11: 8 in one payload).
+  it('recovers a payload containing NaN', async () => {
+    const noaaish = '[{"time_tag":"t1","active":true,"proton_speed":NaN},'
+                  + '{"time_tag":"t2","active":true,"proton_speed":423.7}]';
+    vi.stubGlobal('fetch', vi.fn(() => jsonBody(noaaish)));
+    await expect(fetchJson('https://example.test/rtsw')).resolves.toEqual([
+      { time_tag: 't1', active: true, proton_speed: null },
+      { time_tag: 't2', active: true, proton_speed: 423.7 },
+    ]);
+  });
+
+  it('recovers Infinity and -Infinity too', async () => {
+    vi.stubGlobal('fetch', vi.fn(() => jsonBody('{"a":Infinity,"b":-Infinity,"c":1}')));
+    await expect(fetchJson('https://example.test/inf')).resolves.toEqual({ a: null, b: null, c: 1 });
+  });
+
+  // The repair is a fallback, not a rewrite of every response: a payload that is
+  // broken for any other reason must still report the endpoint, not silently
+  // return something half-parsed.
+  it('still reports genuinely malformed JSON', async () => {
+    vi.stubGlobal('fetch', vi.fn(() => jsonBody('{"a": 1,')));
+    await expect(fetchJson('https://example.test/bad')).rejects.toThrow(
+      'Malformed JSON from https://example.test/bad');
+  });
+});
+
+describe('repairNonStandardJson', () => {
+  it('leaves well-formed JSON untouched', () => {
+    const ok = '{"a":1,"b":"NaN is a string here","c":null}';
+    expect(repairNonStandardJson(ok)).toBe(ok);
+  });
+
+  it('does not touch a key or value merely named NaN', () => {
+    // Only `: NaN` in value position followed by a structural character is a
+    // literal; "NaN" quoted is data and must survive.
+    expect(repairNonStandardJson('{"NaN":"NaN"}')).toBe('{"NaN":"NaN"}');
+  });
+
+  it('handles both spaced and unspaced value separators', () => {
+    expect(repairNonStandardJson('{"a": NaN,"b":NaN}')).toBe('{"a": null,"b": null}');
   });
 });

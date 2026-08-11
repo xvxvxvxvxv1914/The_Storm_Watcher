@@ -12,6 +12,31 @@
  * payload (NOAA does this, and lossy mobile networks cut responses mid-stream)
  * indistinguishable from each other in Sentry.
  */
+/**
+ * Rewrites the non-standard numeric literals NOAA emits into `null`.
+ *
+ * `rtsw_wind_1m.json` carries bare `NaN` for dropped samples:
+ *
+ *     {"time_tag": "...", "active": true, "proton_speed": NaN, ...}
+ *
+ * RFC 8259 has no NaN, so `JSON.parse` rejects the **whole document** — one bad
+ * sample among 3590 rows and the entire solar-wind reading is gone. Measured
+ * live on 2026-08-11: 8 occurrences, parse aborting at byte 2593196 of 2662008.
+ * (Python accepts NaN by default, which is why inspecting the feed with a script
+ * shows nothing wrong. Swift's JSONSerialization rejects it exactly as JS does —
+ * `KpSource.repairingNaN` is the same repair for the widgets and the watch.)
+ *
+ * `null` is the honest replacement: the feed already uses it for "no sample",
+ * and every reader here treats it as missing.
+ *
+ * Only applied after a parse has already failed, so well-formed payloads never
+ * pay for it. The tradeoff of a textual repair is that a *string* containing
+ * `: NaN,` would be rewritten too; these feeds are numeric telemetry whose only
+ * strings are timestamps and source names, and the alternative is no data.
+ */
+export const repairNonStandardJson = (text: string): string =>
+  text.replace(/:\s*(?:NaN|-?Infinity)(?=\s*[,}\]])/g, ': null');
+
 export const fetchJson = async <T,>(
   url: string,
   timeoutMs = 10000,
@@ -29,7 +54,14 @@ export const fetchJson = async <T,>(
       try {
         return JSON.parse(text) as T;
       } catch {
-        throw new Error(`Malformed JSON from ${url} (${text.length} bytes)`);
+        // Second chance for upstreams that emit NaN/Infinity (see above). If the
+        // repair does not produce valid JSON either, the payload is genuinely
+        // broken — report the original failure, naming the endpoint.
+        try {
+          return JSON.parse(repairNonStandardJson(text)) as T;
+        } catch {
+          throw new Error(`Malformed JSON from ${url} (${text.length} bytes)`);
+        }
       }
     } finally {
       clearTimeout(timer);

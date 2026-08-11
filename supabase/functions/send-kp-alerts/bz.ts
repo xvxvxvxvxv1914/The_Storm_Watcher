@@ -5,6 +5,25 @@
 /** Minutes of sustained southward Bz required. One noisy sample is not an event. */
 export const BZ_SUSTAINED_MIN = 15;
 
+/**
+ * Rewrites the bare `NaN` / `Infinity` literals NOAA emits into `null`.
+ *
+ * Not valid JSON (RFC 8259 has none of them), so `res.json()` rejects the
+ * **whole document** — one dropped sample and the entire Bz window is gone,
+ * which here means the early-warning alert silently never fires. Confirmed
+ * present in `rtsw_wind_1m.json` on 2026-08-11 (8 occurrences); the mag feed
+ * was clean that day, but it is the same feed family and the same risk.
+ *
+ * `null` is what the feed already uses for a missing sample and what
+ * `sustainedBz` already skips, so the repair needs no other change.
+ *
+ * The web app has the same repair in src/utils/fetchJson.ts and the Apple
+ * targets in KpSource.swift; Kotlin gets it for free through optDouble.
+ */
+export function repairNonStandardJson(text: string): string {
+  return text.replace(/:\s*(?:NaN|-?Infinity)(?=\s*[,}\]])/g, ': null');
+}
+
 export interface MagRow {
   time_tag: string;
   bz_gsm: number | null;

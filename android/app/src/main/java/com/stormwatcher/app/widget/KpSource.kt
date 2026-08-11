@@ -163,14 +163,25 @@ object KpSource {
         return try {
             val arr = JSONArray(body)
             if (arr.length() == 0) return NO_WIND
-            var row: JSONObject? = null
+            // Newest active sample *that carries a reading*. The feed is
+            // newest-first, its trailing samples are often active:false (not yet
+            // validated), and any sample can be missing a speed — null, or the
+            // bare `NaN` NOAA emits for dropped samples, which org.json hands
+            // back as the string "NaN" and optDouble turns into Double.NaN.
+            // Stopping at the newest active row and then finding it empty threw
+            // away every good sample behind it.
+            fun speedAt(o: JSONObject): Double? =
+                o.optDouble("proton_speed", Double.NaN)
+                    .takeIf { !it.isNaN() && !it.isInfinite() && it > 0 }
+
+            var fallback: Double? = null
             for (i in 0 until arr.length()) {
-                val o = arr.getJSONObject(i)
-                if (o.optBoolean("active", false)) { row = o; break }
+                val o = arr.optJSONObject(i) ?: continue
+                val s = speedAt(o) ?: continue
+                if (o.optBoolean("active", false)) return s.toInt()
+                if (fallback == null) fallback = s
             }
-            val active = row ?: arr.getJSONObject(0)
-            val speed = active.optDouble("proton_speed", Double.NaN)
-            if (speed.isNaN()) NO_WIND else speed.toInt()
+            fallback?.toInt() ?: NO_WIND
         } catch (_: Exception) {
             NO_WIND
         }
