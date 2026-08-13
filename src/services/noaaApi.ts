@@ -1,6 +1,7 @@
 import type React from 'react';
 
 import { fetchJson } from '../utils/fetchJson';
+import { parseNoaaTime } from '../utils/noaaTime';
 import { logWarning } from '../utils/logger';
 import { persistGet, persistSet } from '../utils/offlineCache';
 import { isNative } from '../utils/platform';
@@ -171,8 +172,11 @@ export const getXrayFlux = (): Promise<XrayData[]> =>
 // most other feeds. Sorting at the service boundary keeps every consumer simple:
 // data[data.length - 1] is the latest point and lightweight-charts gets the
 // ascending input it requires.
+// parseNoaaTime rather than `new Date`: harmless for the ordering itself, since
+// every row would be skewed equally, but it keeps one reading of a NOAA stamp in
+// the codebase instead of two — the split is what let the bug survive.
 const ascByTime = <T extends { time_tag: string }>(rows: T[]): T[] =>
-  [...rows].sort((a, b) => new Date(a.time_tag).getTime() - new Date(b.time_tag).getTime());
+  [...rows].sort((a, b) => parseNoaaTime(a.time_tag).getTime() - parseNoaaTime(b.time_tag).getTime());
 
 export const getSolarWind = (): Promise<SolarWindData[]> =>
   cached('wind', TTL_1M, async () => {

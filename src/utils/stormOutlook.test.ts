@@ -1,35 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import {
-  parseNoaaTime,
-  peakOutlook,
-  outlookToken,
-  OUTLOOK_THRESHOLD,
-} from './stormOutlook';
+import { peakOutlook, outlookToken, OUTLOOK_THRESHOLD } from './stormOutlook';
 
 // A fixed "now" so the horizon maths is not a function of when the suite runs.
 const NOW = Date.parse('2026-08-13T12:00:00Z');
 const hoursOut = (h: number) => new Date(NOW + h * 3600_000).toISOString().replace('.000Z', '');
 
-describe('parseNoaaTime', () => {
-  it('reads an offset-less NOAA stamp as UTC, not local time', () => {
-    // The whole point of the helper: `new Date('2026-08-15T18:00:00')` is local
-    // per spec, which skews the peak by the visitor's offset.
-    expect(parseNoaaTime('2026-08-15T18:00:00').toISOString()).toBe('2026-08-15T18:00:00.000Z');
-  });
-
-  it('accepts the space-separated variant NOAA also emits', () => {
-    expect(parseNoaaTime('2026-08-15 18:00:00').toISOString()).toBe('2026-08-15T18:00:00.000Z');
-  });
-
-  it('leaves an explicit zone alone', () => {
-    expect(parseNoaaTime('2026-08-15T18:00:00Z').toISOString()).toBe('2026-08-15T18:00:00.000Z');
-    expect(parseNoaaTime('2026-08-15T21:00:00+03:00').toISOString()).toBe('2026-08-15T18:00:00.000Z');
-  });
-
-  it('yields an invalid date for junk rather than throwing', () => {
-    expect(Number.isNaN(parseNoaaTime('not a time').getTime())).toBe(true);
-  });
-});
+// parseNoaaTime moved to utils/noaaTime.ts when Forecast, Calendar and Dashboard
+// started sharing it; its own tests live in noaaTime.test.ts.
 
 describe('peakOutlook', () => {
   it('returns null on a quiet forecast', () => {

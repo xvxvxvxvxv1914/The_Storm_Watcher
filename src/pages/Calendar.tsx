@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { getKpForecast, getKpGradientStyle, resolveKp } from '../services/noaaApi';
 import { getNightsCloudCover, type NightForecast } from '../services/skyApi';
 import { calcAuroraVisibility } from '../utils/auroraVisibility';
+import { parseNoaaTime } from '../utils/noaaTime';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import LocationPicker from '../components/LocationPicker';
@@ -60,7 +61,12 @@ export default function Calendar() {
       const kpData = await getKpForecast();
       const forecastData: ForecastItem[] = (kpData ?? []).map(item => ({
         kp: resolveKp(item) ?? 0,
-        date: new Date(item.time_tag),
+        // parseNoaaTime, not new Date: the stamps carry no offset, so the naked
+        // constructor read them as local and grouped the "nights" below three
+        // hours off for anyone outside UTC. getHours() then correctly reports
+        // the visitor's local hour for that UTC instant, which is what a night
+        // window wants.
+        date: parseNoaaTime(item.time_tag),
       }));
 
       const labels: NightForecast['label'][] = ['tonight', 'tomorrow', 'nightAfter'];

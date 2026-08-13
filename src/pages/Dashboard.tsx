@@ -11,6 +11,7 @@ import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
 import SvgBarChart from '../components/charts/SvgBarChart';
 import { Activity, Wind, Compass, Sun, Radio, MapPin, Download, Share2, GripVertical, Orbit } from 'lucide-react';
+import { parseNoaaTime, noaaTimeSeconds } from '../utils/noaaTime';
 import { generateStormScoreImage } from '../utils/generateStormImage';
 import { getKpIndex, getSolarWind, getMagField, getXrayFlux, getKpHistory3Day, getKpForecast, getStormStatus, getXrayClass, getKpGradientStyle, latestSolarWindSpeed, resolveKp, getDst, latestDst, getDstStatus } from '../services/noaaApi';
 import PlanGuard from '../components/PlanGuard';
@@ -241,7 +242,7 @@ const Dashboard = () => {
       if (kp3dayData && kp3dayData.length > 0) {
         setKpHistoryRaw(kp3dayData);
         const kpPts: TsPoint[] = kp3dayData.map(item => ({
-          time: Math.floor(new Date(item.time_tag.replace(' ', 'T') + 'Z').getTime() / 1000) as TsPoint['time'],
+          time: noaaTimeSeconds(item.time_tag) as TsPoint['time'],
           value: item.Kp ?? 0,
         }));
         setKpChartData(kpPts);
@@ -252,10 +253,12 @@ const Dashboard = () => {
         setSolarWindSpeed(latestSolarWindSpeed(windData));
 
         const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
-        const filtered = windData.filter(d => d.proton_speed > 0 && new Date(d.time_tag) >= since24h);
+        // parseNoaaTime: the rtsw stamps carry no offset either, so a naked
+        // comparison slid this 24h window by the visitor's UTC offset.
+        const filtered = windData.filter(d => d.proton_speed > 0 && parseNoaaTime(d.time_tag) >= since24h);
         const sampled = filtered.filter((_, i) => i % 30 === 0);
         const windPts: TsPoint[] = sampled.map(item => ({
-          time: Math.floor(new Date(item.time_tag.replace(' ', 'T') + 'Z').getTime() / 1000) as TsPoint['time'],
+          time: noaaTimeSeconds(item.time_tag) as TsPoint['time'],
           value: Math.round(item.proton_speed),
         }));
         setWindChartData(windPts);
@@ -361,7 +364,7 @@ const Dashboard = () => {
     const events: { start: Date; end: Date; peakKp: number }[] = [];
     let curr: { start: Date; end: Date; peakKp: number } | null = null;
     for (const { time_tag, Kp } of sorted) {
-      const t = new Date(time_tag.replace(' ', 'T') + 'Z');
+      const t = parseNoaaTime(time_tag);
       if (Kp >= 5) {
         if (!curr) {
           curr = { start: t, end: t, peakKp: Kp };

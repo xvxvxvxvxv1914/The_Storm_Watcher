@@ -8,9 +8,13 @@
  * been fetching it all along for /forecast and /calendar without ever showing
  * it to a visitor who does not open those pages.
  *
- * No React and no project imports, so this unit-tests on its own — the same
- * reason supabase/functions/send-kp-alerts/bz.ts is kept import-free.
+ * No React and no app imports, so this unit-tests on its own — the same reason
+ * supabase/functions/send-kp-alerts/bz.ts is kept that way. The one import is a
+ * sibling pure module.
  */
+
+// NOAA's offset-less stamps read as local time unless corrected; see noaaTime.ts.
+import { parseNoaaTime } from './noaaTime';
 
 /** G1 — the band the gauge, both widgets and getStormStatus already call a storm. */
 export const OUTLOOK_THRESHOLD = 5;
@@ -28,20 +32,6 @@ export interface StormOutlook {
   kp: number;
   /** Start of the 3-hour bin holding that peak. */
   at: Date;
-}
-
-/**
- * NOAA stamps its bins `2026-08-15T18:00:00` — ISO-shaped, but with no offset,
- * and ECMAScript reads that form as *local* time. The feed is UTC, so a visitor
- * in UTC+3 would be told the peak lands three hours later than it does. Append
- * the Z rather than trusting the runtime.
- *
- * (`new Date(item.time_tag)` in Forecast.tsx and Calendar.tsx has the same skew
- * — pre-existing, and out of scope here.)
- */
-export function parseNoaaTime(tag: string): Date {
-  const hasZone = /(Z|[+-]\d{2}:?\d{2})$/.test(tag);
-  return new Date(hasZone ? tag : `${tag.trim().replace(' ', 'T')}Z`);
 }
 
 /**
