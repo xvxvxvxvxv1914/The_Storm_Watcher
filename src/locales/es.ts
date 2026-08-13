@@ -95,6 +95,8 @@ const es: Record<string, string> = {
   'home.feature.livestream.desc': 'Mira cámaras de auroras en vivo desde Noruega, Islandia y Finlandia — impulsado por Cloudflare Stream.',
   'home.comingSoon': 'Próximamente',
   'home.stormBanner': 'TORMENTA GEOMAGNÉTICA — Kp',
+  'stormWatch.expected': 'TORMENTA PREVISTA',
+  'stormWatch.dismiss': 'Descartar',
   'home.trustedSources': 'Fuentes de datos de confianza',
   'home.trustedSourcesDesc': 'Nuestras predicciones utilizan datos del Centro de Predicción del Clima Espacial de NOAA, NASA DONKI, ESA Space Weather Service y el Instituto Nacional de Geofísica y Geodesia (Bulgaria).',
   'home.tagline': 'Monitoreando el sol. Protegiendo la Tierra.',

@@ -80,6 +80,8 @@ const ru: Record<string, string> = {
   'home.stormScore.severe': 'Сильная',
   'home.features2.title': 'Всё, что нужно для отслеживания бури',
   'home.stormBanner': 'ГЕОМАГНИТНАЯ БУРЯ — Kp',
+  'stormWatch.expected': 'ОЖИДАЕТСЯ БУРЯ',
+  'stormWatch.dismiss': 'Закрыть',
   'home.trustedSources': 'Надёжные источники данных',
   'home.trustedSourcesDesc': 'Наши прогнозы основаны на данных Центра прогнозирования космической погоды NOAA, NASA DONKI, ESA Space Weather Service и Национального института геофизики и геодезии (Болгария).',
   'home.tagline': 'Наблюдаем за солнцем. Защищаем Землю.',

@@ -80,6 +80,8 @@ const fr: Record<string, string> = {
   'home.stormScore.severe': 'Sévère',
   'home.features2.title': 'Tout ce qu\'il faut pour suivre la tempête',
   'home.stormBanner': 'TEMPÊTE GÉOMAGNÉTIQUE — Kp',
+  'stormWatch.expected': 'TEMPÊTE PRÉVUE',
+  'stormWatch.dismiss': 'Ignorer',
   'home.trustedSources': 'Sources de données fiables',
   'home.trustedSourcesDesc': 'Nos prévisions sont alimentées par le Centre de prévision météorologique spatiale de la NOAA, NASA DONKI, ESA Space Weather Service et l\'Institut national de géophysique et de géodésie (Bulgarie).',
   'home.tagline': 'Surveillons le soleil. Protégeons la Terre.',

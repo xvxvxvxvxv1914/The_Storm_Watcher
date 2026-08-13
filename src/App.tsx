@@ -12,6 +12,7 @@ import { SettingsProvider } from './contexts/SettingsContext';
 import { useSwipeNavigation } from './hooks/useSwipeNavigation';
 import { useKpLive } from './hooks/useKpLive';
 import { useKpAlert } from './hooks/useKpAlert';
+import { useStormOutlook } from './hooks/useStormOutlook';
 import { setSentryUser } from './utils/sentryLazy';
 import { usePushNotifications } from './hooks/usePushNotifications';
 import { useStormLiveActivity } from './hooks/useStormLiveActivity';
@@ -59,6 +60,11 @@ function AppRoutes() {
   const [splashDone, setSplashDone] = useState(false);
   const kp = useKpLive();
   const isStorm = kp !== null && kp >= 5;
+  // Navigation shows exactly one of the two strips — the live storm one, or the
+  // forecast one when no storm is measured. Either way <main> owes it the same
+  // slice of height, or the fixed header lands on top of the page content.
+  const { visible: outlookVisible } = useStormOutlook();
+  const hasBanner = isStorm || outlookVisible;
   useEffect(() => {
     const t = setTimeout(() => setSplashDone(true), 1500);
     return () => clearTimeout(t);
@@ -176,7 +182,7 @@ function AppRoutes() {
       <OfflineBanner />
       <Navigation />
       <TrialBanner />
-      <main id="main" className="pt-[env(safe-area-inset-top)] pb-24 lg:pb-0" style={isStorm ? { paddingTop: 'calc(env(safe-area-inset-top) + 2.25rem)' } : undefined}>
+      <main id="main" className="pt-[env(safe-area-inset-top)] pb-24 lg:pb-0" style={hasBanner ? { paddingTop: 'calc(env(safe-area-inset-top) + 2.25rem)' } : undefined}>
       <ErrorBoundary>
         <Suspense fallback={<LoadingFallback />}>
           <AnimatedRoutes />

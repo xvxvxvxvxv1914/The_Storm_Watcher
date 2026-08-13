@@ -133,6 +133,8 @@ const uk: Record<string, string> = {
   'home.trustedSourcesDesc': 'Наші прогнози базуються на NOAA, NASA DONKI, ESA та NIGGG.',
   'home.comingSoon': 'Незабаром',
   'home.stormBanner': 'ГЕОМАГНІТНА БУРЯ — Kp',
+  'stormWatch.expected': 'ОЧІКУЄТЬСЯ БУРЯ',
+  'stormWatch.dismiss': 'Закрити',
   'home.tagline': 'Спостерігаємо за Сонцем. Захищаємо Землю.',
   'home.liveSpaceWeather': 'Жива космічна погода',
   'home.solarWind': 'Сонячний вітер',

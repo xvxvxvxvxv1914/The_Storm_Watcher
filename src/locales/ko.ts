@@ -124,6 +124,8 @@ const ko: Record<string, string> = {
   'home.trustedSourcesDesc': '우리의 예보는 NOAA 우주 날씨 예보 센터, NASA DONKI, ESA 우주 날씨 서비스, 불가리아 지구물리 및 지오데시 연구소의 데이터를 기반으로 합니다.',
   'home.comingSoon': '곧 출시',
   'home.stormBanner': '지자기 폭풍 진행 중 — Kp',
+  'stormWatch.expected': '지자기 폭풍 예상',
+  'stormWatch.dismiss': '닫기',
   'home.tagline': '태양을 모니터링합니다. 지구를 보호합니다.',
 
   // Dashboard
