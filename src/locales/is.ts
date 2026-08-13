@@ -303,6 +303,7 @@ const is_: Record<string, string> = {
   'aurora.calendar.clear': 'Skýlægt',
   'aurora.calendar.partlyCloudy': 'Hlutvis skýjað',
   'aurora.calendar.overcast': 'Þakið skýjum',
+  'aurora.calendar.noNight': 'Miðnætursól — ekkert myrkur í nótt',
   'aurora.calendar.fullView': 'Fullt yfirlit',
 
   'alerts.title': 'Geimveðursviðvaranir',

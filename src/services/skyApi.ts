@@ -34,12 +34,40 @@ export interface SkyData {
   sunrise: string;
 }
 
-// Returns avg cloud cover % for nighttime hours across 3 nights (null per night if data missing).
-// kpByHour: map of ISO-hour-string → kp value from the NOAA forecast.
+export interface NightWindow {
+  date: Date;
+  /** Mean cloud cover across the dark hours, or null when it cannot be stated. */
+  cloudCoverAvg: number | null;
+  /** True when the sun never sets — the reason there is no cloud figure. */
+  noNight: boolean;
+  /** The actual darkness window, for callers that bucket other data by it. */
+  nightStart: Date | null;
+  nightEnd: Date | null;
+}
+
+/**
+ * The next three nights: when darkness actually falls, and how cloudy it is
+ * while it lasts.
+ *
+ * Open-Meteo hides the polar cases inside the ordinary sunrise/sunset fields,
+ * which is why they are easy to miss. Both confirmed against the live API:
+ *
+ *   polar day   (Tromsø, 20 Jun)     rise = D 00:00, set = D+1 00:00  → 24h day
+ *   polar night (McMurdo, 13 Aug)    rise = D 00:00, set = D   00:00  →  0h day
+ *
+ * Taking the window as `sunset[i] → sunrise[i+1]` covers both with no special
+ * case: polar night widens it to a full 24 hours, which is correct because it is
+ * dark throughout, while polar day collapses it to zero length.
+ *
+ * That collapse used to fall through to a `100` default, which told a Tromsø
+ * visitor in June the sky was **fully overcast** — when the truth was that there
+ * was no night at all and the sky might be perfectly clear. It now reports null
+ * with `noNight` set, so the caller can say the true thing instead.
+ */
 export function getNightsCloudCover(
   lat: number,
   lon: number,
-): Promise<{ date: Date; cloudCoverAvg: number }[]> {
+): Promise<NightWindow[]> {
   return cached(`nights-cloud-${lat.toFixed(1)}-${lon.toFixed(1)}`, TTL_SKY, async () => {
   const params = new URLSearchParams({
     latitude: String(lat),
@@ -54,18 +82,32 @@ export function getNightsCloudCover(
     daily: { sunrise: string[]; sunset: string[]; time: string[] };
   }>(`https://api.open-meteo.com/v1/forecast?${params}`);
 
-  const nights: { date: Date; cloudCoverAvg: number }[] = [];
+  const nights: NightWindow[] = [];
   // Process first 3 nights: sunset[i] → sunrise[i+1]
   for (let i = 0; i < 3 && i < daily.sunset.length - 1; i++) {
     const sunset = new Date(daily.sunset[i]);
     const sunrise = new Date(daily.sunrise[i + 1]);
-    const nightHours = hourly.time
-      .map((t, idx) => ({ date: new Date(t), cover: hourly.cloud_cover[idx] }))
-      .filter(h => h.date >= sunset && h.date <= sunrise);
-    const avg = nightHours.length
-      ? Math.round(nightHours.reduce((s, h) => s + h.cover, 0) / nightHours.length)
-      : 100;
-    nights.push({ date: new Date(daily.time[i]), cloudCoverAvg: avg });
+    const known = Number.isFinite(sunset.getTime()) && Number.isFinite(sunrise.getTime());
+    // Zero-length (or inverted) window = the sun never set. Distinct from a
+    // window we simply could not read, which stays "unknown" rather than
+    // becoming a claim about the sky.
+    const noNight = known && sunrise.getTime() <= sunset.getTime();
+
+    const nightHours = known && !noNight
+      ? hourly.time
+          .map((t, idx) => ({ date: new Date(t), cover: hourly.cloud_cover[idx] }))
+          .filter(h => h.date >= sunset && h.date <= sunrise && Number.isFinite(h.cover))
+      : [];
+
+    nights.push({
+      date: new Date(daily.time[i]),
+      cloudCoverAvg: nightHours.length
+        ? Math.round(nightHours.reduce((s, h) => s + h.cover, 0) / nightHours.length)
+        : null,
+      noNight,
+      nightStart: known && !noNight ? sunset : null,
+      nightEnd: known && !noNight ? sunrise : null,
+    });
   }
   return nights;
   });

@@ -739,6 +739,7 @@ const en: Record<string, string> = {
   'aurora.calendar.clear': 'Clear',
   'aurora.calendar.partlyCloudy': 'Partly cloudy',
   'aurora.calendar.overcast': 'Overcast',
+  'aurora.calendar.noNight': 'Midnight sun — no darkness tonight',
   'aurora.calendar.fullView': 'Full view',
   'nav.calendar': 'Aurora Calendar',
 

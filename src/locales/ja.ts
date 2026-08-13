@@ -685,6 +685,7 @@ const ja: Record<string, string> = {
   'aurora.calendar.clear': '晴れ',
   'aurora.calendar.partlyCloudy': '一部曇り',
   'aurora.calendar.overcast': '曇り',
+  'aurora.calendar.noNight': '白夜 — 今夜は暗くなりません',
 
   // 404 Not Found
   'notFound.title': '宇宙で迷子になった',

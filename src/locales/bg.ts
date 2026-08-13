@@ -720,6 +720,7 @@ const bg: Record<string, string> = {
   'aurora.calendar.clear': 'Ясно',
   'aurora.calendar.partlyCloudy': 'Частично облачно',
   'aurora.calendar.overcast': 'Облачно',
+  'aurora.calendar.noNight': 'Полярен ден — няма тъмнина тази нощ',
   'aurora.calendar.fullView': 'Пълен изглед',
   'nav.calendar': 'Аврора Календар',
 

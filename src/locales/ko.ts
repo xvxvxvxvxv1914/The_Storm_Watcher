@@ -695,6 +695,7 @@ const ko: Record<string, string> = {
   'aurora.calendar.clear': '맑음',
   'aurora.calendar.partlyCloudy': '약간 흐림',
   'aurora.calendar.overcast': '흐림',
+  'aurora.calendar.noNight': '백야 — 오늘 밤은 어두워지지 않습니다',
   'aurora.calendar.fullView': '전체 보기',
   'nav.calendar': '오로라 달력',
 

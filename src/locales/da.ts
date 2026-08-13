@@ -303,6 +303,7 @@ const da: Record<string, string> = {
   'aurora.calendar.clear': 'Klar',
   'aurora.calendar.partlyCloudy': 'Delvist skyet',
   'aurora.calendar.overcast': 'Overskyet',
+  'aurora.calendar.noNight': 'Midnatssol — intet mørke i nat',
   'aurora.calendar.fullView': 'Fuld visning',
 
   'alerts.title': 'Rumvejrsadvarsler',

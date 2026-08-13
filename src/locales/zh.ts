@@ -685,6 +685,7 @@ const zh: Record<string, string> = {
   'aurora.calendar.clear': '晴朗',
   'aurora.calendar.partlyCloudy': '部分多云',
   'aurora.calendar.overcast': '阴天',
+  'aurora.calendar.noNight': '极昼 — 今夜不会变暗',
 
   // 404 Not Found
   'notFound.title': '迷失在太空',

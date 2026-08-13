@@ -685,6 +685,7 @@ const es: Record<string, string> = {
   'aurora.calendar.clear': 'Despejado',
   'aurora.calendar.partlyCloudy': 'Parcialmente nublado',
   'aurora.calendar.overcast': 'Nublado',
+  'aurora.calendar.noNight': 'Sol de medianoche — no hay oscuridad esta noche',
 
   // 404 Not Found
   'notFound.title': 'Perdido en el Espacio',

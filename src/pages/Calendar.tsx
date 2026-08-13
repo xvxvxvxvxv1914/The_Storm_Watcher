@@ -2,11 +2,11 @@ import { useEffect, useState, useCallback } from 'react';
 import PageMeta from '../components/PageMeta';
 import StarField from '../components/StarField';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
-import { CalendarDays, Cloud, Sparkles, Download } from 'lucide-react';
+import { CalendarDays, Cloud, Sparkles, Download, Sun } from 'lucide-react';
 import { buildAuroraICS, downloadICS } from '../utils/icalExport';
 import { Link } from 'react-router-dom';
 import { getKpForecast, getKpGradientStyle, resolveKp } from '../services/noaaApi';
-import { getNightsCloudCover, type NightForecast } from '../services/skyApi';
+import { getNightsCloudCover, type NightForecast, type NightWindow } from '../services/skyApi';
 import { calcAuroraVisibility } from '../utils/auroraVisibility';
 import { parseNoaaTime } from '../utils/noaaTime';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -25,6 +25,8 @@ interface NightDetail extends NightForecast {
   hourlyKp: { hour: number; kp: number }[];
   dateLabel: string;
   auroraChance: number | null; // % at user's lat/lon for this night's peak Kp
+  /** The sun never sets here tonight — there is no night to rate. */
+  noNight: boolean;
 }
 
 const NIGHT_START = 20;
@@ -71,30 +73,45 @@ export default function Calendar() {
 
       const labels: NightForecast['label'][] = ['tonight', 'tomorrow', 'nightAfter'];
       const today = new Date();
+
+      // Fetched before the Kp bucketing, not after, because it is what defines a
+      // "night". The old code bucketed against a hardcoded 20:00-06:00, which
+      // above ~60° is wrong in both directions: broad daylight in summer, and
+      // hours too late in winter, when Tromsø is already dark by 14:00.
+      let cloudNights: NightWindow[] = [];
+      if (useLat !== null && useLon !== null) {
+        try { cloudNights = await getNightsCloudCover(useLat, useLon); } catch { /* no sky data */ }
+      }
+
       const kpByNight: { date: Date; maxKp: number; hourly: { hour: number; kp: number }[] }[] = [];
 
       for (let d = 0; d < 3; d++) {
         const target = new Date(today);
         target.setDate(today.getDate() + d);
-        const targetStr = target.toDateString();
-        const next = new Date(target);
-        next.setDate(target.getDate() + 1);
-        const nextStr = next.toDateString();
+        const sky = cloudNights[d];
 
-        const nightItems = forecastData.filter(item => {
-          const h = item.date.getHours();
-          return (item.date.toDateString() === targetStr && h >= NIGHT_START) ||
-                 (item.date.toDateString() === nextStr && h < NIGHT_END);
-        });
+        let nightItems: ForecastItem[];
+        if (sky?.noNight) {
+          // The sun does not set. There is no night to report a peak for.
+          nightItems = [];
+        } else if (sky?.nightStart && sky.nightEnd) {
+          nightItems = forecastData.filter(i => i.date >= sky.nightStart! && i.date <= sky.nightEnd!);
+        } else {
+          // No location, or the sky feed failed — fall back to the fixed window.
+          const targetStr = target.toDateString();
+          const next = new Date(target);
+          next.setDate(target.getDate() + 1);
+          const nextStr = next.toDateString();
+          nightItems = forecastData.filter(item => {
+            const h = item.date.getHours();
+            return (item.date.toDateString() === targetStr && h >= NIGHT_START) ||
+                   (item.date.toDateString() === nextStr && h < NIGHT_END);
+          });
+        }
 
         const maxKp = nightItems.length > 0 ? Math.max(...nightItems.map(i => i.kp)) : 0;
         const hourly = nightItems.map(i => ({ hour: i.date.getHours(), kp: i.kp }));
         kpByNight.push({ date: target, maxKp, hourly });
-      }
-
-      let cloudNights: { date: Date; cloudCoverAvg: number }[] = [];
-      if (useLat !== null && useLon !== null) {
-        try { cloudNights = await getNightsCloudCover(useLat, useLon); } catch { /* no cloud data */ }
       }
 
       const combined: NightDetail[] = kpByNight.map((n, i) => {
@@ -107,7 +124,8 @@ export default function Calendar() {
           label: labels[i],
           date: n.date,
           maxKp: n.maxKp,
-          cloudCoverAvg: cloud ? cloud.cloudCoverAvg : null,
+          cloudCoverAvg: cloud?.cloudCoverAvg ?? null,
+          noNight: cloud?.noNight ?? false,
           isBest: false,
           hourlyKp: n.hourly,
           dateLabel: d.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' }),
@@ -118,12 +136,16 @@ export default function Calendar() {
       // If we have location-aware aurora data, weight it 60% aurora + 40% sky;
       // otherwise fall back to global Kp proxy.
       const scored = combined.map(n => {
+        // A night the sun never leaves cannot be the best one, whatever the Kp.
+        if (n.noNight) return { score: -1 };
         const aurora = n.auroraChance ?? (n.maxKp / 9) * 100;
         const sky = n.cloudCoverAvg !== null ? (100 - n.cloudCoverAvg) : aurora * 0.7;
         return { score: aurora * 0.6 + sky * 0.4 };
       });
       const bestIdx = scored.reduce((bi, s, i) => s.score > scored[bi].score ? i : bi, 0);
-      combined[bestIdx].isBest = true;
+      // When every night scores below zero they are all sunlit, and the reduce
+      // still returns index 0 — crowning a "best night" that has no night in it.
+      if (scored[bestIdx].score >= 0) combined[bestIdx].isBest = true;
       setNights(combined);
     } finally {
       setLoading(false);
@@ -279,8 +301,15 @@ export default function Calendar() {
                   </div>
                 )}
 
-                {/* Cloud cover */}
-                {cloud !== null ? (
+                {/* Cloud cover — or the reason there is none. A night the sun
+                    never leaves used to render as "Overcast 100%", which was a
+                    claim about the sky rather than the truth: there is no night. */}
+                {night.noNight ? (
+                  <div className="flex items-center gap-2 pt-3 border-t border-white/5 text-xs text-[#eab308]">
+                    <Sun className="w-4 h-4 flex-shrink-0" />
+                    <span>{t('aurora.calendar.noNight') || 'Midnight sun — no darkness tonight'}</span>
+                  </div>
+                ) : cloud !== null ? (
                   <div className="flex items-center gap-2 pt-3 border-t border-white/5">
                     <Cloud className="w-4 h-4 text-[#64748b] flex-shrink-0" />
                     <div className="flex-1">

@@ -303,6 +303,7 @@ const fi: Record<string, string> = {
   'aurora.calendar.clear': 'Kirkas',
   'aurora.calendar.partlyCloudy': 'Osittain pilvinen',
   'aurora.calendar.overcast': 'Pilvinen',
+  'aurora.calendar.noNight': 'Keskiyön aurinko — ei pimeää tänä yönä',
   'aurora.calendar.fullView': 'Täysi näkymä',
 
   'alerts.title': 'Avaruussää-hälytykset',
