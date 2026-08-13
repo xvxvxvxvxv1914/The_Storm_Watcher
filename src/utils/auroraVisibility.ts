@@ -9,6 +9,19 @@ const POLE_LON = -72.2 * (Math.PI / 180);
  *
  * Boundary formula: ~67° geomagnetic at Kp=0, -5.3° per Kp unit.
  * Purely math — no external API call needed.
+ *
+ * **Both hemispheres.** The comparison is on |geomagnetic latitude|, because a
+ * dipole is symmetric: the southern auroral oval sits at the same magnitude as
+ * the northern one, and aurora australis is the same phenomenon.
+ *
+ * This was wrong until 2026-08-13 and the whole southern hemisphere paid for it.
+ * `gmlat` is negative down there while `boundary` is always positive, so the
+ * margin was hugely negative and every southern location returned **0% at every
+ * Kp** — Hobart at Kp 9 read 0 while aurora australis was overhead. Worse than a
+ * wrong number on a page: `send-kp-alerts` gates on `visibility > 0`, so no
+ * southern user could ever receive a storm alert, and `useKpAlert` and
+ * `useStormLiveActivity` skipped them too. The old test suite passed a southern
+ * coordinate but only asserted the result was within [0, 100], which 0 is.
  */
 export function calcAuroraVisibility(lat: number, lon: number, kp: number): number {
   const latR = lat * (Math.PI / 180);
@@ -23,7 +36,8 @@ export function calcAuroraVisibility(lat: number, lon: number, kp: number): numb
   // Equatorward boundary of the auroral oval (degrees geomagnetic latitude)
   const boundary = 67.0 - 5.3 * kp;
 
-  // Smooth sigmoid-like chance: 0% well below boundary, 100% well above
-  const margin = gmlat - boundary;
+  // Smooth sigmoid-like chance: 0% well below boundary, 100% well above.
+  // |gmlat| — see the hemisphere note above.
+  const margin = Math.abs(gmlat) - boundary;
   return Math.round(Math.min(100, Math.max(0, (margin / 15) * 100)));
 }

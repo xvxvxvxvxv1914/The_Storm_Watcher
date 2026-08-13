@@ -492,7 +492,7 @@ Manual chunks in `vite.config.ts` keep the initial bundle small:
 - `supabase-vendor`, `react-vendor`, `icons-vendor` — shared infrastructure
 
 ### Key utilities
-- `src/utils/auroraVisibility.ts` — pure math aurora visibility % from lat/lon/Kp (dipole approximation, no API)
+- `src/utils/auroraVisibility.ts` — pure math aurora visibility % from lat/lon/Kp (dipole approximation, no API). **Две копия** — второто е inline в `send-kp-alerts/index.ts`; движат се заедно, като Kp каскадата. Сравнението е на **`Math.abs(gmlat)`**: диполът е симетричен, южният овал стои на същата по големина геомагнитна ширина. Със знакова стойност (до 2026-08-13) цялото южно полукълбо връщаше 0% при всяко Kp — Хобарт 0% при Kp 9 — и понеже трите аларми гейтват на `visibility > 0`, южен потребител **не можеше да получи storm известие изобщо**. Старият тест подаваше южна координата, но твърдеше само че резултатът е в `[0, 100]`, което 0 удовлетворява
 - `src/utils/logger.ts` — `logError()` wrapper (console in dev, Sentry in prod)
 - `src/utils/generateStormImage.ts` — generates OG share images for storm events
 - `src/utils/stormOutlook.ts` — peak Kp in the NOAA 3-day forecast. React-free and app-import-free so it unit-tests standalone, the same reason `send-kp-alerts/bz.ts` is
