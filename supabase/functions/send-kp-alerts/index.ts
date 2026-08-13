@@ -132,8 +132,15 @@ function inQuietHours(p: QuietProfile | null, tzOffsetMin: number | null): boole
   return qs < qe ? h >= qs && h < qe : h >= qs || h < qe;
 }
 
-// Dipole-approximation aurora visibility (mirrors src/utils/auroraVisibility.ts).
-// Returns 0 if aurora is not expected at this lat/lon for the given Kp.
+// Dipole-approximation aurora visibility (mirrors src/utils/auroraVisibility.ts —
+// keep the two in step). Returns 0 if aurora is not expected at this lat/lon.
+//
+// Math.abs(gmlat): a dipole is symmetric, so the southern auroral oval sits at
+// the same magnitude of geomagnetic latitude as the northern one. Without it
+// every southern gmlat was negative against a positive boundary, this returned 0
+// for all of Australia, New Zealand, southern Chile and Antarctica at every Kp —
+// and since both alert passes below gate on `> 0`, **no southern subscriber
+// could ever be sent a storm notification.**
 function calcAuroraVisibility(lat: number, lon: number, kp: number): number {
   const POLE_LAT = 80.7 * (Math.PI / 180);
   const POLE_LON = -72.2 * (Math.PI / 180);
@@ -141,7 +148,7 @@ function calcAuroraVisibility(lat: number, lon: number, kp: number): number {
   const lonR = lon * (Math.PI / 180);
   const sinGm = Math.sin(latR) * Math.sin(POLE_LAT) + Math.cos(latR) * Math.cos(POLE_LAT) * Math.cos(lonR - POLE_LON);
   const gmlat = Math.asin(Math.max(-1, Math.min(1, sinGm))) * (180 / Math.PI);
-  const margin = gmlat - (67.0 - 5.3 * kp);
+  const margin = Math.abs(gmlat) - (67.0 - 5.3 * kp);
   return Math.round(Math.min(100, Math.max(0, (margin / 15) * 100)));
 }
 
