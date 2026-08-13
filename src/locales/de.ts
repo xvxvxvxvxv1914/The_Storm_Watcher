@@ -685,6 +685,7 @@ const de: Record<string, string> = {
   'aurora.calendar.clear': 'Klar',
   'aurora.calendar.partlyCloudy': 'Teilweise bewölkt',
   'aurora.calendar.overcast': 'Bedeckt',
+  'aurora.calendar.noNight': 'Mitternachtssonne — heute Nacht keine Dunkelheit',
 
   // 404 Not Found
   'notFound.title': 'Im Weltraum verloren',

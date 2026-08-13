@@ -303,6 +303,7 @@ const sv: Record<string, string> = {
   'aurora.calendar.clear': 'Klar',
   'aurora.calendar.partlyCloudy': 'Delvis molnigt',
   'aurora.calendar.overcast': 'Mulet',
+  'aurora.calendar.noNight': 'Midnattssol — inget mörker i natt',
   'aurora.calendar.fullView': 'Fullständig vy',
 
   'alerts.title': 'Rymdvädersvarningar',

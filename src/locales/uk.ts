@@ -303,6 +303,7 @@ const uk: Record<string, string> = {
   'aurora.calendar.clear': 'Ясно',
   'aurora.calendar.partlyCloudy': 'Мінлива хмарність',
   'aurora.calendar.overcast': 'Похмуро',
+  'aurora.calendar.noNight': 'Полярний день — цієї ночі не темніє',
   'aurora.calendar.fullView': 'Повний вигляд',
 
   'alerts.title': 'Сповіщення космічної погоди',

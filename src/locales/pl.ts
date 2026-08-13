@@ -303,6 +303,7 @@ const pl: Record<string, string> = {
   'aurora.calendar.clear': 'Czysto',
   'aurora.calendar.partlyCloudy': 'Częściowe zachmurzenie',
   'aurora.calendar.overcast': 'Pochmurno',
+  'aurora.calendar.noNight': 'Dzień polarny — tej nocy nie ma ciemności',
   'aurora.calendar.fullView': 'Pełny widok',
 
   'alerts.title': 'Alerty pogody kosmicznej',

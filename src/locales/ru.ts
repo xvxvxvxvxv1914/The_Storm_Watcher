@@ -685,6 +685,7 @@ const ru: Record<string, string> = {
   'aurora.calendar.clear': 'Ясно',
   'aurora.calendar.partlyCloudy': 'Переменная облачность',
   'aurora.calendar.overcast': 'Пасмурно',
+  'aurora.calendar.noNight': 'Полярный день — этой ночью не темнеет',
 
   // 404 Not Found
   'notFound.title': 'Потерян в Космосе',
