@@ -583,33 +583,53 @@ Invoke-WebRequest -Uri "https://srzfoxlmhxyulrgkchjr.supabase.co/functions/v1/se
 ```
 
 **🔴 НАМЕРЕНО 13.08 при проверката на логовете: и четирите заявки в
-`send-kp-alerts` гърмят. Двойно.**
+`send-kp-alerts` гърмяха. Двойно. Поправено на 13.08 (v12 + миграция).**
 
-На всеки cron run (и преди, и след deploy-a):
+На всеки cron run, пет пъти на час, откакто функцията съществува:
 ```
 DB query failed: "failed to parse logic tree
 ((profiles.plan.in.(pro,premium),profiles.subscription_status.eq.trialing))"
 ```
 
-Две отделни причини, потвърдени срещу живия PostgREST с anon ключа:
+Две **независими** причини — само едната поправка не върши нищо, защото първата
+гърми по-рано от втората и я скрива. И двете потвърдени срещу живия PostgREST с
+anon ключа, преди и след:
 
 1. **Излишен `profiles.` префикс вътре в `.or()`.** При подаден
-   `{ referencedTable: 'profiles' }` имената на колоните трябва да са голи —
-   `plan.in.(pro,premium)`, не `profiles.plan.in.(...)`. Сега PostgREST чете
-   `profiles.plan` като име на колона и връща PGRST100.
-2. **`profiles!inner(...)` изобщо не се разрешава** — PGRST200, „no relationship
-   found". Трите push таблици имат FK към `auth.users(id)`, `profiles.id` също;
-   **няма пряк FK между тях**, а PostgREST не свързва две таблици през трета.
+   `{ referencedTable: 'profiles' }` имената на колоните трябва да са **голи** —
+   `plan.in.(pro,premium)`, не `profiles.plan.in.(...)`. Иначе PostgREST чете
+   `profiles.plan` като име на колона → PGRST100. Сега е една константа
+   (`PAID_PLAN_FILTER`), за да не могат четирите места пак да се разминат.
+2. **`profiles!inner(...)` изобщо не се разрешаваше** — PGRST200, „no relationship
+   found". Push таблиците имат FK към `auth.users(id)`, `profiles.id` също, но
+   **PostgREST не свързва две таблици през трета**. Миграция
+   `20260813000000_push_profiles_fk.sql` добавя `user_id → profiles(id)` на
+   `push_subscriptions` и `device_push_tokens`.
 
-Значи Pro/Premium гейтингът и quiet hours никога не са работили — заявката пада
-преди тях. Днес е маскирано: `push_subscriptions`, `device_push_tokens` и
-`live_activity_tokens` са с **0 реда**, а APNs/FCM са изключени, така че се вижда
-само web-а в лога. При първия абонат обаче web push пак няма да прати нищо.
+Значи Pro/Premium гейтингът и quiet hours **никога не са работили** — заявката
+падаше преди тях. Остана невидимо, защото грешката се логва и се прескача, вместо
+да се хвърли, и защото трите push таблици са с 0 реда.
 
-Поправката е две неща заедно (само едното не стига): махане на префикса в
-четирите `.or()`, и FK `user_id → profiles(id)` на трите таблици. **Сега е
-най-евтиният момент за FK-а** — 0 реда за валидиране, и 6/6 auth users вече имат
-profile ред. Не е приложено: иска решение за production миграция.
+Миграцията е **добавяща**: FK-овете към `auth.users` остават (каскадата при
+изтриване на акаунт е документирана срещу тях), а само единият от двата сочи към
+`profiles`, значи embed-ът е еднозначен. Нов индекс не трябва — `user_id` вече
+води unique индекс и в двете таблици.
+
+**Как се проверява, че наистина е минало** (deploy 200 не значи нищо):
+```powershell
+# новата форма → 200 [], старата → 400 PGRST100
+$k = "<anon key>"; $h = @{ apikey = $k; Authorization = "Bearer $k" }
+Invoke-WebRequest -Headers $h -UseBasicParsing -Uri ("https://srzfoxlmhxyulrgkchjr.supabase.co" +
+  "/rest/v1/push_subscriptions?select=id,profiles!inner(plan)" +
+  "&profiles.or=(plan.in.(pro,premium),subscription_status.eq.trialing)")
+```
+После в логовете: ред `Kp=… | web=… | native=…` **без** придружаващ
+`DB query failed` / `Bz web query failed`.
+
+**Некопнато нарочно:** `live_activity_tokens` се чете с `select('id, token')`, без
+`profiles` embed — тоест Live Activity update-ите **не са план-гейтнати** изобщо.
+Таблицата е празна и APNs е изключен, така че днес е теоретично; на нея FK не е
+добавян, защото няма embed, който да го иска.
 
 **При потребителя (минути):**
 - **Vercel env:** `VITE_VAPID_PUBLIC_KEY` (web push — хукът и SW-ът са готови) и
