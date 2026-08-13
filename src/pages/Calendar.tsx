@@ -117,9 +117,13 @@ export default function Calendar() {
       const combined: NightDetail[] = kpByNight.map((n, i) => {
         const cloud = cloudNights[i];
         const d = n.date;
-        const auroraChance = useLat !== null && useLon !== null
-          ? calcAuroraVisibility(useLat, useLon, n.maxKp)
-          : null;
+        // No darkness, no chance to state — the row is hidden rather than
+        // showing a residual percentage next to "midnight sun". On a real night
+        // the peak Kp already comes only from dark hours, so the geomagnetic
+        // figure is the right one here.
+        const auroraChance = cloud?.noNight || useLat === null || useLon === null
+          ? null
+          : calcAuroraVisibility(useLat, useLon, n.maxKp);
         return {
           label: labels[i],
           date: n.date,
