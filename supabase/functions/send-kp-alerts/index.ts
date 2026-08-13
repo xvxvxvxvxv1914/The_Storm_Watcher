@@ -141,6 +141,13 @@ function inQuietHours(p: QuietProfile | null, tzOffsetMin: number | null): boole
 // for all of Australia, New Zealand, southern Chile and Antarctica at every Kp —
 // and since both alert passes below gate on `> 0`, **no southern subscriber
 // could ever be sent a storm notification.**
+// Constants are NOAA SWPC's, not invented: oval edge 66° at Kp 0 moving 2° per
+// Kp, and aurora still visible ~1000 km (≈9°) equatorward of that edge.
+// https://www.spaceweather.gov/content/tips-viewing-aurora
+//
+// No darkness term on purpose. This gates *storm alerts*, which answer "is a
+// storm running" — a notification in the afternoon is how someone learns to go
+// out after dark. Gating on current darkness would silence daytime storms.
 function calcAuroraVisibility(lat: number, lon: number, kp: number): number {
   const POLE_LAT = 80.7 * (Math.PI / 180);
   const POLE_LON = -72.2 * (Math.PI / 180);
@@ -148,8 +155,10 @@ function calcAuroraVisibility(lat: number, lon: number, kp: number): number {
   const lonR = lon * (Math.PI / 180);
   const sinGm = Math.sin(latR) * Math.sin(POLE_LAT) + Math.cos(latR) * Math.cos(POLE_LAT) * Math.cos(lonR - POLE_LON);
   const gmlat = Math.asin(Math.max(-1, Math.min(1, sinGm))) * (180 / Math.PI);
-  const margin = Math.abs(gmlat) - (67.0 - 5.3 * kp);
-  return Math.round(Math.min(100, Math.max(0, (margin / 15) * 100)));
+  const margin = Math.abs(gmlat) - (66.0 - 2.0 * kp);
+  if (margin >= 0) return 100;
+  const reach = Math.max(0, (margin + 9.0) / 9.0);
+  return Math.round(reach * reach * 100); // squared — see the JS copy for why
 }
 
 // ── APNs JWT helpers ─────────────────────────────────────────────────────────

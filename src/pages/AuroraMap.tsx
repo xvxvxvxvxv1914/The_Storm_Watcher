@@ -6,7 +6,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { useKpLive } from '../hooks/useKpLive';
 import { getStormStatus } from '../services/noaaApi';
-import { calcAuroraVisibility } from '../utils/auroraVisibility';
+import { calcAuroraVisibility, auroraViewingChance } from '../utils/auroraVisibility';
 import { usePaymentGate } from '../hooks/usePaymentGate';
 import { useTheme } from '../contexts/ThemeContext';
 import PageMeta from '../components/PageMeta';
@@ -28,7 +28,7 @@ export default function AuroraMap() {
   const userLat = settings.preferredLat ?? undefined;
   const userLon = settings.preferredLon ?? undefined;
   const userVis = userLat !== undefined && userLon !== undefined
-    ? calcAuroraVisibility(userLat, userLon, kpVal)
+    ? auroraViewingChance(userLat, userLon, kpVal)
     : null;
 
   const KEY_CITIES = [
@@ -157,6 +157,12 @@ export default function AuroraMap() {
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {KEY_CITIES.map(city => {
+              // Placement, not "visible right now" — deliberately the bare
+              // geomagnetic number. This list compares which cities are inside
+              // the zone for this storm; scaling each by its own local darkness
+              // would make half the rows zero purely because of the time of day
+              // and destroy the comparison. The user's own badge above does use
+              // the darkness-aware figure, because that one is about tonight.
               const vis = calcAuroraVisibility(city.lat, city.lon, kpVal);
               const visColor = vis >= 75 ? '#e5ff50' : vis >= 55 ? '#64dc50' : vis >= 25 ? '#10b981' : '#475569';
               return (
