@@ -99,8 +99,6 @@ interface PushSub {
   bz_alerts_enabled: boolean;
   bz_threshold: number;
   last_bz_notified_at: string | null;
-  lat: number | null;
-  lon: number | null;
   tz_offset_min: number | null;
   profiles: QuietProfile;
 }
@@ -114,8 +112,6 @@ interface DeviceToken {
   bz_threshold: number;
   last_notified_at: string | null;
   last_bz_notified_at: string | null;
-  lat: number | null;
-  lon: number | null;
   tz_offset_min: number | null;
   profiles: QuietProfile;
 }
@@ -132,34 +128,23 @@ function inQuietHours(p: QuietProfile | null, tzOffsetMin: number | null): boole
   return qs < qe ? h >= qs && h < qe : h >= qs || h < qe;
 }
 
-// Dipole-approximation aurora visibility (mirrors src/utils/auroraVisibility.ts —
-// keep the two in step). Returns 0 if aurora is not expected at this lat/lon.
+// There is deliberately NO aurora-visibility gate here. This used to carry an
+// inline copy of calcAuroraVisibility (src/utils/auroraVisibility.ts) and both
+// Kp passes dropped anyone it scored at 0.
 //
-// Math.abs(gmlat): a dipole is symmetric, so the southern auroral oval sits at
-// the same magnitude of geomagnetic latitude as the northern one. Without it
-// every southern gmlat was negative against a positive boundary, this returned 0
-// for all of Australia, New Zealand, southern Chile and Antarctica at every Kp —
-// and since both alert passes below gate on `> 0`, **no southern subscriber
-// could ever be sent a storm notification.**
-// Constants are NOAA SWPC's, not invented: oval edge 66° at Kp 0 moving 2° per
-// Kp, and aurora still visible ~1000 km (≈9°) equatorward of that edge.
-// https://www.spaceweather.gov/content/tips-viewing-aurora
+// Two things were wrong with that. It silently overrode the one setting the user
+// actually chose: after the 2026-08-13 recalibration Sofia scores 0 until Kp
+// 8.33, so someone there who asked for alerts at Kp 5 would have received none —
+// their threshold was overruled by a filter they never saw. And it answered a
+// question these notifications do not ask: the body reads "Kp has reached X,
+// above your threshold of Y", which promises a storm, not a sight of one. A
+// geomagnetic storm has effects at mid-latitudes whether or not the oval is
+// overhead, and this app reports them.
 //
-// No darkness term on purpose. This gates *storm alerts*, which answer "is a
-// storm running" — a notification in the afternoon is how someone learns to go
-// out after dark. Gating on current darkness would silence daytime storms.
-function calcAuroraVisibility(lat: number, lon: number, kp: number): number {
-  const POLE_LAT = 80.7 * (Math.PI / 180);
-  const POLE_LON = -72.2 * (Math.PI / 180);
-  const latR = lat * (Math.PI / 180);
-  const lonR = lon * (Math.PI / 180);
-  const sinGm = Math.sin(latR) * Math.sin(POLE_LAT) + Math.cos(latR) * Math.cos(POLE_LAT) * Math.cos(lonR - POLE_LON);
-  const gmlat = Math.asin(Math.max(-1, Math.min(1, sinGm))) * (180 / Math.PI);
-  const margin = Math.abs(gmlat) - (66.0 - 2.0 * kp);
-  if (margin >= 0) return 100;
-  const reach = Math.max(0, (margin + 9.0) / 9.0);
-  return Math.round(reach * reach * 100); // squared — see the JS copy for why
-}
+// So the threshold decides alone, and the copy of the visibility model is gone
+// with it — one fewer place to keep in step with the JS. If the gate ever comes
+// back it should be an explicit per-subscription opt-in ("only when it is
+// visible from my location"), never an implicit override.
 
 // ── APNs JWT helpers ─────────────────────────────────────────────────────────
 
@@ -432,7 +417,7 @@ Deno.serve(async (req: Request) => {
   // Trialing users are also included (trialing = pro access).
   const { data: subs, error: subsError } = await supabase
     .from('push_subscriptions')
-    .select('id, endpoint, p256dh, auth, threshold_kp, bz_alerts_enabled, bz_threshold, last_bz_notified_at, lat, lon, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
+    .select('id, endpoint, p256dh, auth, threshold_kp, bz_alerts_enabled, bz_threshold, last_bz_notified_at, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
     .lte('threshold_kp', currentKp)
     .or(`last_notified_at.is.null,last_notified_at.lt.${cooldownCutoff}`)
     .or('profiles.plan.in.(pro,premium),profiles.subscription_status.eq.trialing', { referencedTable: 'profiles' });
@@ -443,13 +428,7 @@ Deno.serve(async (req: Request) => {
     const expiredIds: string[] = [];
 
     await Promise.allSettled(
-      (subs as unknown as PushSub[]).filter(sub => {
-        if (inQuietHours(sub.profiles, sub.tz_offset_min)) return false;
-        if (sub.lat !== null && sub.lon !== null) {
-          return calcAuroraVisibility(sub.lat, sub.lon, currentKp) > 0;
-        }
-        return true; // unknown location → send
-      }).map(async (sub) => {
+      (subs as unknown as PushSub[]).filter(sub => !inQuietHours(sub.profiles, sub.tz_offset_min)).map(async (sub) => {
         try {
           await webpush.sendNotification(
             { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
@@ -485,7 +464,7 @@ Deno.serve(async (req: Request) => {
   if (apnsEnabled || fcmEnabled) {
     const { data: tokens, error: tokensError } = await supabase
       .from('device_push_tokens')
-      .select('id, token, platform, threshold_kp, bz_alerts_enabled, bz_threshold, last_notified_at, last_bz_notified_at, lat, lon, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
+      .select('id, token, platform, threshold_kp, bz_alerts_enabled, bz_threshold, last_notified_at, last_bz_notified_at, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
       .lte('threshold_kp', currentKp)
       .or(`last_notified_at.is.null,last_notified_at.lt.${cooldownCutoff}`)
       .or('profiles.plan.in.(pro,premium),profiles.subscription_status.eq.trialing', { referencedTable: 'profiles' });
@@ -496,11 +475,7 @@ Deno.serve(async (req: Request) => {
       const eligible = (tokens as unknown as DeviceToken[]).filter(t => {
         if (t.platform === 'ios' && !apnsEnabled) return false;
         if (t.platform === 'android' && !fcmEnabled) return false;
-        if (inQuietHours(t.profiles, t.tz_offset_min)) return false;
-        if (t.lat !== null && t.lon !== null) {
-          return calcAuroraVisibility(t.lat, t.lon, currentKp) > 0;
-        }
-        return true; // unknown location → send
+        return !inQuietHours(t.profiles, t.tz_offset_min);
       });
 
       const needApns = apnsEnabled && eligible.some(t => t.platform === 'ios');
@@ -611,7 +586,7 @@ Deno.serve(async (req: Request) => {
     const [webRes, nativeRes] = await Promise.all([
       supabase
         .from('push_subscriptions')
-        .select('id, endpoint, p256dh, auth, bz_threshold, lat, lon, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
+        .select('id, endpoint, p256dh, auth, bz_threshold, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
         .eq('bz_alerts_enabled', true)
         .gte('bz_threshold', bz)   // threshold is negative; Bz at or below it fires
         .or(`last_bz_notified_at.is.null,last_bz_notified_at.lt.${bzCooldownCutoff}`)
@@ -619,7 +594,7 @@ Deno.serve(async (req: Request) => {
       (apnsEnabled || fcmEnabled)
         ? supabase
             .from('device_push_tokens')
-            .select('id, token, platform, bz_threshold, lat, lon, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
+            .select('id, token, platform, bz_threshold, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
             .eq('bz_alerts_enabled', true)
             .gte('bz_threshold', bz)
             .or(`last_bz_notified_at.is.null,last_bz_notified_at.lt.${bzCooldownCutoff}`)
