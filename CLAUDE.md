@@ -197,10 +197,23 @@ All NOAA/external fetches go through an in-memory TTL cache + single-flight dedu
 трета от единица, което на суров ключ би отваряло скрит банер по няколко пъти на
 ден. Качване през G граница нарочно го отваря пак.
 
-`parseNoaaTime` слага `Z`, защото NOAA стъмпва `2026-08-15T18:00:00` — ISO-подобно,
-но **без offset**, което ECMAScript чете като *локално* време. **`new Date(item.time_tag)`
-в `Forecast.tsx` и `Calendar.tsx` още носи това изместване** (3 часа за България)
-— познато, непоправено.
+### NOAA времената нямат offset — минавай през `parseNoaaTime`
+
+NOAA стъмпва редовете си `2026-08-15T18:00:00` (понякога с интервал вместо `T`) —
+ISO-подобно, но **без offset**, което ECMAScript чете като *локално* време.
+Feed-ът е UTC. [src/utils/noaaTime.ts](src/utils/noaaTime.ts) е единственият
+правилен прочит; `noaaTimeSeconds` е същото в epoch секунди за графиките.
+
+Това не беше козметично. Нощният прозорец на Calendar е 20:00–06:00 **локално**, а
+бин на 18:00Z е 21:00 в София — вътре в прозореца. Четен направо, ставаше 18:00 и
+**изпадаше от нощта**, тоест пиковото Kp за нощта се занижаваше (измерено: 6.0
+вместо 7.0) заедно с извлечения от него шанс за аврора. Forecast слагаше бинове на
+грешен час по x-оста; Dashboard плъзгаше 24-часовия си прозорец за слънчев вятър.
+
+Оцеляло беше защото **четенето беше разцепено**: четири места вече пишеха
+`new Date(t.replace(' ', 'T') + 'Z')` на ръка, три — не. Същият модел като деветте
+ръчни копия на Kp приоритета, станали `resolveKp`. Сега всички минават през
+`parseNoaaTime`; `noaaTime.test.ts` пази и еквивалентността със стария ръчен израз.
 
 ### Светла тема: `text-white` върху тъмен фон не работи
 
@@ -482,7 +495,8 @@ Manual chunks in `vite.config.ts` keep the initial bundle small:
 - `src/utils/auroraVisibility.ts` — pure math aurora visibility % from lat/lon/Kp (dipole approximation, no API)
 - `src/utils/logger.ts` — `logError()` wrapper (console in dev, Sentry in prod)
 - `src/utils/generateStormImage.ts` — generates OG share images for storm events
-- `src/utils/stormOutlook.ts` — peak Kp in the NOAA 3-day forecast + `parseNoaaTime`. React-free and import-free so it unit-tests standalone, the same reason `send-kp-alerts/bz.ts` is
+- `src/utils/stormOutlook.ts` — peak Kp in the NOAA 3-day forecast. React-free and app-import-free so it unit-tests standalone, the same reason `send-kp-alerts/bz.ts` is
+- `src/utils/noaaTime.ts` — `parseNoaaTime` / `noaaTimeSeconds`. **The only correct way to read a NOAA `time_tag`** — the stamps carry no offset (see above)
 
 ## Ideas / Future Plans
 
@@ -492,17 +506,7 @@ _(Add ideas and future feature plans here as they come up)_
 
 ### Какво остава — актуално към 2026-08-13
 
-Едно известно кодово нещо (долу); всичко останало иска потребителя или
-устройство/акаунт.
-
-**Известен бъг, непоправен:**
-- **NOAA времената се четат като локални във `Forecast.tsx` и `Calendar.tsx`.**
-  `new Date(item.time_tag)` върху `2026-08-15T18:00:00` — ISO-подобно, но без
-  offset, което ECMAScript чете като локално време. Feed-ът е UTC, значи за
-  България всичко е изместено с 3 часа: „нощта" в Calendar и часовете по
-  x-оста в Forecast. Поправката е `parseNoaaTime` от
-  [src/utils/stormOutlook.ts](src/utils/stormOutlook.ts), която вече прави точно
-  това. Не е пипано, защото беше извън обхвата на задачата от 13.08.
+Кодова работа няма. Всичко долу иска или потребителя, или устройство/акаунт.
 
 **При потребителя (минути):**
 - **Vercel env:** `VITE_VAPID_PUBLIC_KEY` (web push — хукът и SW-ът са готови) и

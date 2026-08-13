@@ -14,6 +14,7 @@ import {
   getKpForecast, getKpHistory3Day, get27DayOutlook, getStormStatus, getKpGradientStyle,
   getSpaceWeatherOutlook, resolveKp, type SpaceWeatherOutlook, type DayOutlook,
 } from '../services/noaaApi';
+import { parseNoaaTime, noaaTimeSeconds } from '../utils/noaaTime';
 import { getNightsCloudCover, type NightForecast } from '../services/skyApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
@@ -59,7 +60,9 @@ const Forecast = () => {
     try {
       const kpData = await getKpForecast();
       const formattedData = (kpData ?? []).map((item) => {
-        const date = new Date(item.time_tag);
+        // Offset-less NOAA stamp — see noaaTime.ts. Read naked it put every
+        // forecast bin on the wrong hour of the x-axis outside UTC.
+        const date = parseNoaaTime(item.time_tag);
         return {
           time: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
           fullTime: date.toLocaleString(),
@@ -198,7 +201,7 @@ const Forecast = () => {
     const windowEnd = nowSec - 24 * 3600;
     return historyRaw
       .map(item => ({
-        time: Math.floor(new Date(item.time_tag.replace(' ', 'T') + 'Z').getTime() / 1000) as TsPoint['time'],
+        time: noaaTimeSeconds(item.time_tag) as TsPoint['time'],
         value: item.Kp ?? 0,
       }))
       .filter(p => p.time >= windowStart && p.time <= windowEnd)
