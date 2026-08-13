@@ -140,6 +140,8 @@ const en: Record<string, string> = {
   'home.trustedSourcesDesc': 'Our forecasts are powered by NOAA Space Weather Prediction Center, NASA DONKI, ESA Space Weather Service, and the National Institute of Geophysics and Geodesy (Bulgaria).',
   'home.comingSoon': 'Coming Soon',
   'home.stormBanner': 'GEOMAGNETIC STORM IN PROGRESS — Kp',
+  'stormWatch.expected': 'STORM EXPECTED',
+  'stormWatch.dismiss': 'Dismiss',
   'home.tagline': 'Monitoring the sun. Protecting the Earth.',
 
   // Dashboard

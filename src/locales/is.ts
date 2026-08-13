@@ -133,6 +133,8 @@ const is_: Record<string, string> = {
   'home.trustedSourcesDesc': 'Spár okkar byggja á NOAA, NASA DONKI, ESA og NIGGG.',
   'home.comingSoon': 'Kemur fljótlega',
   'home.stormBanner': 'JARÐSEGULSTORMUR Í GANGI — Kp',
+  'stormWatch.expected': 'STORMUR VÆNTANLEGUR',
+  'stormWatch.dismiss': 'Loka',
   'home.tagline': 'Vökum yfir sólinni. Verndum jörðina.',
   'home.liveSpaceWeather': 'Beinlínis geimveður',
   'home.solarWind': 'Sólvindur',

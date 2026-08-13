@@ -134,6 +134,8 @@ const bg: Record<string, string> = {
   'home.feature.livestream.title': 'Livestream',
   'home.feature.livestream.desc': 'Гледайте камери на живо от Норвегия, Исландия и Финландия — базирано на Cloudflare Stream.',
   'home.stormBanner': 'ГЕОМАГНИТНА БУРЯ — Kp',
+  'stormWatch.expected': 'ОЧАКВА СЕ БУРЯ',
+  'stormWatch.dismiss': 'Скрий',
   'home.trustedSources': 'Доверени източници на данни',
   'home.trustedSourcesDesc': 'Прогнозите ни са базирани на NOAA Space Weather Prediction Center, NASA DONKI, ESA Space Weather Service и Националния институт по геофизика и геодезия (България).',
   'home.comingSoon': 'Очаквайте скоро',

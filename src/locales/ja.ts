@@ -80,6 +80,8 @@ const ja: Record<string, string> = {
   'home.stormScore.severe': '深刻',
   'home.features2.title': '嵐を追跡するために必要なすべて',
   'home.stormBanner': '地磁気嵐が発生中 — Kp',
+  'stormWatch.expected': '磁気嵐が予想されます',
+  'stormWatch.dismiss': '閉じる',
   'home.trustedSources': '信頼できるデータソース',
   'home.trustedSourcesDesc': '私たちの予報は、NOAA宇宙天気予報センター、NASA DONKI、ESA宇宙天気サービス、および国立地球物理・測地研究所（ブルガリア）のデータに基づいています。',
   'home.tagline': '太陽を監視する。地球を守る。',

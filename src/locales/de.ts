@@ -80,6 +80,8 @@ const de: Record<string, string> = {
   'home.stormScore.severe': 'Schwer',
   'home.features2.title': 'Alles, was du brauchst, um den Sturm zu verfolgen',
   'home.stormBanner': 'GEOMAGNETISCHER STURM — Kp',
+  'stormWatch.expected': 'STURM ERWARTET',
+  'stormWatch.dismiss': 'Ausblenden',
   'home.trustedSources': 'Vertrauenswürdige Datenquellen',
   'home.trustedSourcesDesc': 'Unsere Vorhersagen basieren auf dem NOAA-Weltraumwettervorhersagezentrum, NASA DONKI, ESA Space Weather Service und dem Nationalen Institut für Geophysik und Geodäsie (Bulgarien).',
   'home.tagline': 'Die Sonne beobachten. Die Erde schützen.',

@@ -133,6 +133,8 @@ const fi: Record<string, string> = {
   'home.trustedSourcesDesc': 'Ennusteemme perustuvat NOAA:n, NASA DONKIn, ESA:n ja NIGGGn tietoihin.',
   'home.comingSoon': 'Tulossa pian',
   'home.stormBanner': 'GEOMAGNEETTINEN MYRSKY KÄYNNISSÄ — Kp',
+  'stormWatch.expected': 'MYRSKY ODOTETTAVISSA',
+  'stormWatch.dismiss': 'Hylkää',
   'home.tagline': 'Seurataan aurinkoa. Suojataan Maata.',
   'home.liveSpaceWeather': 'Live avaruussää',
   'home.solarWind': 'Aurinkotuuli',

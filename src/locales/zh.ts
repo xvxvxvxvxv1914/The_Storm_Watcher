@@ -80,6 +80,8 @@ const zh: Record<string, string> = {
   'home.stormScore.severe': '严重',
   'home.features2.title': '追踪风暴所需的一切',
   'home.stormBanner': '地磁暴正在进行 — Kp',
+  'stormWatch.expected': '预计发生地磁暴',
+  'stormWatch.dismiss': '关闭',
   'home.trustedSources': '可信数据来源',
   'home.trustedSourcesDesc': '我们的预报由NOAA空间天气预报中心、NASA DONKI、ESA空间天气服务和国家地球物理与大地测量研究所（保加利亚）提供支持。',
   'home.tagline': '监测太阳。保护地球。',

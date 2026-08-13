@@ -133,6 +133,8 @@ const pl: Record<string, string> = {
   'home.trustedSourcesDesc': 'Nasze prognozy opierają się na NOAA, NASA DONKI, ESA i NIGGG.',
   'home.comingSoon': 'Wkrótce',
   'home.stormBanner': 'BURZA GEOMAGNETYCZNA W TOKU — Kp',
+  'stormWatch.expected': 'SPODZIEWANA BURZA',
+  'stormWatch.dismiss': 'Zamknij',
   'home.tagline': 'Obserwujemy słońce. Chronimy Ziemię.',
   'home.liveSpaceWeather': 'Pogoda kosmiczna na żywo',
   'home.solarWind': 'Wiatr słoneczny',

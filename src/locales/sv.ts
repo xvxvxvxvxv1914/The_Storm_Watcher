@@ -133,6 +133,8 @@ const sv: Record<string, string> = {
   'home.trustedSourcesDesc': 'Våra prognoser drivs av NOAA, NASA DONKI, ESA och NIGGG.',
   'home.comingSoon': 'Kommer snart',
   'home.stormBanner': 'GEOMAGNETISK STORM PÅGÅR — Kp',
+  'stormWatch.expected': 'STORM VÄNTAS',
+  'stormWatch.dismiss': 'Stäng',
   'home.tagline': 'Övervakar solen. Skyddar Jorden.',
   'home.liveSpaceWeather': 'Live rymdväder',
   'home.solarWind': 'Solvind',
