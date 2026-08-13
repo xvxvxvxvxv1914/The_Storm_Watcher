@@ -148,16 +148,70 @@ All NOAA/external fetches go through an in-memory TTL cache + single-flight dedu
 
 | Service | Source | Notes |
 |---------|--------|-------|
-| `noaaApi.ts` | NOAA SWPC + GFZ | Kp index (GFZ primary, NOAA fallback), solar wind, X-ray, aurora OVATION model, 3-day outlook |
+| `noaaApi.ts` | NOAA SWPC + GFZ | Kp index (GFZ primary, NOAA fallback), solar wind, X-ray, aurora OVATION model, 3-day outlook, **Kyoto Dst** |
 | `nigggApi.ts` | NIGGG Bulgaria | Local magnetic field (H/F components). On native Capacitor, calls the endpoint directly; on web goes through `/api/niggg` Vercel rewrite |
 | `donkiApi.ts` | NOAA DONKI | CME/solar flare alerts. Web goes through the `/donki` Vercel rewrite; native calls the upstream directly (CapacitorHttp) — the rewrite does not exist under `capacitor://localhost` |
 | `uvApi.ts` | Open-Meteo | UV index by coords |
 | `skyApi.ts` | Open-Meteo | Cloud cover + astronomy data |
 | `issApi.ts` | Where The ISS At | ISS position |
 
+**Dst не е Kp и не бива да се съгласува с него.** Kp е 3-часов *range* индекс от
+среднищирочинни обсерватории — казва колко се е разлюляло полето. Dst мери самия
+пръстенов ток и е това, което класифицира силата на бурята. Двата легитимно се
+разминават (проверено: Kp 0.2 „quiet" срещу Dst −142 „intense"), затова картите
+са независими; примиряването им би измислило число, което никой източник не
+публикува. Праговете (−30 / −50 / −100 / −250) са публикуваните и **не се
+подравняват** към Kp лентите.
+
+`latestDst` прескача дупките назад, вместо да ги чете като 0 — **Dst 0 е реална
+спокойна стойност**, същият капан като GFZ trailing null bins-овете при Kp. Без
+използваема стойност картата показва `—`, не измислена нула. Тестове в
+`src/services/dst.test.ts`.
+
+Източникът (`services.swpc.noaa.gov/products/kyoto-dst.json`) връща
+`Access-Control-Allow-Origin: *`, значи за разлика от GFZ **не иска proxy** на web
+и няма нужда от CapacitorHttp специален случай на native.
+
 ### API proxies
 - **Dev**: Vite proxy in `vite.config.ts` handles `/donki`, `/api/niggg`, `/api/gfz`, `/api/stripe`
 - **Prod**: `vercel.json` rewrites handle `/donki` and `/api/gfz`; NIGGG has a dedicated Vercel serverless function at `api/niggg.ts`; Stripe is handled by `api/stripe/` serverless functions
+
+### Двете ленти в хедъра (буря)
+
+`Navigation` рендира **точно една** от две ленти, взаимно изключващи се:
+
+1. **Текуща буря** — live Kp ≥ 5, пулсиращ градиент, `role="alert"`. Ретроспективна
+   по конструкция: Kp е 3-часов индекс, значи докато тя се появи, изкачването е
+   минало.
+2. **Предстояща буря** — `StormWatchBanner`, когато няма измерена буря, а NOAA
+   3-дневната прогноза дава пик Kp ≥ 5. Без вход и без план — push алармите са
+   Pro-only, така че това е единственото предупреждение, което непознат посетител
+   получава. Спокойна и статична, за да не звучи като измерване; скриваема.
+
+**Свързаност, която лесно се чупи:** `<main>` в `App.tsx` резервира 2.25rem за
+лентата и това виси на `isStorm || outlookVisible`. Добавиш ли трета лента или
+пуснеш ли двете едновременно, съдържанието влиза под фиксирания хедър.
+
+Скриването е ключирано на **времето на пика + G нивото**, не на суровия Kp
+(`outlookToken`): NOAA преиздава прогнозата ~3 пъти дневно и мърда стойността с
+трета от единица, което на суров ключ би отваряло скрит банер по няколко пъти на
+ден. Качване през G граница нарочно го отваря пак.
+
+`parseNoaaTime` слага `Z`, защото NOAA стъмпва `2026-08-15T18:00:00` — ISO-подобно,
+но **без offset**, което ECMAScript чете като *локално* време. **`new Date(item.time_tag)`
+в `Forecast.tsx` и `Calendar.tsx` още носи това изместване** (3 часа за България)
+— познато, непоправено.
+
+### Светла тема: `text-white` върху тъмен фон не работи
+
+`index.css` пребива `html.light {p,h1,h2,h3,span,label,div,a,button}.text-white`
+на `#1e293b`, за да оцелеят нормалните надписи върху светлата повърхност.
+Компонент с **нарочно тъмен фон** попада в същото правило и текстът му става тъмно
+сиво върху тъмно — лентата за текуща буря стоя така, измерено на 1.6:1.
+
+Файлът има изключение за `.text-white.bg-slate-900|800|black`. За произволен hex
+фон вземи цвета **inline** (`style={{ color: '#ffffff' }}`) — inline бие класовото
+правило. Не съди по код, измервай: `getComputedStyle(el).color`.
 
 ### Access control
 `PlanGuard` component wraps routes/sections that require `pro` or `premium`. It reads `profile.plan` from AuthContext. When `VITE_PAYMENTS_ENABLED !== 'true'`, all content is accessible regardless of plan — useful for development.
@@ -428,6 +482,7 @@ Manual chunks in `vite.config.ts` keep the initial bundle small:
 - `src/utils/auroraVisibility.ts` — pure math aurora visibility % from lat/lon/Kp (dipole approximation, no API)
 - `src/utils/logger.ts` — `logError()` wrapper (console in dev, Sentry in prod)
 - `src/utils/generateStormImage.ts` — generates OG share images for storm events
+- `src/utils/stormOutlook.ts` — peak Kp in the NOAA 3-day forecast + `parseNoaaTime`. React-free and import-free so it unit-tests standalone, the same reason `send-kp-alerts/bz.ts` is
 
 ## Ideas / Future Plans
 
@@ -435,9 +490,19 @@ _(Add ideas and future feature plans here as they come up)_
 
 ## TODO / Pending Work
 
-### Какво остава — актуално към 2026-08-09
+### Какво остава — актуално към 2026-08-13
 
-Кодова работа няма. Всичко долу иска или потребителя, или устройство/акаунт.
+Едно известно кодово нещо (долу); всичко останало иска потребителя или
+устройство/акаунт.
+
+**Известен бъг, непоправен:**
+- **NOAA времената се четат като локални във `Forecast.tsx` и `Calendar.tsx`.**
+  `new Date(item.time_tag)` върху `2026-08-15T18:00:00` — ISO-подобно, но без
+  offset, което ECMAScript чете като локално време. Feed-ът е UTC, значи за
+  България всичко е изместено с 3 часа: „нощта" в Calendar и часовете по
+  x-оста в Forecast. Поправката е `parseNoaaTime` от
+  [src/utils/stormOutlook.ts](src/utils/stormOutlook.ts), която вече прави точно
+  това. Не е пипано, защото беше извън обхвата на задачата от 13.08.
 
 **При потребителя (минути):**
 - **Vercel env:** `VITE_VAPID_PUBLIC_KEY` (web push — хукът и SW-ът са готови) и
@@ -450,15 +515,15 @@ _(Add ideas and future feature plans here as they come up)_
   копие е в **Supabase → Edge Functions → Secrets → `VAPID_PUBLIC_KEY`**,
   създадено 2026-04-25 заедно с `VAPID_PRIVATE_KEY`. `supabase secrets list`
   показва само дайджести, не стойности — трябва дашбордът.
-- **Merge staging → main** — комитите от 09.08: CI fix, възкресеният SW +
-  InstallPrompt + splash, езиковият redirect, 16 KB, приглушеният цвят,
-  `ip_hash`, `donki-proxy`, npm audit → 0. Гаси и 3-те Dependabot аларми на
-  main (фиксът е в staging). Само по изрична команда на потребителя.
-- **CI: провери първия run след поправките.** CI не е бил зелен от 26 април
-  (~712 поредни червени; никой не е гледал). Unit-env причината е поправена
-  09.08 (`0a38290` — hermetic placeholder env в ci.yml, `src/lib/supabase.ts`
-  хвърля при import без него). E2E стъпката никога не е стигана на зелен
-  runner — може да крие следваща изненада.
+- **CI: провери run-овете от 13.08.** CI не е бил зелен от 26 април (~712
+  поредни червени; никой не е гледал). Unit-env причината е поправена 09.08
+  (`0a38290` — hermetic placeholder env в ci.yml, `src/lib/supabase.ts` хвърля
+  при import без него). **E2E стъпката още никога не е стигана на зелен
+  runner** — тя е следващата възможна изненада. На 13.08 в main влязоха два
+  merge-а (`0619199`, `8b725a9`), значи има пресни run-ове за гледане.
+
+  Merge staging → main от 09.08 **е свършен** — беше вписан тук като чакащ,
+  но `cd9a034` вече го съдържаше.
 
 **Едно останало решение на потребителя:**
 - **Cron на седмичния дайджест.** Функцията е поправена и deploy-ната правилно
