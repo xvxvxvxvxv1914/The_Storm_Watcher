@@ -10,9 +10,9 @@ import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
 import SvgBarChart from '../components/charts/SvgBarChart';
-import { Activity, Wind, Compass, Sun, Radio, MapPin, Download, Share2, GripVertical } from 'lucide-react';
+import { Activity, Wind, Compass, Sun, Radio, MapPin, Download, Share2, GripVertical, Orbit } from 'lucide-react';
 import { generateStormScoreImage } from '../utils/generateStormImage';
-import { getKpIndex, getSolarWind, getMagField, getXrayFlux, getKpHistory3Day, getKpForecast, getStormStatus, getXrayClass, getKpGradientStyle, latestSolarWindSpeed, resolveKp } from '../services/noaaApi';
+import { getKpIndex, getSolarWind, getMagField, getXrayFlux, getKpHistory3Day, getKpForecast, getStormStatus, getXrayClass, getKpGradientStyle, latestSolarWindSpeed, resolveKp, getDst, latestDst, getDstStatus } from '../services/noaaApi';
 import PlanGuard from '../components/PlanGuard';
 import { fetchNigggData, toDeltaSeries, getNigggStormStatus, type NigggDataPoint } from '../services/nigggApi';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -86,7 +86,7 @@ const UpdateCountdown = React.memo(function UpdateCountdown() {
   return <span className="text-[#f97316] font-mono font-bold tracking-wider">{countdown}</span>;
 });
 
-const CARD_IDS = ['kp', 'wind', 'bz', 'xray'] as const;
+const CARD_IDS = ['kp', 'dst', 'wind', 'bz', 'xray'] as const;
 type CardId = (typeof CARD_IDS)[number];
 const DASHBOARD_ORDER_KEY = 'tsw_dashboard_order';
 
@@ -95,11 +95,20 @@ function loadCardOrder(): CardId[] {
     const saved = localStorage.getItem(DASHBOARD_ORDER_KEY);
     if (saved) {
       const parsed: unknown = JSON.parse(saved);
-      if (
-        Array.isArray(parsed) &&
-        parsed.length === CARD_IDS.length &&
-        (parsed as string[]).every(id => (CARD_IDS as readonly string[]).includes(id))
-      ) return parsed as CardId[];
+      if (Array.isArray(parsed)) {
+        // Keep whatever the user arranged and append cards they have never seen.
+        // The old test demanded an exact length match against CARD_IDS, so
+        // shipping a fifth card would have silently discarded every saved
+        // layout; a new card now simply lands at the end. Unknown and duplicate
+        // ids are dropped, so a stale or hand-edited value cannot render twice.
+        const known = (parsed as unknown[]).filter(
+          (id, i, all): id is CardId =>
+            typeof id === 'string'
+            && (CARD_IDS as readonly string[]).includes(id)
+            && all.indexOf(id) === i,
+        );
+        if (known.length > 0) return [...known, ...CARD_IDS.filter(id => !known.includes(id))];
+      }
     }
   } catch { /* ignore */ }
   return [...CARD_IDS];
@@ -121,6 +130,7 @@ const Dashboard = () => {
   const [solarWindSpeed, setSolarWindSpeed] = useState<number>(0);
   const [bz, setBz] = useState<number>(0);
   const [xrayFlux, setXrayFlux] = useState<number>(0);
+  const [dst, setDst] = useState<number | null>(null);
   const [kpChartData, setKpChartData] = useState<TsPoint[]>([]);
   const [windChartData, setWindChartData] = useState<TsPoint[]>([]);
   const [nigggData, setNigggData] = useState<NigggDataPoint[]>([]);
@@ -203,19 +213,21 @@ const Dashboard = () => {
   const fetchData = useCallback(async () => {
     setError(false);
     try {
-      const [kpRes, windRes, magRes, xrayRes, kp3dayRes, nigggRes] = await Promise.allSettled([
+      const [kpRes, windRes, magRes, xrayRes, kp3dayRes, nigggRes, dstRes] = await Promise.allSettled([
         getKpIndex(),
         getSolarWind(),
         getMagField(),
         getXrayFlux(),
         getKpHistory3Day(),
         inNigggRegion ? fetchNigggData() : Promise.resolve(null),
+        getDst(),
       ]);
 
       const kpData    = kpRes.status    === 'fulfilled' ? kpRes.value    : null;
       const windData  = windRes.status  === 'fulfilled' ? windRes.value  : null;
       const magData   = magRes.status   === 'fulfilled' ? magRes.value   : null;
       const xrayData  = xrayRes.status  === 'fulfilled' ? xrayRes.value  : null;
+      const dstData   = dstRes.status   === 'fulfilled' ? dstRes.value   : null;
       const kp3dayData = kp3dayRes.status === 'fulfilled' ? kp3dayRes.value : null;
       const nigggResult = nigggRes.status === 'fulfilled' ? nigggRes.value : null;
 
@@ -265,6 +277,10 @@ const Dashboard = () => {
       } else {
         setXrayFlux(0);
       }
+
+      // null, not 0 — Dst 0 is a genuine "no ring current" reading, so the card
+      // has to be able to say "no data" instead of quietly claiming quiet.
+      setDst(latestDst(dstData));
 
       if (nigggResult && nigggResult.hComponent.length > 0) {
         setNigggData(toDeltaSeries(nigggResult.hComponent));
@@ -521,7 +537,7 @@ const Dashboard = () => {
           </button>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6 mb-4 md:mb-12">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-2 sm:gap-6 mb-4 md:mb-12">
           {cardOrder.map((id, idx) => {
             const isDropTarget = dragOverIdx === idx;
             const dragProps = {
@@ -569,6 +585,39 @@ const Dashboard = () => {
                 </div>
               </div>
             );
+
+            if (id === 'dst') {
+              // Independent of the Kp card on purpose: Dst measures the ring
+              // current, Kp the mid-latitude range, and the two legitimately
+              // disagree — a G1 on Kp can sit above -50 nT here. Showing both
+              // is the point; reconciling them would invent a number neither
+              // source publishes.
+              const status = dst === null ? null : getDstStatus(dst);
+              return (
+                <div key="dst" {...dragProps} className={`group relative glass-surface rounded-2xl p-3 sm:p-6 hover:glow-orange transition-all hover:scale-105 ${dropRing}`}>
+                  {dragHandle}
+                  <InfoTooltip text={t('dashboard.tooltip.dst')} />
+                  <div className="flex items-center gap-2 mb-2 sm:mb-4">
+                    <div className={`w-8 h-8 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center bg-gradient-to-br ${status?.gradient ?? 'from-[#64748b] to-[#475569]'}`}>
+                      <Orbit className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
+                    </div>
+                    <h3 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
+                      {t('dashboard.dst')}
+                    </h3>
+                  </div>
+                  <div className={`text-[1.4rem] sm:text-6xl font-bold mb-2 sm:mb-3 ${status?.color ?? 'text-[#64748b]'}`}>
+                    {dst === null ? '—' : dst.toFixed(0)}
+                  </div>
+                  {status ? (
+                    <div className={`inline-block px-2 py-1 sm:px-4 sm:py-2 rounded-lg text-[0.6rem] sm:text-xs font-bold uppercase tracking-wider text-white bg-gradient-to-r ${status.gradient}`}>
+                      {t(status.statusKey)}
+                    </div>
+                  ) : (
+                    <div className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider">{t('dashboard.nt')}</div>
+                  )}
+                </div>
+              );
+            }
 
             if (id === 'wind') return (
               <div key="wind" {...dragProps} data-tour="wind-card" className={`group relative glass-surface rounded-2xl p-3 sm:p-6 hover:glow-purple transition-all hover:scale-105 ${dropRing}`}>
