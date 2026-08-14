@@ -101,6 +101,38 @@ is what would have broken CI on Linux. The suite is 396/396 locally now; a
 failure here is real again. If another generated file ever gets a byte-comparison
 test, give it the same line.
 
+### Двата предпазителя около деплоя (от 2026-08-14)
+
+Сайтът беше бял над час и **нищо не го хвана**: CI беше зелен, всички статуси 200,
+Sentry с нула събития. Затова има две проверки, всяка родена от конкретен провал.
+
+```bash
+npm run check:vercel   # преди комит и в CI
+npm run smoke          # срещу production; SMOKE_URL сочи другаде при нужда
+```
+
+**`scripts/check-vercel-config.mjs`** — бял списък на позволените ключове в
+`vercel.json`. Сложих `"_comment"` вътре в rewrite, Vercel отхвърли **цялата**
+конфигурация, двата деплоя отидоха в `ERROR` **без нито един ред build лог**, а CI
+остана зелен, защото никой не гледа този файл. Проверява и че catch-all-ът изключва
+`/assets/` — иначе липсващ бъндъл се връща като `index.html` с 200 и CDN-ът го
+кешира **като бъндъла**, с година свежест.
+
+**`scripts/smoke-production.mjs`** — обхожда целия граф от импорти на живия сайт и
+твърди, че всеки `.js` наистина се сервира като JavaScript. Точно това пропуснаха
+всички други проверки: `/assets/supabase-vendor-DI0HthDz.js` върна `index.html` със
+статус 200 и `content-type: text/html`, модулът не се парсна и `#root` остана
+празен. **HTTP/1.1 клиенти получаваха верния файл**, затова curl и `Invoke-WebRequest`
+показваха здрав сайт, докато всеки истински браузър виждаше бяло.
+
+`.github/workflows/production-smoke.yml` го пуска след успешен production деплой
+**и на всеки 6 часа**. Разписанието не е излишно: отровеният запис живееше в кеша
+много след деплоя, който го създаде, и щеше да живее там неопределено дълго.
+
+И двата скрипта са доказани срещу счупено състояние, не само срещу здраво —
+`check:vercel` вали и на `_comment`, и на catch-all без изключението; smoke тестът
+беше пуснат срещу локален сървър, който имитира точно онзи отговор.
+
 ### Driving the device from the terminal
 
 Synthetic swipes and taps are unreliable on One UI — they open the app drawer,
