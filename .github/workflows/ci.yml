@@ -11,9 +11,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      # v5 across the board: the v4 line targets Node 20, which the runners now
+      # force onto Node 24 with a deprecation warning. The shim is what keeps
+      # these green today, so the bump is not cosmetic — when it goes, a CI
+      # nobody watches would break at whatever moment GitHub picks.
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 20
           cache: npm
@@ -60,7 +64,7 @@ jobs:
 
       - name: Upload Playwright report on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: playwright-report
           path: playwright-report
