@@ -53,14 +53,24 @@ export const fetchJson = async <T,>(
       if (!text.trim()) throw new Error(`Empty body from ${url}`);
       try {
         return JSON.parse(text) as T;
-      } catch {
+      } catch (first) {
         // Second chance for upstreams that emit NaN/Infinity (see above). If the
         // repair does not produce valid JSON either, the payload is genuinely
         // broken — report the original failure, naming the endpoint.
         try {
           return JSON.parse(repairNonStandardJson(text)) as T;
         } catch {
-          throw new Error(`Malformed JSON from ${url} (${text.length} bytes)`);
+          // Carry the parser's own words. Without them every failure looked
+          // alike in Sentry and there was no way to tell a body cut mid-stream
+          // ("Unexpected end of JSON input") from a genuinely malformed one —
+          // which left five real reports in August undiagnosable. The tail is
+          // included because a truncated payload ends mid-token and that is
+          // visible at a glance.
+          const why = first instanceof Error ? first.message : String(first);
+          const tail = JSON.stringify(text.slice(-40));
+          throw new Error(
+            `Malformed JSON from ${url} (${text.length} bytes): ${why} — ends ${tail}`,
+          );
         }
       }
     } finally {
