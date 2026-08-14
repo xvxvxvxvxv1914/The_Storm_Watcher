@@ -299,6 +299,7 @@ const fi: Record<string, string> = {
   'aurora.calendar.bestNight': 'Paras yö',
   'aurora.calendar.cloud': 'Pilvisyys',
   'aurora.calendar.maxKp': 'Maks Kp',
+  'aurora.calendar.noForecast': 'Ei ennustetta',
   'aurora.calendar.noLocation': 'Aseta sijaintiasetuksissa pilvisyyden näyttämiseksi.',
   'aurora.calendar.clear': 'Kirkas',
   'aurora.calendar.partlyCloudy': 'Osittain pilvinen',

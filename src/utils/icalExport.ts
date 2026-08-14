@@ -1,6 +1,7 @@
 interface AuroraNight {
   date: Date;
-  maxKp: number;
+  /** null = NOAA has not forecast this night; it gets no event rather than a quiet one. */
+  maxKp: number | null;
   label: string;
   cloudCoverAvg: number | null;
   isBest?: boolean;
@@ -28,7 +29,7 @@ export function buildAuroraICS(nights: AuroraNight[], locationName: string): str
   const events: string[] = [];
 
   for (const night of nights) {
-    if (night.maxKp < 3) continue; // skip quiet nights
+    if (night.maxKp === null || night.maxKp < 3) continue; // skip quiet and unforecast nights
 
     const start = new Date(night.date);
     start.setHours(NIGHT_START_HOUR, 0, 0, 0);

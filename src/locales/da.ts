@@ -299,6 +299,7 @@ const da: Record<string, string> = {
   'aurora.calendar.bestNight': 'Bedste nat',
   'aurora.calendar.cloud': 'Skydække',
   'aurora.calendar.maxKp': 'Maks Kp',
+  'aurora.calendar.noForecast': 'Ingen prognose',
   'aurora.calendar.noLocation': 'Angiv foretrukken placering i indstillinger for at se skydække.',
   'aurora.calendar.clear': 'Klar',
   'aurora.calendar.partlyCloudy': 'Delvist skyet',

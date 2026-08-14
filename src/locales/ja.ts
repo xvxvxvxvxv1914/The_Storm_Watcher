@@ -681,6 +681,7 @@ const ja: Record<string, string> = {
   'aurora.calendar.bestNight': 'ベストナイト',
   'aurora.calendar.cloud': '雲量',
   'aurora.calendar.maxKp': '最大Kp',
+  'aurora.calendar.noForecast': '予報なし',
   'aurora.calendar.noLocation': '雲量を表示するには、設定で場所を設定してください。',
   'aurora.calendar.clear': '晴れ',
   'aurora.calendar.partlyCloudy': '一部曇り',

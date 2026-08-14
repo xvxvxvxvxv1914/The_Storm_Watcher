@@ -681,6 +681,7 @@ const de: Record<string, string> = {
   'aurora.calendar.bestNight': 'Beste Nacht',
   'aurora.calendar.cloud': 'Bewölkung',
   'aurora.calendar.maxKp': 'Max Kp',
+  'aurora.calendar.noForecast': 'Keine Vorhersage',
   'aurora.calendar.noLocation': 'Bevorzugten Standort in den Einstellungen festlegen, um Bewölkung zu sehen.',
   'aurora.calendar.clear': 'Klar',
   'aurora.calendar.partlyCloudy': 'Teilweise bewölkt',

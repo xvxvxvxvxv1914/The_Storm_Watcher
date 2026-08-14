@@ -691,6 +691,7 @@ const ko: Record<string, string> = {
   'aurora.calendar.bestNight': '최적 야간',
   'aurora.calendar.cloud': '구름 양',
   'aurora.calendar.maxKp': '최대 Kp',
+  'aurora.calendar.noForecast': '예보 없음',
   'aurora.calendar.noLocation': '구름 양을 보려면 설정에서 선호 위치를 설정하세요.',
   'aurora.calendar.clear': '맑음',
   'aurora.calendar.partlyCloudy': '약간 흐림',

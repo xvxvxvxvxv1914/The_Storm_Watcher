@@ -299,6 +299,7 @@ const pl: Record<string, string> = {
   'aurora.calendar.bestNight': 'Najlepsza noc',
   'aurora.calendar.cloud': 'Zachmurzenie',
   'aurora.calendar.maxKp': 'Maks. Kp',
+  'aurora.calendar.noForecast': 'Brak prognozy',
   'aurora.calendar.noLocation': 'Ustaw preferowaną lokalizację w ustawieniach, aby zobaczyć zachmurzenie.',
   'aurora.calendar.clear': 'Czysto',
   'aurora.calendar.partlyCloudy': 'Częściowe zachmurzenie',

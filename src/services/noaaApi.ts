@@ -329,8 +329,23 @@ export const getKpForecast = (): Promise<KpIndexData[]> =>
       const data = await getJson<Array<{ time_tag: string; kp: number; observed: string }>>(
         `${NOAA_BASE_URL}/products/noaa-planetary-k-index-forecast.json`
       );
+      // `observed` has THREE states, not two: 'observed' (finalised), 'estimated'
+      // (NOAA's near-real-time value for periods not yet finalised — which is the
+      // rest of *today*), and 'predicted' (from the next 00:00Z on).
+      //
+      // Keeping only 'predicted' threw the whole current day away. Measured on
+      // 2026-08-14 at 09:18Z: 5 estimated rows covering 09:00→21:00Z, dropped, so
+      // the earliest bin the app could see was 15-08 00:00Z. Calendar then had no
+      // bins at all for tonight anywhere east of about UTC+5 — Auckland, Tokyo,
+      // Kathmandu and Honolulu were all told "Kp 0.0" for a night NOAA simply had
+      // not published yet — and everyone else lost the pre-midnight half of their
+      // night. The Americas were least affected, which is why it went unseen.
+      //
+      // It also blinded the storm banner to any storm arriving *today*;
+      // peakOutlook already ignores bins that have begun, so past estimated rows
+      // cost nothing and future ones are exactly what "expected" means.
       const result = (data ?? [])
-        .filter((row) => row.observed === 'predicted')
+        .filter((row) => row.observed !== 'observed')
         .map((row) => ({
           time_tag: row.time_tag,
           kp_index: row.kp,

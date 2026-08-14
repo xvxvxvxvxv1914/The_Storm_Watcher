@@ -10,7 +10,13 @@ const TTL_SKY = 30 * 60 * 1000; // 30 min
 export interface NightForecast {
   label: 'tonight' | 'tomorrow' | 'nightAfter';
   date: Date;
-  maxKp: number;
+  /**
+   * null when NOAA has published no bin covering this night — which is a real
+   * state, not a quiet one. Rendering it as 0.0 made the app assert "quiet"
+   * about a night nobody had forecast yet; same trap as a fabricated Kp 0 from a
+   * GFZ null bin, or Dst 0, both of which this codebase has already paid for.
+   */
+  maxKp: number | null;
   cloudCoverAvg: number | null; // null if location unknown
   isBest: boolean;
 }

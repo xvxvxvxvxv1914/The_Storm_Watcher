@@ -299,6 +299,7 @@ const sv: Record<string, string> = {
   'aurora.calendar.bestNight': 'Bästa natten',
   'aurora.calendar.cloud': 'Molntäcke',
   'aurora.calendar.maxKp': 'Max Kp',
+  'aurora.calendar.noForecast': 'Ingen prognos',
   'aurora.calendar.noLocation': 'Ange föredragen plats i inställningar för att se molntäcke.',
   'aurora.calendar.clear': 'Klar',
   'aurora.calendar.partlyCloudy': 'Delvis molnigt',

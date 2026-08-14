@@ -681,6 +681,7 @@ const es: Record<string, string> = {
   'aurora.calendar.bestNight': 'Mejor noche',
   'aurora.calendar.cloud': 'Nubosidad',
   'aurora.calendar.maxKp': 'Kp máx',
+  'aurora.calendar.noForecast': 'Sin pronóstico',
   'aurora.calendar.noLocation': 'Establece una ubicación en Ajustes para ver la nubosidad.',
   'aurora.calendar.clear': 'Despejado',
   'aurora.calendar.partlyCloudy': 'Parcialmente nublado',
