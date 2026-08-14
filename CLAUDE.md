@@ -64,11 +64,16 @@ widget); incremental ones are 10-25s.
 keystores. The only way through is `adb uninstall com.stormwatcher.app` first,
 which wipes the app's data on the device (settings, saved location, local cache).
 
-Two more Windows-machine facts: `core.autocrlf=true` there makes
-`blogMetadata.test.ts` fail (CRLF file vs LF generator output, byte comparison)
-— **do not "fix" the file, that breaks CI on Linux**; and its `.env` holds a
-placeholder Supabase URL, so sign-in/mood/profile are dead in local Android
-builds while NOAA/GFZ still work.
+One more Windows-machine fact: its `.env` holds a placeholder Supabase URL, so
+sign-in/mood/profile are dead in local Android builds while NOAA/GFZ still work.
+
+**Fixed 14.08 — `core.autocrlf=true` used to fail `blogMetadata.test.ts`** (CRLF
+checkout vs LF generator output, byte comparison), permanently, on this machine
+only. `.gitattributes` now pins `src/data/blog/metadata.ts` to `eol=lf`, which
+fixes the checkout rather than the committed content — converting the file itself
+is what would have broken CI on Linux. The suite is 396/396 locally now; a
+failure here is real again. If another generated file ever gets a byte-comparison
+test, give it the same line.
 
 ### Driving the device from the terminal
 
