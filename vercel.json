@@ -111,7 +111,6 @@
     { "source": "/sv/:path*", "destination": "/index.html" },
     { "source": "/uk/:path*", "destination": "/index.html" },
     {
-      "_comment": "Everything EXCEPT /assets/. A hashed bundle that is missing must 404, not fall through to index.html: /assets/ carries max-age=31536000, immutable, so an HTML body answered here with status 200 gets cached as that bundle for a year. It happened on 2026-08-14 — supabase-vendor-DI0HthDz.js was served as index.html to every HTTP/2 client while HTTP/1.1 got the real file, and the whole site rendered blank because the module never parsed. A 404 is loud, self-healing, and never cached as a successful bundle.",
       "source": "/((?!assets/).*)",
       "destination": "/index.html"
     }
