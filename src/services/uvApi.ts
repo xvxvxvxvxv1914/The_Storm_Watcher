@@ -60,7 +60,12 @@ export const getUvIndex = (lat: number, lon: number): Promise<UvData> =>
     };
   } catch (error) {
     logError('Error fetching UV Index:', error);
-    return { current: 0, max: 0, hourly: [], timezone: 'UTC' };
+    // Rethrow rather than answer with zeros. UV 0 renders as "Low — no
+    // protection needed", which is a sun-safety claim made out of a failed
+    // request; the page already has an error card and a retry button, and both
+    // were dead while this returned a successful-looking object. apiCache stores
+    // only fulfilled results, so a failure is not sticky.
+    throw error;
   }
 });
 

@@ -46,6 +46,25 @@ describe('fetchJson', () => {
       'Malformed JSON from https://example.test/cut');
   });
 
+  /**
+   * Five of these landed in Sentry in August and none could be diagnosed: the
+   * message named the endpoint and the size, so a body cut mid-stream and a
+   * genuinely corrupt one were the same report. The parser's own words separate
+   * them, and the tail shows the cut.
+   */
+  it('carries the parser error and the tail, so truncation is distinguishable', async () => {
+    vi.stubGlobal('fetch', vi.fn(() => jsonBody('{"time_tag":"2026-08-14","speed":42')));
+    const err = await fetchJson('https://example.test/cut').catch((e: Error) => e);
+
+    expect((err as Error).message).toContain('Malformed JSON from https://example.test/cut');
+    expect((err as Error).message).toContain('(35 bytes)');
+    // Node and browsers word this differently; every engine says "JSON" and the
+    // point is that the parser's reason survives, not its exact phrasing.
+    expect((err as Error).message).toMatch(/JSON/);
+    expect((err as Error).message).toContain('ends "');
+    expect((err as Error).message).toContain('speed');
+  });
+
   it('surfaces a non-ok status with the endpoint', async () => {
     vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ ok: false, status: 503 } as unknown as Response)));
     await expect(fetchJson('https://example.test/down')).rejects.toThrow(

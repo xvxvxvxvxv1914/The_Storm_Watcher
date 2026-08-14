@@ -211,16 +211,12 @@ export const getSkyVisibility = (lat: number, lon: number, kp: number): Promise<
     };
   } catch (error) {
     logError('Error fetching Sky Visibility:', error);
-    return {
-      verdict: 'poor',
-      score: 0,
-      cloudCoverAvg: 100,
-      visibilityAvg: 0,
-      kp,
-      auroraChance: '-',
-      nightHours: [],
-      sunset: '-',
-      sunrise: '-',
-    };
+    // Rethrow rather than answer "poor, 100% cloud". That object is a statement
+    // about the sky built out of a failed request, and it is the same mistake
+    // the polar-day path was already fixed for — there, a collapsed night fell
+    // through to a hardcoded 100 and told a Tromsø visitor in June the sky was
+    // overcast. SkyVisibility.tsx has an error card and a retry; both were
+    // unreachable while this returned a plausible-looking verdict.
+    throw error;
   }
 });

@@ -1,5 +1,27 @@
-import { describe, it, expect } from 'vitest';
-import { getUvLevel } from './uvApi';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { getUvLevel, getUvIndex } from './uvApi';
+
+vi.mock('../utils/logger', () => ({ logError: vi.fn() }));
+
+describe('getUvIndex when the request fails', () => {
+  // Throws rather than returning a rejected promise: an unconsumed rejection is
+  // reported by vitest as an unhandled error and fails the test for the wrong
+  // reason. fetchJson awaits inside a try, so the path is identical.
+  beforeEach(() => vi.stubGlobal('fetch', vi.fn(() => { throw new Error('offline'); })));
+  afterEach(() => vi.unstubAllGlobals());
+
+  /**
+   * It used to answer `{ current: 0, ... }`, which the page renders as
+   * "Low — no protection needed": a sun-safety claim manufactured from a failed
+   * request. UV.tsx already had a try/catch and an ErrorCard with a retry, and a
+   * successful-looking object walked straight past both.
+   */
+  it('rejects instead of reporting UV 0', async () => {
+    // Distinct coordinates per run: apiCache is module-level and a fulfilled
+    // entry from another test would answer before the stubbed fetch is reached.
+    await expect(getUvIndex(11.11, 22.22)).rejects.toThrow();
+  });
+});
 
 describe('getUvLevel', () => {
   it.each([

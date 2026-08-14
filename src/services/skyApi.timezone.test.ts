@@ -102,4 +102,19 @@ describe('getSkyVisibility — printed on the location\'s clock', () => {
     const sky = await getSkyVisibility(69.65, 18.96, 5);
     expect(sky.nightHours.map(h => h.hour)).toEqual([22, 23, 0]);
   });
+
+  /**
+   * It used to answer verdict 'poor' with cloudCoverAvg 100 — a statement about
+   * the sky assembled from a failed request, and the same mistake the polar-day
+   * path was already fixed for. The page has an error card and a retry button,
+   * and a plausible-looking verdict walked past both.
+   */
+  it('rejects instead of reporting a fabricated overcast sky', async () => {
+    // An unusable payload rather than a rejected promise or a thrown mock: both
+    // of those get attributed to the test as an unhandled error before the
+    // assertion can consume them. Destructuring undefined throws inside the
+    // service's own try, which is the path a real failure takes.
+    fetchJson.mockResolvedValue(undefined);
+    await expect(getSkyVisibility(69.65, 18.96, 5)).rejects.toThrow();
+  });
 });

@@ -1,16 +1,27 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 
-vi.mock('../contexts/LanguageContext', () => ({ useLanguage: vi.fn(() => ({ t: (k: string) => k, language: 'en', setLanguage: vi.fn() })) }));
+/**
+ * A mutable variable reset in beforeEach, not per-test mockReturnValue: the
+ * return value survived into whichever test ran next, which declaration order
+ * hid because the language-switching tests come last. Shuffled, it rendered the
+ * Bulgarian translation inside the test asserting the English title
+ * (`--sequence.shuffle --sequence.seed=8`).
+ */
+let language = 'en';
+vi.mock('../contexts/LanguageContext', () => ({
+  useLanguage: () => ({ t: (k: string) => k, language, setLanguage: vi.fn() }),
+}));
 vi.mock('../contexts/ThemeContext', () => ({ useTheme: () => ({ theme: 'dark', setTheme: vi.fn() }) }));
 vi.mock('../components/StarField', () => ({ default: () => null }));
 vi.mock('../components/PageMeta', () => ({ default: () => null }));
 vi.mock('../components/BreadcrumbSchema', () => ({ default: () => null }));
 vi.mock('../components/AnimatedPage', () => ({ AnimatedPage: ({ children }: { children: React.ReactNode }) => <>{children}</> }));
 
-import { useLanguage } from '../contexts/LanguageContext';
 import BlogPost from './BlogPost';
+
+beforeEach(() => { language = 'en'; });
 
 const renderPost = (slug: string) =>
   render(
@@ -43,7 +54,7 @@ describe('BlogPost — lazily loaded article bodies', () => {
   });
 
   it('renders the translated title when the post has that language', async () => {
-    vi.mocked(useLanguage).mockReturnValue({ t: (k: string) => k, language: 'bg', setLanguage: vi.fn() } as never);
+    language = 'bg';
     renderPost('what-is-kp-index');
     // Bulgarian translation exists for this post; the English title must be gone.
     expect(await screen.findByRole('heading', { level: 1 })).not.toHaveTextContent(
@@ -61,7 +72,7 @@ describe('BlogPost — document language', () => {
   // The prerendered HTML for an untranslated variant ships lang="en"; without
   // this, LanguageContext leaves <html lang="da"> around an English article.
   it('declares English while showing an untranslated article', async () => {
-    vi.mocked(useLanguage).mockReturnValue({ t: (k: string) => k, language: 'da', setLanguage: vi.fn() } as never);
+    language = 'da';
     document.documentElement.lang = 'da';
 
     renderPost('aurora-forecast-explained');
@@ -70,7 +81,7 @@ describe('BlogPost — document language', () => {
   });
 
   it('leaves the language alone when the article really is translated', async () => {
-    vi.mocked(useLanguage).mockReturnValue({ t: (k: string) => k, language: 'bg', setLanguage: vi.fn() } as never);
+    language = 'bg';
     document.documentElement.lang = 'bg';
 
     renderPost('what-is-kp-index');
