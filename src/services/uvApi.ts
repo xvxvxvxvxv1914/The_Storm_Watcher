@@ -37,7 +37,10 @@ export const getUvIndex = (lat: number, lon: number): Promise<UvData> =>
       utc_offset_seconds: number;
       hourly: { time: string[]; uv_index: number[] };
       daily: { uv_index_max: number[] };
-    }>(`https://api.open-meteo.com/v1/forecast?${params}`);
+      // One retry, matching getJson in noaaApi. It matters more here now that a
+      // failure is honest: without it a single transient blip replaces the card
+      // with an error instead of a value, where before it quietly showed a zero.
+    }>(`https://api.open-meteo.com/v1/forecast?${params}`, 10000, 1);
 
     const tz = data.utc_offset_seconds;
     // The hourly array is indexed in the *location's* time, so the index has to
@@ -92,7 +95,7 @@ export const getSunData = (lat: number, lon: number): Promise<SunDay[]> =>
       daily: { time: string[]; sunrise: string[]; sunset: string[]; daylight_duration: number[] };
       timezone: string;
       utc_offset_seconds: number;
-    }>(`https://api.open-meteo.com/v1/forecast?${params}`);
+    }>(`https://api.open-meteo.com/v1/forecast?${params}`, 10000, 1);
 
     return daily.time.map((_, i) => {
       const sunrise = parseOpenMeteoTime(daily.sunrise[i], tz);

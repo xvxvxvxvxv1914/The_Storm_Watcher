@@ -95,7 +95,10 @@ export function getNightsCloudCover(
     hourly: { time: string[]; cloud_cover: number[] };
     daily: { sunrise: string[]; sunset: string[]; time: string[] };
     utc_offset_seconds: number;
-  }>(`https://api.open-meteo.com/v1/forecast?${params}`);
+    // One retry, as getJson does in noaaApi — a transient blip should not cost
+    // the whole night window now that a failure is reported rather than papered
+    // over with a fabricated sky.
+  }>(`https://api.open-meteo.com/v1/forecast?${params}`, 10000, 1);
 
   const nights: NightWindow[] = [];
   // Process first 3 nights: sunset[i] → sunrise[i+1]
@@ -144,7 +147,7 @@ export const getSkyVisibility = (lat: number, lon: number, kp: number): Promise<
       daily: { sunrise: string[]; sunset: string[] };
       timezone: string;
       utc_offset_seconds: number;
-    }>(`https://api.open-meteo.com/v1/forecast?${params}`);
+    }>(`https://api.open-meteo.com/v1/forecast?${params}`, 10000, 1);
 
     const sunset = parseOpenMeteoTime(daily.sunset[0], tz);
     const sunrise = parseOpenMeteoTime(daily.sunrise[1], tz);
