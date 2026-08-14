@@ -17,6 +17,20 @@
 -- real, not numeric: it matches device_push_tokens, and the point is that the two
 -- mirror tables stop disagreeing. Both are read by the same code path, so a type
 -- that only one of them has is a divergence waiting to be found the hard way.
+--
+-- Widening the column rather than flooring the value in code, because the write
+-- side loses nothing: the Settings slider is step={1}, min 3 or 5, max 9, so
+-- threshold_kp is always written whole. integer was defensible for writes and only
+-- ever wrong for the comparison — and flooring in code would have to be applied to
+-- one of the two tables but not the other, which is how the four queries came to
+-- disagree in the first place.
+--
+-- Measured against production before applying (anon key, PostgREST):
+--   push_subscriptions?threshold_kp=lte.2.333  -> 400 22P02
+--   push_subscriptions?threshold_kp=lte.3      -> 200 []
+--   device_push_tokens?threshold_kp=lte.2.333  -> 200 []
+--   push_subscriptions?bz_threshold=gte.-0.51  -> 200 []
+-- Re-run the first line after this migration: it must answer 200 [].
 alter table public.push_subscriptions
   alter column threshold_kp type real;
 
