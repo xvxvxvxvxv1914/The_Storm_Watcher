@@ -658,16 +658,37 @@ Invoke-WebRequest -Headers $h -UseBasicParsing -Uri ("https://srzfoxlmhxyulrgkch
   копие е в **Supabase → Edge Functions → Secrets → `VAPID_PUBLIC_KEY`**,
   създадено 2026-04-25 заедно с `VAPID_PRIVATE_KEY`. `supabase secrets list`
   показва само дайджести, не стойности — трябва дашбордът.
-- **CI: провери run-овете.** CI не е бил зелен от 26 април (~712 поредни червени;
-  никой не е гледал). Unit-env причината е поправена 09.08 (`0a38290` — hermetic
-  placeholder env в ci.yml, `src/lib/supabase.ts` хвърля при import без него).
-  **E2E стъпката още никога не е стигана на зелен runner** — тя е следващата
-  възможна изненада.
+- **CI: ✅ проверен 14.08, зелен.** Дългата червена серия от 26 април свърши —
+  unit-env причината е поправена 09.08 (`0a38290` — hermetic placeholder env в
+  ci.yml, `src/lib/supabase.ts` хвърля при import без него). **E2E стъпката вече
+  минава на зелен runner** (run #753, `main` @ `38b6b21`) — тази бележка стоеше
+  тук като следваща възможна изненада и вече не е такава.
 
-  **Не може да се провери от тази машина: `gh` не е инсталиран** (`gh: The term
-  'gh' is not recognized`). Или `winget install GitHub.cli`, или през браузъра.
-  На 13.08 в main влязоха два merge-а (`0619199`, `8b725a9`), а на 14.08 —
-  четирите комита от тази сесия, значи има пресни run-ове за гледане.
+  Единственото червено е run #752 (`staging` @ `da64ec5`), паднало на unit
+  тестовете от **flaky тест, не от регресия**: `main` пусна същия tree
+  (`f02ed587`, `git diff` празен) зелен 17 секунди по-късно. Поправено —
+  `BlogPost.test.tsx` чакаше `<h1>` и твърдеше `document.documentElement.lang`,
+  а ефектът в [BlogPost.tsx](src/pages/BlogPost.tsx) пише `lang` **след** commit-а
+  на heading-а (измерено с MutationObserver: `lang` е още `da` в мига, в който
+  h1 влиза в DOM, 5 от 5 пускания). Сега и двата теста чакат това, което
+  твърдят. Общото правило: **не чакай едно нещо и не твърди друго** — RTL
+  `findBy*` печели само по времеви марж, който натоварен runner изяжда.
+
+  **`gh` не е инсталиран** (`gh: The term 'gh' is not recognized`) — но не е
+  блокер: GitHub REST API работи анонимно за публично репо и дава и стъпките, и
+  точното твърдение, без токен. Логовете (`/actions/runs/{id}/logs`) искат auth
+  (403), **annotation-ите не искат** и съдържат самата грешка:
+  ```powershell
+  $h = @{ 'User-Agent'='claude-code'; 'Accept'='application/vnd.github+json' }
+  $b = "https://api.github.com/repos/xvxvxvxvxv1914/The_Storm_Watcher"
+  (Invoke-RestMethod "$b/actions/runs?per_page=6" -Headers $h).workflow_runs |
+    Select-Object run_number, head_branch, conclusion, head_sha
+  $id = (Invoke-RestMethod "$b/commits/<sha>/check-runs" -Headers $h).check_runs |
+    Where-Object name -eq build | Select-Object -Expand id
+  Invoke-RestMethod "$b/check-runs/$id/annotations" -Headers $h | Select-Object path, message
+  ```
+  Отделно, в annotation-ите: `checkout@v4`, `setup-node@v4` и `upload-artifact@v4`
+  вече се форсират на Node 24 (Node 20 e deprecated). Днес само warning.
 
   Merge staging → main от 09.08 **е свършен** — беше вписан тук като чакащ,
   но `cd9a034` вече го съдържаше.
