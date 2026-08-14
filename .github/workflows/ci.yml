@@ -31,6 +31,12 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      # Cheap, and the only thing standing between a typo here and a deployment
+      # that dies at configuration validation with no build logs — which is how a
+      # broken vercel.json reached main twice on 2026-08-14 while CI stayed green.
+      - name: Validate vercel.json
+        run: node scripts/check-vercel-config.mjs
+
       - name: Unit tests
         run: npm run test:run
         env:

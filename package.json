@@ -13,6 +13,8 @@
     "test:run": "vitest run",
     "test:e2e": "playwright test",
     "sitemap": "python3 scripts/generate_sitemap.py",
+    "check:vercel": "node scripts/check-vercel-config.mjs",
+    "smoke": "node scripts/smoke-production.mjs",
     "ios:deploy": "bash scripts/ios-deploy.sh",
     "ios:open": "npm run build && npx cap sync ios && npx cap open ios",
     "ios:livereload": "npx cap run ios --livereload --external",
