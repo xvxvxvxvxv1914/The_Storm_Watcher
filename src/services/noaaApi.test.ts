@@ -190,20 +190,29 @@ describe('NOAA cache + single-flight', () => {
     ]);
   });
 
-  it('kp forecast keeps only predicted rows', async () => {
+  /**
+   * `observed` has three states. Keeping only 'predicted' silently deleted the
+   * rest of the current day — the 'estimated' rows — which is the half of the
+   * feed that covers *tonight*. Live on 2026-08-14 09:18Z: 5 estimated rows for
+   * 09:00→21:00Z dropped, so the earliest visible bin was the next midnight, and
+   * Calendar had nothing at all for tonight anywhere east of ~UTC+5.
+   */
+  it('kp forecast keeps predicted AND estimated rows, dropping only finalised ones', async () => {
     mockFetch.mockResolvedValue(
       okJson([
         { time_tag: 'a', kp: 2, observed: 'observed' },
-        { time_tag: 'b', kp: 4, observed: 'predicted' },
-        { time_tag: 'c', kp: 5, observed: 'predicted' },
+        { time_tag: 'b', kp: 3, observed: 'estimated' },
+        { time_tag: 'c', kp: 4, observed: 'predicted' },
+        { time_tag: 'd', kp: 5, observed: 'predicted' },
       ])
     );
     const { getKpForecast } = await import('./noaaApi');
 
     const rows = await getKpForecast();
     expect(rows).toEqual([
-      { time_tag: 'b', kp_index: 4 },
-      { time_tag: 'c', kp_index: 5 },
+      { time_tag: 'b', kp_index: 3 },
+      { time_tag: 'c', kp_index: 4 },
+      { time_tag: 'd', kp_index: 5 },
     ]);
   });
 });

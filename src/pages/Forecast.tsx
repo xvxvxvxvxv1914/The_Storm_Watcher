@@ -188,8 +188,9 @@ const Forecast = () => {
       });
       const scored = combined.map((n, i) => ({
         ...n,
-        score: cloudNights[i]?.noNight
-          ? -1 // never the best night — there is no night
+        score: cloudNights[i]?.noNight || n.maxKp === null
+          // No night, or no forecast for it — neither can be crowned the best.
+          ? -1
           : (n.maxKp / 9) * 60 + (n.cloudCoverAvg !== null ? (100 - n.cloudCoverAvg) / 100 * 40 : (n.maxKp / 9) * 40),
       }));
       const bestIdx = scored.reduce((bi, s, i) => s.score > scored[bi].score ? i : bi, 0);
@@ -640,7 +641,12 @@ const Forecast = () => {
                     <div className="text-xs font-semibold text-[#94a3b8] mb-3">{nightLabel}</div>
                     <div className="mb-2">
                       <div className="text-[10px] text-[#64748b] mb-0.5">{t('aurora.calendar.maxKp')}</div>
-                      <div className="text-3xl font-bold" style={getKpGradientStyle(night.maxKp)}>{night.maxKp.toFixed(1)}</div>
+                      {/* A dash, not 0.0 — see NightForecast.maxKp. */}
+                      {night.maxKp === null ? (
+                        <div className="text-3xl font-bold text-[#64748b]">—</div>
+                      ) : (
+                        <div className="text-3xl font-bold" style={getKpGradientStyle(night.maxKp)}>{night.maxKp.toFixed(1)}</div>
+                      )}
                     </div>
                     {cloud !== null ? (
                       <div className="flex items-center gap-2 mt-3 pt-3 border-t border-white/5">

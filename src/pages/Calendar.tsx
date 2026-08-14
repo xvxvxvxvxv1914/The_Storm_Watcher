@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+﻿import { useEffect, useState, useCallback } from 'react';
 import PageMeta from '../components/PageMeta';
 import StarField from '../components/StarField';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
@@ -36,7 +36,9 @@ const getKpColor = (kp: number) =>
   kp >= 7 ? '#ef4444' : kp >= 5 ? '#f97316' : kp >= 4 ? '#eab308' : kp >= 2 ? '#10b981' : '#059669';
 
 // G-scale is one level per Kp step from 5 up; colours follow the KpGauge bands.
-const getGLevel = (kp: number, t: (k: string) => string) => {
+// null is "not forecast", which is neither a G level nor "quiet".
+const getGLevel = (kp: number | null, t: (k: string) => string) => {
+  if (kp === null) return { label: t('aurora.calendar.noForecast'), color: '#64748b' };
   if (kp >= 9) return { label: 'G5', color: '#dc2626' };
   if (kp >= 8) return { label: 'G4', color: '#ef4444' };
   if (kp >= 7) return { label: 'G3', color: '#ef4444' };
@@ -83,7 +85,7 @@ export default function Calendar() {
         try { cloudNights = await getNightsCloudCover(useLat, useLon); } catch { /* no sky data */ }
       }
 
-      const kpByNight: { date: Date; maxKp: number; hourly: { hour: number; kp: number }[] }[] = [];
+      const kpByNight: { date: Date; maxKp: number | null; hourly: { hour: number; kp: number }[] }[] = [];
 
       for (let d = 0; d < 3; d++) {
         const target = new Date(today);
@@ -109,7 +111,9 @@ export default function Calendar() {
           });
         }
 
-        const maxKp = nightItems.length > 0 ? Math.max(...nightItems.map(i => i.kp)) : 0;
+        // null, not 0: no bin covering this night means NOAA has not forecast it,
+        // which is not the same claim as "it will be quiet".
+        const maxKp = nightItems.length > 0 ? Math.max(...nightItems.map(i => i.kp)) : null;
         const hourly = nightItems.map(i => ({ hour: i.date.getHours(), kp: i.kp }));
         kpByNight.push({ date: target, maxKp, hourly });
       }
@@ -121,7 +125,7 @@ export default function Calendar() {
         // showing a residual percentage next to "midnight sun". On a real night
         // the peak Kp already comes only from dark hours, so the geomagnetic
         // figure is the right one here.
-        const auroraChance = cloud?.noNight || useLat === null || useLon === null
+        const auroraChance = cloud?.noNight || useLat === null || useLon === null || n.maxKp === null
           ? null
           : calcAuroraVisibility(useLat, useLon, n.maxKp);
         return {
@@ -142,7 +146,10 @@ export default function Calendar() {
       const scored = combined.map(n => {
         // A night the sun never leaves cannot be the best one, whatever the Kp.
         if (n.noNight) return { score: -1 };
-        const aurora = n.auroraChance ?? (n.maxKp / 9) * 100;
+        // An unforecast night cannot win "best night" either — there is nothing
+        // to rate, and scoring it as zero would still be a claim.
+        if (n.maxKp === null && n.auroraChance === null) return { score: -1 };
+        const aurora = n.auroraChance ?? ((n.maxKp ?? 0) / 9) * 100;
         const sky = n.cloudCoverAvg !== null ? (100 - n.cloudCoverAvg) : aurora * 0.7;
         return { score: aurora * 0.6 + sky * 0.4 };
       });
@@ -187,7 +194,10 @@ export default function Calendar() {
         title="Aurora Calendar — The Storm Watcher"
         description="3-night aurora viewing outlook with Kp forecast and cloud cover. Find your best night to watch the northern lights."
         path="/calendar"
-        ogKp={nights.length > 0 ? Math.max(...nights.map(n => n.maxKp)) : undefined}
+        ogKp={(() => {
+          const known = nights.map(n => n.maxKp).filter((k): k is number => k !== null);
+          return known.length > 0 ? Math.max(...known) : undefined;
+        })()}
       />
       <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Aurora Calendar', path: '/calendar' }]} />
 
@@ -200,7 +210,7 @@ export default function Calendar() {
           <h1 className="text-3xl font-bold text-white">{t('aurora.calendar.title')}</h1>
           <p className="text-[#94a3b8] mt-0.5">{t('aurora.calendar.subtitle')}</p>
         </div>
-        {nights.some(n => n.maxKp >= 3) && (
+        {nights.some(n => n.maxKp !== null && n.maxKp >= 3) && (
           <button
             onClick={() => {
               const ics = buildAuroraICS(nights, locationName);
@@ -268,11 +278,16 @@ export default function Calendar() {
                   <div className="text-xs text-[#64748b] mt-0.5">{night.dateLabel}</div>
                 </div>
 
-                {/* Kp + G-level */}
+                {/* Kp + G-level. A night NOAA has not forecast shows a dash, not
+                    a number: 0.0 next to "quiet" is an assertion we cannot make. */}
                 <div className="flex items-end gap-3 mb-4">
-                  <div className="text-5xl font-bold leading-none" style={getKpGradientStyle(night.maxKp)}>
-                    {night.maxKp.toFixed(1)}
-                  </div>
+                  {night.maxKp === null ? (
+                    <div className="text-5xl font-bold leading-none text-[#64748b]">—</div>
+                  ) : (
+                    <div className="text-5xl font-bold leading-none" style={getKpGradientStyle(night.maxKp)}>
+                      {night.maxKp.toFixed(1)}
+                    </div>
+                  )}
                   <div>
                     <div className="text-xs text-[#64748b] uppercase tracking-wider mb-1">{t('aurora.calendar.maxKp')}</div>
                     <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: `${g.color}22`, color: g.color }}>
@@ -369,7 +384,7 @@ export default function Calendar() {
       )}
 
       {/* Mobile export */}
-      {nights.some(n => n.maxKp >= 3) && (
+      {nights.some(n => n.maxKp !== null && n.maxKp >= 3) && (
         <button
           onClick={() => {
             const ics = buildAuroraICS(nights, locationName);

@@ -299,6 +299,7 @@ const is_: Record<string, string> = {
   'aurora.calendar.bestNight': 'Besta nótt',
   'aurora.calendar.cloud': 'Skýjakán',
   'aurora.calendar.maxKp': 'Hæsta Kp',
+  'aurora.calendar.noForecast': 'Engin spá',
   'aurora.calendar.noLocation': 'Stilltu valinn stað í stillingum til að sjá skýjakán.',
   'aurora.calendar.clear': 'Skýlægt',
   'aurora.calendar.partlyCloudy': 'Hlutvis skýjað',

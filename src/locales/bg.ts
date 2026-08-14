@@ -716,6 +716,7 @@ const bg: Record<string, string> = {
   'aurora.calendar.bestNight': 'Най-добра нощ',
   'aurora.calendar.cloud': 'Облачност',
   'aurora.calendar.maxKp': 'Макс Kp',
+  'aurora.calendar.noForecast': 'Няма прогноза',
   'aurora.calendar.noLocation': 'Задайте местоположение в Настройки за да видите облачността.',
   'aurora.calendar.clear': 'Ясно',
   'aurora.calendar.partlyCloudy': 'Частично облачно',

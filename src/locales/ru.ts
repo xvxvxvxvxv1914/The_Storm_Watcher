@@ -681,6 +681,7 @@ const ru: Record<string, string> = {
   'aurora.calendar.bestNight': 'Лучшая ночь',
   'aurora.calendar.cloud': 'Облачность',
   'aurora.calendar.maxKp': 'Макс Kp',
+  'aurora.calendar.noForecast': 'Нет прогноза',
   'aurora.calendar.noLocation': 'Укажите местоположение в Настройках, чтобы видеть облачность.',
   'aurora.calendar.clear': 'Ясно',
   'aurora.calendar.partlyCloudy': 'Переменная облачность',

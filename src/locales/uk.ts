@@ -299,6 +299,7 @@ const uk: Record<string, string> = {
   'aurora.calendar.bestNight': 'Найкраща ніч',
   'aurora.calendar.cloud': 'Хмарність',
   'aurora.calendar.maxKp': 'Макс. Kp',
+  'aurora.calendar.noForecast': 'Немає прогнозу',
   'aurora.calendar.noLocation': 'Встановіть бажане місцезнаходження в налаштуваннях.',
   'aurora.calendar.clear': 'Ясно',
   'aurora.calendar.partlyCloudy': 'Мінлива хмарність',

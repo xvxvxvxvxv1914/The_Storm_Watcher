@@ -681,6 +681,7 @@ const zh: Record<string, string> = {
   'aurora.calendar.bestNight': '最佳夜晚',
   'aurora.calendar.cloud': '云量',
   'aurora.calendar.maxKp': '最大Kp',
+  'aurora.calendar.noForecast': '暂无预报',
   'aurora.calendar.noLocation': '在设置中设置首选位置以查看云量。',
   'aurora.calendar.clear': '晴朗',
   'aurora.calendar.partlyCloudy': '部分多云',

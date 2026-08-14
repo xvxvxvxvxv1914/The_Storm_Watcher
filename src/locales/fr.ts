@@ -681,6 +681,7 @@ const fr: Record<string, string> = {
   'aurora.calendar.bestNight': 'Meilleure nuit',
   'aurora.calendar.cloud': 'Couverture nuageuse',
   'aurora.calendar.maxKp': 'Kp max',
+  'aurora.calendar.noForecast': 'Pas de prévision',
   'aurora.calendar.noLocation': 'Définissez un lieu dans les Paramètres pour voir la couverture nuageuse.',
   'aurora.calendar.clear': 'Dégagé',
   'aurora.calendar.partlyCloudy': 'Partiellement nuageux',

@@ -735,6 +735,7 @@ const en: Record<string, string> = {
   'aurora.calendar.bestNight': 'Best night',
   'aurora.calendar.cloud': 'Cloud cover',
   'aurora.calendar.maxKp': 'Max Kp',
+  'aurora.calendar.noForecast': 'No forecast',
   'aurora.calendar.noLocation': 'Set a preferred location in Settings to see cloud cover.',
   'aurora.calendar.clear': 'Clear',
   'aurora.calendar.partlyCloudy': 'Partly cloudy',
