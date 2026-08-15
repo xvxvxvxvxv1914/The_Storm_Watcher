@@ -17,9 +17,14 @@ jobs:
       # nobody watches would break at whatever moment GitHub picks.
       - uses: actions/checkout@v5
 
+      # Reads .nvmrc so the runner and a contributor's machine cannot drift.
+      # They already had: the suite passed here on Node 20 and failed 7 tests on
+      # Node 26, because Node 22+ defines its own `localStorage` global (undefined
+      # without --localstorage-file) that shadows happy-dom's. src/test-setup.ts
+      # now installs one either way, so this pin is for parity, not a crutch.
       - uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version-file: .nvmrc
           cache: npm
 
       - name: Install dependencies

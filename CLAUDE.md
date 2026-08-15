@@ -25,6 +25,18 @@ The bundled Playwright browser is a large download and can fail to install on
 this machine; `PW_CHANNEL=chrome` runs the suite against Google Chrome instead.
 CI leaves it unset and uses the pinned browser.
 
+**Node version.** `.nvmrc` says 20 and both workflows read it via
+`node-version-file`, so the runner and a working copy cannot drift; `engines`
+allows `>=20 <27`. This started as a real failure: the suite passed on CI's Node
+20 and failed 7 tests on Node 26, because **Node 22+ defines its own
+`localStorage` global — `undefined` unless the process gets
+`--localstorage-file` — and it shadows the one happy-dom provides.** So
+`localStorage.clear()` threw in `StormWatchBanner.test.tsx` while
+`geolocation.test.ts` passed, that one having stubbed storage itself. The pin
+alone would have hidden it, so `src/test-setup.ts` now installs a working
+`localStorage`/`sessionStorage` on any Node: 487/487 on both 20 and 26. Tests
+that need to control storage still override it with `vi.stubGlobal`.
+
 Run a single test file:
 ```bash
 npx vitest run src/services/nigggApi.test.ts
