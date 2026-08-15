@@ -111,7 +111,7 @@
     { "source": "/sv/:path*", "destination": "/index.html" },
     { "source": "/uk/:path*", "destination": "/index.html" },
     {
-      "source": "/(.*)",
+      "source": "/((?!assets/).*)",
       "destination": "/index.html"
     }
   ],

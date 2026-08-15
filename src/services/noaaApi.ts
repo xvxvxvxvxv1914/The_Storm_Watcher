@@ -1,6 +1,7 @@
 import type React from 'react';
 
 import { fetchJson } from '../utils/fetchJson';
+import { parseNoaaTime } from '../utils/noaaTime';
 import { logWarning } from '../utils/logger';
 import { persistGet, persistSet } from '../utils/offlineCache';
 import { isNative } from '../utils/platform';
@@ -171,8 +172,11 @@ export const getXrayFlux = (): Promise<XrayData[]> =>
 // most other feeds. Sorting at the service boundary keeps every consumer simple:
 // data[data.length - 1] is the latest point and lightweight-charts gets the
 // ascending input it requires.
+// parseNoaaTime rather than `new Date`: harmless for the ordering itself, since
+// every row would be skewed equally, but it keeps one reading of a NOAA stamp in
+// the codebase instead of two — the split is what let the bug survive.
 const ascByTime = <T extends { time_tag: string }>(rows: T[]): T[] =>
-  [...rows].sort((a, b) => new Date(a.time_tag).getTime() - new Date(b.time_tag).getTime());
+  [...rows].sort((a, b) => parseNoaaTime(a.time_tag).getTime() - parseNoaaTime(b.time_tag).getTime());
 
 export const getSolarWind = (): Promise<SolarWindData[]> =>
   cached('wind', TTL_1M, async () => {
@@ -203,6 +207,90 @@ export const latestSolarWindSpeed = (data: SolarWindData[] | null | undefined): 
   const usable = (d: SolarWindData) => Number.isFinite(d.proton_speed) && d.proton_speed > 0;
   const row = data.findLast(d => d.active && usable(d)) ?? data.findLast(usable);
   return row?.proton_speed ?? 0;
+};
+
+export interface DstData {
+  time_tag: string;
+  dst: number;
+}
+
+/**
+ * Kyoto Dst — the ring-current index, republished by NOAA.
+ *
+ * Everything else here grades a storm by Kp, which is a three-hour *range*
+ * index from mid-latitude observatories: it reports how far the field swung,
+ * not how strong the storm is. Dst measures the ring current itself and is what
+ * actually classifies storm intensity. Until now nothing in the app carried
+ * ring-current data at all.
+ *
+ * Served straight from NOAA with `Access-Control-Allow-Origin: *`, so unlike
+ * GFZ it needs no proxy on web and no CapacitorHttp special case on native.
+ * Hourly, seven days per response.
+ */
+export const getDst = (): Promise<DstData[]> =>
+  cached('dst', TTL_5M, async () => {
+    try {
+      const data = await getJson<DstData[]>(`${NOAA_BASE_URL}/products/kyoto-dst.json`);
+      const result = ascByTime(data ?? []);
+      persistSet('offline_dst', result).catch(() => {});
+      return result;
+    } catch (error) {
+      logWarning('Error fetching data in getDst:', error);
+      const cached_offline = await persistGet<DstData[]>('offline_dst');
+      return cached_offline ?? [];
+    }
+  }, nonEmpty);
+
+/**
+ * The most recent real Dst reading, or null when the series carries none.
+ *
+ * Skips back over gaps rather than reading them as 0. This is the same trap the
+ * GFZ trailing bins set for Kp: **Dst 0 is a genuine quiet value**, so a
+ * fabricated 0 is indistinguishable from a real one — and here it would read as
+ * "no storm" during an outage.
+ */
+export const latestDst = (data: DstData[] | null | undefined): number | null => {
+  for (let i = (data?.length ?? 0) - 1; i >= 0; i--) {
+    const value = data![i]?.dst;
+    if (typeof value === 'number' && Number.isFinite(value)) return value;
+  }
+  return null;
+};
+
+export type DstLevel = 'quiet' | 'weak' | 'moderate' | 'intense' | 'extreme';
+
+/**
+ * Standard ring-current storm classification.
+ *
+ * These are **not** the Kp bands and must not be filed down to match them: the
+ * two indices measure different things and legitimately disagree. A storm can
+ * read G1 on Kp while Dst is still above -50, and the app should show both
+ * rather than pick a winner.
+ *
+ * Boundaries are inclusive on the negative side — exactly -50 nT is already
+ * moderate, which is the convention in the literature.
+ */
+export const classifyDst = (dst: number): DstLevel =>
+  dst <= -250 ? 'extreme' :
+  dst <= -100 ? 'intense' :
+  dst <= -50 ? 'moderate' :
+  dst <= -30 ? 'weak' :
+  'quiet';
+
+/**
+ * Colour and label for a Dst reading, in the shape getStormStatus uses.
+ * Severity climbs green → yellow → orange → red → deep red, the same direction
+ * the Kp gauge runs, so the two cards read as one scale even though their
+ * thresholds are independent.
+ */
+export const getDstStatus = (dst: number): { statusKey: string; color: string; gradient: string } => {
+  switch (classifyDst(dst)) {
+    case 'extreme':  return { statusKey: 'dst.extreme',  color: 'text-[#b91c1c]', gradient: 'from-[#b91c1c] to-[#7f1d1d]' };
+    case 'intense':  return { statusKey: 'dst.intense',  color: 'text-[#ef4444]', gradient: 'from-[#ef4444] to-[#dc2626]' };
+    case 'moderate': return { statusKey: 'dst.moderate', color: 'text-[#f97316]', gradient: 'from-[#f97316] to-[#ea580c]' };
+    case 'weak':     return { statusKey: 'dst.weak',     color: 'text-[#eab308]', gradient: 'from-[#eab308] to-[#ca8a04]' };
+    default:         return { statusKey: 'dst.quiet',    color: 'text-[#10b981]', gradient: 'from-[#10b981] to-[#059669]' };
+  }
 };
 
 export const getMagField = (): Promise<MagFieldData[]> =>
@@ -241,8 +329,23 @@ export const getKpForecast = (): Promise<KpIndexData[]> =>
       const data = await getJson<Array<{ time_tag: string; kp: number; observed: string }>>(
         `${NOAA_BASE_URL}/products/noaa-planetary-k-index-forecast.json`
       );
+      // `observed` has THREE states, not two: 'observed' (finalised), 'estimated'
+      // (NOAA's near-real-time value for periods not yet finalised — which is the
+      // rest of *today*), and 'predicted' (from the next 00:00Z on).
+      //
+      // Keeping only 'predicted' threw the whole current day away. Measured on
+      // 2026-08-14 at 09:18Z: 5 estimated rows covering 09:00→21:00Z, dropped, so
+      // the earliest bin the app could see was 15-08 00:00Z. Calendar then had no
+      // bins at all for tonight anywhere east of about UTC+5 — Auckland, Tokyo,
+      // Kathmandu and Honolulu were all told "Kp 0.0" for a night NOAA simply had
+      // not published yet — and everyone else lost the pre-midnight half of their
+      // night. The Americas were least affected, which is why it went unseen.
+      //
+      // It also blinded the storm banner to any storm arriving *today*;
+      // peakOutlook already ignores bins that have begun, so past estimated rows
+      // cost nothing and future ones are exactly what "expected" means.
       const result = (data ?? [])
-        .filter((row) => row.observed === 'predicted')
+        .filter((row) => row.observed !== 'observed')
         .map((row) => ({
           time_tag: row.time_tag,
           kp_index: row.kp,

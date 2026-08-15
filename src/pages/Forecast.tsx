@@ -14,7 +14,8 @@ import {
   getKpForecast, getKpHistory3Day, get27DayOutlook, getStormStatus, getKpGradientStyle,
   getSpaceWeatherOutlook, resolveKp, type SpaceWeatherOutlook, type DayOutlook,
 } from '../services/noaaApi';
-import { getNightsCloudCover, type NightForecast } from '../services/skyApi';
+import { parseNoaaTime, noaaTimeSeconds } from '../utils/noaaTime';
+import { getNightsCloudCover, type NightForecast, type NightWindow } from '../services/skyApi';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import StarField from '../components/StarField';
@@ -59,7 +60,9 @@ const Forecast = () => {
     try {
       const kpData = await getKpForecast();
       const formattedData = (kpData ?? []).map((item) => {
-        const date = new Date(item.time_tag);
+        // Offset-less NOAA stamp — see noaaTime.ts. Read naked it put every
+        // forecast bin on the wrong hour of the x-axis outside UTC.
+        const date = parseNoaaTime(item.time_tag);
         return {
           time: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
           fullTime: date.toLocaleString(),
@@ -167,7 +170,7 @@ const Forecast = () => {
         const maxKp = nightItems.length > 0 ? Math.max(...nightItems.map(i => i.kp)) : 0;
         kpByDateNight.push({ date: target, maxKp });
       }
-      let cloudNights: { date: Date; cloudCoverAvg: number }[] = [];
+      let cloudNights: NightWindow[] = [];
       const { preferredLat: lat, preferredLon: lon } = settings;
       if (lat !== null && lon !== null) {
         try { cloudNights = await getNightsCloudCover(lat, lon); } catch { /* ignore */ }
@@ -175,16 +178,25 @@ const Forecast = () => {
       const combined: NightForecast[] = kpByDateNight.map((n, i) => {
         const cloud = cloudNights[i];
         return {
-          label: labels[i], date: n.date, maxKp: n.maxKp,
-          cloudCoverAvg: cloud ? cloud.cloudCoverAvg : null, isBest: false,
+          label: labels[i], date: n.date,
+          // A night the sun never leaves has no peak to report and no sky to
+          // rate; cloudCoverAvg is null there rather than a fabricated 100.
+          maxKp: cloud?.noNight ? 0 : n.maxKp,
+          cloudCoverAvg: cloud?.cloudCoverAvg ?? null,
+          isBest: false,
         };
       });
-      const scored = combined.map(n => ({
+      const scored = combined.map((n, i) => ({
         ...n,
-        score: (n.maxKp / 9) * 60 + (n.cloudCoverAvg !== null ? (100 - n.cloudCoverAvg) / 100 * 40 : (n.maxKp / 9) * 40),
+        score: cloudNights[i]?.noNight || n.maxKp === null
+          // No night, or no forecast for it — neither can be crowned the best.
+          ? -1
+          : (n.maxKp / 9) * 60 + (n.cloudCoverAvg !== null ? (100 - n.cloudCoverAvg) / 100 * 40 : (n.maxKp / 9) * 40),
       }));
       const bestIdx = scored.reduce((bi, s, i) => s.score > scored[bi].score ? i : bi, 0);
-      combined[bestIdx].isBest = true;
+      // All-negative means every night is sunlit; the reduce still returns 0, so
+      // without this a night with no darkness gets crowned.
+      if (scored[bestIdx].score >= 0) combined[bestIdx].isBest = true;
       setNights(combined);
     };
     buildNights();
@@ -198,7 +210,7 @@ const Forecast = () => {
     const windowEnd = nowSec - 24 * 3600;
     return historyRaw
       .map(item => ({
-        time: Math.floor(new Date(item.time_tag.replace(' ', 'T') + 'Z').getTime() / 1000) as TsPoint['time'],
+        time: noaaTimeSeconds(item.time_tag) as TsPoint['time'],
         value: item.Kp ?? 0,
       }))
       .filter(p => p.time >= windowStart && p.time <= windowEnd)
@@ -629,7 +641,12 @@ const Forecast = () => {
                     <div className="text-xs font-semibold text-[#94a3b8] mb-3">{nightLabel}</div>
                     <div className="mb-2">
                       <div className="text-[10px] text-[#64748b] mb-0.5">{t('aurora.calendar.maxKp')}</div>
-                      <div className="text-3xl font-bold" style={getKpGradientStyle(night.maxKp)}>{night.maxKp.toFixed(1)}</div>
+                      {/* A dash, not 0.0 — see NightForecast.maxKp. */}
+                      {night.maxKp === null ? (
+                        <div className="text-3xl font-bold text-[#64748b]">—</div>
+                      ) : (
+                        <div className="text-3xl font-bold" style={getKpGradientStyle(night.maxKp)}>{night.maxKp.toFixed(1)}</div>
+                      )}
                     </div>
                     {cloud !== null ? (
                       <div className="flex items-center gap-2 mt-3 pt-3 border-t border-white/5">

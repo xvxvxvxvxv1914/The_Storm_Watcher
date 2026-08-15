@@ -77,7 +77,14 @@ export default defineConfig(({ command }) => ({
         manualChunks: {
           'three-vendor':   ['three'],
           'globe-vendor':   ['react-globe.gl', 'three-globe'],
-          'supabase-vendor':['@supabase/supabase-js'],
+          // Renamed from 'supabase-vendor' on 2026-08-14 to change the emitted
+          // filename. The old URL, /assets/supabase-vendor-DI0HthDz.js, was cached
+          // by the CDN holding index.html with status 200 and immutable freshness,
+          // so every HTTP/2 browser got HTML where a module was expected and the
+          // whole app rendered blank. A new name is a new URL, which is the only
+          // way to stop asking for the poisoned one without CDN access. The cause
+          // is fixed separately in vercel.json.
+          'db-vendor':      ['@supabase/supabase-js'],
           'charts-vendor':  ['lightweight-charts'],
           'icons-vendor':   ['lucide-react'],
           'react-vendor':   ['react', 'react-dom', 'react-router-dom'],

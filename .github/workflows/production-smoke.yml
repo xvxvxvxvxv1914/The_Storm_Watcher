@@ -1,0 +1,39 @@
+name: Production smoke
+
+# Answers one question: is every script the live page asks for actually a script?
+#
+# On 2026-08-14 a bundle URL was answered with index.html — status 200, no 4xx
+# anywhere — and the site rendered nothing for every HTTP/2 browser. Status-code
+# monitoring called that healthy. Only the content type gave it away.
+#
+# It runs on a schedule as well as after a deploy on purpose: the bad entry lived
+# in the CDN cache with a year of freshness, so it outlived the release that
+# created it by an hour and would have outlived it indefinitely.
+
+on:
+  schedule:
+    # Every six hours, offset off the hour to avoid the crowded minute.
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+  deployment_status:
+
+jobs:
+  smoke:
+    # Deploy events fire for previews too; the schedule is the safety net if the
+    # environment name ever stops matching.
+    if: >-
+      github.event_name != 'deployment_status' ||
+      (github.event.deployment_status.state == 'success' &&
+       github.event.deployment_status.environment == 'Production')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+
+      # No install step: the script uses only built-in fetch, so this stays a
+      # thirty-second job that can run often.
+      - name: Smoke test production
+        run: node scripts/smoke-production.mjs

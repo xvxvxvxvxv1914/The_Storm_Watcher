@@ -14,7 +14,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { useAuth } from '../contexts/AuthContext';
 import { usePaymentGate } from '../hooks/usePaymentGate';
-import { calcAuroraVisibility } from '../utils/auroraVisibility';
+import { auroraViewingChance } from '../utils/auroraVisibility';
 import { isNative } from '../utils/platform';
 import StarField from '../components/StarField';
 import { Skeleton } from '../components/Skeleton';
@@ -378,7 +378,11 @@ const Home = () => {
                   )}
                   {/* Aurora visibility for saved location */}
                   {settings.preferredLat !== null && settings.preferredLon !== null && kpValue !== null && (() => {
-                    const chance = calcAuroraVisibility(settings.preferredLat!, settings.preferredLon!, kpValue);
+                    // auroraViewingChance, not calcAuroraVisibility: this badge
+                    // answers "can I see it right now", so it has to fall to
+                    // zero in daylight. The bare geomagnetic number belongs to
+                    // the alert gate, which must fire during the day too.
+                    const chance = auroraViewingChance(settings.preferredLat!, settings.preferredLon!, kpValue);
                     const color = chance >= 60 ? '#10b981' : chance >= 30 ? '#eab308' : '#64748b';
                     return (
                       <Link to="/aurora" className="glass-surface rounded-xl px-5 py-3 flex items-center gap-3 hover:border-[#10b981]/30 border border-transparent transition-all">

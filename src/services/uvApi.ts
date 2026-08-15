@@ -1,6 +1,9 @@
 import { logError } from '../utils/logger';
 import { cached } from '../utils/apiCache';
 import { fetchJson } from '../utils/fetchJson';
+import {
+  parseOpenMeteoTime, formatOpenMeteoTime, locationHourNow,
+} from '../utils/openMeteoTime';
 
 const TTL_UV  = 30 * 60 * 1000; // 30 min
 const TTL_SUN = 60 * 60 * 1000; // 60 min — sunrise/sunset barely changes
@@ -31,16 +34,24 @@ export const getUvIndex = (lat: number, lon: number): Promise<UvData> =>
     });
     const data = await fetchJson<{
       timezone: string;
+      utc_offset_seconds: number;
       hourly: { time: string[]; uv_index: number[] };
       daily: { uv_index_max: number[] };
-    }>(`https://api.open-meteo.com/v1/forecast?${params}`);
+      // One retry, matching getJson in noaaApi. It matters more here now that a
+      // failure is honest: without it a single transient blip replaces the card
+      // with an error instead of a value, where before it quietly showed a zero.
+    }>(`https://api.open-meteo.com/v1/forecast?${params}`, 10000, 1);
 
-    const now = new Date();
-    const currentHour = now.getHours();
+    const tz = data.utc_offset_seconds;
+    // The hourly array is indexed in the *location's* time, so the index has to
+    // be the location's hour. getHours() answers in the device's zone, which for
+    // anyone checking a place in another time zone reads off the wrong hour —
+    // eleven hours wrong for Sofia looking at Alaska.
+    const currentHour = locationHourNow(tz);
 
     const hourly: UvHourlyData[] = data.hourly.time.map((t, i) => ({
-      time: new Date(t).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }),
-      isoTime: t,
+      time: formatOpenMeteoTime(parseOpenMeteoTime(t, tz), data.timezone),
+      isoTime: parseOpenMeteoTime(t, tz).toISOString(),
       uv_index: Math.round(data.hourly.uv_index[i] * 10) / 10,
     }));
 
@@ -52,7 +63,12 @@ export const getUvIndex = (lat: number, lon: number): Promise<UvData> =>
     };
   } catch (error) {
     logError('Error fetching UV Index:', error);
-    return { current: 0, max: 0, hourly: [], timezone: 'UTC' };
+    // Rethrow rather than answer with zeros. UV 0 renders as "Low — no
+    // protection needed", which is a sun-safety claim made out of a failed
+    // request; the page already has an error card and a retry button, and both
+    // were dead while this returned a successful-looking object. apiCache stores
+    // only fulfilled results, so a failure is not sticky.
+    throw error;
   }
 });
 
@@ -75,18 +91,23 @@ export const getSunData = (lat: number, lon: number): Promise<SunDay[]> =>
       timezone: 'auto',
       forecast_days: '3',
     });
-    const { daily } = await fetchJson<{
+    const { daily, timezone, utc_offset_seconds: tz } = await fetchJson<{
       daily: { time: string[]; sunrise: string[]; sunset: string[]; daylight_duration: number[] };
-    }>(`https://api.open-meteo.com/v1/forecast?${params}`);
+      timezone: string;
+      utc_offset_seconds: number;
+    }>(`https://api.open-meteo.com/v1/forecast?${params}`, 10000, 1);
 
     return daily.time.map((_, i) => {
-      const sunrise = new Date(daily.sunrise[i]);
-      const sunset = new Date(daily.sunset[i]);
+      const sunrise = parseOpenMeteoTime(daily.sunrise[i], tz);
+      const sunset = parseOpenMeteoTime(daily.sunset[i], tz);
 
+      // Durations, so they survive the parse either way — but only once the two
+      // instants above are right does the printed golden hour land on the
+      // location's clock rather than the device's.
       const goldenMorningEnd = new Date(sunrise.getTime() + 60 * 60 * 1000);
       const goldenEveningStart = new Date(sunset.getTime() - 60 * 60 * 1000);
 
-      const fmt = (d: Date) => d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+      const fmt = (d: Date) => formatOpenMeteoTime(d, timezone);
 
       return {
         date: daily.time[i],

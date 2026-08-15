@@ -5,6 +5,7 @@ import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import PushNotificationBell from './PushNotificationBell';
+import StormWatchBanner from './StormWatchBanner';
 import { useKpLive } from '../hooks/useKpLive';
 import { switchLangUrl, persistLanguage, hreflangCode } from '../utils/langUrl';
 import { isMaterial } from '../utils/platform';
@@ -377,16 +378,27 @@ const Navigation = () => {
       </div>
       </div>
 
-      {isStorm && (
+      {isStorm ? (
         <div role="alert" aria-live="assertive" className="bg-gradient-to-r from-[#ef4444] via-[#f97316] to-[#7c3aed] px-4 py-2 pulse-alert">
           <div className="max-w-7xl mx-auto flex items-center justify-center gap-2">
-            <AlertTriangle className="w-4 h-4 text-white shrink-0" />
-            <span className="text-white font-bold uppercase tracking-wider text-xs sm:text-sm">
+            {/* Inline white, not `text-white`: index.css repaints
+                `html.light span.text-white` to #1e293b for labels on the light
+                page surface, which left this alert near-illegible on its own
+                gradient — dark slate on red/orange, ~1.6:1. The strip is a
+                deliberately dark fill in both themes and needs the same
+                exemption the stylesheet already grants bg-slate-900. */}
+            <AlertTriangle className="w-4 h-4 shrink-0" style={{ color: '#ffffff' }} />
+            <span className="font-bold uppercase tracking-wider text-xs sm:text-sm" style={{ color: '#ffffff' }}>
               {t('home.stormBanner')} {stormKp?.toFixed(1)}
             </span>
-            <AlertTriangle className="w-4 h-4 text-white shrink-0" />
+            <AlertTriangle className="w-4 h-4 shrink-0" style={{ color: '#ffffff' }} />
           </div>
         </div>
+      ) : (
+        // Only when no storm is measured: a "coming" and an "in progress" strip
+        // stacked together would describe the same sky in two tenses, and cost
+        // twice the header height that <main> reserves for one.
+        <StormWatchBanner />
       )}
     </nav>
   );

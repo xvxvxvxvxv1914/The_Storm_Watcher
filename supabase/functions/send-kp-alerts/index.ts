@@ -7,6 +7,31 @@ const GFZ_KP_URL = 'https://kp.gfz.de/app/json/';
 const NOAA_KP_URL = 'https://services.swpc.noaa.gov/json/planetary_k_index_1m.json';
 const COOLDOWN_MS = 2 * 60 * 60 * 1000; // 2 hours between alerts per subscription
 
+/**
+ * Push is a paid feature: Pro, Premium, or still inside a trial.
+ *
+ * Applied with `{ referencedTable: 'profiles' }` against a `profiles!inner(...)`
+ * embed, so it filters the parent row by its profile.
+ *
+ * **The column names are bare on purpose.** `referencedTable` already scopes
+ * them; writing `profiles.plan.in.(...)` makes PostgREST read `profiles.plan` as
+ * the column name and reject the whole filter:
+ *
+ *     failed to parse logic tree ((profiles.plan.in.(pro,premium),…))  [PGRST100]
+ *
+ * All four queries in this file had the prefix, so all four errored on every
+ * cron run — five times an hour since the feature shipped — which means the plan
+ * gate and quiet hours never actually ran. It stayed invisible because the
+ * failure is logged and stepped over rather than thrown, and because the push
+ * tables are still empty. One constant now, so the four cannot drift apart
+ * again.
+ *
+ * The embed this rides on needs a foreign key straight from the push table to
+ * `profiles`; keys to auth.users are not enough, since PostgREST will not join
+ * two tables through a third. See migration 20260813000000_push_profiles_fk.sql.
+ */
+const PAID_PLAN_FILTER = 'plan.in.(pro,premium),subscription_status.eq.trialing';
+
 interface KpEntry {
   kp_index?: number;
   estimated_kp?: number;
@@ -99,8 +124,6 @@ interface PushSub {
   bz_alerts_enabled: boolean;
   bz_threshold: number;
   last_bz_notified_at: string | null;
-  lat: number | null;
-  lon: number | null;
   tz_offset_min: number | null;
   profiles: QuietProfile;
 }
@@ -114,8 +137,6 @@ interface DeviceToken {
   bz_threshold: number;
   last_notified_at: string | null;
   last_bz_notified_at: string | null;
-  lat: number | null;
-  lon: number | null;
   tz_offset_min: number | null;
   profiles: QuietProfile;
 }
@@ -132,18 +153,23 @@ function inQuietHours(p: QuietProfile | null, tzOffsetMin: number | null): boole
   return qs < qe ? h >= qs && h < qe : h >= qs || h < qe;
 }
 
-// Dipole-approximation aurora visibility (mirrors src/utils/auroraVisibility.ts).
-// Returns 0 if aurora is not expected at this lat/lon for the given Kp.
-function calcAuroraVisibility(lat: number, lon: number, kp: number): number {
-  const POLE_LAT = 80.7 * (Math.PI / 180);
-  const POLE_LON = -72.2 * (Math.PI / 180);
-  const latR = lat * (Math.PI / 180);
-  const lonR = lon * (Math.PI / 180);
-  const sinGm = Math.sin(latR) * Math.sin(POLE_LAT) + Math.cos(latR) * Math.cos(POLE_LAT) * Math.cos(lonR - POLE_LON);
-  const gmlat = Math.asin(Math.max(-1, Math.min(1, sinGm))) * (180 / Math.PI);
-  const margin = gmlat - (67.0 - 5.3 * kp);
-  return Math.round(Math.min(100, Math.max(0, (margin / 15) * 100)));
-}
+// There is deliberately NO aurora-visibility gate here. This used to carry an
+// inline copy of calcAuroraVisibility (src/utils/auroraVisibility.ts) and both
+// Kp passes dropped anyone it scored at 0.
+//
+// Two things were wrong with that. It silently overrode the one setting the user
+// actually chose: after the 2026-08-13 recalibration Sofia scores 0 until Kp
+// 8.33, so someone there who asked for alerts at Kp 5 would have received none —
+// their threshold was overruled by a filter they never saw. And it answered a
+// question these notifications do not ask: the body reads "Kp has reached X,
+// above your threshold of Y", which promises a storm, not a sight of one. A
+// geomagnetic storm has effects at mid-latitudes whether or not the oval is
+// overhead, and this app reports them.
+//
+// So the threshold decides alone, and the copy of the visibility model is gone
+// with it — one fewer place to keep in step with the JS. If the gate ever comes
+// back it should be an explicit per-subscription opt-in ("only when it is
+// visible from my location"), never an implicit override.
 
 // ── APNs JWT helpers ─────────────────────────────────────────────────────────
 
@@ -416,10 +442,10 @@ Deno.serve(async (req: Request) => {
   // Trialing users are also included (trialing = pro access).
   const { data: subs, error: subsError } = await supabase
     .from('push_subscriptions')
-    .select('id, endpoint, p256dh, auth, threshold_kp, bz_alerts_enabled, bz_threshold, last_bz_notified_at, lat, lon, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
+    .select('id, endpoint, p256dh, auth, threshold_kp, bz_alerts_enabled, bz_threshold, last_bz_notified_at, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
     .lte('threshold_kp', currentKp)
     .or(`last_notified_at.is.null,last_notified_at.lt.${cooldownCutoff}`)
-    .or('profiles.plan.in.(pro,premium),profiles.subscription_status.eq.trialing', { referencedTable: 'profiles' });
+    .or(PAID_PLAN_FILTER, { referencedTable: 'profiles' });
 
   if (subsError) {
     console.error('DB query failed:', subsError.message);
@@ -427,13 +453,7 @@ Deno.serve(async (req: Request) => {
     const expiredIds: string[] = [];
 
     await Promise.allSettled(
-      (subs as unknown as PushSub[]).filter(sub => {
-        if (inQuietHours(sub.profiles, sub.tz_offset_min)) return false;
-        if (sub.lat !== null && sub.lon !== null) {
-          return calcAuroraVisibility(sub.lat, sub.lon, currentKp) > 0;
-        }
-        return true; // unknown location → send
-      }).map(async (sub) => {
+      (subs as unknown as PushSub[]).filter(sub => !inQuietHours(sub.profiles, sub.tz_offset_min)).map(async (sub) => {
         try {
           await webpush.sendNotification(
             { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
@@ -469,10 +489,10 @@ Deno.serve(async (req: Request) => {
   if (apnsEnabled || fcmEnabled) {
     const { data: tokens, error: tokensError } = await supabase
       .from('device_push_tokens')
-      .select('id, token, platform, threshold_kp, bz_alerts_enabled, bz_threshold, last_notified_at, last_bz_notified_at, lat, lon, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
+      .select('id, token, platform, threshold_kp, bz_alerts_enabled, bz_threshold, last_notified_at, last_bz_notified_at, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
       .lte('threshold_kp', currentKp)
       .or(`last_notified_at.is.null,last_notified_at.lt.${cooldownCutoff}`)
-      .or('profiles.plan.in.(pro,premium),profiles.subscription_status.eq.trialing', { referencedTable: 'profiles' });
+      .or(PAID_PLAN_FILTER, { referencedTable: 'profiles' });
 
     if (tokensError) {
       console.error('Device tokens query failed:', tokensError.message);
@@ -480,11 +500,7 @@ Deno.serve(async (req: Request) => {
       const eligible = (tokens as unknown as DeviceToken[]).filter(t => {
         if (t.platform === 'ios' && !apnsEnabled) return false;
         if (t.platform === 'android' && !fcmEnabled) return false;
-        if (inQuietHours(t.profiles, t.tz_offset_min)) return false;
-        if (t.lat !== null && t.lon !== null) {
-          return calcAuroraVisibility(t.lat, t.lon, currentKp) > 0;
-        }
-        return true; // unknown location → send
+        return !inQuietHours(t.profiles, t.tz_offset_min);
       });
 
       const needApns = apnsEnabled && eligible.some(t => t.platform === 'ios');
@@ -595,19 +611,19 @@ Deno.serve(async (req: Request) => {
     const [webRes, nativeRes] = await Promise.all([
       supabase
         .from('push_subscriptions')
-        .select('id, endpoint, p256dh, auth, bz_threshold, lat, lon, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
+        .select('id, endpoint, p256dh, auth, bz_threshold, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
         .eq('bz_alerts_enabled', true)
         .gte('bz_threshold', bz)   // threshold is negative; Bz at or below it fires
         .or(`last_bz_notified_at.is.null,last_bz_notified_at.lt.${bzCooldownCutoff}`)
-        .or('profiles.plan.in.(pro,premium),profiles.subscription_status.eq.trialing', { referencedTable: 'profiles' }),
+        .or(PAID_PLAN_FILTER, { referencedTable: 'profiles' }),
       (apnsEnabled || fcmEnabled)
         ? supabase
             .from('device_push_tokens')
-            .select('id, token, platform, bz_threshold, lat, lon, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
+            .select('id, token, platform, bz_threshold, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
             .eq('bz_alerts_enabled', true)
             .gte('bz_threshold', bz)
             .or(`last_bz_notified_at.is.null,last_bz_notified_at.lt.${bzCooldownCutoff}`)
-            .or('profiles.plan.in.(pro,premium),profiles.subscription_status.eq.trialing', { referencedTable: 'profiles' })
+            .or(PAID_PLAN_FILTER, { referencedTable: 'profiles' })
         : Promise.resolve({ data: [], error: null }),
     ]);
 

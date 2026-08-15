@@ -25,10 +25,48 @@ The bundled Playwright browser is a large download and can fail to install on
 this machine; `PW_CHANNEL=chrome` runs the suite against Google Chrome instead.
 CI leaves it unset and uses the pinned browser.
 
+**Node version.** `.nvmrc` says 20 and both workflows read it via
+`node-version-file`, so the runner and a working copy cannot drift; `engines`
+allows `>=20 <27`. This started as a real failure: the suite passed on CI's Node
+20 and failed 7 tests on Node 26, because **Node 22+ defines its own
+`localStorage` global — `undefined` unless the process gets
+`--localstorage-file` — and it shadows the one happy-dom provides.** So
+`localStorage.clear()` threw in `StormWatchBanner.test.tsx` while
+`geolocation.test.ts` passed, that one having stubbed storage itself. The pin
+alone would have hidden it, so `src/test-setup.ts` now installs a working
+`localStorage`/`sessionStorage` on any Node: 487/487 on both 20 and 26. Tests
+that need to control storage still override it with `vi.stubGlobal`.
+
 Run a single test file:
 ```bash
 npx vitest run src/services/nigggApi.test.ts
 ```
+
+**Пускай суита и разбъркан, и в чужд часови пояс — иначе крие бъгове.** Двете оси
+хванаха неща, които 20+ обикновени пускания не хванаха (14.08):
+
+```bash
+npx vitest run --sequence.shuffle --sequence.seed=2   # ред на тестовете
+TZ=Pacific/Chatham npx vitest run                     # 45-минутен offset
+```
+
+Разбъркването извади **два теста, които тровеха съседите си**, и двата невидими в
+обявения ред, защото тестът-виновник стоеше последен:
+
+- `useWebPush.test.ts` викаше `vi.doMock` за `AuthContext` вътре в един тест.
+  **`doMock` регистрацията не се маха от `resetModules` нито от `afterEach`** —
+  всеки следващ тест получаваше хук без потребител и не правеше нищо.
+- `BlogPost.test.tsx` ползваше `mockReturnValue` за езика; стойността оцеляваше в
+  следващия тест и статията се рендираше на български вътре в теста, който твърди
+  английското заглавие.
+
+И двата са поправени по един и същ начин: **променлива, нулирана в `beforeEach`,
+вместо per-test mock състояние**. Ако пишеш тест, който сменя глобално състояние,
+това е моделът — не `doMock`, не `mockReturnValue` без нулиране.
+
+Часовият пояс на машината е другата ос: `TZ` работи и на Windows (проверено), а
+`Asia/Kathmandu` и `Pacific/Chatham` чупят наивна аритметика, каквато 45 минути не
+прощава.
 
 Mobile (requires Xcode):
 ```bash
@@ -64,11 +102,48 @@ widget); incremental ones are 10-25s.
 keystores. The only way through is `adb uninstall com.stormwatcher.app` first,
 which wipes the app's data on the device (settings, saved location, local cache).
 
-Two more Windows-machine facts: `core.autocrlf=true` there makes
-`blogMetadata.test.ts` fail (CRLF file vs LF generator output, byte comparison)
-— **do not "fix" the file, that breaks CI on Linux**; and its `.env` holds a
-placeholder Supabase URL, so sign-in/mood/profile are dead in local Android
-builds while NOAA/GFZ still work.
+One more Windows-machine fact: its `.env` holds a placeholder Supabase URL, so
+sign-in/mood/profile are dead in local Android builds while NOAA/GFZ still work.
+
+**Fixed 14.08 — `core.autocrlf=true` used to fail `blogMetadata.test.ts`** (CRLF
+checkout vs LF generator output, byte comparison), permanently, on this machine
+only. `.gitattributes` now pins `src/data/blog/metadata.ts` to `eol=lf`, which
+fixes the checkout rather than the committed content — converting the file itself
+is what would have broken CI on Linux. The suite is 396/396 locally now; a
+failure here is real again. If another generated file ever gets a byte-comparison
+test, give it the same line.
+
+### Двата предпазителя около деплоя (от 2026-08-14)
+
+Сайтът беше бял над час и **нищо не го хвана**: CI беше зелен, всички статуси 200,
+Sentry с нула събития. Затова има две проверки, всяка родена от конкретен провал.
+
+```bash
+npm run check:vercel   # преди комит и в CI
+npm run smoke          # срещу production; SMOKE_URL сочи другаде при нужда
+```
+
+**`scripts/check-vercel-config.mjs`** — бял списък на позволените ключове в
+`vercel.json`. Сложих `"_comment"` вътре в rewrite, Vercel отхвърли **цялата**
+конфигурация, двата деплоя отидоха в `ERROR` **без нито един ред build лог**, а CI
+остана зелен, защото никой не гледа този файл. Проверява и че catch-all-ът изключва
+`/assets/` — иначе липсващ бъндъл се връща като `index.html` с 200 и CDN-ът го
+кешира **като бъндъла**, с година свежест.
+
+**`scripts/smoke-production.mjs`** — обхожда целия граф от импорти на живия сайт и
+твърди, че всеки `.js` наистина се сервира като JavaScript. Точно това пропуснаха
+всички други проверки: `/assets/supabase-vendor-DI0HthDz.js` върна `index.html` със
+статус 200 и `content-type: text/html`, модулът не се парсна и `#root` остана
+празен. **HTTP/1.1 клиенти получаваха верния файл**, затова curl и `Invoke-WebRequest`
+показваха здрав сайт, докато всеки истински браузър виждаше бяло.
+
+`.github/workflows/production-smoke.yml` го пуска след успешен production деплой
+**и на всеки 6 часа**. Разписанието не е излишно: отровеният запис живееше в кеша
+много след деплоя, който го създаде, и щеше да живее там неопределено дълго.
+
+И двата скрипта са доказани срещу счупено състояние, не само срещу здраво —
+`check:vercel` вали и на `_comment`, и на catch-all без изключението; smoke тестът
+беше пуснат срещу локален сървър, който имитира точно онзи отговор.
 
 ### Driving the device from the terminal
 
@@ -148,16 +223,206 @@ All NOAA/external fetches go through an in-memory TTL cache + single-flight dedu
 
 | Service | Source | Notes |
 |---------|--------|-------|
-| `noaaApi.ts` | NOAA SWPC + GFZ | Kp index (GFZ primary, NOAA fallback), solar wind, X-ray, aurora OVATION model, 3-day outlook |
+| `noaaApi.ts` | NOAA SWPC + GFZ | Kp index (GFZ primary, NOAA fallback), solar wind, X-ray, aurora OVATION model, 3-day outlook, **Kyoto Dst** |
 | `nigggApi.ts` | NIGGG Bulgaria | Local magnetic field (H/F components). On native Capacitor, calls the endpoint directly; on web goes through `/api/niggg` Vercel rewrite |
 | `donkiApi.ts` | NOAA DONKI | CME/solar flare alerts. Web goes through the `/donki` Vercel rewrite; native calls the upstream directly (CapacitorHttp) — the rewrite does not exist under `capacitor://localhost` |
 | `uvApi.ts` | Open-Meteo | UV index by coords |
 | `skyApi.ts` | Open-Meteo | Cloud cover + astronomy data |
 | `issApi.ts` | Where The ISS At | ISS position |
 
+**Провалена заявка не бива да се превръща в стойност.** Това е най-често
+повтаряният бъг в тази кодова база — вече шест пъти, всеки път в различен сървиз:
+GFZ null бин → Kp 0, Dst 0, полярният ден → 100% облачност, отрязана нощ → `Kp 0.0`
+за непрогнозирана нощ, `getUvIndex` → UV 0 („Low — no protection needed", тоест
+твърдение за безопасност от паднала заявка), `getSkyVisibility` → „poor, 100%
+облачност". Последните две са поправени 14.08 — сега **хвърлят**, а страниците им
+вече имаха `catch` и ErrorCard с бутон „опитай пак", които бяха недостижими.
+
+`apiCache` пази **само изпълнени** резултати и чисти `inflight` във `finally`, така
+че хвърлянето не залепва грешката за TTL-а — следващият опит тегли наново. Значи
+няма причина сървиз да гълта грешка: или стойност, или изключение, никога измислена
+нула.
+
+**Dst не е Kp и не бива да се съгласува с него.** Kp е 3-часов *range* индекс от
+среднищирочинни обсерватории — казва колко се е разлюляло полето. Dst мери самия
+пръстенов ток и е това, което класифицира силата на бурята. Двата легитимно се
+разминават (проверено: Kp 0.2 „quiet" срещу Dst −142 „intense"), затова картите
+са независими; примиряването им би измислило число, което никой източник не
+публикува. Праговете (−30 / −50 / −100 / −250) са публикуваните и **не се
+подравняват** към Kp лентите.
+
+`latestDst` прескача дупките назад, вместо да ги чете като 0 — **Dst 0 е реална
+спокойна стойност**, същият капан като GFZ trailing null bins-овете при Kp. Без
+използваема стойност картата показва `—`, не измислена нула. Тестове в
+`src/services/dst.test.ts`.
+
+Източникът (`services.swpc.noaa.gov/products/kyoto-dst.json`) връща
+`Access-Control-Allow-Origin: *`, значи за разлика от GFZ **не иска proxy** на web
+и няма нужда от CapacitorHttp специален случай на native.
+
 ### API proxies
 - **Dev**: Vite proxy in `vite.config.ts` handles `/donki`, `/api/niggg`, `/api/gfz`, `/api/stripe`
 - **Prod**: `vercel.json` rewrites handle `/donki` and `/api/gfz`; NIGGG has a dedicated Vercel serverless function at `api/niggg.ts`; Stripe is handled by `api/stripe/` serverless functions
+
+### Двете ленти в хедъра (буря)
+
+`Navigation` рендира **точно една** от две ленти, взаимно изключващи се:
+
+1. **Текуща буря** — live Kp ≥ 5, пулсиращ градиент, `role="alert"`. Ретроспективна
+   по конструкция: Kp е 3-часов индекс, значи докато тя се появи, изкачването е
+   минало.
+2. **Предстояща буря** — `StormWatchBanner`, когато няма измерена буря, а NOAA
+   3-дневната прогноза дава пик Kp ≥ 5. Без вход и без план — push алармите са
+   Pro-only, така че това е единственото предупреждение, което непознат посетител
+   получава. Спокойна и статична, за да не звучи като измерване; скриваема.
+
+**Свързаност, която лесно се чупи:** `<main>` в `App.tsx` резервира 2.25rem за
+лентата и това виси на `isStorm || outlookVisible`. Добавиш ли трета лента или
+пуснеш ли двете едновременно, съдържанието влиза под фиксирания хедър.
+
+Скриването е ключирано на **времето на пика + G нивото**, не на суровия Kp
+(`outlookToken`): NOAA преиздава прогнозата ~3 пъти дневно и мърда стойността с
+трета от единица, което на суров ключ би отваряло скрит банер по няколко пъти на
+ден. Качване през G граница нарочно го отваря пак.
+
+### Open-Meteo времената са в пояса на *локацията* — минавай през `parseOpenMeteoTime`
+
+Същият капан като долния, но по-коварен: скрива се, докато посетителят и мястото,
+което гледа, са в един часови пояс. Всички повиквания тук подават `timezone=auto`,
+значи API-то отговаря по часовника **на локацията** и пак **без offset**, а
+истинският offset идва в отделно поле, което кодът дълго не четеше:
+
+```
+"sunset": ["2026-08-14T21:56"]   +   "utc_offset_seconds": 7200
+```
+
+`new Date(...)` чете низа като време **на устройството**. Грешката е точно
+`offset(устройство) − offset(локация)`, измерено на живо за Тромсьо: 0 от Осло,
+−1 ч от София, **+10 ч от Анкъридж, −10 ч от Окланд**.
+
+Сравненията **между две стойности от Open-Meteo** оцеляваха (и двете изместени
+еднакво) — затова не гръмна по-рано. Чупеше се там, където изместено време срещне
+истински момент: `Date.now()`, или NOAA Kp бин през `parseNoaaTime`. Тоест нощният
+прозорец в Calendar, който решава кои бинове са „тази нощ" — а оттам пиковото Kp
+за нощта и шансът за аврора.
+
+Засегнати бяха **четири места в два сървиза**, не само аврората: нощният прозорец
+и облачността ([skyApi.ts](src/services/skyApi.ts), 2 повиквания), кой час е „сега"
+за UV и златният час ([uvApi.ts](src/services/uvApi.ts), 2 повиквания).
+`getWeatherData` в `noaaApi.ts` ползва `current=` и не парсва времена — чист е.
+
+[src/utils/openMeteoTime.ts](src/utils/openMeteoTime.ts) е единственият правилен
+прочит: `parseOpenMeteoTime` за момент, `openMeteoHour` за часа по часовника на
+локацията, `locationHourNow` за индекс в почасов масив, `formatOpenMeteoTime` за
+показване (през IANA името, за да оцелее локалът 12ч/24ч), `parseOpenMeteoDay`
+защото низ само с дата се парсва като UTC полунощ и на запад от Гринуич се
+показва предният ден.
+
+**Инвариантът, който тестовете пазят:** нощният прозорец описва небето **над
+локацията**, значи трябва да е един и същ момент независимо къде е устройството.
+`skyApi.timezone.test.ts` твърди абсолютни моменти, а суитът се пуска и в
+`Asia/Kathmandu` и `Pacific/Chatham` — 45-минутните пояси са това, което наивната
+аритметика бърка.
+
+**`worldTime.test.ts` е проверката „наред ли е по света".** Дванайсет **истински**
+записани отговора на Open-Meteo (`worldMeteo.fixture.ts`, от `UTC+12:45` до
+`UTC−10`, двете полукълба), пуснати през реалните сървизи. Записани, а не измислени,
+защото счупеното е свойство на това, което API-то наистина праща.
+
+Носещото твърдение **не** е че парсването съвпада с формула — това би преразказало
+имплементацията. То е че **слънцето е на хоризонта** в моментите, които приложението
+нарича изгрев и залез, проверено със `solarAltitude` — нашата имплементация на
+алгоритъма на NOAA, която не докосва Open-Meteo. Прозорец, прочетен в грешен пояс,
+слага слънцето десетки градуси встрани.
+
+Доказано с мутации, не със зелено: връщането на `new Date(t)` вали **39 от 73**
+теста, а подмяната на `locationHourNow` с часа на устройството вали 14. Оцеляват
+точно градовете, чийто пояс съвпада с този на машината — случаят, който криеше бъга
+месеци наред.
+
+Фикстурата се пресъздава с `node scripts/capture-world-meteo.mjs` (иска мрежа);
+стойностите са замразени нарочно, за да са твърденията точни. Полярният ден и нощ са
+отделно, в `skyApi.timezone.test.ts` — август не дава на нито един от дванайсетте
+свит прозорец.
+
+### NOAA времената нямат offset — минавай през `parseNoaaTime`
+
+NOAA стъмпва редовете си `2026-08-15T18:00:00` (понякога с интервал вместо `T`) —
+ISO-подобно, но **без offset**, което ECMAScript чете като *локално* време.
+Feed-ът е UTC. [src/utils/noaaTime.ts](src/utils/noaaTime.ts) е единственият
+правилен прочит; `noaaTimeSeconds` е същото в epoch секунди за графиките.
+
+Това не беше козметично. Нощният прозорец на Calendar е 20:00–06:00 **локално**, а
+бин на 18:00Z е 21:00 в София — вътре в прозореца. Четен направо, ставаше 18:00 и
+**изпадаше от нощта**, тоест пиковото Kp за нощта се занижаваше (измерено: 6.0
+вместо 7.0) заедно с извлечения от него шанс за аврора. Forecast слагаше бинове на
+грешен час по x-оста; Dashboard плъзгаше 24-часовия си прозорец за слънчев вятър.
+
+Оцеляло беше защото **четенето беше разцепено**: четири места вече пишеха
+`new Date(t.replace(' ', 'T') + 'Z')` на ръка, три — не. Същият модел като деветте
+ръчни копия на Kp приоритета, станали `resolveKp`. Сега всички минават през
+`parseNoaaTime`; `noaaTime.test.ts` пази и еквивалентността със стария ръчен израз.
+
+### Модел за видимост на аврора
+
+Две функции, нарочно разделени. И двете живеят само в
+[src/utils/auroraVisibility.ts](src/utils/auroraVisibility.ts) — **едно копие,
+не две**: inline-ното в `send-kp-alerts/index.ts` е махнато на 13.08 заедно с
+гейта, който единствен го ползваше.
+
+- **`calcAuroraVisibility(lat, lon, kp)`** — само геомагнитно. Казва „доколко си
+  на място за тази буря". Ползва се от сравнителните списъци с градове (Aurora,
+  AuroraMap), където мащабиране по локален час би направило половината редове
+  нула само заради часовата зона.
+- **`auroraViewingChance(lat, lon, kp, at)`** — същото, умножено по `darknessFactor`.
+  Отговаря на „виждам ли го сега". Ползва се от значката на Home и от AuroraMap
+  за локацията на потребителя.
+
+**Алармите не се гейтват по видимост изобщо — нито геомагнитно, нито по тъмнина.**
+Те отговарят на „тече ли буря", а известието го казва буквално: „Kp has reached X,
+above your threshold of Y". Гейт по тъмнина би заглушил дневните бури; гейт по
+геомагнитна видимост мълчаливо отменяше потребителския праг (София: 0% до Kp 8.33,
+тоест поискал аларми при Kp 5 не получаваше нито една). Прагът решава сам. Ако
+гейтът някога се върне, да е изричен opt-in на абонамента, не скрит филтър.
+
+**Константите са на NOAA SWPC, не измислени**
+([tips-viewing-aurora](https://www.spaceweather.gov/content/tips-viewing-aurora)):
+ръб на овала **66° при Kp 0**, движи се **2° на Kp единица**, и аврора се вижда
+до **~1000 км (≈9°)** по-южно от ръба.
+
+До 2026-08-13 наклонът беше **5.3°/Kp** — не препис на нищо публикувано. Слагаше
+ръба на овала на 40.5° при Kp 5 и на 19.3° (тропиците) при Kp 9; София показваше
+40% при Kp 6, където верният отговор е нула. Само смяна на наклона обаче щеше да
+обърне грешката в другата посока: старият код клампваше всичко под границата на
+нула, тоест **нямаше хоризонтна видимост изобщо** — а Шотландия вижда аврора при
+Kp 5, стоейки ~3° под ръба. Затова двете се сменят заедно.
+
+**Спадът е квадратичен и това е нашият избор, не цитат.** NOAA дава обхвата
+(1000 км), не формата. Линейна рампа даваше на Шотландия 54% при Kp 1 и на Берлин
+58% при Kp 5 — и двете твърде щедри спрямо реалните наблюдения. Физическото
+основание: колкото по на юг, толкова по-ниско до хоризонта пада аврората, тоест
+покрива по-малко небе и се гледа през повече атмосфера. **Това е най-слабо
+подпряното число във файла.**
+
+Калибрацията е закована в `auroraVisibility.test.ts` срещу документирани събития
+(май 2024 G5, октомври 2024 G4) — прагове като диапазони, не точни стойности, за
+да преживеят уточнение, което пази реалността.
+
+Известни ограничения, съзнателни: няма магнитно местно време (овалът се третира
+като окръжност, макар да е изместен към нощната страна), няма полюсна граница
+(полярната шапка сатурира на 100%, а овалът е пръстен), и центрираният дипол
+греши с няколко градуса при сибирските дължини и над Южноатлантическата аномалия.
+
+### Светла тема: `text-white` върху тъмен фон не работи
+
+`index.css` пребива `html.light {p,h1,h2,h3,span,label,div,a,button}.text-white`
+на `#1e293b`, за да оцелеят нормалните надписи върху светлата повърхност.
+Компонент с **нарочно тъмен фон** попада в същото правило и текстът му става тъмно
+сиво върху тъмно — лентата за текуща буря стоя така, измерено на 1.6:1.
+
+Файлът има изключение за `.text-white.bg-slate-900|800|black`. За произволен hex
+фон вземи цвета **inline** (`style={{ color: '#ffffff' }}`) — inline бие класовото
+правило. Не съди по код, измервай: `getComputedStyle(el).color`.
 
 ### Access control
 `PlanGuard` component wraps routes/sections that require `pro` or `premium`. It reads `profile.plan` from AuthContext. When `VITE_PAYMENTS_ENABLED !== 'true'`, all content is accessible regardless of plan — useful for development.
@@ -425,9 +690,12 @@ Manual chunks in `vite.config.ts` keep the initial bundle small:
 - `supabase-vendor`, `react-vendor`, `icons-vendor` — shared infrastructure
 
 ### Key utilities
-- `src/utils/auroraVisibility.ts` — pure math aurora visibility % from lat/lon/Kp (dipole approximation, no API)
+- `src/utils/auroraVisibility.ts` — виж отделната секция по-долу
+- `src/utils/solarPosition.ts` — `solarAltitude` / `darknessFactor` по алгоритъма на NOAA. Чиста математика, без API; валидиран срещу реални изгреви от Open-Meteo (дава −0.8° при обявения изгрев, при стандартни −0.833°)
 - `src/utils/logger.ts` — `logError()` wrapper (console in dev, Sentry in prod)
 - `src/utils/generateStormImage.ts` — generates OG share images for storm events
+- `src/utils/stormOutlook.ts` — peak Kp in the NOAA 3-day forecast. React-free and app-import-free so it unit-tests standalone, the same reason `send-kp-alerts/bz.ts` is
+- `src/utils/noaaTime.ts` — `parseNoaaTime` / `noaaTimeSeconds`. **The only correct way to read a NOAA `time_tag`** — the stamps carry no offset (see above)
 
 ## Ideas / Future Plans
 
@@ -435,9 +703,184 @@ _(Add ideas and future feature plans here as they come up)_
 
 ## TODO / Pending Work
 
-### Какво остава — актуално към 2026-08-09
+### Състояние в края на 2026-08-14
 
-Кодова работа няма. Всичко долу иска или потребителя, или устройство/акаунт.
+`main` = `c8bb889`, CI #778 зелен по всички стъпки, production деплойнат и проверен
+в браузър. **Кодова работа не чака нищо.** Шестнайсет комита; всеки поправен бъг е
+доказан срещу счупено състояние, не само срещу зелено.
+
+| Какво | Как е доказано |
+|---|---|
+| Трети бъг в алармите (`integer` праг срещу дробно Kp) | 65 cron run-а, 0 провала |
+| Open-Meteo времената се четяха в пояса на устройството | 12 града, слънцето на хоризонта ±0.2° |
+| Целият текущ ден изхвърлен от прогнозата (`estimated` редове) | Катманду: „Kp 0.0" → реален пик 4.00 |
+| Непрогнозирана нощ се рисуваше като уверено `0.0` | тире; типът `number \| null` изкара всичките шест места |
+| Два теста тровеха съседите си | 12 разбъркани seeds, всички зелени |
+| Три сървиза връщаха измислена стойност при провал | тестове, че хвърлят |
+| Flaky тест в CI (`lang` състезание) | мутационен тест + MutationObserver, 5/5 |
+| CRLF на Windows | 307 CRLF двойки → 0, суитът зелен локално за пръв път |
+
+**Срив на production, 14.08, ~1 час.** Catch-all-ът върна `index.html` за заявка
+към чънк в прозореца на деплоя; `/assets/` носи `immutable` за година, значи CDN-ът
+кешира HTML **като бъндъла**. HTTP/1.1 клиенти получаваха верния файл, затова
+проверките по статуси показваха здрав сайт, докато всеки реален браузър виждаше
+бяло. Поправката не стигна production още час, защото сложих `"_comment"` в
+`vercel.json` и Vercel отхвърли конфигурацията — двата деплоя в `ERROR` **без нито
+един ред build лог**, при зелен CI.
+
+Оттам са двата предпазителя горе („Двата предпазителя около деплоя"). **Поуката,
+която струва най-много: статус 200 не значи, че страницата работи.** Проверявай със
+`npm run smoke` или с браузър, не с `Invoke-WebRequest`.
+
+**Одит, направен същия ден:** 16 страници в браузър (0 грешки, 0 CSP нарушения,
+`lang` верен за en/bg/de/ja), 72/72 чънка с правилен тип, Vercel `READY`, Supabase
+cron чист, Sentry доставя (проверено с нарочна грешка, затворена веднага),
+Googlebot/Bingbot/GPTBot → 200, `/api/gfz` и `/api/niggg` с истински данни, 487
+теста × 5 пояса × 5 разбърквания.
+
+Дребни, съзнателно оставени: `DEP0169 url.parse` warning от зависимост (15/24ч по
+`/api/gfz`, `/api/niggg`, `/api/cron/webhook-health`); `429` от `ipapi.co` на
+`/sky`, най-вероятно от собствените ми тестове — ако се повтори, е реален лимит;
+`/api/niggg` връща `content-type: text/html` за JSON тяло (препредава типа на
+източника, безвредно, защото `fetchJson` парсва текст).
+
+**Sentry е сляп точно за бяла страница** — ако модулът не се зареди, SDK-ът никога
+не се инициализира и мониторингът мълчи най-силно, когато е най-нужен. Затова
+smoke тестът не е излишен дублаж.
+
+### Какво остава — актуално към 2026-08-14
+
+🔴 **Отменено 14.08: „кодова работа по алармите няма" беше грешно.** Логовете за
+24 часа показват трети бъг в същите четири заявки, започнал **15 минути след**
+вчерашния deploy: `push_subscriptions.threshold_kp` е `integer`, а
+`device_push_tokens.threshold_kp` е `real`. Кодът филтрира и двете с един и същ
+`.lte('threshold_kp', currentKp)`, а GFZ дава Kp в трети — PostgREST кастна
+`2.333` към типа на колоната и web заявката пада с `22P02`, **79 пъти за 24 часа,
+на всеки run с дробно Kp** (≈2 от 3).
+
+**✅ Поправено и проверено на живо същия ден.**
+`20260814000000_push_threshold_kp_real.sql` е приложена; и четирите прагови
+колони в двете push таблици вече са `real`. Функцията **не е предеплойвана** —
+кодът беше прав, схемата не беше. Доказателството е по новия стандарт, не по
+един късметлийски ред:
+
+| Прозорец | Run-ове | С дробно Kp | Провалени заявки |
+|---|---|---|---|
+| до 08:35 UTC | — | всеки | **всеки** (последен `08:35:01`) |
+| след 08:36 UTC | 3 | **3** | **0** |
+
+Плюс на самото API: `push_subscriptions?threshold_kp=lte.2.333` мина от `400
+22P02` на `200 []`, същото и за `5.667`.
+
+Пак същият модел: PGRST100 гърмеше преди каста и го **скриваше** — старата грешка
+спира 13.08 22:40, новата тръгва 22:55. Три слоя досега в четири заявки.
+
+**Затова рецептата за проверка отдолу е недостатъчна и е поправена:** трябва ред с
+**дробно** Kp. Вчерашната проверка хвана `Kp=3.0` — цяло число, единственият
+случай, в който тази заявка минава.
+
+Останалото иска или потребителя, или устройство/акаунт.
+
+**Накратко какво стана на 13.08 (сесията, която затвори алармите):**
+
+| | |
+|---|---|
+| `send-kp-alerts` | v10 (11.08) → **v12**, deploy-нато през Supabase MCP |
+| Аурора моделът | трите поправки стигнаха production за първи път |
+| Гейтът `visibility > 0` | махнат — прагът на потребителя решава сам |
+| Заявките към базата | и четирите гърмяха от два независими бъга; поправени |
+| Миграция | `20260813000000_push_profiles_fk.sql`, приложена |
+| Комити | `3fd06a5`, `a7d049d`, `c8cf441`, `495d89a` |
+
+Проверено на живо, не по код: нова форма на заявката → 200, стара → 400, и cron
+ред `Kp=3.0 | bz=-1.92 | web=0 | native=0 | bz_alerts=0` **без** придружаваща
+грешка, при отрицателен Bz — тоест и Bz пътят реално се изпълни.
+
+**Недостатъчно, знаем го от 14.08:** `Kp=3.0` е цяло число и е единствената форма,
+при която падналата web заявка минава. Проверявай на ред с **дробно** Kp (`.333`
+или `.667`), и не по един ред — агрегирай 24 часа, защото грешката се логва и се
+прескача, вместо да се хвърли:
+```sql
+-- през Supabase MCP query_logs
+select substring(event_message,1,90) as failure, count(*) n,
+       min(timestamp) first_seen, max(timestamp) last_seen
+from logs where source = 'function_logs' and event_message like '%failed%'
+group by failure order by last_seen desc
+```
+`last_seen` е важната колона: тя разделя „поправено вчера" от „още тече" и точно
+тя показа, че старите грешки спират на 22:40, а новата почва на 22:55.
+
+**✅ Свършено 13.08: `send-kp-alerts` е deploy-ната (v11 → v12) и гейтът отпадна.**
+
+Трите аурора поправки (`abs(gmlat)`, ръб `66 − 2·Kp`, хоризонтен обхват 9° с
+квадратичен спад) са в production. Заедно с тях **гейтът `visibility > 0` е
+махнат** и с него — inline копието на `calcAuroraVisibility`; прагът на
+потребителя решава сам (`3fd06a5`). Причината е в самата функция: известието
+казва „Kp has reached X, above your threshold of Y" — обещава буря, не гледка,
+а гейт по видимост мълчаливо отменяше единствената настройка, която
+потребителят е избрал (София: 0% до Kp 8.33).
+
+**Deploy-ът НЕ иска Supabase CLI сесия.** Тази бележка стоеше тук като блокер и
+е грешна: `SUPABASE_ACCESS_TOKEN` наистина липсва на Windows машината, но
+**Supabase MCP връзката деплойва directly** — `deploy_edge_function` с
+`project_id: srzfoxlmhxyulrgkchjr`. Пази `verify_jwt: false` (иначе cron-ът
+почва да връща 401). Проверка, че реално е буутнала, а не само че deploy-ът е
+върнал 200:
+
+```powershell
+# 401 "Unauthorized" = CRON_SECRET guard-ът е стигнат, значи модулът се е заредил.
+# 500 BOOT_ERROR = import графът е счупен.
+Invoke-WebRequest -Uri "https://srzfoxlmhxyulrgkchjr.supabase.co/functions/v1/send-kp-alerts" -Method POST
+```
+
+**🔴 НАМЕРЕНО 13.08 при проверката на логовете: и четирите заявки в
+`send-kp-alerts` гърмяха. Двойно. Поправено на 13.08 (v12 + миграция).**
+
+На всеки cron run, пет пъти на час, откакто функцията съществува:
+```
+DB query failed: "failed to parse logic tree
+((profiles.plan.in.(pro,premium),profiles.subscription_status.eq.trialing))"
+```
+
+Две **независими** причини — само едната поправка не върши нищо, защото първата
+гърми по-рано от втората и я скрива. И двете потвърдени срещу живия PostgREST с
+anon ключа, преди и след:
+
+1. **Излишен `profiles.` префикс вътре в `.or()`.** При подаден
+   `{ referencedTable: 'profiles' }` имената на колоните трябва да са **голи** —
+   `plan.in.(pro,premium)`, не `profiles.plan.in.(...)`. Иначе PostgREST чете
+   `profiles.plan` като име на колона → PGRST100. Сега е една константа
+   (`PAID_PLAN_FILTER`), за да не могат четирите места пак да се разминат.
+2. **`profiles!inner(...)` изобщо не се разрешаваше** — PGRST200, „no relationship
+   found". Push таблиците имат FK към `auth.users(id)`, `profiles.id` също, но
+   **PostgREST не свързва две таблици през трета**. Миграция
+   `20260813000000_push_profiles_fk.sql` добавя `user_id → profiles(id)` на
+   `push_subscriptions` и `device_push_tokens`.
+
+Значи Pro/Premium гейтингът и quiet hours **никога не са работили** — заявката
+падаше преди тях. Остана невидимо, защото грешката се логва и се прескача, вместо
+да се хвърли, и защото трите push таблици са с 0 реда.
+
+Миграцията е **добавяща**: FK-овете към `auth.users` остават (каскадата при
+изтриване на акаунт е документирана срещу тях), а само единият от двата сочи към
+`profiles`, значи embed-ът е еднозначен. Нов индекс не трябва — `user_id` вече
+води unique индекс и в двете таблици.
+
+**Как се проверява, че наистина е минало** (deploy 200 не значи нищо):
+```powershell
+# новата форма → 200 [], старата → 400 PGRST100
+$k = "<anon key>"; $h = @{ apikey = $k; Authorization = "Bearer $k" }
+Invoke-WebRequest -Headers $h -UseBasicParsing -Uri ("https://srzfoxlmhxyulrgkchjr.supabase.co" +
+  "/rest/v1/push_subscriptions?select=id,profiles!inner(plan)" +
+  "&profiles.or=(plan.in.(pro,premium),subscription_status.eq.trialing)")
+```
+После в логовете: ред `Kp=… | web=… | native=…` **без** придружаващ
+`DB query failed` / `Bz web query failed`.
+
+**Некопнато нарочно:** `live_activity_tokens` се чете с `select('id, token')`, без
+`profiles` embed — тоест Live Activity update-ите **не са план-гейтнати** изобщо.
+Таблицата е празна и APNs е изключен, така че днес е теоретично; на нея FK не е
+добавян, защото няма embed, който да го иска.
 
 **При потребителя (минути):**
 - **Vercel env:** `VITE_VAPID_PUBLIC_KEY` (web push — хукът и SW-ът са готови) и
@@ -450,17 +893,49 @@ _(Add ideas and future feature plans here as they come up)_
   копие е в **Supabase → Edge Functions → Secrets → `VAPID_PUBLIC_KEY`**,
   създадено 2026-04-25 заедно с `VAPID_PRIVATE_KEY`. `supabase secrets list`
   показва само дайджести, не стойности — трябва дашбордът.
-- **Merge staging → main** — комитите от 09.08: CI fix, възкресеният SW +
-  InstallPrompt + splash, езиковият redirect, 16 KB, приглушеният цвят,
-  `ip_hash`, `donki-proxy`, npm audit → 0. Гаси и 3-те Dependabot аларми на
-  main (фиксът е в staging). Само по изрична команда на потребителя.
-- **CI: провери първия run след поправките.** CI не е бил зелен от 26 април
-  (~712 поредни червени; никой не е гледал). Unit-env причината е поправена
-  09.08 (`0a38290` — hermetic placeholder env в ci.yml, `src/lib/supabase.ts`
-  хвърля при import без него). E2E стъпката никога не е стигана на зелен
-  runner — може да крие следваща изненада.
+- **CI: ✅ проверен 14.08, зелен.** Дългата червена серия от 26 април свърши —
+  unit-env причината е поправена 09.08 (`0a38290` — hermetic placeholder env в
+  ci.yml, `src/lib/supabase.ts` хвърля при import без него). **E2E стъпката вече
+  минава на зелен runner** (run #753, `main` @ `38b6b21`) — тази бележка стоеше
+  тук като следваща възможна изненада и вече не е такава.
 
-**Едно останало решение на потребителя:**
+  Единственото червено е run #752 (`staging` @ `da64ec5`), паднало на unit
+  тестовете от **flaky тест, не от регресия**: `main` пусна същия tree
+  (`f02ed587`, `git diff` празен) зелен 17 секунди по-късно. Поправено —
+  `BlogPost.test.tsx` чакаше `<h1>` и твърдеше `document.documentElement.lang`,
+  а ефектът в [BlogPost.tsx](src/pages/BlogPost.tsx) пише `lang` **след** commit-а
+  на heading-а (измерено с MutationObserver: `lang` е още `da` в мига, в който
+  h1 влиза в DOM, 5 от 5 пускания). Сега и двата теста чакат това, което
+  твърдят. Общото правило: **не чакай едно нещо и не твърди друго** — RTL
+  `findBy*` печели само по времеви марж, който натоварен runner изяжда.
+
+  **`gh` не е инсталиран** (`gh: The term 'gh' is not recognized`) — но не е
+  блокер: GitHub REST API работи анонимно за публично репо и дава и стъпките, и
+  точното твърдение, без токен. Логовете (`/actions/runs/{id}/logs`) искат auth
+  (403), **annotation-ите не искат** и съдържат самата грешка:
+  ```powershell
+  $h = @{ 'User-Agent'='claude-code'; 'Accept'='application/vnd.github+json' }
+  $b = "https://api.github.com/repos/xvxvxvxvxv1914/The_Storm_Watcher"
+  (Invoke-RestMethod "$b/actions/runs?per_page=6" -Headers $h).workflow_runs |
+    Select-Object run_number, head_branch, conclusion, head_sha
+  $id = (Invoke-RestMethod "$b/commits/<sha>/check-runs" -Headers $h).check_runs |
+    Where-Object name -eq build | Select-Object -Expand id
+  Invoke-RestMethod "$b/check-runs/$id/annotations" -Headers $h | Select-Object path, message
+  ```
+  Отделно, в annotation-ите: `checkout@v4`, `setup-node@v4` и `upload-artifact@v4`
+  вече се форсират на Node 24 (Node 20 e deprecated). Днес само warning.
+
+  Merge staging → main от 09.08 **е свършен** — беше вписан тук като чакащ,
+  но `cd9a034` вече го съдържаше.
+
+**Решения на потребителя:**
+- **Live Activity не е план-гейтнат.** `live_activity_tokens` се чете със
+  `select('id, token')` — без `profiles` embed, значи без plan, без
+  `subscription_status`, без quiet hours. Всеки токен получава update независимо
+  от плана, докато Kp ≥ 5. Днес е теоретично (0 реда, APNs изключен) и **не е
+  пипано нарочно** — Live Activity е Phase B и не е ясно дали изобщо трябва да е
+  платена функция, за разлика от push-а. Ако трябва: добавя се същият
+  `profiles!inner(...)` + `PAID_PLAN_FILTER`, плюс FK на третата таблица.
 - **Cron на седмичния дайджест.** Функцията е поправена и deploy-ната правилно
   (v2, `verify_jwt: false`). Включването праща истински имейли; 0 профила opt-in
   към 08.08.
