@@ -324,7 +324,7 @@ const Forecast = () => {
               <div className="w-7 h-7 sm:w-10 sm:h-10 bg-gradient-to-br from-[#ef4444] to-[#dc2626] rounded-lg flex items-center justify-center">
                 <TrendingUp className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-white" />
               </div>
-              <h3 className="text-[#94a3b8] text-[10px] sm:text-xs font-bold tracking-wide">{t('forecast.peakKpNext7')}</h3>
+              <h2 className="text-[#94a3b8] text-[10px] sm:text-xs font-bold tracking-wide">{t('forecast.peakKpNext7')}</h2>
             </div>
             <div className="text-2xl sm:text-5xl font-bold mb-0.5 sm:mb-1" style={getKpGradientStyle(peakKp7)}>{peakKp7.toFixed(1)}</div>
             <div className="text-[#64748b] text-[10px] sm:text-xs">{t(getStormStatus(peakKp7).statusKey)}</div>
@@ -335,7 +335,7 @@ const Forecast = () => {
               <div className="w-7 h-7 sm:w-10 sm:h-10 bg-gradient-to-br from-[#10b981] to-[#059669] rounded-lg flex items-center justify-center">
                 <Star className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-white" />
               </div>
-              <h3 className="text-[#94a3b8] text-[10px] sm:text-xs font-bold tracking-wide">{t('forecast.bestDayLabel')}</h3>
+              <h2 className="text-[#94a3b8] text-[10px] sm:text-xs font-bold tracking-wide">{t('forecast.bestDayLabel')}</h2>
             </div>
             <div className="text-base sm:text-3xl font-bold text-white mb-0.5 sm:mb-1 leading-tight">
               {bestDay ? formatWeekday(bestDay.date) : '—'}
@@ -350,7 +350,7 @@ const Forecast = () => {
               <div className="w-7 h-7 sm:w-10 sm:h-10 bg-gradient-to-br from-[#f97316] to-[#ea580c] rounded-lg flex items-center justify-center">
                 <AlertCircle className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-white" />
               </div>
-              <h3 className="text-[#94a3b8] text-[10px] sm:text-xs font-bold tracking-wide">{t('forecast.stormDaysCount')}</h3>
+              <h2 className="text-[#94a3b8] text-[10px] sm:text-xs font-bold tracking-wide">{t('forecast.stormDaysCount')}</h2>
             </div>
             <div className="text-2xl sm:text-5xl font-bold text-white mb-0.5 sm:mb-1">{stormDaysCount}</div>
             <div className="text-[#64748b] text-[10px] sm:text-xs">{t('forecast.sevenDayTitle').toLowerCase()}</div>
@@ -360,10 +360,10 @@ const Forecast = () => {
         {/* 3-day Kp Chart */}
         <div className="glass-surface rounded-2xl p-3 sm:p-6 mb-4 sm:mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-            <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2.5">
+            <h2 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2.5">
               <Sun className="w-5 h-5 text-[#f97316]" />
               {t('forecast.kpForecast')}
-            </h3>
+            </h2>
             <button
               onClick={() => setShowYesterday(v => !v)}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
@@ -404,10 +404,10 @@ const Forecast = () => {
         {/* 7-Day Forecast */}
         <div className="glass-surface rounded-2xl p-3 sm:p-6 mb-4 sm:mb-6">
           <div className="mb-4 sm:mb-5">
-            <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2.5">
+            <h2 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2.5">
               <Calendar className="w-5 h-5 text-[#10b981]" />
               {t('forecast.sevenDayTitle')}
-            </h3>
+            </h2>
             <p className="text-[#64748b] text-xs sm:text-sm mt-1">{t('forecast.sevenDaySubtitle')}</p>
           </div>
 
@@ -534,10 +534,10 @@ const Forecast = () => {
               className="w-full flex items-center justify-between gap-3 group"
             >
               <div className="text-left">
-                <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2.5">
+                <h2 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2.5">
                   <Sparkles className="w-5 h-5 text-[#a855f7]" />
                   {t('forecast.longRangeTitle')}
-                </h3>
+                </h2>
                 <p className="text-[#64748b] text-xs sm:text-sm mt-1">{t('forecast.longRangeSubtitle')}</p>
               </div>
               <ChevronDown className={`w-5 h-5 text-[#94a3b8] transition-transform shrink-0 ${showLongRange ? 'rotate-180' : ''}`} />
@@ -612,7 +612,7 @@ const Forecast = () => {
               <div className="flex items-center gap-2.5">
                 <Sparkles className="w-5 h-5 text-[#10b981]" />
                 <div>
-                  <h3 className="text-lg sm:text-xl font-bold text-white">{t('aurora.calendar.title')}</h3>
+                  <h2 className="text-lg sm:text-xl font-bold text-white">{t('aurora.calendar.title')}</h2>
                   <p className="text-[#64748b] text-xs sm:text-sm">{t('aurora.calendar.subtitle')}</p>
                 </div>
               </div>
@@ -670,10 +670,10 @@ const Forecast = () => {
         {outlook && (
           <div className="glass-surface rounded-2xl p-3 sm:p-6 mb-4 sm:mb-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
-              <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2.5">
+              <h2 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2.5">
                 <Activity className="w-5 h-5 text-[#f97316]" />
                 {t('forecast.outlook.title')}
-              </h3>
+              </h2>
               <span className="text-xs text-[#475569]">{t('forecast.outlook.issued')}: {outlook.issuedAt}</span>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -730,7 +730,7 @@ const Forecast = () => {
 
         {/* About */}
         <div className="glass-surface rounded-2xl p-3 sm:p-6">
-          <h3 className="text-lg sm:text-xl font-bold text-white mb-3">{t('forecast.aboutTitle')}</h3>
+          <h2 className="text-lg sm:text-xl font-bold text-white mb-3">{t('forecast.aboutTitle')}</h2>
           <div className="text-[#94a3b8] space-y-2 leading-relaxed text-sm">
             <p>{t('forecast.aboutText1')}</p>
             <p>{t('forecast.aboutText2')}</p>

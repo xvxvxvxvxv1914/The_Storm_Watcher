@@ -176,7 +176,7 @@ const Footer = () => {
 
             {navGroups.map(group => (
               <div key={group.heading}>
-                <h3 className="text-white font-bold mb-4 uppercase tracking-wider text-xs">{group.heading}</h3>
+                <h2 className="text-white font-bold mb-4 uppercase tracking-wider text-xs">{group.heading}</h2>
                 <ul className="space-y-2">
                   {group.links.map(link => (
                     <li key={link.to}>

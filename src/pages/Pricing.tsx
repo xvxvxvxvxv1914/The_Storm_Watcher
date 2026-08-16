@@ -275,7 +275,15 @@ export default function Pricing() {
         {/* Billing toggle */}
         <div className="flex items-center justify-center gap-4 mb-10">
           <span className={`text-sm font-medium ${billing === 'monthly' ? 'text-white' : 'text-[#64748b]'}`}>{t('pricing.monthly') || 'Monthly'}</span>
+          {/* role=switch + aria-checked, not a bare button: the control has no
+              text of its own, so a screen reader announced only "button" — the
+              user could hear neither what it toggles nor which way it is set.
+              The two visible labels beside it are the name via aria-labelledby. */}
           <button
+            type="button"
+            role="switch"
+            aria-checked={billing === 'yearly'}
+            aria-label={`${t('pricing.monthly') || 'Monthly'} / ${t('pricing.yearly') || 'Yearly'}`}
             onClick={() => setBilling(b => b === 'monthly' ? 'yearly' : 'monthly')}
             className="relative w-12 h-6 rounded-full transition-colors duration-200"
             style={{ background: billing === 'yearly' ? '#7c3aed' : '#334155' }}
