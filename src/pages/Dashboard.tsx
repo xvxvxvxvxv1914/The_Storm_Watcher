@@ -573,9 +573,9 @@ const Dashboard = () => {
                   }`}>
                     <Activity className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
                   </div>
-                  <h3 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
+                  <h2 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
                     {t('dashboard.kpIndex')}
-                  </h3>
+                  </h2>
                 </div>
                 <div className="text-[1.4rem] sm:text-6xl font-bold mb-2 sm:mb-3" style={getKpGradientStyle(kpValue)}>{kpDisplay.toFixed(1)}</div>
                 <div className={`inline-block px-2 py-1 sm:px-4 sm:py-2 rounded-lg text-[0.6rem] sm:text-xs font-bold uppercase tracking-wider ${
@@ -604,9 +604,9 @@ const Dashboard = () => {
                     <div className={`w-8 h-8 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center bg-gradient-to-br ${status?.gradient ?? 'from-[#64748b] to-[#475569]'}`}>
                       <Orbit className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
                     </div>
-                    <h3 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
+                    <h2 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
                       {t('dashboard.dst')}
-                    </h3>
+                    </h2>
                   </div>
                   <div className={`text-[1.4rem] sm:text-6xl font-bold mb-2 sm:mb-3 ${status?.color ?? 'text-[#64748b]'}`}>
                     {dst === null ? '—' : dst.toFixed(0)}
@@ -630,9 +630,9 @@ const Dashboard = () => {
                   <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-[#7c3aed] to-[#6d28d9] rounded-xl flex items-center justify-center">
                     <Wind className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
                   </div>
-                  <h3 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
+                  <h2 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
                     {t('dashboard.solarWind')}
-                  </h3>
+                  </h2>
                 </div>
                 <div className="text-[1.4rem] sm:text-6xl font-bold text-white mb-2 sm:mb-3">{windDisplay.toFixed(0)}</div>
                 <div className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider">{t('dashboard.kms')}</div>
@@ -647,9 +647,9 @@ const Dashboard = () => {
                   <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-[#06b6d4] to-[#0891b2] rounded-xl flex items-center justify-center">
                     <Compass className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
                   </div>
-                  <h3 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
+                  <h2 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
                     {t('dashboard.bz')}
-                  </h3>
+                  </h2>
                 </div>
                 <div className={`text-[1.4rem] sm:text-6xl font-bold mb-2 sm:mb-3 ${bz < 0 ? 'text-[#ef4444]' : 'text-[#10b981]'}`}>
                   {bzDisplay.toFixed(1)}
@@ -666,9 +666,9 @@ const Dashboard = () => {
                   <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-[#fbbf24] to-[#f59e0b] rounded-xl flex items-center justify-center">
                     <Sun className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
                   </div>
-                  <h3 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
+                  <h2 className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider font-bold">
                     {t('dashboard.xray')}
-                  </h3>
+                  </h2>
                 </div>
                 <div className="text-[1.4rem] sm:text-6xl font-bold gradient-solar mb-2 sm:mb-3">{xrayClass}</div>
                 <div className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider">{t('dashboard.classTxt')}</div>
@@ -679,10 +679,10 @@ const Dashboard = () => {
 
         <div className="glass-surface rounded-2xl p-4 sm:p-8 mb-4 sm:mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-            <h3 className="text-lg sm:text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
+            <h2 className="text-lg sm:text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
               <Radio className="w-6 h-6 text-[#f97316]" />
               {t('dashboard.history')}
-            </h3>
+            </h2>
             <div className="flex gap-2 flex-wrap">
               {(['24h', '48h', '72h'] as const).map((range) => (
                 <button
@@ -731,10 +731,10 @@ const Dashboard = () => {
         </div>
 
         <div className="glass-surface rounded-2xl p-4 sm:p-8 mb-4 sm:mb-8">
-          <h3 className="text-lg sm:text-2xl font-bold text-white mb-3 sm:mb-6 uppercase tracking-wide flex items-center gap-3">
+          <h2 className="text-lg sm:text-2xl font-bold text-white mb-3 sm:mb-6 uppercase tracking-wide flex items-center gap-3">
             <Wind className="w-6 h-6 text-[#7c3aed]" />
             {t('dashboard.windHistory')}
-          </h3>
+          </h2>
           {windChartData.length > 0 ? (
             <TimeSeriesChart
               data={windChartData}
@@ -756,10 +756,10 @@ const Dashboard = () => {
 
         {inNigggRegion && <div className="glass-surface rounded-2xl p-4 sm:p-8 mb-4 sm:mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-            <h3 className="text-lg sm:text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
+            <h2 className="text-lg sm:text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
               <MapPin className="w-6 h-6 text-[#10b981]" />
               {t('dashboard.localMagnetometer')}
-            </h3>
+            </h2>
             <span className="text-xs font-bold uppercase tracking-wider text-[#94a3b8] px-3 py-1 bg-white/5 rounded-full border border-white/10">
               {t('niggg.source')}: NIGGG
             </span>
@@ -799,10 +799,10 @@ const Dashboard = () => {
         {stormEvents.length > 0 && (
           <div className="glass-surface rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base sm:text-lg font-bold text-white uppercase tracking-wide flex items-center gap-2.5">
+              <h2 className="text-base sm:text-lg font-bold text-white uppercase tracking-wide flex items-center gap-2.5">
                 <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-red-400" />
                 {t('dashboard.stormWatch') || 'Storm Watch'}
-              </h3>
+              </h2>
               <Link to="/alerts" className="text-[10px] uppercase tracking-wider text-[#f97316] hover:text-[#fbbf24] transition-colors font-bold">
                 {t('dashboard.viewAlerts') || 'View alerts →'}
               </Link>
@@ -841,10 +841,10 @@ const Dashboard = () => {
         {dailyKp.length > 0 && (
           <div className="glass-surface rounded-2xl p-4 sm:p-8 mb-4 sm:mb-8">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-6">
-              <h3 className="text-lg sm:text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
+              <h2 className="text-lg sm:text-2xl font-bold text-white uppercase tracking-wide flex items-center gap-3">
                 <Activity className="w-6 h-6 text-[#f97316]" />
                 {t('dashboard.kp7day') || 'Kp — Last 7 Days'}
-              </h3>
+              </h2>
               <p className="text-xs text-[#64748b] max-w-xs leading-relaxed">
                 {t('dashboard.kp7dayNote') || 'Daily maximum Kp. Solar activity repeats every ~27 days — the Sun\'s rotation period.'}
               </p>
@@ -915,7 +915,7 @@ function ExportDataCard({ t }: { t: (k: string) => string }) {
           <Download className="w-5 h-5" style={{ color: '#a78bfa' }} />
         </div>
         <div>
-          <h3 className="text-white font-bold text-sm">{t('dashboard.exportTitle') || 'Export Data'}</h3>
+          <h2 className="text-white font-bold text-sm">{t('dashboard.exportTitle') || 'Export Data'}</h2>
           <p className="text-[#64748b] text-xs">{t('dashboard.exportDesc') || 'Download raw space weather data as CSV'}</p>
         </div>
       </div>

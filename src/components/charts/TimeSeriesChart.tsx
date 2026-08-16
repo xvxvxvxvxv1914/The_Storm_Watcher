@@ -191,5 +191,11 @@ export default function TimeSeriesChart({
     };
   }, [data, color, type, height, isDark, compareData, refLines, yMin, yMax, compareLabel]);
 
-  return <div ref={containerRef} role="img" aria-label={ariaLabel} />;
+  // The height is reserved here, not left to lightweight-charts. Without it the
+  // container paints at 0px and only gains its size when createChart runs inside
+  // the effect — a 300px jump that pushed every card below it down. Measured on
+  // /dashboard: the card went 128px → 428px at 994ms and the page scored
+  // CLS 0.119, of which 0.115 was this one shift. Everything else on the site
+  // was between 0.002 and 0.018.
+  return <div ref={containerRef} role="img" aria-label={ariaLabel} style={{ height }} />;
 }
