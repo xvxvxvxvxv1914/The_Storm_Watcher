@@ -960,12 +960,31 @@ Invoke-WebRequest -Headers $h -UseBasicParsing -Uri ("https://srzfoxlmhxyulrgkch
   това иска ръчна стъпка на часовника.
 
 **Наблюдение, без действие:**
-- **GSC възстановяване.** 141 indexed / 647 not е щетата от Cloudflare 403 към
-  Googlebot (05.07–05.08; коренът решен 05.08 — виж паметта gsc-googlebot-403).
-  Sitemap ресубмитнат 08.08, Request indexing пуснат за `/`, `/blog`, `/aurora`,
-  `/bg`. Признак за възстановяване: нова дата в Sitemaps → `last_downloaded`;
-  пълното отнема седмици. Нов проблем е само ако `last_crawled` > 05.08 пак
-  показва ACCESS_FORBIDDEN.
+- **GSC възстановяване — тръгна чак на 16.08.** „Коренът решен 05.08" беше
+  невярно: Skip правилото за verified search crawlers **се задействаше и Google
+  пак се блокираше**. Firewall events показват две събития за една и съща заявка
+  в една и съща секунда — `skip | Allow verified search crawlers` и
+  `block | Block AI training crawlers` (ASN 15169). Значи AI-training блокът не е
+  в обхвата на skip по фаза, въпреки че се логва като `firewallManaged`. За 23
+  часа на 16.08: **80 блокирани заявки от Google**.
+
+  Затова `bot_management.ai_training` е `disabled` от 16.08 (само това поле —
+  останалите 11 настройки са проверено непокътнати, вкл. `enable_js: false`).
+  **Политиката срещу AI training не е загубена** — `public/robots.txt` я
+  декларира (`Google-Extended`, `GPTBot`, `CCBot`, `ClaudeBot`, … плюс
+  `Content-Signal: ai-train=no`); пада само edge enforcement-ът, който удряше и
+  Googlebot, защото Google ползва същия бот и за AI grounding.
+
+  Резултат същия ден: sitemap `last_downloaded` 05.07 → **16.08**, статус
+  „Has errors" → **Valid**, 347 → 395 URL-а, и 0 блокирани заявки от Google след
+  промяната. Пълното наваксване на 141/647 отнема седмици (crawl rate е снижен
+  след месец 403-ки). Ръчно ускорение: Request indexing за `/`, `/blog`,
+  `/aurora`, `/bg` — API не може.
+
+  **Метод, не догадки:** авторитетно е `inspect_url_enhanced` →
+  `page_fetch_state` + `last_crawled`, плюс `firewallEventsAdaptive` през
+  GraphQL (макс 1 ден назад). „URL is available to Google" вече веднъж е
+  докладвано като PASS, докато Google реално получаваше 403.
 
 **Иска устройството (Galaxy A34, Windows машината):**
 - **Widget-ът спря да се рендира, причина неизвестна.** След преинсталация
