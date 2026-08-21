@@ -299,9 +299,11 @@ const Home = () => {
               <span className="text-[#94a3b8] text-sm font-semibold uppercase tracking-widest">{t('home.liveSpaceWeather')}</span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl font-bold mb-8 gradient-emerald">
-              The Storm Watcher
-            </h1>
+            {/* Hidden from view, kept in the DOM: the heading outline still needs exactly
+                one H1, for screen readers and for Google's rendered crawl. The prerendered
+                HTML carries no headings at all — prerender-meta.mjs injects only meta and
+                JSON-LD — so this is the page's only H1 either way. */}
+            <h1 className="sr-only">The Storm Watcher</h1>
 
             {/* Live Kp — first thing people see */}
             <div className="min-h-[300px] sm:min-h-[420px]">
