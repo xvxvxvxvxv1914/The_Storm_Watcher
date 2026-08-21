@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
@@ -45,27 +46,96 @@ function useCountUp(target: number, duration = 700): number {
   return display;
 }
 
-const InfoTooltip = React.memo(({ text }: { text: string }) => (
-  <div className="absolute top-3 right-3 group z-20">
-    <div
-      role="button"
-      tabIndex={0}
-      aria-label={text}
-      title={text}
-      className="w-5 h-5 rounded-full bg-white/10 border border-white/20 flex items-center justify-center cursor-help text-[#94a3b8] hover:text-white hover:bg-white/20 transition-colors"
-      style={{ fontSize: '11px', fontWeight: 700 }}
-    >
-      i
+// The panel is portalled to <body> and `position: fixed`, not absolute inside the card.
+// The cards are half a phone screen wide and the panel is 224px, so anchoring it to the
+// card pushed the left column's text off the left edge of the screen. Fixed and clamped
+// to the viewport keeps it readable in either column, at any breakpoint.
+//
+// The portal is load-bearing, not tidiness: `hover:scale-105` leaves the card with
+// `transform: matrix(1,0,0,1,0,0)` — an identity transform, but not `none`, which makes
+// the card a containing block for fixed descendants. Rendered in place, the panel
+// resolved its coordinates against the card and landed hundreds of px off-screen.
+const TOOLTIP_WIDTH = 224; // must match the w-56 below
+const TOOLTIP_GAP = 12;
+
+const InfoTooltip = React.memo(({ text }: { text: string }) => {
+  const [pos, setPos] = useState<{ left: number; top?: number; bottom?: number } | null>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const btnRef = useRef<HTMLDivElement>(null);
+
+  const place = useCallback(() => {
+    const r = btnRef.current?.getBoundingClientRect();
+    if (!r) return;
+    const left = Math.max(
+      TOOLTIP_GAP,
+      Math.min(r.right - TOOLTIP_WIDTH, window.innerWidth - TOOLTIP_WIDTH - TOOLTIP_GAP),
+    );
+    // Anchoring by `bottom` when it sits above avoids needing its height before it renders.
+    setPos(r.top > 180
+      ? { left, bottom: window.innerHeight - r.top + 8 }
+      : { left, top: r.bottom + 8 });
+  }, []);
+
+  const close = useCallback(() => setPos(null), []);
+
+  useEffect(() => {
+    if (!pos) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') close(); };
+    const onOutside = (e: PointerEvent) => {
+      if (!rootRef.current?.contains(e.target as Node)) close();
+    };
+    // Fixed position does not follow the page, so a scroll dismisses instead of drifting.
+    document.addEventListener('pointerdown', onOutside);
+    window.addEventListener('keydown', onKey);
+    window.addEventListener('scroll', close, true);
+    window.addEventListener('resize', close);
+    return () => {
+      document.removeEventListener('pointerdown', onOutside);
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('scroll', close, true);
+      window.removeEventListener('resize', close);
+    };
+  }, [pos, close]);
+
+  const toggle = () => { if (pos) close(); else place(); };
+
+  return (
+    <div ref={rootRef} className="absolute top-3 right-3 z-20">
+      <div
+        ref={btnRef}
+        role="button"
+        tabIndex={0}
+        aria-label={text}
+        className="w-5 h-5 rounded-full bg-white/10 border border-white/20 flex items-center justify-center cursor-help text-[#94a3b8] hover:text-white hover:bg-white/20 transition-colors"
+        style={{ fontSize: '11px', fontWeight: 700 }}
+        onPointerEnter={(e) => { if (e.pointerType === 'mouse') place(); }}
+        onPointerLeave={(e) => { if (e.pointerType === 'mouse') close(); }}
+        onPointerDown={(e) => {
+          if (e.pointerType === 'mouse') return; // hover already covers the mouse
+          e.stopPropagation();
+          toggle();
+        }}
+        onFocus={place}
+        onBlur={close}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+        }}
+      >
+        i
+      </div>
+      {pos && createPortal(
+        <div
+          role="tooltip"
+          className="fixed w-56 rounded-xl p-3 text-xs text-[#cbd5e1] leading-relaxed pointer-events-none z-[300] border border-white/10"
+          style={{ ...pos, background: 'rgba(10,10,26,0.97)', backdropFilter: 'blur(12px)' }}
+        >
+          {text}
+        </div>,
+        document.body,
+      )}
     </div>
-    <div
-      role="tooltip"
-      className="absolute right-0 bottom-full mb-2 w-56 rounded-xl p-3 text-xs text-[#cbd5e1] leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-30 border border-white/10"
-      style={{ background: 'rgba(10,10,26,0.97)', backdropFilter: 'blur(12px)' }}
-    >
-      {text}
-    </div>
-  </div>
-));
+  );
+});
 
 const UpdateCountdown = React.memo(function UpdateCountdown() {
   const [countdown, setCountdown] = useState('');
