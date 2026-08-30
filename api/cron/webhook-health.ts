@@ -13,9 +13,15 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2026-04
 const LOOKBACK_SECONDS = 25 * 60 * 60; // 25h overlap so a once-daily run never misses a window
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // Read the secret once and refuse outright when it is missing. Comparing against
+  // process.env.CRON_SECRET directly fails OPEN: with the variable unset both sides
+  // are undefined, `undefined !== undefined` is false, and an unauthenticated caller
+  // walks straight through to the Stripe query and the alert email. The two Deno
+  // crons (send-kp-alerts, send-weekly-digest) already guard this way.
+  const cronSecret = process.env.CRON_SECRET;
   const bearerToken = req.headers.authorization?.replace('Bearer ', '');
   const querySecret = req.query.secret as string | undefined;
-  if (bearerToken !== process.env.CRON_SECRET && querySecret !== process.env.CRON_SECRET) {
+  if (!cronSecret || (bearerToken !== cronSecret && querySecret !== cronSecret)) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
