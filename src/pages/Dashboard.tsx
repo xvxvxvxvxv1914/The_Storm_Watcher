@@ -14,7 +14,7 @@ import SvgBarChart from '../components/charts/SvgBarChart';
 import { Activity, Wind, Compass, Sun, Radio, MapPin, Download, Share2, GripVertical, Orbit } from 'lucide-react';
 import { parseNoaaTime, noaaTimeSeconds } from '../utils/noaaTime';
 import { generateStormScoreImage } from '../utils/generateStormImage';
-import { getKpIndex, getSolarWind, getMagField, getXrayFlux, getKpHistory3Day, getKpForecast, getStormStatus, getXrayClass, getKpGradientStyle, latestSolarWindSpeed, resolveKp, getDst, latestDst, getDstStatus } from '../services/noaaApi';
+import { getKpIndex, getSolarWind, getMagField, getXrayFlux, getKpHistory3Day, getKpForecast, getStormStatus, getXrayClass, getKpGradientStyle, latestSolarWindSpeed, latestMagSample, resolveKp, getDst, latestDst, getDstStatus } from '../services/noaaApi';
 import PlanGuard from '../components/PlanGuard';
 import { fetchNigggData, toDeltaSeries, getNigggStormStatus, type NigggDataPoint } from '../services/nigggApi';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -197,10 +197,13 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { settings } = useSettings();
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
-  const [kpValue, setKpValue] = useState<number>(0);
-  const [solarWindSpeed, setSolarWindSpeed] = useState<number>(0);
-  const [bz, setBz] = useState<number>(0);
-  const [xrayFlux, setXrayFlux] = useState<number>(0);
+  // null = no reading, rendered as "—". Never 0: Kp 0.0 reads as "QUIET", X-ray
+  // 0 as class A and wind 0 km/s as a real measurement — each a claim made on
+  // the strength of a request that failed.
+  const [kpValue, setKpValue] = useState<number | null>(null);
+  const [solarWindSpeed, setSolarWindSpeed] = useState<number | null>(null);
+  const [bz, setBz] = useState<number | null>(null);
+  const [xrayFlux, setXrayFlux] = useState<number | null>(null);
   const [dst, setDst] = useState<number | null>(null);
   const [kpChartData, setKpChartData] = useState<TsPoint[]>([]);
   const [windChartData, setWindChartData] = useState<TsPoint[]>([]);
@@ -302,12 +305,7 @@ const Dashboard = () => {
       const kp3dayData = kp3dayRes.status === 'fulfilled' ? kp3dayRes.value : null;
       const nigggResult = nigggRes.status === 'fulfilled' ? nigggRes.value : null;
 
-      if (kpData && kpData.length > 0) {
-        const latest = kpData[kpData.length - 1];
-        setKpValue(resolveKp(latest) ?? 0);
-      } else {
-        setKpValue(0);
-      }
+      setKpValue(kpData && kpData.length > 0 ? resolveKp(kpData[kpData.length - 1]) : null);
 
       if (kp3dayData && kp3dayData.length > 0) {
         setKpHistoryRaw(kp3dayData);
@@ -319,7 +317,7 @@ const Dashboard = () => {
       }
 
       if (windData && windData.length > 0) {
-        // Shared selection (newest *active* sample) — identical to the homepage.
+        // Shared selection — identical to the homepage and the widgets.
         setSolarWindSpeed(latestSolarWindSpeed(windData));
 
         const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
@@ -333,23 +331,19 @@ const Dashboard = () => {
         }));
         setWindChartData(windPts);
       } else {
-        setSolarWindSpeed(0);
+        setSolarWindSpeed(null);
         setWindChartData([]);
       }
 
-      if (magData && magData.length > 0) {
-        const active = magData.findLast(d => d.active) || magData[magData.length - 1];
-        setBz(active.bz_gsm || 0);
-      } else {
-        setBz(0);
-      }
+      // `?? null`, not `|| 0`: Bz 0.0 is a real reading and the old `||`
+      // could not tell it from a missing one.
+      setBz(latestMagSample(magData)?.bz_gsm ?? null);
 
-      if (xrayData && xrayData.length > 0) {
-        const latest = xrayData[xrayData.length - 1];
-        setXrayFlux(latest.flux || 0);
-      } else {
-        setXrayFlux(0);
-      }
+      // Flare class is defined on the 0.1–0.8 nm band. The feed interleaves it
+      // with 0.05–0.4 nm (a far smaller flux) and carries empty samples, so the
+      // raw last row is only right by luck of ordering.
+      const latestFlux = xrayData?.findLast(d => d.energy === '0.1-0.8nm' && Number.isFinite(d.flux) && d.flux > 0)?.flux;
+      setXrayFlux(latestFlux ?? null);
 
       // null, not 0 — Dst 0 is a genuine "no ring current" reading, so the card
       // has to be able to say "no data" instead of quietly claiming quiet.
@@ -374,12 +368,14 @@ const Dashboard = () => {
   useVisibilityInterval(fetchData, 60000);
   const { pulling, pullY } = usePullToRefresh(fetchData);
 
-  const stormStatus = getStormStatus(kpValue);
-  const xrayClass = getXrayClass(xrayFlux);
+  const stormStatus = kpValue === null ? null : getStormStatus(kpValue);
+  const xrayClass = xrayFlux === null ? null : getXrayClass(xrayFlux);
+  // Colour bands only; the number itself is rendered from kpValue.
+  const kpBand = kpValue ?? 0;
 
-  const kpDisplay = useCountUp(kpValue);
-  const windDisplay = useCountUp(solarWindSpeed);
-  const bzDisplay = useCountUp(bz);
+  const kpDisplay = useCountUp(kpValue ?? 0);
+  const windDisplay = useCountUp(solarWindSpeed ?? 0);
+  const bzDisplay = useCountUp(bz ?? 0);
 
   const nigggStatus = useMemo(() => {
     if (nigggData.length === 0) return null;
@@ -389,7 +385,8 @@ const Dashboard = () => {
     const minDelta = Math.min(...pts.map(p => p.value));
     // When Kp < 3 global conditions are quiet — daily Sq variation of the
     // local magnetometer (~±50 nT) should not be flagged as DISTURBED.
-    const effectiveDelta = kpValue < 3 ? Math.max(minDelta, -29) : minDelta;
+    // Unknown Kp is not "quiet": show the local reading as measured.
+    const effectiveDelta = kpValue !== null && kpValue < 3 ? Math.max(minDelta, -29) : minDelta;
     return { ...getNigggStormStatus(effectiveDelta), minDelta };
   }, [nigggData, kpValue]);
 
@@ -451,18 +448,21 @@ const Dashboard = () => {
     return events.reverse().slice(0, 4);
   }, [kpHistoryRaw]);
 
-  const stormScore = Math.min(100, Math.round((kpValue / 9) * 100));
-  const statusLabel = kpValue < 4 ? 'Quiet' : kpValue < 5 ? 'Unsettled' : kpValue < 6 ? 'G1 Storm' : kpValue < 7 ? 'G2 Storm' : 'G3+ Storm';
+  const stormScore = Math.min(100, Math.round((kpBand / 9) * 100));
+  const statusLabel = kpBand < 4 ? 'Quiet' : kpBand < 5 ? 'Unsettled' : kpBand < 6 ? 'G1 Storm' : kpBand < 7 ? 'G2 Storm' : 'G3+ Storm';
 
   const handleShare = useCallback(async () => {
+    // Sharing is disabled without a Kp; a card saying "Quiet (Kp 0.0)" would
+    // spread the fabricated reading further than the page ever did.
+    if (kpValue === null) return;
     setSharing(true);
     try {
       const blob = await generateStormScoreImage({
         score: stormScore,
         status: statusLabel,
         kp: kpValue,
-        windSpeed: solarWindSpeed || null,
-        xrayClass: xrayClass || null,
+        windSpeed: solarWindSpeed,
+        xrayClass,
       });
       const file = new File([blob], 'storm-score.png', { type: 'image/png' });
       if (navigator.canShare?.({ files: [file] })) {
@@ -532,7 +532,7 @@ const Dashboard = () => {
         title="Dashboard — The Storm Watcher"
         description="Live space weather dashboard: Kp index, solar wind, magnetic field and X-ray flux charts updated every minute."
         path="/dashboard"
-        ogKp={kpValue}
+        ogKp={kpValue ?? undefined}
       />
       <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Dashboard', path: '/dashboard' }]} />
       <StarField />
@@ -600,7 +600,7 @@ const Dashboard = () => {
           </div>
           <button
             onClick={handleShare}
-            disabled={sharing}
+            disabled={sharing || kpValue === null}
             aria-label="Share storm score card"
             className="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 disabled:opacity-50 mt-1"
             style={{ background: 'linear-gradient(to right, #10b981, #059669)' }}
@@ -629,16 +629,16 @@ const Dashboard = () => {
 
             if (id === 'kp') return (
               <div key="kp" {...dragProps} data-tour="kp-card" className={`group relative glass-surface rounded-2xl p-3 sm:p-6 ${
-                kpValue >= 7 ? 'glow-red' : kpValue >= 5 ? 'glow-orange' : 'glow-green'
+                kpBand >= 7 ? 'glow-red' : kpBand >= 5 ? 'glow-orange' : 'glow-green'
               } hover:scale-105 transition-transform ${dropRing}`}>
                 {dragHandle}
                 <InfoTooltip text={t('dashboard.tooltip.kp')} />
                 <div className="flex items-center gap-2 mb-2 sm:mb-4">
                   {/* Icon background mirrors the KpGauge bands (and the status badge below). */}
                   <div className={`w-8 h-8 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center ${
-                    kpValue >= 7 ? 'bg-gradient-to-br from-[#ef4444] to-[#dc2626]' :
-                    kpValue >= 5 ? 'bg-gradient-to-br from-[#f97316] to-[#ea580c]' :
-                    kpValue >= 4 ? 'bg-gradient-to-br from-[#eab308] to-[#ca8a04]' :
+                    kpBand >= 7 ? 'bg-gradient-to-br from-[#ef4444] to-[#dc2626]' :
+                    kpBand >= 5 ? 'bg-gradient-to-br from-[#f97316] to-[#ea580c]' :
+                    kpBand >= 4 ? 'bg-gradient-to-br from-[#eab308] to-[#ca8a04]' :
                     'bg-gradient-to-br from-[#10b981] to-[#059669]'
                   }`}>
                     <Activity className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
@@ -647,15 +647,17 @@ const Dashboard = () => {
                     {t('dashboard.kpIndex')}
                   </h2>
                 </div>
-                <div className="text-[1.4rem] sm:text-6xl font-bold mb-2 sm:mb-3" style={getKpGradientStyle(kpValue)}>{kpDisplay.toFixed(1)}</div>
+                <div className="text-[1.4rem] sm:text-6xl font-bold mb-2 sm:mb-3" style={kpValue === null ? { color: '#64748b' } : getKpGradientStyle(kpValue)}>{kpValue === null ? '—' : kpDisplay.toFixed(1)}</div>
+                {stormStatus && (
                 <div className={`inline-block px-2 py-1 sm:px-4 sm:py-2 rounded-lg text-[0.6rem] sm:text-xs font-bold uppercase tracking-wider ${
-                  kpValue >= 7 ? 'bg-gradient-to-r from-[#ef4444] to-[#dc2626] text-white' :
-                  kpValue >= 5 ? 'bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white' :
-                  kpValue >= 4 ? 'bg-gradient-to-r from-[#eab308] to-[#ca8a04] text-white' :
+                  kpBand >= 7 ? 'bg-gradient-to-r from-[#ef4444] to-[#dc2626] text-white' :
+                  kpBand >= 5 ? 'bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white' :
+                  kpBand >= 4 ? 'bg-gradient-to-r from-[#eab308] to-[#ca8a04] text-white' :
                   'bg-gradient-to-r from-[#10b981] to-[#059669] text-white'
                 }`}>
                   {t(stormStatus.statusKey)}
                 </div>
+                )}
               </div>
             );
 
@@ -704,7 +706,7 @@ const Dashboard = () => {
                     {t('dashboard.solarWind')}
                   </h2>
                 </div>
-                <div className="text-[1.4rem] sm:text-6xl font-bold text-white mb-2 sm:mb-3">{windDisplay.toFixed(0)}</div>
+                <div className="text-[1.4rem] sm:text-6xl font-bold text-white mb-2 sm:mb-3">{solarWindSpeed === null ? '—' : windDisplay.toFixed(0)}</div>
                 <div className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider">{t('dashboard.kms')}</div>
               </div>
             );
@@ -721,8 +723,8 @@ const Dashboard = () => {
                     {t('dashboard.bz')}
                   </h2>
                 </div>
-                <div className={`text-[1.4rem] sm:text-6xl font-bold mb-2 sm:mb-3 ${bz < 0 ? 'text-[#ef4444]' : 'text-[#10b981]'}`}>
-                  {bzDisplay.toFixed(1)}
+                <div className={`text-[1.4rem] sm:text-6xl font-bold mb-2 sm:mb-3 ${bz === null ? 'text-[#64748b]' : bz < 0 ? 'text-[#ef4444]' : 'text-[#10b981]'}`}>
+                  {bz === null ? '—' : bzDisplay.toFixed(1)}
                 </div>
                 <div className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider">{t('dashboard.nt')}</div>
               </div>
@@ -740,7 +742,7 @@ const Dashboard = () => {
                     {t('dashboard.xray')}
                   </h2>
                 </div>
-                <div className="text-[1.4rem] sm:text-6xl font-bold gradient-solar mb-2 sm:mb-3">{xrayClass}</div>
+                <div className="text-[1.4rem] sm:text-6xl font-bold gradient-solar mb-2 sm:mb-3">{xrayClass ?? '—'}</div>
                 <div className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider">{t('dashboard.classTxt')}</div>
               </div>
             );

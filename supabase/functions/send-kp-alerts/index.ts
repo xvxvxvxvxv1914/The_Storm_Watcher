@@ -1,7 +1,8 @@
+import { paidPlanFilter } from '../_shared/planAccess.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 // @deno-types="npm:@types/web-push"
 import webpush from 'npm:web-push';
-import { BZ_SUSTAINED_MIN, sustainedBz, repairNonStandardJson, type MagRow } from './bz.ts';
+import { BZ_SUSTAINED_MIN, sustainedBzFromFeed, repairNonStandardJson, type MagRow } from './bz.ts';
 
 const GFZ_KP_URL = 'https://kp.gfz.de/app/json/';
 const NOAA_KP_URL = 'https://services.swpc.noaa.gov/json/planetary_k_index_1m.json';
@@ -30,7 +31,6 @@ const COOLDOWN_MS = 2 * 60 * 60 * 1000; // 2 hours between alerts per subscripti
  * `profiles`; keys to auth.users are not enough, since PostgREST will not join
  * two tables through a third. See migration 20260813000000_push_profiles_fk.sql.
  */
-const PAID_PLAN_FILTER = 'plan.in.(pro,premium),subscription_status.eq.trialing';
 
 interface KpEntry {
   kp_index?: number;
@@ -103,7 +103,7 @@ async function fetchSustainedBz(): Promise<number | null> {
     } catch {
       rows = JSON.parse(repairNonStandardJson(text)) as MagRow[];
     }
-    return sustainedBz(rows);
+    return sustainedBzFromFeed(rows);
   } catch (err) {
     console.warn('Bz feed unavailable, skipping early warning:', err);
     return null;
@@ -445,7 +445,7 @@ Deno.serve(async (req: Request) => {
     .select('id, endpoint, p256dh, auth, threshold_kp, bz_alerts_enabled, bz_threshold, last_bz_notified_at, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
     .lte('threshold_kp', currentKp)
     .or(`last_notified_at.is.null,last_notified_at.lt.${cooldownCutoff}`)
-    .or(PAID_PLAN_FILTER, { referencedTable: 'profiles' });
+    .or(paidPlanFilter(new Date()), { referencedTable: 'profiles' });
 
   if (subsError) {
     console.error('DB query failed:', subsError.message);
@@ -492,7 +492,7 @@ Deno.serve(async (req: Request) => {
       .select('id, token, platform, threshold_kp, bz_alerts_enabled, bz_threshold, last_notified_at, last_bz_notified_at, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
       .lte('threshold_kp', currentKp)
       .or(`last_notified_at.is.null,last_notified_at.lt.${cooldownCutoff}`)
-      .or(PAID_PLAN_FILTER, { referencedTable: 'profiles' });
+      .or(paidPlanFilter(new Date()), { referencedTable: 'profiles' });
 
     if (tokensError) {
       console.error('Device tokens query failed:', tokensError.message);
@@ -615,7 +615,7 @@ Deno.serve(async (req: Request) => {
         .eq('bz_alerts_enabled', true)
         .gte('bz_threshold', bz)   // threshold is negative; Bz at or below it fires
         .or(`last_bz_notified_at.is.null,last_bz_notified_at.lt.${bzCooldownCutoff}`)
-        .or(PAID_PLAN_FILTER, { referencedTable: 'profiles' }),
+        .or(paidPlanFilter(new Date()), { referencedTable: 'profiles' }),
       (apnsEnabled || fcmEnabled)
         ? supabase
             .from('device_push_tokens')
@@ -623,7 +623,7 @@ Deno.serve(async (req: Request) => {
             .eq('bz_alerts_enabled', true)
             .gte('bz_threshold', bz)
             .or(`last_bz_notified_at.is.null,last_bz_notified_at.lt.${bzCooldownCutoff}`)
-            .or(PAID_PLAN_FILTER, { referencedTable: 'profiles' })
+            .or(paidPlanFilter(new Date()), { referencedTable: 'profiles' })
         : Promise.resolve({ data: [], error: null }),
     ]);
 

@@ -117,6 +117,18 @@ enum KpSource {
 
     // MARK: - Solar wind
 
+    /// RTSW_FRESH_MIN in src/utils/rtswSource.ts — see sampleSelection in the contract.
+    private static let rtswFreshInterval: TimeInterval = 10 * 60
+
+    /// NOAA rtsw stamps: `2026-09-25T11:24:05`, UTC, no offset.
+    private static let rtswStamp: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US_POSIX")
+        f.timeZone = TimeZone(identifier: "UTC")
+        f.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        return f
+    }()
+
     /// Always calls back, with `noWind` on failure.
     static func fetchWind(completion: @escaping (Int) -> Void) {
         let url = URL(string: "https://services.swpc.noaa.gov/json/rtsw/rtsw_wind_1m.json")!
@@ -124,19 +136,39 @@ enum KpSource {
             guard let data,
                   let json = try? JSONSerialization.jsonObject(with: repairingNaN(data)) as? [[String: Any]]
             else { completion(noWind); return }
-            // Newest active sample *that carries a reading*. The feed is
-            // newest-first, its trailing samples are often active:false (not yet
-            // validated), and any sample can have no speed — null, or the NaN
-            // repaired into one above. Stopping at the newest active row and
-            // then finding it empty threw away 3589 perfectly good ones.
+            // sampleSelection in src/services/kpSource.contract.json: the newest
+            // ACTIVE sample with a reading, unless it lags the newest sample of
+            // any spacecraft by more than rtswFreshInterval — then that newest
+            // one. The feed interleaves several spacecraft (ACE, IMAP, SOLAR1 on
+            // 2026-09-25) and the active one can go quiet: that day it had not
+            // reported wind for 8.5 hours, and "newest active" showed it anyway.
+            // Any sample can have no speed — null, or the NaN repaired into one
+            // above — so empty rows are skipped, never stopped at.
             func speed(_ row: [String: Any]) -> Double? {
                 guard let v = row["proton_speed"] as? Double, v.isFinite, v > 0 else { return nil }
                 return v
             }
-            let newestActive = json.first { ($0["active"] as? Bool) == true && speed($0) != nil }
-            guard let row = newestActive ?? json.first(where: { speed($0) != nil }),
-                  let v = speed(row) else { completion(noWind); return }
-            completion(Int(v))
+            func time(_ row: [String: Any]) -> Date? {
+                guard let tag = row["time_tag"] as? String else { return nil }
+                return rtswStamp.date(from: String(tag.replacingOccurrences(of: " ", with: "T").prefix(19)))
+            }
+            var newest: (t: Date, v: Double)?
+            var newestActive: (t: Date, v: Double)?
+            for row in json {
+                guard let v = speed(row), let t = time(row) else { continue }
+                if newest == nil || t > newest!.t { newest = (t, v) }
+                if (row["active"] as? Bool) == true, newestActive == nil || t > newestActive!.t {
+                    newestActive = (t, v)
+                }
+            }
+            guard let n = newest else { completion(noWind); return }
+            let pick: (t: Date, v: Double)
+            if let a = newestActive, n.t.timeIntervalSince(a.t) <= rtswFreshInterval {
+                pick = a
+            } else {
+                pick = n
+            }
+            completion(Int(pick.v))
         }.resume()
     }
 

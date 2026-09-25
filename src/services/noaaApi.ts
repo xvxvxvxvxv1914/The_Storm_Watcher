@@ -2,6 +2,7 @@ import type React from 'react';
 
 import { fetchJson } from '../utils/fetchJson';
 import { parseNoaaTime } from '../utils/noaaTime';
+import { latestRtswSample } from '../utils/rtswSource';
 import { logWarning } from '../utils/logger';
 import { persistGet, persistSet } from '../utils/offlineCache';
 import { isNative } from '../utils/platform';
@@ -73,6 +74,8 @@ export interface SolarWindData {
   proton_speed: number;
   proton_density: number;
   active: boolean;
+  /** Spacecraft — the feed interleaves several (ACE, IMAP, SOLAR1…). */
+  source?: string;
 }
 
 export interface MagFieldData {
@@ -80,6 +83,7 @@ export interface MagFieldData {
   bz_gsm: number;
   bt: number;
   active: boolean;
+  source?: string;
 }
 
 export interface XrayData {
@@ -192,22 +196,24 @@ export const getSolarWind = (): Promise<SolarWindData[]> =>
     }
   });
 
-// Single source of truth for "current solar wind speed". The rtsw feed's
-// trailing samples are frequently flagged active:false (not yet validated), so
-// the newest *active* sample is the right one to show. Home and Dashboard MUST
-// use this same selection or they display different numbers for the same feed
-// (Home previously took the raw last sample → mismatched the Dashboard).
-export const latestSolarWindSpeed = (data: SolarWindData[] | null | undefined): number => {
-  if (!data || data.length === 0) return 0;
-  // Newest active sample *that carries a reading*. Any sample can be missing a
-  // speed — null in the feed, or the NaN repaired into one by fetchJson — and
-  // stopping at the newest active row only to find it empty threw away the
-  // 3589 good ones behind it. Falls back to the newest usable sample of any
-  // kind, then to 0.
-  const usable = (d: SolarWindData) => Number.isFinite(d.proton_speed) && d.proton_speed > 0;
-  const row = data.findLast(d => d.active && usable(d)) ?? data.findLast(usable);
-  return row?.proton_speed ?? 0;
-};
+// Single source of truth for "current solar wind". Every page MUST use these
+// rather than picking a row itself: Home once took the raw last sample and
+// showed a different number from the Dashboard, and Aurora took the newest
+// active wind but the newest *any-source* Bz, mixing two spacecraft in one
+// score. The selection rule itself is in utils/rtswSource.ts.
+//
+// A sample counts only if it carries a reading — any can be missing one, null
+// in the feed or a NaN that fetchJson repaired into null — so an empty newest
+// row never throws away the thousands of good ones behind it.
+export const latestSolarWindSample = (data: SolarWindData[] | null | undefined): SolarWindData | null =>
+  latestRtswSample(data, d => Number.isFinite(d.proton_speed) && d.proton_speed > 0);
+
+/** km/s, or null when there is no usable sample — never a fabricated 0. */
+export const latestSolarWindSpeed = (data: SolarWindData[] | null | undefined): number | null =>
+  latestSolarWindSample(data)?.proton_speed ?? null;
+
+export const latestMagSample = (data: MagFieldData[] | null | undefined): MagFieldData | null =>
+  latestRtswSample(data, d => Number.isFinite(d.bz_gsm));
 
 export interface DstData {
   time_tag: string;

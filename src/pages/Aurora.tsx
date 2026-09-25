@@ -4,7 +4,7 @@ import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { MapPin, Eye, Sparkles, AlertTriangle, Check, Zap, Share2 } from 'lucide-react';
-import { getKpIndex, getAuroraModel, getMagField, getSolarWind, getWeatherData, getKpGradientStyle, resolveKp, type AuroraOvationPoint, type WeatherData } from '../services/noaaApi';
+import { getKpIndex, getAuroraModel, getMagField, getSolarWind, getWeatherData, getKpGradientStyle, resolveKp, latestMagSample, latestSolarWindSample, type AuroraOvationPoint, type WeatherData } from '../services/noaaApi';
 import { calcAuroraVisibility } from '../utils/auroraVisibility';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
@@ -177,15 +177,15 @@ const Aurora = () => {
   const fetchSpace = useCallback(async () => {
     try {
       const [magData, windData] = await Promise.all([getMagField(), getSolarWind()]);
-      if (magData.length) {
-        const latest = magData[magData.length - 1];
-        setBz(latest.bz_gsm ?? 0);
-        setBt(latest.bt ?? 0);
+      const mag = latestMagSample(magData);
+      if (mag) {
+        setBz(mag.bz_gsm);
+        setBt(mag.bt ?? 0);
       }
-      if (windData.length) {
-        const active = windData.findLast(d => d.active) ?? windData[windData.length - 1];
-        setWindSpeed(active.proton_speed ?? 0);
-        setWindDensity(active.proton_density ?? 0);
+      const wind = latestSolarWindSample(windData);
+      if (wind) {
+        setWindSpeed(wind.proton_speed);
+        setWindDensity(wind.proton_density ?? 0);
       }
     } catch { /* silent */ }
   }, []);
