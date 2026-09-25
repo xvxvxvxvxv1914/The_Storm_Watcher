@@ -39,9 +39,17 @@
     "$comment": "Python's json accepts NaN by default. Inspecting these feeds with a script therefore shows a perfectly healthy payload, which is how this survived unnoticed."
   },
   "sampleSelection": {
-    "appliesTo": "solar wind (proton_speed) in rtsw_wind_1m.json",
-    "rule": "Newest ACTIVE sample that carries a usable reading (finite and > 0); fall back to the newest usable sample of any kind; only then report no data.",
-    "$comment": "Trailing samples are frequently active:false (not yet validated), so the newest active one is the right one to show. But stopping at it and then finding it empty — null, or a repaired NaN — discarded the thousands of good samples behind it. All four implementations skip back instead."
+    "appliesTo": "rtsw_wind_1m.json (proton_speed) and rtsw_mag_1m.json (bz_gsm)",
+    "freshMinutes": 10,
+    "rule": "Consider only samples with a usable reading (wind: finite and > 0; Bz: finite). Take the newest ACTIVE one if it is no more than freshMinutes behind the newest usable sample of any source; otherwise take the newest usable sample. Only then report no data. Freshness is judged against the feed, not the wall clock.",
+    "sustainedWindow": "The Bz early warning builds its window from ONE source: sources whose newest sample is within freshMinutes of the feed's newest, the active one first, then by freshness; the first with a complete window wins.",
+    "implementations": {
+      "typescript": "latestRtswSample in src/utils/rtswSource.ts, used through latestSolarWindSample / latestMagSample in noaaApi.ts",
+      "swift": "KpSource.fetchWind in ios/App/StormWidget/KpSource.swift (wind only)",
+      "kotlin": "KpSource.fetchWind in android/.../widget/KpSource.kt (wind only)",
+      "deno": "rankMagSources / sustainedBzFromFeed in supabase/functions/send-kp-alerts/bz.ts (Bz only); bz.test.ts pins it to the TypeScript rule"
+    },
+    "$comment": "The feeds interleave several spacecraft, each row carrying `source`; on 2026-09-25 they were ACE, IMAP and SOLAR1, only SOLAR1 flagged active. SOLAR1's newest wind sample was 8.5 hours old while ACE and IMAP reported every minute, so 'newest active' showed an 8.5-hour-old speed as live; and the Bz alarm, reading the last 15 rows regardless of source, built its '15-minute' window from 7 minutes of ACE and IMAP alternating. Empty samples — null, or a repaired NaN — are skipped, never stopped at: stopping at one discarded the thousands of good samples behind it."
   },
   "noDataSentinel": -1,
   "$comment2": "-1 means 'no data'. 0.0 is real data. Freshness, never the value, decides whether a cached Kp is usable."

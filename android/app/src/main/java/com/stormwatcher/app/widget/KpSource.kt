@@ -51,6 +51,9 @@ object KpSource {
 
     private const val MAX_AGE_MS = 5 * 60 * 1000L
 
+    /** RTSW_FRESH_MIN in src/utils/rtswSource.ts — see sampleSelection in the contract. */
+    private const val RTSW_FRESH_MS = 10 * 60 * 1000L
+
     data class ForecastPoint(val timeMillis: Long, val kp: Double)
 
     data class Reading(
@@ -163,25 +166,43 @@ object KpSource {
         return try {
             val arr = JSONArray(body)
             if (arr.length() == 0) return NO_WIND
-            // Newest active sample *that carries a reading*. The feed is
-            // newest-first, its trailing samples are often active:false (not yet
-            // validated), and any sample can be missing a speed — null, or the
-            // bare `NaN` NOAA emits for dropped samples, which org.json hands
-            // back as the string "NaN" and optDouble turns into Double.NaN.
-            // Stopping at the newest active row and then finding it empty threw
-            // away every good sample behind it.
+            // sampleSelection in src/services/kpSource.contract.json: the newest
+            // ACTIVE sample with a reading, unless it lags the newest sample of
+            // any spacecraft by more than RTSW_FRESH_MS — then that newest one.
+            // The feed interleaves several spacecraft (ACE, IMAP, SOLAR1 on
+            // 2026-09-25) and the active one can go quiet: that day it had not
+            // reported wind for 8.5 hours, and "newest active" showed it anyway.
+            // A sample can be missing a speed — null, or the bare `NaN` NOAA
+            // emits, which org.json hands back as the string "NaN" and optDouble
+            // turns into Double.NaN — so empty rows are skipped, never stopped at.
             fun speedAt(o: JSONObject): Double? =
                 o.optDouble("proton_speed", Double.NaN)
                     .takeIf { !it.isNaN() && !it.isInfinite() && it > 0 }
 
-            var fallback: Double? = null
+            val fmt = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US).apply {
+                timeZone = TimeZone.getTimeZone("UTC")
+            }
+            fun timeAt(o: JSONObject): Long? = try {
+                fmt.parse(o.optString("time_tag").replace(' ', 'T').take(19))?.time
+            } catch (_: Exception) {
+                null
+            }
+
+            var newest: Pair<Long, Double>? = null
+            var newestActive: Pair<Long, Double>? = null
             for (i in 0 until arr.length()) {
                 val o = arr.optJSONObject(i) ?: continue
                 val s = speedAt(o) ?: continue
-                if (o.optBoolean("active", false)) return s.toInt()
-                if (fallback == null) fallback = s
+                val t = timeAt(o) ?: continue
+                if (newest == null || t > newest.first) newest = t to s
+                if (o.optBoolean("active", false) && (newestActive == null || t > newestActive.first)) {
+                    newestActive = t to s
+                }
             }
-            fallback?.toInt() ?: NO_WIND
+            val n = newest ?: return NO_WIND
+            val a = newestActive
+            val pick = if (a != null && n.first - a.first <= RTSW_FRESH_MS) a else n
+            pick.second.toInt()
         } catch (_: Exception) {
             NO_WIND
         }

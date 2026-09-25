@@ -27,11 +27,79 @@ export function repairNonStandardJson(text: string): string {
 export interface MagRow {
   time_tag: string;
   bz_gsm: number | null;
+  /** Spacecraft. The feed interleaves several — ACE, IMAP, SOLAR1 on 2026-09-25. */
+  source?: string;
+  active?: boolean;
+}
+
+/** Mirrors RTSW_FRESH_MIN in src/utils/rtswSource.ts — bz.test.ts pins the two together. */
+export const RTSW_FRESH_MIN = 10;
+
+// NOAA stamps carry no offset and are UTC. Same reading as src/utils/noaaTime.ts,
+// copied because this file must stay import-free.
+const stampMs = (tag: string): number =>
+  new Date(/(Z|[+-]\d{2}:?\d{2})$/.test(tag) ? tag : `${tag.trim().replace(' ', 'T')}Z`).getTime();
+
+/**
+ * Spacecraft worth reading, best first.
+ *
+ * The mag feed interleaves several spacecraft in one array. Taking the last 15
+ * rows regardless of source — what this function's caller did until
+ * 2026-09-25 — alternated ACE and IMAP samples, so the "15-minute" window
+ * spanned 7 minutes across two instruments.
+ *
+ * Only a source whose newest sample is within RTSW_FRESH_MIN of the newest of
+ * any source qualifies: a spacecraft that went quiet 45 minutes ago can still
+ * hold a complete window, and an alert built on it would announce a field
+ * that has since moved on. First comes NOAA's active spacecraft if it
+ * qualifies, then the rest by freshness — the same choice as
+ * `latestRtswSample` in the app, so the alarm and the Dashboard read one
+ * spacecraft.
+ */
+export function rankMagSources(rows: MagRow[]): (string | undefined)[] {
+  const newestBySource = new Map<string | undefined, number>();
+  let newest = -Infinity;
+  let active: { t: number; source?: string } | null = null;
+
+  for (const r of rows) {
+    if (typeof r.bz_gsm !== 'number' || !Number.isFinite(r.bz_gsm)) continue;
+    const t = stampMs(r.time_tag);
+    if (!Number.isFinite(t)) continue;
+    newest = Math.max(newest, t);
+    if (t > (newestBySource.get(r.source) ?? -Infinity)) newestBySource.set(r.source, t);
+    if (r.active && (!active || t > active.t)) active = { t, source: r.source };
+  }
+
+  const cutoff = newest - RTSW_FRESH_MIN * 60000;
+  const fresh = [...newestBySource]
+    .filter(([, t]) => t >= cutoff)
+    .sort((a, b) => b[1] - a[1])
+    .map(([source]) => source);
+
+  if (active && active.t >= cutoff) {
+    const first = active.source;
+    return [first, ...fresh.filter(s => s !== first)];
+  }
+  return fresh;
+}
+
+/**
+ * Sustained Bz from one spacecraft: the best-ranked one with a complete
+ * window. Falling through to the next is what keeps a gap in one instrument
+ * from silencing the only alarm that runs ahead of the storm.
+ */
+export function sustainedBzFromFeed(rows: MagRow[]): number | null {
+  for (const source of rankMagSources(rows)) {
+    const value = sustainedBz(rows.filter(r => r.source === source));
+    if (value !== null) return value;
+  }
+  return null;
 }
 
 /**
  * The least-southward Bz over the last `BZ_SUSTAINED_MIN` minutes, or null when
- * the window cannot be trusted.
+ * the window cannot be trusted. Expects rows from ONE spacecraft — the raw feed
+ * goes through `sustainedBzFromFeed`.
  *
  * Returning the *weakest* sample in the window is what makes a single
  * comparison answer "has Bz been at or below X for the whole window": if the

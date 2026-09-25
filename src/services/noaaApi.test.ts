@@ -217,40 +217,40 @@ describe('NOAA cache + single-flight', () => {
   });
 });
 
-// The rtsw feed is sorted ascending by the service, so "newest" is the last
-// element. Samples can lack a speed: null in the feed, or a NaN that fetchJson
-// repaired into one. Picking the newest active row and *then* finding it empty
-// discarded thousands of good samples behind it.
+// Samples can lack a speed: null in the feed, or a NaN that fetchJson repaired
+// into one. Picking the newest active row and *then* finding it empty discarded
+// thousands of good samples behind it. Choosing between spacecraft is covered
+// in utils/rtswSource.test.ts; these pin the single-spacecraft behaviour.
 describe('latestSolarWindSpeed', () => {
-  const row = (time_tag: string, proton_speed: number, active: boolean) =>
-    ({ time_tag, proton_speed, proton_density: 5, active }) as never;
+  const row = (min: number, proton_speed: number, active: boolean) =>
+    ({ time_tag: `2026-09-25T11:${String(min).padStart(2, '0')}:00`, proton_speed, proton_density: 5, active }) as never;
 
   it('takes the newest active sample', () => {
     expect(latestSolarWindSpeed([
-      row('t1', 400, true),
-      row('t2', 423, true),
-      row('t3', 999, false), // trailing samples are frequently not yet validated
+      row(1, 400, true),
+      row(2, 423, true),
+      row(3, 999, false), // trailing samples are frequently not yet validated
     ])).toBe(423);
   });
 
   it('skips back past an active sample with no reading', () => {
     expect(latestSolarWindSpeed([
-      row('t1', 400, true),
-      row('t2', 423, true),
-      row('t3', null as unknown as number, true), // was NaN in the raw feed
+      row(1, 400, true),
+      row(2, 423, true),
+      row(3, null as unknown as number, true), // was NaN in the raw feed
     ])).toBe(423);
   });
 
   it('falls back to the newest usable sample when none are active', () => {
     expect(latestSolarWindSpeed([
-      row('t1', 400, false),
-      row('t2', 418, false),
+      row(1, 400, false),
+      row(2, 418, false),
     ])).toBe(418);
   });
 
-  it('returns 0 rather than a fabricated number when nothing is usable', () => {
-    expect(latestSolarWindSpeed([])).toBe(0);
-    expect(latestSolarWindSpeed(null)).toBe(0);
-    expect(latestSolarWindSpeed([row('t1', null as unknown as number, true)])).toBe(0);
+  it('returns null rather than a fabricated 0 when nothing is usable', () => {
+    expect(latestSolarWindSpeed([])).toBeNull();
+    expect(latestSolarWindSpeed(null)).toBeNull();
+    expect(latestSolarWindSpeed([row(1, null as unknown as number, true)])).toBeNull();
   });
 });
