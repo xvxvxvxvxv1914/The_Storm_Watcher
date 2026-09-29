@@ -192,10 +192,10 @@ const Footer = () => {
 
           <div className="border-t border-white/10 pt-8 flex flex-col items-center gap-2">
             <p className="text-center text-[#94a3b8] text-sm">
-              © {new Date().getFullYear()} The Storm Watcher. All rights reserved.
+              © {new Date().getFullYear()} The Storm Watcher · {t('footer.rights')}
             </p>
             <p className="text-center text-[#475569] text-xs">
-              Data powered by{' '}
+              {t('footer.dataPoweredBy')}{' '}
               <a href="https://www.swpc.noaa.gov/" target="_blank" rel="noopener noreferrer" className="hover:text-[#94a3b8] transition-colors underline">NOAA SWPC</a>
               {' · '}
               <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" className="hover:text-[#94a3b8] transition-colors underline">Open-Meteo</a>

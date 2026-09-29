@@ -840,10 +840,11 @@ const Dashboard = () => {
             <>
               <div className={`px-5 py-4 rounded-xl border mb-5 ${nigggStatus.bg}`}>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-2xl font-black tracking-widest" style={{ color: nigggStatus.color }}>{nigggStatus.label}</span>
+                  {/* Was the English `label` ("CALM") with the translated one repeated
+                      underneath; the translation alone says it once, in the page's language. */}
+                  <span className="text-2xl font-black uppercase tracking-widest" style={{ color: nigggStatus.color }}>{t(nigggStatus.descKey)}</span>
                   <span className="text-xs text-[#64748b] font-mono">{t('niggg.minDelta')}: {nigggStatus.minDelta.toFixed(1)} nT</span>
                 </div>
-                <p className="text-sm font-semibold mb-0.5" style={{ color: nigggStatus.color }}>{t(nigggStatus.descKey)}</p>
                 <p className="text-xs text-[#94a3b8] leading-relaxed mb-1">{t(nigggStatus.detailKey)}</p>
                 <p className="text-xs text-[#64748b] leading-relaxed">👤 {t(nigggStatus.humanEffectKey)}</p>
               </div>

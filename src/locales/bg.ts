@@ -138,6 +138,12 @@ const bg: Record<string, string> = {
   'stormWatch.dismiss': 'Скрий',
   'home.trustedSources': 'Доверени източници на данни',
   'home.trustedSourcesDesc': 'Прогнозите ни са базирани на NOAA Space Weather Prediction Center, NASA DONKI, ESA Space Weather Service и Националния институт по геофизика и геодезия (България).',
+  'home.liveKpIndex': 'На живо · Kp индекс',
+  'home.source.donki': 'База данни за космическо време',
+  'home.source.gfz': 'Официален източник на Kp индекса',
+  'home.source.esa': 'Служба за космическо време',
+  'home.source.niggg': 'Геофизичен институт на България',
+  'footer.dataPoweredBy': 'Данни от',
   'home.comingSoon': 'Очаквайте скоро',
   'home.tagline': 'Наблюдаваме слънцето. Пазим Земята.',
 
@@ -708,7 +714,7 @@ const bg: Record<string, string> = {
   'forecast.outlook.noData': 'Няма данни.',
 
   // Aurora Calendar
-  'aurora.calendar.title': 'Aurora Календар',
+  'aurora.calendar.title': 'Аврора календар',
   'aurora.calendar.subtitle': 'Прогноза за 3 нощи',
   'aurora.calendar.tonight': 'Тази вечер',
   'aurora.calendar.tomorrow': 'Утре вечер',
@@ -723,7 +729,7 @@ const bg: Record<string, string> = {
   'aurora.calendar.overcast': 'Облачно',
   'aurora.calendar.noNight': 'Полярен ден — няма тъмнина тази нощ',
   'aurora.calendar.fullView': 'Пълен изглед',
-  'nav.calendar': 'Аврора Календар',
+  'nav.calendar': 'Аврора календар',
 
   // 404 Not Found
   'notFound.title': 'Изгубен в Космоса',

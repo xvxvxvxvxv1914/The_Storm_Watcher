@@ -138,13 +138,13 @@ const Home = () => {
     const tick = () => {
       if (!lastUpdated) return;
       const seconds = Math.round((Date.now() - lastUpdated.getTime()) / 1000);
-      if (seconds < 60) setTimeAgo(`${seconds}s ago`);
-      else setTimeAgo(`${Math.floor(seconds / 60)}m ago`);
+      if (seconds < 60) setTimeAgo(t('alerts.justNow'));
+      else setTimeAgo(t('alerts.mAgo').replace('{m}', String(Math.floor(seconds / 60))));
     };
     tick();
     const timer = setInterval(() => { if (document.visibilityState !== 'hidden') tick(); }, 10000);
     return () => clearInterval(timer);
-  }, [lastUpdated]);
+  }, [lastUpdated, t]);
 
 
   const { pulling, pullY } = usePullToRefresh(() => setRetryCount(c => c + 1));
@@ -340,7 +340,7 @@ const Home = () => {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10b981] opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#10b981]"></span>
                   </span>
-                  <span className="text-xs text-[#64748b] uppercase tracking-widest font-semibold">Live · Kp Index</span>
+                  <span className="text-xs text-[#64748b] uppercase tracking-widest font-semibold">{t('home.liveKpIndex')}</span>
                   {timeAgo && <span className="text-xs text-[#475569]">· {timeAgo}</span>}
                   {/* Cached value shown while the live fetch is delayed/unconfirmed */}
                   {kpStale && (
@@ -762,11 +762,12 @@ const Home = () => {
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
+              // NOAA's is the centre's proper name, so it stays in English.
               { name: 'NOAA SWPC', sub: 'Space Weather Prediction Center', flag: 'us' },
-              { name: 'NASA DONKI', sub: 'Space Weather Database', flag: 'us' },
-              { name: 'GFZ Potsdam', sub: 'Official Kp Index Authority', flag: 'de' },
-              { name: 'ESA', sub: 'Space Weather Service', flag: 'eu' },
-              { name: 'NIGGG', sub: 'Bulgaria Geophysics Institute', flag: 'bg' },
+              { name: 'NASA DONKI', sub: t('home.source.donki'), flag: 'us' },
+              { name: 'GFZ Potsdam', sub: t('home.source.gfz'), flag: 'de' },
+              { name: 'ESA', sub: t('home.source.esa'), flag: 'eu' },
+              { name: 'NIGGG', sub: t('home.source.niggg'), flag: 'bg' },
             ].map(source => (
               <div key={source.name} className="relative text-left rounded-xl px-6 py-4 bg-white/[0.04] border border-white/8">
                 <img src={`https://flagcdn.com/32x24/${source.flag}.png`} alt={`${source.name} flag`} className="absolute top-3 right-3 rounded-sm shadow-sm opacity-80" width={32} height={24} />

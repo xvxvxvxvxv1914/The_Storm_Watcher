@@ -1,3 +1,5 @@
+import { useLanguage } from '../contexts/LanguageContext';
+
 interface Props {
   kp: number;
 }
@@ -6,8 +8,10 @@ interface Props {
 // big number, the storm button and the iOS widget. Warm colours start early:
 // green <4 (calm), yellow 4–5 (active), orange 5–7 (storm G1–G2), red 7–9 (severe G3–G5).
 // Aurora-green = calm (the signature colour); colour escalates with storm level.
-const ZONES = [
-  { label: 'Calm', from: 0, to: 4, color: '#10b981' },
+// `labelKey` is translated at render; G1–G5 is NOAA notation and reads the same
+// in every language.
+const ZONES: { label?: string; labelKey?: string; from: number; to: number; color: string }[] = [
+  { labelKey: 'niggg.calm.desc', from: 0, to: 4, color: '#10b981' },
   { label: '', from: 4, to: 5, color: '#eab308' },
   { label: 'G1–G2', from: 5, to: 7, color: '#f97316' },
   { label: 'G3–G5', from: 7, to: 9, color: '#ef4444' },
@@ -22,6 +26,7 @@ const TRACK = `linear-gradient(to right, ${ZONES.map(
 ).join(', ')})`;
 
 export default function KpGauge({ kp }: Props) {
+  const { t } = useLanguage();
   const clamped = Math.max(0, Math.min(9, kp));
   const pct = pos(clamped);
   const markerColor =
@@ -62,11 +67,11 @@ export default function KpGauge({ kp }: Props) {
       <div className="relative mt-1 h-3 text-[9px] uppercase tracking-wider font-semibold">
         {ZONES.map((z) => (
           <span
-            key={z.label}
+            key={z.from}
             className="absolute -translate-x-1/2 whitespace-nowrap"
             style={{ left: `${pos((z.from + z.to) / 2)}%`, color: z.color }}
           >
-            {z.label}
+            {z.labelKey ? t(z.labelKey) : z.label}
           </span>
         ))}
       </div>
