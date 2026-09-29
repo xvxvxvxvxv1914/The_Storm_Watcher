@@ -121,7 +121,7 @@ const bg: Record<string, string> = {
   'home.features2.title': 'Всичко нужно за следене на бурята',
   'home.feature.calendar.title': 'Аврора календар',
   'home.feature.calendar.desc': 'Вижте кои предстоящи нощи имат най-добра видимост на аврора според слънчевите прогнози и вашето местоположение.',
-  'home.feature.map.title': 'Глобална карта + Aurora Oval',
+  'home.feature.map.title': 'Глобална карта + аврорален овал',
   'home.feature.map.desc': 'Карта на живо показваща аврора овала в реално време. Вижте точно къде се вижда северното сияние в момента.',
   'home.feature.alerts.title': 'Push известия',
   'home.feature.alerts.desc': 'Получавайте известие веднага щом геомагнитна буря достигне избрания от вас праг — преди да достигне пика.',

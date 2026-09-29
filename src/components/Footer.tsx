@@ -112,8 +112,8 @@ const Footer = () => {
           {/* Copyright */}
           <div className="border-t border-white/8 pt-3 flex flex-col gap-1">
             <p className="text-[#475569] text-xs">© {new Date().getFullYear()} The Storm Watcher</p>
-            <p className="text-[#374151] text-xs">
-              Data:{' '}
+            <p className="text-[#64748b] text-xs">
+              {t('footer.dataPoweredBy')}{' '}
               <a href="https://www.swpc.noaa.gov/" target="_blank" rel="noopener noreferrer" className="hover:text-[#64748b] underline">NOAA SWPC</a>
               {' · '}
               <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" className="hover:text-[#64748b] underline">Open-Meteo</a>

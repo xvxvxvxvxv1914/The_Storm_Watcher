@@ -629,7 +629,9 @@ const Home = () => {
 
               {/* Progress bar */}
               <div className="w-full max-w-lg">
-                <div className="flex justify-between text-xs text-[#64748b] uppercase tracking-widest mb-2">
+                {/* gap + smaller tracking on phones: in Bulgarian the four labels are 27
+                    letters and ran together into one word at 375px. */}
+                <div className="flex justify-between gap-2 text-[10px] sm:text-xs text-[#64748b] uppercase tracking-wider sm:tracking-widest mb-2">
                   <span>{t('home.stormScore.quiet')}</span>
                   <span>{t('home.stormScore.unsettled')}</span>
                   <span>{t('home.stormScore.storm')}</span>
