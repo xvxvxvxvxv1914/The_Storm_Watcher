@@ -100,6 +100,8 @@ const InfoTooltip = React.memo(({ text }: { text: string }) => {
   const toggle = () => { if (pos) close(); else place(); };
 
   return (
+    // The card headers carry `pr-6` to stay clear of this button: on a phone the
+    // card padding is 12px and the button reaches 32px in, so "BZ КОМПОНЕНТ" ran into it.
     <div ref={rootRef} className="absolute top-3 right-3 z-20">
       <div
         ref={btnRef}
@@ -633,7 +635,7 @@ const Dashboard = () => {
               } hover:scale-105 transition-transform ${dropRing}`}>
                 {dragHandle}
                 <InfoTooltip text={t('dashboard.tooltip.kp')} />
-                <div className="flex items-center gap-2 mb-2 sm:mb-4">
+                <div className="flex items-center gap-2 mb-2 sm:mb-4 pr-6">
                   {/* Icon background mirrors the KpGauge bands (and the status badge below). */}
                   <div className={`w-8 h-8 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center ${
                     kpBand >= 7 ? 'bg-gradient-to-br from-[#ef4444] to-[#dc2626]' :
@@ -672,7 +674,7 @@ const Dashboard = () => {
                 <div key="dst" {...dragProps} className={`group relative glass-surface rounded-2xl p-3 sm:p-6 hover:glow-orange transition-all hover:scale-105 ${dropRing}`}>
                   {dragHandle}
                   <InfoTooltip text={t('dashboard.tooltip.dst')} />
-                  <div className="flex items-center gap-2 mb-2 sm:mb-4">
+                  <div className="flex items-center gap-2 mb-2 sm:mb-4 pr-6">
                     <div className={`w-8 h-8 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center bg-gradient-to-br ${status?.gradient ?? 'from-[#64748b] to-[#475569]'}`}>
                       <Orbit className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
                     </div>
@@ -698,7 +700,7 @@ const Dashboard = () => {
               <div key="wind" {...dragProps} data-tour="wind-card" className={`group relative glass-surface rounded-2xl p-3 sm:p-6 hover:glow-purple transition-all hover:scale-105 ${dropRing}`}>
                 {dragHandle}
                 <InfoTooltip text={t('dashboard.tooltip.wind')} />
-                <div className="flex items-center gap-2 mb-2 sm:mb-4">
+                <div className="flex items-center gap-2 mb-2 sm:mb-4 pr-6">
                   <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-[#7c3aed] to-[#6d28d9] rounded-xl flex items-center justify-center">
                     <Wind className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
                   </div>
@@ -715,7 +717,7 @@ const Dashboard = () => {
               <div key="bz" {...dragProps} className={`group relative glass-surface rounded-2xl p-3 sm:p-6 hover:glow-green transition-all hover:scale-105 ${dropRing}`}>
                 {dragHandle}
                 <InfoTooltip text={t('dashboard.tooltip.bz')} />
-                <div className="flex items-center gap-2 mb-2 sm:mb-4">
+                <div className="flex items-center gap-2 mb-2 sm:mb-4 pr-6">
                   <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-[#06b6d4] to-[#0891b2] rounded-xl flex items-center justify-center">
                     <Compass className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
                   </div>
@@ -737,7 +739,7 @@ const Dashboard = () => {
               <div key="xray" {...dragProps} className={`group relative glass-surface rounded-2xl p-3 sm:p-6 hover:glow-green transition-all hover:scale-105 ${dropRing}`}>
                 {dragHandle}
                 <InfoTooltip text={t('dashboard.tooltip.xray')} />
-                <div className="flex items-center gap-2 mb-2 sm:mb-4">
+                <div className="flex items-center gap-2 mb-2 sm:mb-4 pr-6">
                   <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-[#fbbf24] to-[#f59e0b] rounded-xl flex items-center justify-center">
                     <Sun className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
                   </div>
