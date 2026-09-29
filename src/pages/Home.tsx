@@ -16,6 +16,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { usePaymentGate } from '../hooks/usePaymentGate';
 import { auroraViewingChance } from '../utils/auroraVisibility';
 import { isNative } from '../utils/platform';
+import { localizedPath } from '../utils/langUrl';
+import { useTranslatedPageMeta } from '../content/pageMeta';
 import StarField from '../components/StarField';
 import { Skeleton } from '../components/Skeleton';
 import { supabase } from '../lib/supabase';
@@ -28,7 +30,7 @@ const getScoreShareStatus = (score: number) => {
 };
 
 const Home = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { settings } = useSettings();
   const { user } = useAuth();
   const { hasPro: hasPaidPlan } = usePaymentGate();
@@ -148,6 +150,20 @@ const Home = () => {
   const { pulling, pullY } = usePullToRefresh(() => setRetryCount(c => c + 1));
 
   const stormStatus = kpValue !== null ? getStormStatus(kpValue) : null;
+
+  // Tab title. Never a Kp number before one has arrived — the old fallback put
+  // "Live Kp: 0.0" in the tab on every load. Non-English pages keep their
+  // prerendered title, prefixed with the live Kp once known. `null` while the
+  // translation loads, so the prerendered title stays rather than flashing English.
+  const kpText = kpValue !== null ? kpValue.toFixed(1) : null;
+  const stormNow = kpValue !== null && kpValue >= 5;
+  const translatedMeta = useTranslatedPageMeta(language, '/');
+  const pageTitle: string | null =
+    translatedMeta === undefined ? null
+    : translatedMeta ? (kpText ? `${stormNow ? '⚠️ ' : ''}Kp ${kpText} · ${translatedMeta.title}` : translatedMeta.title)
+    : stormNow ? `⚠️ Solar Storm Alert: Kp ${kpText} | Real-Time Space Weather`
+    : kpText ? `Live Kp: ${kpText} | Real-Time Aurora & Space Weather`
+    : 'The Storm Watcher — Real-Time Space Weather Dashboard';
   const isStorm = kpValue !== null && kpValue >= 5;
 
   const KpSparkline = ({ data }: { data: number[] }) => {
@@ -203,19 +219,19 @@ const Home = () => {
         </div>
       )}
       <Helmet>
-        <title>
-          {kpValue !== null && kpValue >= 5
-            ? `⚠️ Solar Storm Alert: Kp ${kpValue.toFixed(1)} | Real-Time Space Weather`
-            : `Live Kp: ${kpValue?.toFixed(1) ?? '0.0'} | Real-Time Aurora & Space Weather`}
-        </title>
-        <link rel="canonical" href="https://www.thestormwatcher.com/" />
-        <meta 
-          name="description" 
-          content={kpValue !== null 
-            ? `Monitor current solar activity: Kp index ${kpValue.toFixed(1)}. Track real-time solar wind speeds, X-ray flares, and geomagnetic storm alerts to plan your aurora hunting.`
-            : "Get live space weather updates. Track Kp index, solar wind, and geomagnetic storm alerts in real-time. The ultimate dashboard for aurora hunters and space weather enthusiasts."
-          } 
-        />
+        {pageTitle !== null && <title>{pageTitle}</title>}
+        <link rel="canonical" href={`https://www.thestormwatcher.com${localizedPath(language, '/')}`} />
+        {pageTitle !== null && (
+          <meta
+            name="description"
+            content={translatedMeta
+              ? translatedMeta.description
+              : kpValue !== null
+                ? `Monitor current solar activity: Kp index ${kpValue.toFixed(1)}. Track real-time solar wind speeds, X-ray flares, and geomagnetic storm alerts to plan your aurora hunting.`
+                : "Get live space weather updates. Track Kp index, solar wind, and geomagnetic storm alerts in real-time. The ultimate dashboard for aurora hunters and space weather enthusiasts."
+            }
+          />
+        )}
         <meta property="og:title" content={kpValue !== null && kpValue >= 5 ? `⚠️ LIVE ALERT: Geomagnetic Storm Kp ${kpValue.toFixed(1)}` : "The Storm Watcher — Real-Time Space Weather Dashboard"} />
         <meta property="og:description" content={kpValue !== null ? `Current Kp index is ${kpValue.toFixed(1)}. Solar wind is at ${windSpeed?.toFixed(0) || '---'} km/s. See if a storm is coming!` : "Monitor solar activity and aurora forecasts with our professional-grade live dashboard."} />
         <meta name="twitter:title" content={kpValue !== null && kpValue >= 5 ? `⚠️ ALERT: Solar Storm Kp ${kpValue.toFixed(1)}` : "The Storm Watcher"} />

@@ -48,7 +48,7 @@ export const ROUTES = [
 export const META = {
   home: {
     en: { title: 'The Storm Watcher — Real-Time Space Weather Dashboard', description: 'Monitor solar activity and aurora forecasts. Live Kp index, solar wind speed and geomagnetic storm alerts updated every minute.' },
-    bg: { title: 'The Storm Watcher — Космическо Времеусловие в Реално Време', description: 'Следете слънчевата активност и прогнозите за аурора. Kp индекс, слънчев вятър и магнитни бури на живо.' },
+    bg: { title: 'The Storm Watcher — Космическо време в реално време', description: 'Следете слънчевата активност и прогнозите за аврора. Kp индекс, слънчев вятър и магнитни бури на живо.' },
     de: { title: 'The Storm Watcher — Echtzeit-Weltraumwetter Dashboard', description: 'Überwachen Sie Sonnenaktivität und Polarlichter. Live Kp-Index, Sonnenwind und geomagnetische Sturmwarnungen.' },
     es: { title: 'The Storm Watcher — Panel de Clima Espacial en Tiempo Real', description: 'Monitoriza la actividad solar y las auroras. Índice Kp en vivo, viento solar y alertas de tormentas geomagnéticas.' },
     fr: { title: 'The Storm Watcher — Tableau de Bord Météo Spatiale en Direct', description: 'Surveillez l\'activité solaire et les aurores. Indice Kp en direct, vent solaire et alertes de tempêtes géomagnétiques.' },
@@ -66,7 +66,7 @@ export const META = {
   },
   dashboard: {
     en: { title: 'Space Weather Dashboard — Live Kp Index & Solar Wind | The Storm Watcher', description: 'Live space weather data: Kp index, solar wind speed, Bz component, X-ray flux and geomagnetic storm charts updated every minute.' },
-    bg: { title: 'Табло за Космическо Времеусловие — Жив Kp Индекс | The Storm Watcher', description: 'Живи данни: Kp индекс, скорост на слънчевия вятър, Bz компонент, рентгенов поток и графики на магнитни бури.' },
+    bg: { title: 'Табло за космическо време — Kp индекс на живо | The Storm Watcher', description: 'Живи данни: Kp индекс, скорост на слънчевия вятър, Bz компонент, рентгенов поток и графики на магнитни бури.' },
     de: { title: 'Weltraumwetter Dashboard — Live Kp-Index & Sonnenwind | The Storm Watcher', description: 'Live-Weltraumwetterdaten: Kp-Index, Sonnenwindgeschwindigkeit, Bz-Komponente, Röntgenstrahlung und Sturmdiagramme.' },
     es: { title: 'Panel de Clima Espacial — Índice Kp en Vivo | The Storm Watcher', description: 'Datos de clima espacial en vivo: índice Kp, velocidad del viento solar, componente Bz, flujo de rayos X y gráficos de tormentas.' },
     fr: { title: 'Tableau de Bord Météo Spatiale — Indice Kp en Direct | The Storm Watcher', description: 'Données météo spatiale en direct: indice Kp, vitesse du vent solaire, composante Bz, flux X et graphiques des tempêtes.' },
@@ -84,7 +84,7 @@ export const META = {
   },
   forecast: {
     en: { title: '27-Day Geomagnetic Forecast — Space Weather Predictions | The Storm Watcher', description: 'Extended 27-day geomagnetic forecast with Kp predictions, Ap index, solar flux F10.7 and upcoming storm probability.' },
-    bg: { title: '27-Дневна Магнитна Прогноза — Прогноза за Космическо Времеусловие | The Storm Watcher', description: 'Разширена 27-дневна прогноза с предсказания за Kp, Ap индекс, слънчев поток F10.7 и вероятност за бури.' },
+    bg: { title: '27-дневна магнитна прогноза — Прогноза за космическо време | The Storm Watcher', description: 'Разширена 27-дневна прогноза с предсказания за Kp, Ap индекс, слънчев поток F10.7 и вероятност за бури.' },
     de: { title: '27-Tage Geomagnetische Prognose — Weltraumwetter | The Storm Watcher', description: '27-Tage-Prognose mit Kp-Vorhersagen, Ap-Index, Sonnenfluss F10.7 und Sturmwahrscheinlichkeit.' },
     es: { title: 'Pronóstico Geomagnético 27 Días — Predicciones | The Storm Watcher', description: 'Pronóstico extendido de 27 días con predicciones Kp, índice Ap, flujo solar F10.7 y probabilidad de tormentas.' },
     fr: { title: 'Prévision Géomagnétique 27 Jours — Météo Spatiale | The Storm Watcher', description: 'Prévisions sur 27 jours avec prédictions Kp, indice Ap, flux solaire F10.7 et probabilité de tempêtes.' },
@@ -102,7 +102,7 @@ export const META = {
   },
   aurora: {
     en: { title: 'Aurora Forecast Tonight — Can I See the Northern Lights? | The Storm Watcher', description: 'Check live aurora borealis visibility for your location. Real-time OVATION model, Kp index, cloud cover checklist and 3D aurora globe.' },
-    bg: { title: 'Прогноза за Аурора Тази Нощ — Ще Видя ли Северното Сияние? | The Storm Watcher', description: 'Проверете видимостта на аурора бореалис за вашето местоположение. OVATION модел, Kp индекс, облачност и 3D глобус.' },
+    bg: { title: 'Прогноза за Аврора Тази Нощ — Ще Видя ли Северното Сияние? | The Storm Watcher', description: 'Проверете видимостта на аврора бореалис за вашето местоположение. OVATION модел, Kp индекс, облачност и 3D глобус.' },
     de: { title: 'Polarlichter Prognose Heute Nacht — Kann Ich die Nordlichter Sehen? | The Storm Watcher', description: 'Prüfen Sie die Aurora-Sichtbarkeit für Ihren Standort. Echtzeit-OVATION-Modell, Kp-Index, Bewölkung und 3D-Globus.' },
     es: { title: 'Pronóstico de Aurora Esta Noche — ¿Puedo Ver la Aurora Boreal? | The Storm Watcher', description: 'Comprueba la visibilidad de la aurora boreal para tu ubicación. Modelo OVATION, índice Kp, nubosidad y globo 3D.' },
     fr: { title: 'Prévision Aurore Ce Soir — Puis-je Voir les Aurores Boréales? | The Storm Watcher', description: 'Vérifiez la visibilité des aurores boréales pour votre position. Modèle OVATION, indice Kp, couverture nuageuse et globe 3D.' },
@@ -192,7 +192,7 @@ export const META = {
   },
   sky: {
     en: { title: 'Sky Visibility Tonight — Stargazing & Aurora Conditions | The Storm Watcher', description: "Tonight's cloud cover, seeing conditions and aurora viewing forecast. Plan your stargazing session with real-time sky visibility data." },
-    bg: { title: 'Видимост на Небето Тази Нощ — Астрономически Условия | The Storm Watcher', description: 'Облачност, видимост и условия за аурора тази нощ. Планирайте наблюдението на звездното небе.' },
+    bg: { title: 'Видимост на Небето Тази Нощ — Астрономически Условия | The Storm Watcher', description: 'Облачност, видимост и условия за аврора тази нощ. Планирайте наблюдението на звездното небе.' },
     de: { title: 'Himmelsicht Heute Nacht — Sternbeobachtung & Polarlicht | The Storm Watcher', description: 'Bewölkung, Seeing-Bedingungen und Aurora-Sichtbarkeit heute Nacht. Planen Sie Ihre Sternenbeobachtung.' },
     es: { title: 'Visibilidad del Cielo Esta Noche — Observación de Estrellas | The Storm Watcher', description: 'Cobertura de nubes, condiciones de seeing y pronóstico de auroras esta noche.' },
     fr: { title: 'Visibilité du Ciel Ce Soir — Observation des Étoiles | The Storm Watcher', description: 'Couverture nuageuse, conditions seeing et prévision d\'aurores ce soir. Planifiez votre observation.' },
@@ -228,7 +228,7 @@ export const META = {
   },
   faq: {
     en: { title: 'Aurora FAQ — Northern Lights Guide | The Storm Watcher', description: 'Everything you need to know about the Northern Lights, Kp index, solar wind, and how to see the aurora. Expert answers to common space weather questions.' },
-    bg: { title: 'ЧЗВ за Аурора — Наръчник за Северното Сияние | The Storm Watcher', description: 'Всичко, което трябва да знаете за Северното сияние, Kp индекса и как да видите аурора.' },
+    bg: { title: 'ЧЗВ за Аврора — Наръчник за Северното Сияние | The Storm Watcher', description: 'Всичко, което трябва да знаете за Северното сияние, Kp индекса и как да видите аврора.' },
     de: { title: 'Polarlicht FAQ — Nordlichter Ratgeber | The Storm Watcher', description: 'Alles, was Sie über Nordlichter, den Kp-Index und Sonnenwind wissen müssen. Expertenwissen zu Weltraumwetter.' },
     es: { title: 'Preguntas Frecuentes sobre Auroras — Guía de la Aurora Boreal | The Storm Watcher', description: 'Todo lo que necesitas saber sobre la Aurora Boreal, el índice Kp y cómo ver la aurora.' },
     fr: { title: 'FAQ Aurore — Guide des Aurores Boréales | The Storm Watcher', description: 'Tout ce que vous devez savoir sur les aurores boréales, l\'indice Kp et comment voir l\'aurore.' },
@@ -264,7 +264,7 @@ export const META = {
   },
   pricing: {
     en: { title: 'Pricing — The Storm Watcher Pro & Premium Plans', description: 'Choose your Storm Watcher plan. Free aurora monitoring or Pro/Premium with advanced alerts, aurora forecasting and 14-day free trial.' },
-    bg: { title: 'Цени — The Storm Watcher Pro и Premium Планове', description: 'Изберете вашия план. Безплатно наблюдение на аурора или Pro/Premium с разширени известия и 14-дневен безплатен период.' },
+    bg: { title: 'Цени — The Storm Watcher Pro и Premium Планове', description: 'Изберете вашия план. Безплатно наблюдение на аврора или Pro/Premium с разширени известия и 14-дневен безплатен период.' },
     de: { title: 'Preise — The Storm Watcher Pro & Premium Pläne', description: 'Wählen Sie Ihren Plan. Kostenloses Aurora-Monitoring oder Pro/Premium mit erweiterten Warnungen und 14-Tage-Test.' },
     es: { title: 'Precios — Planes Pro y Premium de The Storm Watcher', description: 'Elige tu plan. Monitoreo de aurora gratuito o Pro/Premium con alertas avanzadas y prueba gratuita de 14 días.' },
     fr: { title: 'Tarifs — Plans Pro & Premium de The Storm Watcher', description: 'Choisissez votre plan. Surveillance aurore gratuite ou Pro/Premium avec alertes avancées et 14 jours d\'essai.' },
@@ -282,7 +282,7 @@ export const META = {
   },
   about: {
     en: { title: 'About — The Storm Watcher', description: 'Real-time space weather monitoring and aurora forecast app. Learn about our mission, data sources and the team behind The Storm Watcher.' },
-    bg: { title: 'За Нас — The Storm Watcher', description: 'Приложение за мониторинг на космическото времеусловие и прогнози за аурора. Научете за нашата мисия и източници на данни.' },
+    bg: { title: 'За Нас — The Storm Watcher', description: 'Приложение за мониторинг на космическото времеусловие и прогнози за аврора. Научете за нашата мисия и източници на данни.' },
     de: { title: 'Über uns — The Storm Watcher', description: 'Echtzeit-Weltraumwetter-Überwachung und Aurora-Prognose-App. Erfahren Sie mehr über unsere Mission und Datenquellen.' },
     es: { title: 'Acerca de — The Storm Watcher', description: 'Aplicación de monitoreo de clima espacial y pronóstico de auroras en tiempo real. Conozca nuestra misión y fuentes de datos.' },
     fr: { title: 'À Propos — The Storm Watcher', description: 'Application de surveillance météo spatiale et de prévision d\'aurores. Découvrez notre mission et nos sources de données.' },
@@ -336,7 +336,7 @@ export const META = {
   },
   gallery: {
     en: { title: 'Aurora Photo Gallery — Community Northern Lights Photos | The Storm Watcher', description: 'Browse stunning aurora borealis photos shared by the Storm Watcher community from around the world.' },
-    bg: { title: 'Галерия с Аурора Снимки — Снимки от Общността | The Storm Watcher', description: 'Разгледайте зашеметяващи снимки на аурора бореалис от общността на The Storm Watcher.' },
+    bg: { title: 'Галерия с Аврора Снимки — Снимки от Общността | The Storm Watcher', description: 'Разгледайте зашеметяващи снимки на аврора бореалис от общността на The Storm Watcher.' },
     de: { title: 'Aurora Fotogalerie — Community Nordlichter-Fotos | The Storm Watcher', description: 'Besuchen Sie atemberaubende Polarlichtfotos der Storm Watcher Community aus aller Welt.' },
     es: { title: 'Galería de Fotos de Auroras — Fotos de la Comunidad | The Storm Watcher', description: 'Explora impresionantes fotos de auroras boreales compartidas por la comunidad de Storm Watcher.' },
     fr: { title: 'Galerie Photos d\'Aurores — Photos de la Communauté | The Storm Watcher', description: 'Parcourez de superbes photos d\'aurores boréales partagées par la communauté Storm Watcher du monde entier.' },
@@ -354,7 +354,7 @@ export const META = {
   },
   hunt: {
     en: { title: 'Aurora Hunt — Report Sightings & Earn Badges | The Storm Watcher', description: 'Report aurora sightings, earn achievement badges and compete on the global leaderboard with other aurora hunters.' },
-    bg: { title: 'Лов на Аурора — Докладвайте Наблюдения | The Storm Watcher', description: 'Докладвайте наблюдения на аурора, спечелете значки и се конкурирайте в класацията.' },
+    bg: { title: 'Лов на Аврора — Докладвайте Наблюдения | The Storm Watcher', description: 'Докладвайте наблюдения на аврора, спечелете значки и се конкурирайте в класацията.' },
     de: { title: 'Polarlicht-Jagd — Sichtungen Melden & Abzeichen Verdienen | The Storm Watcher', description: 'Melden Sie Polarlicht-Sichtungen, verdienen Sie Abzeichen und treten Sie auf der globalen Rangliste an.' },
     es: { title: 'Caza de Auroras — Reporta Avistamientos y Gana Insignias | The Storm Watcher', description: 'Reporta avistamientos de auroras, gana insignias y compite en la clasificación global.' },
     fr: { title: 'Chasse aux Aurores — Signalez des Observations | The Storm Watcher', description: 'Signalez des observations d\'aurores, gagnez des badges et affrontez d\'autres chasseurs sur le classement mondial.' },
@@ -372,7 +372,7 @@ export const META = {
   },
   livestream: {
     en: { title: 'Aurora Livestream — Live Northern Lights Cameras | The Storm Watcher', description: 'Watch live aurora cameras from Norway, Iceland and Finland. Real-time northern lights streams updated 24/7.' },
-    bg: { title: 'Аурора на Живо — Камери за Северно Сияние | The Storm Watcher', description: 'Гледайте камери на живо от Норвегия, Исландия и Финландия. Потоци на северното сияние 24/7.' },
+    bg: { title: 'Аврора на Живо — Камери за Северно Сияние | The Storm Watcher', description: 'Гледайте камери на живо от Норвегия, Исландия и Финландия. Потоци на северното сияние 24/7.' },
     de: { title: 'Aurora Livestream — Live Nordlicht Kameras | The Storm Watcher', description: 'Live-Aurora-Kameras aus Norwegen, Island und Finnland. Echtzeit-Nordlicht-Streams rund um die Uhr.' },
     es: { title: 'Aurora en Directo — Cámaras en Vivo de la Aurora Boreal | The Storm Watcher', description: 'Mira cámaras en vivo de auroras desde Noruega, Islandia y Finlandia. Transmisiones 24/7.' },
     fr: { title: 'Aurore en Direct — Caméras Aurores Boréales en Live | The Storm Watcher', description: 'Regardez des caméras d\'aurores en direct depuis la Norvège, l\'Islande et la Finlande. Streams 24h/24.' },
@@ -390,7 +390,7 @@ export const META = {
   },
   calendar: {
     en: { title: 'Aurora Calendar — Best Nights for Northern Lights | The Storm Watcher', description: '3-night aurora viewing outlook with Kp forecast and cloud cover. Find your best night to watch the northern lights.' },
-    bg: { title: 'Календар за Аурора — Най-Добрите Нощи за Северното Сияние | The Storm Watcher', description: '3-нощна прогноза за аурора с Kp индекс и облачност. Намерете най-добрата нощ за наблюдение.' },
+    bg: { title: 'Календар за Аврора — Най-Добрите Нощи за Северното Сияние | The Storm Watcher', description: '3-нощна прогноза за аврора с Kp индекс и облачност. Намерете най-добрата нощ за наблюдение.' },
     de: { title: 'Aurora Kalender — Beste Nächte für Nordlichter | The Storm Watcher', description: '3-Nächte-Aurora-Vorschau mit Kp-Prognose und Bewölkung. Finden Sie Ihre beste Nacht für Nordlichter.' },
     es: { title: 'Calendario de Auroras — Mejores Noches para la Aurora Boreal | The Storm Watcher', description: 'Perspectiva de 3 noches para ver auroras con pronóstico Kp y cobertura de nubes.' },
     fr: { title: 'Calendrier des Aurores — Meilleures Nuits pour les Aurores Boréales | The Storm Watcher', description: 'Prévision aurora sur 3 nuits avec prévision Kp et couverture nuageuse. Trouvez votre meilleure nuit.' },

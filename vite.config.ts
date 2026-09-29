@@ -71,7 +71,7 @@ export default defineConfig(({ command }) => ({
         // silent either way. Keep this in sync with `globIgnores` above.
         chunkFileNames(chunkInfo) {
           const id = chunkInfo.facadeModuleId ?? '';
-          const onDemand = /[\\/]src[\\/](locales|content[\\/](faq|magnetic)|data[\\/]blog[\\/]posts)[\\/]/.test(id);
+          const onDemand = /[\\/]src[\\/](locales|content[\\/](faq|magnetic|pageMeta)|data[\\/]blog[\\/]posts)[\\/]/.test(id);
           return onDemand ? 'assets/ondemand/[name]-[hash].js' : 'assets/[name]-[hash].js';
         },
         manualChunks: {
