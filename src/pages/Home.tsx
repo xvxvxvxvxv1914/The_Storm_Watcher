@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { logError, logWarning } from '../utils/logger';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { AlertTriangle, Zap, Radio, Calendar, Bot, Globe, Bell, Camera, Trophy, Video, Share2, Copy, Twitter, ImageDown, Users } from 'lucide-react';
+import { AlertTriangle, Zap, Radio, Calendar, Globe, Bell, Camera, Trophy, Video, Share2, Copy, Twitter, ImageDown, Users } from 'lucide-react';
 import ErrorCard from '../components/ErrorCard';
 import KpGauge from '../components/KpGauge';
 import { track } from '@vercel/analytics';
@@ -696,7 +696,9 @@ const Home = () => {
             {t('home.features2.title')}
           </h2>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Six cards: three columns fill two rows, two columns fill three. Four columns
+            left a hole, and the seventh card was an unreleased "coming soon" AI assistant. */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <Link to="/calendar" className="glass-surface rounded-2xl p-7 hover:glow-green transition-all group block">
             <div className="w-14 h-14 bg-[#2DD4BF]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Calendar className="w-7 h-7 text-[#2DD4BF]" />
@@ -704,15 +706,6 @@ const Home = () => {
             <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.calendar.title')}</h3>
             <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.calendar.desc')}</p>
           </Link>
-
-          <div className="glass-surface rounded-2xl p-7 hover:glow-purple transition-all group relative opacity-60">
-            <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#7c3aed]/20 text-[#a78bfa] border border-[#7c3aed]/30">{t('home.comingSoon')}</span>
-            <div className="w-14 h-14 bg-[#2DD4BF]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-              <Bot className="w-7 h-7 text-[#2DD4BF]" />
-            </div>
-            <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.ai.title')}</h3>
-            <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.ai.desc')}</p>
-          </div>
 
           <Link to="/aurora-map" className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group block">
             <div className="w-14 h-14 bg-[#F97316]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">

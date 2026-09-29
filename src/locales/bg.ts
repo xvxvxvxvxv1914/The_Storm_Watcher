@@ -121,8 +121,6 @@ const bg: Record<string, string> = {
   'home.features2.title': 'Всичко нужно за следене на бурята',
   'home.feature.calendar.title': 'Аврора календар',
   'home.feature.calendar.desc': 'Вижте кои предстоящи нощи имат най-добра видимост на аврора според слънчевите прогнози и вашето местоположение.',
-  'home.feature.ai.title': 'AI Асистент',
-  'home.feature.ai.desc': 'Питайте всичко — какво е Kp индекс, ще има ли буря тази вечер, безопасно ли е да летите. Базиран на Claude AI.',
   'home.feature.map.title': 'Глобална карта + Aurora Oval',
   'home.feature.map.desc': 'Карта на живо показваща аврора овала в реално време. Вижте точно къде се вижда северното сияние в момента.',
   'home.feature.alerts.title': 'Push известия',
@@ -144,7 +142,6 @@ const bg: Record<string, string> = {
   'home.source.esa': 'Служба за космическо време',
   'home.source.niggg': 'Геофизичен институт на България',
   'footer.dataPoweredBy': 'Данни от',
-  'home.comingSoon': 'Очаквайте скоро',
   'home.tagline': 'Наблюдаваме слънцето. Пазим Земята.',
 
   // Dashboard
