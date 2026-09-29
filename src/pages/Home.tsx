@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { logError, logWarning } from '../utils/logger';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { Activity, AlertTriangle, Zap, Radio, Calendar, Bot, Globe, Bell, Camera, Trophy, Video, Share2, Copy, Twitter, ImageDown, Users } from 'lucide-react';
+import { AlertTriangle, Zap, Radio, Calendar, Bot, Globe, Bell, Camera, Trophy, Video, Share2, Copy, Twitter, ImageDown, Users } from 'lucide-react';
 import ErrorCard from '../components/ErrorCard';
 import KpGauge from '../components/KpGauge';
 import { track } from '@vercel/analytics';
@@ -335,7 +335,7 @@ const Home = () => {
               </div>
             ) : (
               <div className="my-6">
-                <div className="flex items-center justify-center gap-2 mb-2">
+                <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 mb-2">
                   <span className="relative flex h-2.5 w-2.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10b981] opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#10b981]"></span>
@@ -344,7 +344,7 @@ const Home = () => {
                   {timeAgo && <span className="text-xs text-[#475569]">· {timeAgo}</span>}
                   {/* Cached value shown while the live fetch is delayed/unconfirmed */}
                   {kpStale && (
-                    <span className="text-xs text-amber-400/80">· {t('home.dataDelayed') || 'data may be delayed'}</span>
+                    <span className="basis-full sm:basis-auto text-xs text-amber-400/80">{t('home.dataDelayed') || 'data may be delayed'}</span>
                   )}
                 </div>
                 <div className="inline-block">
@@ -359,39 +359,43 @@ const Home = () => {
                 {/* Severity gauge — shows where the current Kp sits on the storm scale */}
                 <KpGauge kp={kpValue ?? 0} />
 
+                {/* A status, so it reads as a badge. It used to be a 64px gradient pill in the
+                    same style as the "Get started" button below, and looked just as clickable.
+                    The fills are the -700 shades of the gauge bands: same hue, and white text
+                    clears 4.5:1 on all four (white on the old #10b981 was 2.5:1). */}
                 {stormStatus && (
-                  <div className={`inline-flex items-center gap-2 px-8 py-4 rounded-full mt-6 ${
-                    kpValue! >= 7 ? 'pulse-alert bg-gradient-to-r from-[#ef4444] to-[#dc2626] border-2 border-[#ef4444]' :
-                    kpValue! >= 5 ? 'bg-gradient-to-r from-[#f97316] to-[#ea580c] border-2 border-[#f97316]' :
-                    kpValue! >= 4 ? 'bg-gradient-to-r from-[#eab308] to-[#ca8a04] border-2 border-[#eab308]' :
-                    'bg-gradient-to-r from-[#10b981] to-[#059669] border-2 border-[#10b981]'
-                  }`}>
-                    {kpValue! >= 5 && <AlertTriangle className="w-6 h-6 text-white" />}
-                    <span className="text-white font-bold text-xl uppercase tracking-wider">
+                  <div
+                    className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full mt-6 ${kpValue! >= 7 ? 'pulse-alert' : ''}`}
+                    style={{ backgroundColor: kpValue! >= 7 ? '#b91c1c' : kpValue! >= 5 ? '#c2410c' : kpValue! >= 4 ? '#a16207' : '#047857' }}
+                  >
+                    {kpValue! >= 5 && <AlertTriangle className="w-4 h-4" style={{ color: '#ffffff' }} />}
+                    <span className="font-bold text-sm uppercase tracking-wider" style={{ color: '#ffffff' }}>
                       {t(stormStatus.statusKey)}
                     </span>
                   </div>
                 )}
 
                 {/* Stats pills */}
-                <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
-                  <div className="glass-surface rounded-xl px-5 py-3 flex items-center gap-3">
-                    <Activity className="w-4 h-4 text-[#f97316]" />
-                    <span className="text-[#94a3b8] text-sm uppercase tracking-wider">Kp</span>
-                    <span className="text-white font-bold">{kpValue?.toFixed(1)}</span>
-                  </div>
+                {/* No Kp chip: it repeated the number printed 100px above. On a phone the
+                    label sits over the value, so two chips share a row instead of stacking
+                    at three different widths. */}
+                <div className="flex flex-wrap items-stretch justify-center gap-2 sm:gap-3 mt-6">
                   {windSpeed !== null && windSpeed > 0 && (
-                    <div className="glass-surface rounded-xl px-5 py-3 flex items-center gap-3">
-                      <Zap className="w-4 h-4 text-[#7c3aed]" />
-                      <span className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('home.solarWind')}</span>
-                      <span className="text-white font-bold">{windSpeed.toFixed(0)} km/s</span>
+                    <div className="glass-surface rounded-xl px-3 py-2 sm:px-5 sm:py-3 flex items-center gap-2 sm:gap-3">
+                      <Zap className="w-4 h-4 shrink-0 text-[#7c3aed]" />
+                      <div className="flex flex-col items-start sm:flex-row sm:items-center sm:gap-3 leading-tight">
+                        <span className="text-[#94a3b8] text-[10px] sm:text-sm uppercase tracking-wider">{t('home.solarWind')}</span>
+                        <span className="text-white font-bold text-sm sm:text-base">{windSpeed.toFixed(0)} km/s</span>
+                      </div>
                     </div>
                   )}
                   {xrayClass && (
-                    <div className="glass-surface rounded-xl px-5 py-3 flex items-center gap-3">
-                      <Radio className="w-4 h-4 text-[#fbbf24]" />
-                      <span className="text-[#94a3b8] text-sm uppercase tracking-wider">X-ray</span>
-                      <span className="text-white font-bold">Class {xrayClass}</span>
+                    <div className="glass-surface rounded-xl px-3 py-2 sm:px-5 sm:py-3 flex items-center gap-2 sm:gap-3">
+                      <Radio className="w-4 h-4 shrink-0 text-[#fbbf24]" />
+                      <div className="flex flex-col items-start sm:flex-row sm:items-center sm:gap-3 leading-tight">
+                        <span className="text-[#94a3b8] text-[10px] sm:text-sm uppercase tracking-wider">{t('dashboard.xray')}</span>
+                        <span className="text-white font-bold text-sm sm:text-base">{t('dashboard.classTxt')} {xrayClass}</span>
+                      </div>
                     </div>
                   )}
                   {/* Aurora visibility for saved location */}
@@ -403,10 +407,12 @@ const Home = () => {
                     const chance = auroraViewingChance(settings.preferredLat!, settings.preferredLon!, kpValue);
                     const color = chance >= 60 ? '#10b981' : chance >= 30 ? '#eab308' : '#64748b';
                     return (
-                      <Link to="/aurora" className="glass-surface rounded-xl px-5 py-3 flex items-center gap-3 hover:border-[#10b981]/30 border border-transparent transition-all">
+                      <Link to="/aurora" className="glass-surface rounded-xl px-3 py-2 sm:px-5 sm:py-3 flex items-center gap-2 sm:gap-3 hover:border-[#10b981]/30 border border-transparent transition-all">
                         <span className="text-lg">🌌</span>
-                        <span className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('nav.aurora')}</span>
-                        <span className="font-bold" style={{ color }}>{chance}%</span>
+                        <div className="flex flex-col items-start sm:flex-row sm:items-center sm:gap-3 leading-tight">
+                          <span className="text-[#94a3b8] text-[10px] sm:text-sm uppercase tracking-wider">{t('nav.aurora')}</span>
+                          <span className="font-bold text-sm sm:text-base" style={{ color }}>{chance}%</span>
+                        </div>
                       </Link>
                     );
                   })()}
@@ -445,7 +451,7 @@ const Home = () => {
               <div className="flex justify-center mb-8">
                 <Link
                   to="/pricing"
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-[#f97316] hover:text-[#fbbf24] transition-colors group"
+                  className="inline-flex flex-wrap items-center justify-center gap-x-2 text-center text-sm font-semibold text-[#f97316] hover:text-[#fbbf24] transition-colors group"
                 >
                   <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#f97316] group-hover:scale-125 transition-transform" />
                   {t('pricing.tryProFree') || 'Try Pro free for 14 days'}
