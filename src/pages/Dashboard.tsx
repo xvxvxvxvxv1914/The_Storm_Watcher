@@ -723,7 +723,10 @@ const Dashboard = () => {
                     {t('dashboard.bz')}
                   </h2>
                 </div>
-                <div className={`text-[1.4rem] sm:text-6xl font-bold mb-2 sm:mb-3 ${bz === null ? 'text-[#64748b]' : bz < 0 ? 'text-[#ef4444]' : 'text-[#10b981]'}`}>
+                {/* Colour by strength, not sign: any negative value used to turn red, so a
+                    routine −1.3 nT looked like an alarm next to Kp "calm". Red starts at the
+                    default Bz alert threshold (−10), orange halfway there. */}
+                <div className={`text-[1.4rem] sm:text-6xl font-bold mb-2 sm:mb-3 ${bz === null ? 'text-[#64748b]' : bz <= -10 ? 'text-[#ef4444]' : bz <= -5 ? 'text-[#f97316]' : 'text-white'}`}>
                   {bz === null ? '—' : bzDisplay.toFixed(1)}
                 </div>
                 <div className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider">{t('dashboard.nt')}</div>
