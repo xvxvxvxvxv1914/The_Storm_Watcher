@@ -844,11 +844,13 @@ const Dashboard = () => {
           {nigggStatus ? (
             <>
               <div className={`px-5 py-4 rounded-xl border mb-5 ${nigggStatus.bg}`}>
-                <div className="flex items-center justify-between mb-1">
+                <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 mb-1">
                   {/* Was the English `label` ("CALM") with the translated one repeated
-                      underneath; the translation alone says it once, in the page's language. */}
-                  <span className="text-2xl font-black uppercase tracking-widest" style={{ color: nigggStatus.color }}>{t(nigggStatus.descKey)}</span>
-                  <span className="text-xs text-[#64748b] font-mono">{t('niggg.minDelta')}: {nigggStatus.minDelta.toFixed(1)} nT</span>
+                      underneath; the translation alone says it once, in the page's language.
+                      Translations run longer ("Магнитна буря"), hence the wrap and the
+                      smaller size on phones. */}
+                  <span data-niggg-level={nigggStatus.label} className="text-xl sm:text-2xl font-black uppercase tracking-wider sm:tracking-widest" style={{ color: nigggStatus.color }}>{t(nigggStatus.descKey)}</span>
+                  <span className="text-xs text-[#64748b] font-mono whitespace-nowrap">{t('niggg.minDelta')}: {nigggStatus.minDelta.toFixed(1)} nT</span>
                 </div>
                 <p className="text-xs text-[#94a3b8] leading-relaxed mb-1">{t(nigggStatus.detailKey)}</p>
                 <p className="text-xs text-[#64748b] leading-relaxed">👤 {t(nigggStatus.humanEffectKey)}</p>
