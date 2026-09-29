@@ -360,6 +360,18 @@ html.light .text-blue-200     { color: #1e40af; }
 html.light .text-blue-300     { color: #1d4ed8; }
 html.light .text-purple-300   { color: #7e22ce; }
 html.light .text-violet-300   { color: #6d28d9; }
+
+/* Light mode: the brand green as *text*. #10b981 is 2.3:1 on the light page
+   background (#eef2f8) and #34d399 lower still — measured on the Dashboard title
+   and the magnetometer status (2026-09-30), under 3:1 even for large text.
+   Fills, borders and the Kp gauge keep #10b981; only text darkens, same hue
+   (#047857 is 4.9:1 there). The magnetometer status takes its colour inline from
+   nigggApi, so it is matched by the level it carries instead of by a class. */
+html.light .text-\[\#10b981\] { color: #047857; }
+html.light .gradient-emerald  { background-image: linear-gradient(135deg, #047857 0%, #059669 100%); }
+html.light [data-niggg-level='CALM']      { color: #047857 !important; }
+html.light [data-niggg-level='DISTURBED'] { color: #c2410c !important; }
+html.light [data-niggg-level='STORM']     { color: #b91c1c !important; }
 html.light .star {
   background: transparent;
 }

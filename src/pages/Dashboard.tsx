@@ -100,6 +100,8 @@ const InfoTooltip = React.memo(({ text }: { text: string }) => {
   const toggle = () => { if (pos) close(); else place(); };
 
   return (
+    // The card headers carry `pr-6` to stay clear of this button: on a phone the
+    // card padding is 12px and the button reaches 32px in, so "BZ КОМПОНЕНТ" ran into it.
     <div ref={rootRef} className="absolute top-3 right-3 z-20">
       <div
         ref={btnRef}
@@ -633,7 +635,7 @@ const Dashboard = () => {
               } hover:scale-105 transition-transform ${dropRing}`}>
                 {dragHandle}
                 <InfoTooltip text={t('dashboard.tooltip.kp')} />
-                <div className="flex items-center gap-2 mb-2 sm:mb-4">
+                <div className="flex items-center gap-2 mb-2 sm:mb-4 pr-6">
                   {/* Icon background mirrors the KpGauge bands (and the status badge below). */}
                   <div className={`w-8 h-8 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center ${
                     kpBand >= 7 ? 'bg-gradient-to-br from-[#ef4444] to-[#dc2626]' :
@@ -672,7 +674,7 @@ const Dashboard = () => {
                 <div key="dst" {...dragProps} className={`group relative glass-surface rounded-2xl p-3 sm:p-6 hover:glow-orange transition-all hover:scale-105 ${dropRing}`}>
                   {dragHandle}
                   <InfoTooltip text={t('dashboard.tooltip.dst')} />
-                  <div className="flex items-center gap-2 mb-2 sm:mb-4">
+                  <div className="flex items-center gap-2 mb-2 sm:mb-4 pr-6">
                     <div className={`w-8 h-8 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center bg-gradient-to-br ${status?.gradient ?? 'from-[#64748b] to-[#475569]'}`}>
                       <Orbit className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
                     </div>
@@ -698,7 +700,7 @@ const Dashboard = () => {
               <div key="wind" {...dragProps} data-tour="wind-card" className={`group relative glass-surface rounded-2xl p-3 sm:p-6 hover:glow-purple transition-all hover:scale-105 ${dropRing}`}>
                 {dragHandle}
                 <InfoTooltip text={t('dashboard.tooltip.wind')} />
-                <div className="flex items-center gap-2 mb-2 sm:mb-4">
+                <div className="flex items-center gap-2 mb-2 sm:mb-4 pr-6">
                   <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-[#7c3aed] to-[#6d28d9] rounded-xl flex items-center justify-center">
                     <Wind className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
                   </div>
@@ -715,7 +717,7 @@ const Dashboard = () => {
               <div key="bz" {...dragProps} className={`group relative glass-surface rounded-2xl p-3 sm:p-6 hover:glow-green transition-all hover:scale-105 ${dropRing}`}>
                 {dragHandle}
                 <InfoTooltip text={t('dashboard.tooltip.bz')} />
-                <div className="flex items-center gap-2 mb-2 sm:mb-4">
+                <div className="flex items-center gap-2 mb-2 sm:mb-4 pr-6">
                   <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-[#06b6d4] to-[#0891b2] rounded-xl flex items-center justify-center">
                     <Compass className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
                   </div>
@@ -723,7 +725,10 @@ const Dashboard = () => {
                     {t('dashboard.bz')}
                   </h2>
                 </div>
-                <div className={`text-[1.4rem] sm:text-6xl font-bold mb-2 sm:mb-3 ${bz === null ? 'text-[#64748b]' : bz < 0 ? 'text-[#ef4444]' : 'text-[#10b981]'}`}>
+                {/* Colour by strength, not sign: any negative value used to turn red, so a
+                    routine −1.3 nT looked like an alarm next to Kp "calm". Red starts at the
+                    default Bz alert threshold (−10), orange halfway there. */}
+                <div className={`text-[1.4rem] sm:text-6xl font-bold mb-2 sm:mb-3 ${bz === null ? 'text-[#64748b]' : bz <= -10 ? 'text-[#ef4444]' : bz <= -5 ? 'text-[#f97316]' : 'text-white'}`}>
                   {bz === null ? '—' : bzDisplay.toFixed(1)}
                 </div>
                 <div className="text-[#94a3b8] text-[0.7rem] sm:text-sm uppercase tracking-wider">{t('dashboard.nt')}</div>
@@ -734,7 +739,7 @@ const Dashboard = () => {
               <div key="xray" {...dragProps} className={`group relative glass-surface rounded-2xl p-3 sm:p-6 hover:glow-green transition-all hover:scale-105 ${dropRing}`}>
                 {dragHandle}
                 <InfoTooltip text={t('dashboard.tooltip.xray')} />
-                <div className="flex items-center gap-2 mb-2 sm:mb-4">
+                <div className="flex items-center gap-2 mb-2 sm:mb-4 pr-6">
                   <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-[#fbbf24] to-[#f59e0b] rounded-xl flex items-center justify-center">
                     <Sun className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
                   </div>
@@ -839,11 +844,14 @@ const Dashboard = () => {
           {nigggStatus ? (
             <>
               <div className={`px-5 py-4 rounded-xl border mb-5 ${nigggStatus.bg}`}>
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-2xl font-black tracking-widest" style={{ color: nigggStatus.color }}>{nigggStatus.label}</span>
-                  <span className="text-xs text-[#64748b] font-mono">{t('niggg.minDelta')}: {nigggStatus.minDelta.toFixed(1)} nT</span>
+                <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 mb-1">
+                  {/* Was the English `label` ("CALM") with the translated one repeated
+                      underneath; the translation alone says it once, in the page's language.
+                      Translations run longer ("Магнитна буря"), hence the wrap and the
+                      smaller size on phones. */}
+                  <span data-niggg-level={nigggStatus.label} className="text-xl sm:text-2xl font-black uppercase tracking-wider sm:tracking-widest" style={{ color: nigggStatus.color }}>{t(nigggStatus.descKey)}</span>
+                  <span className="text-xs text-[#64748b] font-mono whitespace-nowrap">{t('niggg.minDelta')}: {nigggStatus.minDelta.toFixed(1)} nT</span>
                 </div>
-                <p className="text-sm font-semibold mb-0.5" style={{ color: nigggStatus.color }}>{t(nigggStatus.descKey)}</p>
                 <p className="text-xs text-[#94a3b8] leading-relaxed mb-1">{t(nigggStatus.detailKey)}</p>
                 <p className="text-xs text-[#64748b] leading-relaxed">👤 {t(nigggStatus.humanEffectKey)}</p>
               </div>

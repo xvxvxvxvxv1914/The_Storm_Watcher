@@ -444,6 +444,12 @@ const Forecast = () => {
                     <div className="w-20 sm:w-24 shrink-0 text-left">
                       <div className={`text-sm sm:text-base font-bold ${today ? 'text-[#10b981]' : 'text-white'}`}>{dayLabel}</div>
                       <div className="text-[10px] sm:text-xs text-[#64748b]">{formatMonthDay(day.date)}</div>
+                      {/* Days from the 27-day outlook rather than the 3-hour forecast. This used
+                          to sit in the 28px chevron column, where the word overflowed onto the
+                          Kp number (measured: 6px overlap at 375px). */}
+                      {!day.hourly && (
+                        <div className="text-[10px] text-[#94a3b8] font-medium">{t('forecast.outlookSource')}</div>
+                      )}
                     </div>
 
                     {/* Kp visualization bar */}
@@ -477,9 +483,7 @@ const Forecast = () => {
                         <Star className="w-4 h-4 text-[#f97316] fill-[#f97316]" />
                       ) : day.hourly ? (
                         <ChevronDown className={`w-4 h-4 text-[#64748b] transition-transform ${expanded ? 'rotate-180' : ''}`} />
-                      ) : (
-                        <span className="text-[9px] text-[#475569] font-medium">{t('forecast.outlookSource')}</span>
-                      )}
+                      ) : null}
                     </div>
                   </button>
 

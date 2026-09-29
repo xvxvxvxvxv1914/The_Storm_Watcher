@@ -121,10 +121,8 @@ const bg: Record<string, string> = {
   'home.features2.title': 'Всичко нужно за следене на бурята',
   'home.feature.calendar.title': 'Аврора календар',
   'home.feature.calendar.desc': 'Вижте кои предстоящи нощи имат най-добра видимост на аврора според слънчевите прогнози и вашето местоположение.',
-  'home.feature.ai.title': 'AI Асистент',
-  'home.feature.ai.desc': 'Питайте всичко — какво е Kp индекс, ще има ли буря тази вечер, безопасно ли е да летите. Базиран на Claude AI.',
-  'home.feature.map.title': 'Глобална карта + Aurora Oval',
-  'home.feature.map.desc': 'Карта на живо показваща аурора овала в реално време. Вижте точно къде се вижда северното сияние в момента.',
+  'home.feature.map.title': 'Глобална карта + аврорален овал',
+  'home.feature.map.desc': 'Карта на живо показваща аврора овала в реално време. Вижте точно къде се вижда северното сияние в момента.',
   'home.feature.alerts.title': 'Push известия',
   'home.feature.alerts.desc': 'Получавайте известие веднага щом геомагнитна буря достигне избрания от вас праг — преди да достигне пика.',
   'home.feature.gallery.title': 'Общностна фотогалерия',
@@ -138,7 +136,12 @@ const bg: Record<string, string> = {
   'stormWatch.dismiss': 'Скрий',
   'home.trustedSources': 'Доверени източници на данни',
   'home.trustedSourcesDesc': 'Прогнозите ни са базирани на NOAA Space Weather Prediction Center, NASA DONKI, ESA Space Weather Service и Националния институт по геофизика и геодезия (България).',
-  'home.comingSoon': 'Очаквайте скоро',
+  'home.liveKpIndex': 'На живо · Kp индекс',
+  'home.source.donki': 'База данни за космическо време',
+  'home.source.gfz': 'Официален източник на Kp индекса',
+  'home.source.esa': 'Служба за космическо време',
+  'home.source.niggg': 'Геофизичен институт на България',
+  'footer.dataPoweredBy': 'Данни от',
   'home.tagline': 'Наблюдаваме слънцето. Пазим Земята.',
 
   // Dashboard
@@ -708,7 +711,7 @@ const bg: Record<string, string> = {
   'forecast.outlook.noData': 'Няма данни.',
 
   // Aurora Calendar
-  'aurora.calendar.title': 'Aurora Календар',
+  'aurora.calendar.title': 'Аврора календар',
   'aurora.calendar.subtitle': 'Прогноза за 3 нощи',
   'aurora.calendar.tonight': 'Тази вечер',
   'aurora.calendar.tomorrow': 'Утре вечер',
@@ -723,7 +726,7 @@ const bg: Record<string, string> = {
   'aurora.calendar.overcast': 'Облачно',
   'aurora.calendar.noNight': 'Полярен ден — няма тъмнина тази нощ',
   'aurora.calendar.fullView': 'Пълен изглед',
-  'nav.calendar': 'Аврора Календар',
+  'nav.calendar': 'Аврора календар',
 
   // 404 Not Found
   'notFound.title': 'Изгубен в Космоса',

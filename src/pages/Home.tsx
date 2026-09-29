@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { logError, logWarning } from '../utils/logger';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { Activity, AlertTriangle, Zap, Radio, Calendar, Bot, Globe, Bell, Camera, Trophy, Video, Share2, Copy, Twitter, ImageDown, Users } from 'lucide-react';
+import { AlertTriangle, Zap, Radio, Calendar, Globe, Bell, Camera, Trophy, Video, Share2, Copy, Twitter, ImageDown, Users } from 'lucide-react';
 import ErrorCard from '../components/ErrorCard';
 import KpGauge from '../components/KpGauge';
 import { track } from '@vercel/analytics';
@@ -16,6 +16,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { usePaymentGate } from '../hooks/usePaymentGate';
 import { auroraViewingChance } from '../utils/auroraVisibility';
 import { isNative } from '../utils/platform';
+import { localizedPath } from '../utils/langUrl';
+import { useTranslatedPageMeta } from '../content/pageMeta';
 import StarField from '../components/StarField';
 import { Skeleton } from '../components/Skeleton';
 import { supabase } from '../lib/supabase';
@@ -28,7 +30,7 @@ const getScoreShareStatus = (score: number) => {
 };
 
 const Home = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { settings } = useSettings();
   const { user } = useAuth();
   const { hasPro: hasPaidPlan } = usePaymentGate();
@@ -136,18 +138,32 @@ const Home = () => {
     const tick = () => {
       if (!lastUpdated) return;
       const seconds = Math.round((Date.now() - lastUpdated.getTime()) / 1000);
-      if (seconds < 60) setTimeAgo(`${seconds}s ago`);
-      else setTimeAgo(`${Math.floor(seconds / 60)}m ago`);
+      if (seconds < 60) setTimeAgo(t('alerts.justNow'));
+      else setTimeAgo(t('alerts.mAgo').replace('{m}', String(Math.floor(seconds / 60))));
     };
     tick();
     const timer = setInterval(() => { if (document.visibilityState !== 'hidden') tick(); }, 10000);
     return () => clearInterval(timer);
-  }, [lastUpdated]);
+  }, [lastUpdated, t]);
 
 
   const { pulling, pullY } = usePullToRefresh(() => setRetryCount(c => c + 1));
 
   const stormStatus = kpValue !== null ? getStormStatus(kpValue) : null;
+
+  // Tab title. Never a Kp number before one has arrived — the old fallback put
+  // "Live Kp: 0.0" in the tab on every load. Non-English pages keep their
+  // prerendered title, prefixed with the live Kp once known. `null` while the
+  // translation loads, so the prerendered title stays rather than flashing English.
+  const kpText = kpValue !== null ? kpValue.toFixed(1) : null;
+  const stormNow = kpValue !== null && kpValue >= 5;
+  const translatedMeta = useTranslatedPageMeta(language, '/');
+  const pageTitle: string | null =
+    translatedMeta === undefined ? null
+    : translatedMeta ? (kpText ? `${stormNow ? '⚠️ ' : ''}Kp ${kpText} · ${translatedMeta.title}` : translatedMeta.title)
+    : stormNow ? `⚠️ Solar Storm Alert: Kp ${kpText} | Real-Time Space Weather`
+    : kpText ? `Live Kp: ${kpText} | Real-Time Aurora & Space Weather`
+    : 'The Storm Watcher — Real-Time Space Weather Dashboard';
   const isStorm = kpValue !== null && kpValue >= 5;
 
   const KpSparkline = ({ data }: { data: number[] }) => {
@@ -203,19 +219,19 @@ const Home = () => {
         </div>
       )}
       <Helmet>
-        <title>
-          {kpValue !== null && kpValue >= 5
-            ? `⚠️ Solar Storm Alert: Kp ${kpValue.toFixed(1)} | Real-Time Space Weather`
-            : `Live Kp: ${kpValue?.toFixed(1) ?? '0.0'} | Real-Time Aurora & Space Weather`}
-        </title>
-        <link rel="canonical" href="https://www.thestormwatcher.com/" />
-        <meta 
-          name="description" 
-          content={kpValue !== null 
-            ? `Monitor current solar activity: Kp index ${kpValue.toFixed(1)}. Track real-time solar wind speeds, X-ray flares, and geomagnetic storm alerts to plan your aurora hunting.`
-            : "Get live space weather updates. Track Kp index, solar wind, and geomagnetic storm alerts in real-time. The ultimate dashboard for aurora hunters and space weather enthusiasts."
-          } 
-        />
+        {pageTitle !== null && <title>{pageTitle}</title>}
+        <link rel="canonical" href={`https://www.thestormwatcher.com${localizedPath(language, '/')}`} />
+        {pageTitle !== null && (
+          <meta
+            name="description"
+            content={translatedMeta
+              ? translatedMeta.description
+              : kpValue !== null
+                ? `Monitor current solar activity: Kp index ${kpValue.toFixed(1)}. Track real-time solar wind speeds, X-ray flares, and geomagnetic storm alerts to plan your aurora hunting.`
+                : "Get live space weather updates. Track Kp index, solar wind, and geomagnetic storm alerts in real-time. The ultimate dashboard for aurora hunters and space weather enthusiasts."
+            }
+          />
+        )}
         <meta property="og:title" content={kpValue !== null && kpValue >= 5 ? `⚠️ LIVE ALERT: Geomagnetic Storm Kp ${kpValue.toFixed(1)}` : "The Storm Watcher — Real-Time Space Weather Dashboard"} />
         <meta property="og:description" content={kpValue !== null ? `Current Kp index is ${kpValue.toFixed(1)}. Solar wind is at ${windSpeed?.toFixed(0) || '---'} km/s. See if a storm is coming!` : "Monitor solar activity and aurora forecasts with our professional-grade live dashboard."} />
         <meta name="twitter:title" content={kpValue !== null && kpValue >= 5 ? `⚠️ ALERT: Solar Storm Kp ${kpValue.toFixed(1)}` : "The Storm Watcher"} />
@@ -319,16 +335,16 @@ const Home = () => {
               </div>
             ) : (
               <div className="my-6">
-                <div className="flex items-center justify-center gap-2 mb-2">
+                <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 mb-2">
                   <span className="relative flex h-2.5 w-2.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10b981] opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#10b981]"></span>
                   </span>
-                  <span className="text-xs text-[#64748b] uppercase tracking-widest font-semibold">Live · Kp Index</span>
+                  <span className="text-xs text-[#64748b] uppercase tracking-widest font-semibold">{t('home.liveKpIndex')}</span>
                   {timeAgo && <span className="text-xs text-[#475569]">· {timeAgo}</span>}
                   {/* Cached value shown while the live fetch is delayed/unconfirmed */}
                   {kpStale && (
-                    <span className="text-xs text-amber-400/80">· {t('home.dataDelayed') || 'data may be delayed'}</span>
+                    <span className="basis-full sm:basis-auto text-xs text-amber-400/80">{t('home.dataDelayed') || 'data may be delayed'}</span>
                   )}
                 </div>
                 <div className="inline-block">
@@ -343,39 +359,43 @@ const Home = () => {
                 {/* Severity gauge — shows where the current Kp sits on the storm scale */}
                 <KpGauge kp={kpValue ?? 0} />
 
+                {/* A status, so it reads as a badge. It used to be a 64px gradient pill in the
+                    same style as the "Get started" button below, and looked just as clickable.
+                    The fills are the -700 shades of the gauge bands: same hue, and white text
+                    clears 4.5:1 on all four (white on the old #10b981 was 2.5:1). */}
                 {stormStatus && (
-                  <div className={`inline-flex items-center gap-2 px-8 py-4 rounded-full mt-6 ${
-                    kpValue! >= 7 ? 'pulse-alert bg-gradient-to-r from-[#ef4444] to-[#dc2626] border-2 border-[#ef4444]' :
-                    kpValue! >= 5 ? 'bg-gradient-to-r from-[#f97316] to-[#ea580c] border-2 border-[#f97316]' :
-                    kpValue! >= 4 ? 'bg-gradient-to-r from-[#eab308] to-[#ca8a04] border-2 border-[#eab308]' :
-                    'bg-gradient-to-r from-[#10b981] to-[#059669] border-2 border-[#10b981]'
-                  }`}>
-                    {kpValue! >= 5 && <AlertTriangle className="w-6 h-6 text-white" />}
-                    <span className="text-white font-bold text-xl uppercase tracking-wider">
+                  <div
+                    className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full mt-6 ${kpValue! >= 7 ? 'pulse-alert' : ''}`}
+                    style={{ backgroundColor: kpValue! >= 7 ? '#b91c1c' : kpValue! >= 5 ? '#c2410c' : kpValue! >= 4 ? '#a16207' : '#047857' }}
+                  >
+                    {kpValue! >= 5 && <AlertTriangle className="w-4 h-4" style={{ color: '#ffffff' }} />}
+                    <span className="font-bold text-sm uppercase tracking-wider" style={{ color: '#ffffff' }}>
                       {t(stormStatus.statusKey)}
                     </span>
                   </div>
                 )}
 
                 {/* Stats pills */}
-                <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
-                  <div className="glass-surface rounded-xl px-5 py-3 flex items-center gap-3">
-                    <Activity className="w-4 h-4 text-[#f97316]" />
-                    <span className="text-[#94a3b8] text-sm uppercase tracking-wider">Kp</span>
-                    <span className="text-white font-bold">{kpValue?.toFixed(1)}</span>
-                  </div>
+                {/* No Kp chip: it repeated the number printed 100px above. On a phone the
+                    label sits over the value, so two chips share a row instead of stacking
+                    at three different widths. */}
+                <div className="flex flex-wrap items-stretch justify-center gap-2 sm:gap-3 mt-6">
                   {windSpeed !== null && windSpeed > 0 && (
-                    <div className="glass-surface rounded-xl px-5 py-3 flex items-center gap-3">
-                      <Zap className="w-4 h-4 text-[#7c3aed]" />
-                      <span className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('home.solarWind')}</span>
-                      <span className="text-white font-bold">{windSpeed.toFixed(0)} km/s</span>
+                    <div className="glass-surface rounded-xl px-3 py-2 sm:px-5 sm:py-3 flex items-center gap-2 sm:gap-3">
+                      <Zap className="w-4 h-4 shrink-0 text-[#7c3aed]" />
+                      <div className="flex flex-col items-start sm:flex-row sm:items-center sm:gap-3 leading-tight">
+                        <span className="text-[#94a3b8] text-[10px] sm:text-sm uppercase tracking-wider">{t('home.solarWind')}</span>
+                        <span className="text-white font-bold text-sm sm:text-base">{windSpeed.toFixed(0)} km/s</span>
+                      </div>
                     </div>
                   )}
                   {xrayClass && (
-                    <div className="glass-surface rounded-xl px-5 py-3 flex items-center gap-3">
-                      <Radio className="w-4 h-4 text-[#fbbf24]" />
-                      <span className="text-[#94a3b8] text-sm uppercase tracking-wider">X-ray</span>
-                      <span className="text-white font-bold">Class {xrayClass}</span>
+                    <div className="glass-surface rounded-xl px-3 py-2 sm:px-5 sm:py-3 flex items-center gap-2 sm:gap-3">
+                      <Radio className="w-4 h-4 shrink-0 text-[#fbbf24]" />
+                      <div className="flex flex-col items-start sm:flex-row sm:items-center sm:gap-3 leading-tight">
+                        <span className="text-[#94a3b8] text-[10px] sm:text-sm uppercase tracking-wider">{t('dashboard.xray')}</span>
+                        <span className="text-white font-bold text-sm sm:text-base">{t('dashboard.classTxt')} {xrayClass}</span>
+                      </div>
                     </div>
                   )}
                   {/* Aurora visibility for saved location */}
@@ -387,10 +407,12 @@ const Home = () => {
                     const chance = auroraViewingChance(settings.preferredLat!, settings.preferredLon!, kpValue);
                     const color = chance >= 60 ? '#10b981' : chance >= 30 ? '#eab308' : '#64748b';
                     return (
-                      <Link to="/aurora" className="glass-surface rounded-xl px-5 py-3 flex items-center gap-3 hover:border-[#10b981]/30 border border-transparent transition-all">
+                      <Link to="/aurora" className="glass-surface rounded-xl px-3 py-2 sm:px-5 sm:py-3 flex items-center gap-2 sm:gap-3 hover:border-[#10b981]/30 border border-transparent transition-all">
                         <span className="text-lg">🌌</span>
-                        <span className="text-[#94a3b8] text-sm uppercase tracking-wider">{t('nav.aurora')}</span>
-                        <span className="font-bold" style={{ color }}>{chance}%</span>
+                        <div className="flex flex-col items-start sm:flex-row sm:items-center sm:gap-3 leading-tight">
+                          <span className="text-[#94a3b8] text-[10px] sm:text-sm uppercase tracking-wider">{t('nav.aurora')}</span>
+                          <span className="font-bold text-sm sm:text-base" style={{ color }}>{chance}%</span>
+                        </div>
                       </Link>
                     );
                   })()}
@@ -429,7 +451,7 @@ const Home = () => {
               <div className="flex justify-center mb-8">
                 <Link
                   to="/pricing"
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-[#f97316] hover:text-[#fbbf24] transition-colors group"
+                  className="inline-flex flex-wrap items-center justify-center gap-x-2 text-center text-sm font-semibold text-[#f97316] hover:text-[#fbbf24] transition-colors group"
                 >
                   <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#f97316] group-hover:scale-125 transition-transform" />
                   {t('pricing.tryProFree') || 'Try Pro free for 14 days'}
@@ -607,7 +629,9 @@ const Home = () => {
 
               {/* Progress bar */}
               <div className="w-full max-w-lg">
-                <div className="flex justify-between text-xs text-[#64748b] uppercase tracking-widest mb-2">
+                {/* gap + smaller tracking on phones: in Bulgarian the four labels are 27
+                    letters and ran together into one word at 375px. */}
+                <div className="flex justify-between gap-2 text-[10px] sm:text-xs text-[#64748b] uppercase tracking-wider sm:tracking-widest mb-2">
                   <span>{t('home.stormScore.quiet')}</span>
                   <span>{t('home.stormScore.unsettled')}</span>
                   <span>{t('home.stormScore.storm')}</span>
@@ -674,7 +698,9 @@ const Home = () => {
             {t('home.features2.title')}
           </h2>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Six cards: three columns fill two rows, two columns fill three. Four columns
+            left a hole, and the seventh card was an unreleased "coming soon" AI assistant. */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <Link to="/calendar" className="glass-surface rounded-2xl p-7 hover:glow-green transition-all group block">
             <div className="w-14 h-14 bg-[#2DD4BF]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Calendar className="w-7 h-7 text-[#2DD4BF]" />
@@ -682,15 +708,6 @@ const Home = () => {
             <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.calendar.title')}</h3>
             <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.calendar.desc')}</p>
           </Link>
-
-          <div className="glass-surface rounded-2xl p-7 hover:glow-purple transition-all group relative opacity-60">
-            <span className="absolute top-4 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#7c3aed]/20 text-[#a78bfa] border border-[#7c3aed]/30">{t('home.comingSoon')}</span>
-            <div className="w-14 h-14 bg-[#2DD4BF]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-              <Bot className="w-7 h-7 text-[#2DD4BF]" />
-            </div>
-            <h3 className="text-lg font-bold text-white mb-2">{t('home.feature.ai.title')}</h3>
-            <p className="text-[#94a3b8] text-sm leading-relaxed">{t('home.feature.ai.desc')}</p>
-          </div>
 
           <Link to="/aurora-map" className="glass-surface rounded-2xl p-7 hover:glow-orange transition-all group block">
             <div className="w-14 h-14 bg-[#F97316]/15 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
@@ -746,11 +763,12 @@ const Home = () => {
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
+              // NOAA's is the centre's proper name, so it stays in English.
               { name: 'NOAA SWPC', sub: 'Space Weather Prediction Center', flag: 'us' },
-              { name: 'NASA DONKI', sub: 'Space Weather Database', flag: 'us' },
-              { name: 'GFZ Potsdam', sub: 'Official Kp Index Authority', flag: 'de' },
-              { name: 'ESA', sub: 'Space Weather Service', flag: 'eu' },
-              { name: 'NIGGG', sub: 'Bulgaria Geophysics Institute', flag: 'bg' },
+              { name: 'NASA DONKI', sub: t('home.source.donki'), flag: 'us' },
+              { name: 'GFZ Potsdam', sub: t('home.source.gfz'), flag: 'de' },
+              { name: 'ESA', sub: t('home.source.esa'), flag: 'eu' },
+              { name: 'NIGGG', sub: t('home.source.niggg'), flag: 'bg' },
             ].map(source => (
               <div key={source.name} className="relative text-left rounded-xl px-6 py-4 bg-white/[0.04] border border-white/8">
                 <img src={`https://flagcdn.com/32x24/${source.flag}.png`} alt={`${source.name} flag`} className="absolute top-3 right-3 rounded-sm shadow-sm opacity-80" width={32} height={24} />

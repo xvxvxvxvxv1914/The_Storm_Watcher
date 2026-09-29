@@ -16,6 +16,14 @@ import { useTheme } from '../contexts/ThemeContext';
 import { switchLangUrl, persistLanguage, hreflangCode } from '../utils/langUrl';
 
 const hapticLight = () => Haptics.impact({ style: ImpactStyle.Light }).catch(() => {});
+
+// Tapping the tab you are already on scrolls back to the top — the convention on
+// both iOS and Android, and what stands in for the floating "back to top" button,
+// which ScrollToTop shows only where this bar is hidden.
+const selectTab = (active: boolean) => {
+  hapticLight();
+  if (active) window.scrollTo({ top: 0, behavior: 'smooth' });
+};
 const hapticMedium = () => Haptics.impact({ style: ImpactStyle.Medium }).catch(() => {});
 
 const tabs = [
@@ -171,7 +179,7 @@ const BottomTabBar = () => {
               active={location.pathname === to}
               icon={Icon}
               label={t(labelKey)}
-              onSelect={hapticLight}
+              onSelect={() => selectTab(location.pathname === to)}
             />
           ))}
           <MaterialDestination
@@ -214,7 +222,7 @@ const BottomTabBar = () => {
               <Link
                 key={to}
                 to={to}
-                onClick={hapticLight}
+                onClick={() => selectTab(active)}
                 className="flex flex-col items-center py-2.5 gap-0.5 active:scale-[0.88] transition-transform duration-100"
                 style={{ minWidth: 64, borderRadius: 80 }}
               >
