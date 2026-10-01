@@ -57,19 +57,19 @@ export async function generateStormScoreImage(params: StormImageParams): Promise
   ctx.fillRect(0, 0, W, H);
 
   // Brand header
-  ctx.font = 'bold 22px "Space Grotesk", Arial, sans-serif';
+  ctx.font = 'bold 22px -apple-system, BlinkMacSystemFont, Inter, Arial, sans-serif';
   ctx.fillStyle = '#f97316';
   ctx.textAlign = 'left';
   ctx.fillText('★  THE STORM WATCHER', 64, 72);
 
   // URL (top-right)
-  ctx.font = '18px "Space Grotesk", Arial, sans-serif';
+  ctx.font = '18px -apple-system, BlinkMacSystemFont, Inter, Arial, sans-serif';
   ctx.fillStyle = '#4a5568';
   ctx.textAlign = 'right';
   ctx.fillText('thestormwatcher.com', W - 64, 72);
 
   // "STORM SCORE" label
-  ctx.font = 'bold 20px "Space Grotesk", Arial, sans-serif';
+  ctx.font = 'bold 20px -apple-system, BlinkMacSystemFont, Inter, Arial, sans-serif';
   ctx.fillStyle = '#64748b';
   ctx.textAlign = 'center';
   ctx.letterSpacing = '0.2em';
@@ -81,7 +81,7 @@ export async function generateStormScoreImage(params: StormImageParams): Promise
   const scoreGrad = ctx.createLinearGradient(W / 2 - 120, 0, W / 2 + 120, 0);
   scoreGrad.addColorStop(0, color);
   scoreGrad.addColorStop(1, score >= 51 ? '#fbbf24' : color);
-  ctx.font = 'bold 220px "Space Grotesk", Arial, sans-serif';
+  ctx.font = 'bold 220px -apple-system, BlinkMacSystemFont, Inter, Arial, sans-serif';
   ctx.fillStyle = scoreGrad;
   ctx.textAlign = 'center';
   ctx.fillText(String(score), W / 2, 400);
@@ -98,7 +98,7 @@ export async function generateStormScoreImage(params: StormImageParams): Promise
   ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 22);
   ctx.fill();
   ctx.stroke();
-  ctx.font = 'bold 18px "Space Grotesk", Arial, sans-serif';
+  ctx.font = 'bold 18px -apple-system, BlinkMacSystemFont, Inter, Arial, sans-serif';
   ctx.fillStyle = color;
   ctx.textAlign = 'center';
   ctx.fillText(status.toUpperCase(), W / 2, badgeY + 28);
@@ -108,14 +108,14 @@ export async function generateStormScoreImage(params: StormImageParams): Promise
   if (windSpeed && windSpeed > 0) stats.push(`Wind ${Math.round(windSpeed)} km/s`);
   if (xrayClass) stats.push(`X-ray ${xrayClass}`);
   const statsText = stats.join('   •   ');
-  ctx.font = 'bold 24px "Space Grotesk", Arial, sans-serif';
+  ctx.font = 'bold 24px -apple-system, BlinkMacSystemFont, Inter, Arial, sans-serif';
   ctx.fillStyle = '#f8fafc';
   ctx.textAlign = 'center';
   ctx.fillText(statsText, W / 2, 530);
 
   // Community Pulse (if available)
   if (params.communityMood || params.communitySymptom) {
-    ctx.font = 'italic 18px "Space Grotesk", Arial, sans-serif';
+    ctx.font = 'italic 18px -apple-system, BlinkMacSystemFont, Inter, Arial, sans-serif';
     ctx.fillStyle = '#94a3b8';
     const pulseText = params.communitySymptom 
       ? `Community Report: High prevalence of ${params.communitySymptom}`
@@ -124,7 +124,7 @@ export async function generateStormScoreImage(params: StormImageParams): Promise
   }
 
   // Bottom tagline
-  ctx.font = '14px "Space Grotesk", Arial, sans-serif';
+  ctx.font = '14px -apple-system, BlinkMacSystemFont, Inter, Arial, sans-serif';
   ctx.fillStyle = '#475569';
   ctx.fillText('Real-time space weather monitoring via thestormwatcher.com', W / 2, 605);
 

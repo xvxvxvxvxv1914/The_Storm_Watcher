@@ -99,7 +99,7 @@ html.md3.light {
 /* ── Typography ──────────────────────────────────────────────────────────── */
 
 /* Roboto is the Android system face — resolved locally, no webfont request. The
-   Space Grotesk <link> in index.html stays for web/iOS; it simply is not used
+   Inter <link> in index.html stays for web; it simply is not used
    here. `*` matches the existing base rule's specificity trick in index.css. */
 html.md3 * {
   font-family: Roboto, 'Noto Sans', system-ui, -apple-system, sans-serif;
@@ -414,8 +414,8 @@ html.md3 .pulse-number {
 /* ── Card headings vs. the info affordance ───────────────────────────────── */
 
 /* The dashboard stat cards pin an info button at top-right and give the heading
-   no room for it. Roboto sets these uppercase labels wider than Space Grotesk
-   did, so "BZ COMPONENT" ran under the button. Reserving the gutter fixes it
+   no room for it. Roboto set these uppercase labels wider than Space Grotesk
+   (the web face at the time), so "BZ COMPONENT" ran under the button. Reserving the gutter fixes it
    without touching the shared markup.
    `:has()` needs Chrome 105+; on an older WebView the rule is simply dropped and
    the heading behaves as it does on web today. */

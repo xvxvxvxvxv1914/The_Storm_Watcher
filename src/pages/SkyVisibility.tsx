@@ -237,7 +237,7 @@ const SkyVisibility = () => {
                 );
               })}
             </div>
-            <div className="flex gap-4 mt-5 text-xs text-[#64748b]">
+            <div className="flex flex-wrap gap-x-4 gap-y-2 mt-5 text-xs text-[#64748b]">
               <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#10b981] inline-block" />{t('sky.clear')}</span>
               <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#fbbf24] inline-block" />{t('sky.partlyCloudy')}</span>
               <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#f97316] inline-block" />{t('sky.mostlyCloudy')}</span>
