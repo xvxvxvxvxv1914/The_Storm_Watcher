@@ -31,8 +31,30 @@ html.light {
 }
 
 @layer base {
+  /* Apple's own system face first (SF Pro), which it licenses only as the
+     system font — it cannot be served as a webfont. Everywhere else gets Inter,
+     the closest open match, which Apple devices never download because the
+     system face already covers every glyph. */
   * {
-    font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', system-ui, sans-serif;
+  }
+
+  /* Headings here are mostly uppercase and letter-spaced, and the compound-word
+     languages put a single word wider than a phone into them: STORMMÆLIKVARÐI,
+     BEOBACHTUNGSBEDINGUNGEN, VISNINGSFÖRHÅLLANDEN. A word that cannot wrap runs off
+     the screen, and inside a flex row it also holds the row open and pushes its
+     neighbours out. `anywhere` (not `break-word`) is what lets the min-content
+     width shrink, so the flex case is covered too; it only acts on a word that
+     does not fit, so ordinary headings are untouched. */
+  h1, h2, h3 {
+    overflow-wrap: anywhere;
+  }
+
+  /* Where long compounds are the norm, break them at a syllable with a hyphen
+     rather than at whatever letter reaches the edge. Not applied to the other
+     languages, where a hyphenated heading reads as a mistake. */
+  :is(:lang(de), :lang(da), :lang(fi), :lang(is), :lang(no), :lang(sv)) :is(h1, h2, h3) {
+    hyphens: auto;
   }
 
   html {
