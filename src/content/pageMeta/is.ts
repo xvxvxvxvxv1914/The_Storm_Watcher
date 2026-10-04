@@ -22,7 +22,6 @@ const meta: PageMetaTable = {
   "/hunt": {"title":"Norðurljósaveiðar — Tilkynntu Sjónarmiðar | The Storm Watcher","description":"Tilkynntu sjónarmiðar norðurljósa, vinna verðlaun og keppa á heimsvísu."},
   "/livestream": {"title":"Norðurljós í Beinni Útsendingu — Norðurljósavefmyndavélar | The Storm Watcher","description":"Horfðu á norðurljósavefmyndavélar í beinni frá Noregi, Íslandi og Finnlandi. 24/7 streymi."},
   "/calendar": {"title":"Norðurljósadagatal — Bestu Næturnar fyrir Norðurljós | The Storm Watcher","description":"3 nætta norðurljósaspá með Kp-spá og skýjahulu. Finndu þína bestu nótt til að horfa á norðurljósin."},
-  "/aurora-map": {"title":"Norðurljósasýnileikakort — Hvar Sérð Þú Norðurljósin? | The Storm Watcher","description":"Bein heimskort sem sýnir norðurljósasýnileikabelt á grundvelli gildandi Kp-vísitölu."},
 };
 
 export default meta;

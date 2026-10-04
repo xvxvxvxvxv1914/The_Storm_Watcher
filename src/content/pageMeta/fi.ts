@@ -22,7 +22,6 @@ const meta: PageMetaTable = {
   "/hunt": {"title":"Revontulimetsästys — Ilmoita Havainnoista ja Ansaitse Merkkejä | The Storm Watcher","description":"Ilmoita revontulihavainnoista, ansaitse saavutusmerkkejä ja kilpaile globaalilla tulostaululla."},
   "/livestream": {"title":"Revontuli-Suoratoisto — Live Revontuli-Kamerat | The Storm Watcher","description":"Katso live-revontuli-kameroita Norjasta, Islannista ja Suomesta. Reaaliaikaiset suoratoistot 24/7."},
   "/calendar": {"title":"Revontulikalenteri — Parhaat Yöt Revontulia Varten | The Storm Watcher","description":"3 yön revontulennuste Kp-ennusteella ja pilvisyydellä. Löydä paras yö revontulien katseluun."},
-  "/aurora-map": {"title":"Revontulinäkyvyyskartta — Missä Voit Nähdä Revontulia? | The Storm Watcher","description":"Reaaliaikainen maailmankartta, joka näyttää revontulinäkyvyysvyöhykkeet nykyisen Kp-indeksin perusteella."},
 };
 
 export default meta;

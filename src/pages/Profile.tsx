@@ -3,7 +3,7 @@ import PageMeta from '../components/PageMeta';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   Save, Trash2, Zap, Star, CreditCard, Camera,
-  Settings, Globe, Bell, Map, Shield,
+  Settings, Globe, Bell, Shield,
   LayoutDashboard, ArrowLeft, CheckCircle2, Sparkles,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -44,14 +44,14 @@ const PLAN_CONFIG = {
 };
 
 const PLAN_FEATURES: Record<string, string[]> = {
-  free: ['Real-time Kp index & solar wind', '3-day Kp forecast', 'Aurora visibility map', 'ISS tracker', 'UV index & sky conditions'],
+  free: ['Real-time Kp index & solar wind', '3-day Kp forecast', 'ISS tracker', 'UV index & sky conditions'],
   pro: ['Extended 7-day Kp forecast', 'Aurora visibility % by location', '3D Aurora Globe', 'Push storm notifications', 'Up to 10 saved locations'],
   premium: ['Everything in Pro', 'Unlimited saved locations', 'Custom Kp alert thresholds', 'CSV data export', 'Priority email support', 'Early beta access'],
 };
 
 const QUICK_LINKS = [
   { to: '/dashboard',         icon: LayoutDashboard, label: 'Dashboard',    sub: 'Live readings',     from: '#10b981', to2: '#059669' },
-  { to: '/aurora-map',        icon: Map,             label: 'Aurora Map',   sub: 'Real-time forecast', from: '#a855f7', to2: '#7c3aed' },
+  { to: '/aurora',            icon: Sparkles,        label: 'Aurora',       sub: '3D Aurora Globe', from: '#a855f7', to2: '#7c3aed' },
   { to: '/alerts',            icon: Bell,            label: 'Storm Alerts', sub: 'Push & SMS',        from: '#f97316', to2: '#ea580c' },
   { to: '/settings',          icon: Settings,        label: 'Settings',     sub: 'Preferences',       from: '#06b6d4', to2: '#0891b2' },
   { to: '/settings/language', icon: Globe,           label: 'Language',     sub: 'English (US)',      from: '#ec4899', to2: '#db2777' },

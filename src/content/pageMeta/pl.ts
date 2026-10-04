@@ -22,7 +22,6 @@ const meta: PageMetaTable = {
   "/hunt": {"title":"Polowanie na Zorzę — Zgłaszaj Obserwacje i Zdobywaj Odznaki | The Storm Watcher","description":"Zgłaszaj obserwacje zorzy polarnej, zdobywaj odznaki i rywalizuj na globalnej tablicy wyników."},
   "/livestream": {"title":"Transmisja Zorzy Na Żywo — Kamery Zorzy Polarnej | The Storm Watcher","description":"Oglądaj kamery zorzy polarnej na żywo z Norwegii, Islandii i Finlandii. Transmisje 24/7."},
   "/calendar": {"title":"Kalendarz Zorzy — Najlepsze Noce na Zorzę Polarną | The Storm Watcher","description":"3-dniowa prognoza zorzy z Kp i zachmurzeniem. Znajdź najlepszą noc do obserwacji zorzy."},
-  "/aurora-map": {"title":"Mapa Widoczności Zorzy — Gdzie Można Zobaczyć Zorzę Polarną? | The Storm Watcher","description":"Mapa świata na żywo z strefami widoczności zorzy polarnej na podstawie bieżącego indeksu Kp."},
 };
 
 export default meta;

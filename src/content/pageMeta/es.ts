@@ -22,7 +22,6 @@ const meta: PageMetaTable = {
   "/hunt": {"title":"Caza de Auroras — Reporta Avistamientos y Gana Insignias | The Storm Watcher","description":"Reporta avistamientos de auroras, gana insignias y compite en la clasificación global."},
   "/livestream": {"title":"Aurora en Directo — Cámaras en Vivo de la Aurora Boreal | The Storm Watcher","description":"Mira cámaras en vivo de auroras desde Noruega, Islandia y Finlandia. Transmisiones 24/7."},
   "/calendar": {"title":"Calendario de Auroras — Mejores Noches para la Aurora Boreal | The Storm Watcher","description":"Perspectiva de 3 noches para ver auroras con pronóstico Kp y cobertura de nubes."},
-  "/aurora-map": {"title":"Mapa de Visibilidad de Auroras — ¿Dónde Ver la Aurora Boreal? | The Storm Watcher","description":"Mapa mundial en vivo con zonas de visibilidad de auroras según el índice Kp actual."},
 };
 
 export default meta;

@@ -21,7 +21,6 @@ const Footer = () => {
       heading: t('footer.section.skyObservation'),
       links: [
         { to: '/aurora',          label: t('nav.aurora') },
-        { to: '/aurora-map',      label: t('nav.auroraMap') || 'Aurora Map' },
         { to: '/iss',             label: t('nav.iss') },
         { to: '/calendar',        label: t('nav.calendar') },
         { to: '/log',             label: 'Aurora Log' },

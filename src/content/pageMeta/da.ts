@@ -22,7 +22,6 @@ const meta: PageMetaTable = {
   "/hunt": {"title":"Nordlysjagt — Rapportér Observationer & Tjen Badges | The Storm Watcher","description":"Rapportér nordlysobservationer, tjen badges og konkurrér på det globale leaderboard."},
   "/livestream": {"title":"Aurora Livestream — Live Nordlys Kameraer | The Storm Watcher","description":"Se live nordlys kameraer fra Norge, Island og Finland. Realtids nordlysstreams 24/7."},
   "/calendar": {"title":"Aurora Kalender — Bedste Nætter for Nordlys | The Storm Watcher","description":"3-natters nordlysudsigtsprognose med Kp-prognose og skydække. Find din bedste nat til nordlys."},
-  "/aurora-map": {"title":"Aurora Synlighedskort — Hvor Kan Du Se Nordlyset? | The Storm Watcher","description":"Live verdenskort med nordlyssynlighedszoner baseret på det aktuelle Kp-indeks."},
 };
 
 export default meta;
