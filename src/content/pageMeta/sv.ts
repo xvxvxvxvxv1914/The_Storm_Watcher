@@ -22,7 +22,6 @@ const meta: PageMetaTable = {
   "/hunt": {"title":"Norrskenjakt — Rapportera Observationer & Tjäna Märken | The Storm Watcher","description":"Rapportera norrskensobservationer, tjäna prestationsmärken och tävla på den globala topplistan."},
   "/livestream": {"title":"Aurora Livestream — Live Norrskenspåkameror | The Storm Watcher","description":"Se live norrskenspåkameror från Norge, Island och Finland. Realtids norrskenssändningar 24/7."},
   "/calendar": {"title":"Aurora Kalender — Bästa Nätter för Norrsken | The Storm Watcher","description":"3-nätters norrskensöversikt med Kp-prognos och molntäcke. Hitta din bästa natt för norrsken."},
-  "/aurora-map": {"title":"Norrskenssynlighetskarta — Var Kan Du Se Norrsken? | The Storm Watcher","description":"Live världskarta med norrskenssynlighetszoner baserat på aktuellt Kp-index."},
 };
 
 export default meta;

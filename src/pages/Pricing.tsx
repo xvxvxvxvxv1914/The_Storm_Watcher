@@ -27,7 +27,6 @@ const PRICES = {
 
 const FREE_FEATURE_KEYS = [
   'pricing.free.feat.realtime',
-  'pricing.free.feat.aurora',
   'pricing.free.feat.forecast',
   'pricing.free.feat.iss',
   'pricing.free.feat.weather',

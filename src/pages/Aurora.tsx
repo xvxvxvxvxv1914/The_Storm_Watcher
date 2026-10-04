@@ -376,7 +376,7 @@ const Aurora = () => {
               { city: t('aurora.city.vienna'),     lat: 48.2, lon:  16.4 },
               { city: t('aurora.city.sofia'),      lat: 42.7, lon:  23.3 },
             ].map(({ city, lat, lon }) => {
-              // Bare geomagnetic placement, like the AuroraMap city list — this
+              // Bare geomagnetic placement — this
               // row compares cities against each other for this storm, not each
               // against its own local clock.
               const chance = calcAuroraVisibility(lat, lon, kpValue);
