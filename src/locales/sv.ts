@@ -1,4 +1,5 @@
 const sv: Record<string, string> = {
+  'data.cachedAt': 'Sparade data · hämtade {time}',
   'nav.uv': 'UV',
   'nav.sun': 'Sol',
   'nav.sky': 'Natthimlen',

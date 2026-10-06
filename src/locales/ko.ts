@@ -1,4 +1,5 @@
 const ko: Record<string, string> = {
+  'data.cachedAt': '저장된 데이터 · 가져온 시간 {time}',
   // Navigation
   'nav.uv': 'UV',
   'nav.sun': '태양',

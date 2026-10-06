@@ -73,12 +73,18 @@ registerRoute(
   })
 );
 
-// NASA DONKI (proxied through Supabase Edge Function or Vite dev proxy)
+// NASA DONKI — version the cache after the September 2026 API migration so
+// old HTML redirects cached under /donki cannot poison the JSON feed.
 registerRoute(
   ({ url }) => /ccmc\.gsfc\.nasa\.gov/.test(url.href) || url.pathname.startsWith('/donki'),
   new StaleWhileRevalidate({
-    cacheName: 'donki-api',
-    plugins: [new ExpirationPlugin({ maxAgeSeconds: 300, maxEntries: 10 })],
+    cacheName: 'donki-api-v2',
+    plugins: [
+      { cacheWillUpdate: async ({ response }) =>
+        response.ok && response.headers.get('content-type')?.includes('application/json')
+          ? response : null },
+      new ExpirationPlugin({ maxAgeSeconds: 300, maxEntries: 10 }),
+    ],
   })
 );
 

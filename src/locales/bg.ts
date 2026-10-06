@@ -1,4 +1,5 @@
 const bg: Record<string, string> = {
+  'data.cachedAt': 'Запазени данни · изтеглени на {time}',
   // Navigation
   'nav.uv': 'УВ Индекс',
   'nav.sun': 'Слънце',

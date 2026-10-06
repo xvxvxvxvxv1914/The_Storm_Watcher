@@ -1,3 +1,4 @@
+import ProfileLoadStatus from '../components/ProfileLoadStatus';
 import { useState, useEffect, useRef } from 'react';
 import PageMeta from '../components/PageMeta';
 import { useNavigate, Link } from 'react-router-dom';
@@ -172,6 +173,8 @@ export default function Profile() {
     setSaving(false);
     if (error) { setFormError(error.message); } else { setSuccess(true); setTimeout(() => setSuccess(false), 3000); }
   };
+
+  if (user && !profile) return <ProfileLoadStatus />;
 
   if (loading) {
     return (

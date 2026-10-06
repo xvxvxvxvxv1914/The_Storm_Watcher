@@ -1,4 +1,5 @@
 const is_: Record<string, string> = {
+  'data.cachedAt': 'Vistuð gögn · sótt {time}',
   'nav.uv': 'UV',
   'nav.sun': 'Sól',
   'nav.sky': 'Næturhiminn',

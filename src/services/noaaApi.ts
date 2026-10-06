@@ -1,6 +1,7 @@
 import type React from 'react';
 
 import { fetchJson } from '../utils/fetchJson';
+import { fetchText } from '../utils/fetchText';
 import { parseNoaaTime } from '../utils/noaaTime';
 import { latestRtswSample } from '../utils/rtswSource';
 import { logWarning } from '../utils/logger';
@@ -322,7 +323,8 @@ export const getAlerts = (): Promise<Alert[]> =>
     } catch (error) {
       logWarning('Error fetching data in getAlerts:', error);
       const cached_offline = await persistGet<Alert[]>('offline_alerts');
-      return cached_offline ?? [];
+      if (cached_offline !== null) return cached_offline;
+      throw error;
     }
   });
 
@@ -490,39 +492,60 @@ const MONTH_MAP: Record<string, number> = {
   Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11,
 };
 
-export const get27DayOutlook = (): Promise<DayOutlook[]> =>
-  cached('outlook-27d', TTL_FORECAST, async () => {
+export interface ForecastSnapshot<T> { data: T; fetchedAt: number; stale: boolean }
+
+const forecastSnapshot = <T,>(key: string, load: () => Promise<T>, valid: (data: T) => boolean): Promise<ForecastSnapshot<T> | null> =>
+  cached(key, TTL_FORECAST, async () => {
     try {
-      const res = await fetch('https://services.swpc.noaa.gov/text/27-day-outlook.txt', { signal: AbortSignal.timeout(10_000) });
-      if (!res.ok) return [];
-      const text = await res.text();
-      const rows: DayOutlook[] = [];
-      for (const line of text.split('\n')) {
-        const trimmed = line.trim();
-        if (!trimmed || trimmed.startsWith(':') || trimmed.startsWith('#')) continue;
-        // Format: "2026 May 18     105          21          5"
-        const m = trimmed.match(/^(\d{4})\s+(\w+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)$/);
-        if (!m) continue;
-        const year = parseInt(m[1], 10);
-        const month = MONTH_MAP[m[2]];
-        if (month === undefined) continue;
-        const day = parseInt(m[3], 10);
-        const date = new Date(year, month, day);
-        rows.push({
-          date,
-          radioFlux: parseInt(m[4], 10),
-          apIndex: parseInt(m[5], 10),
-          largestKp: parseInt(m[6], 10),
-        });
-      }
-      return rows;
+      const data = await load();
+      if (!valid(data)) throw new Error(`Invalid NOAA forecast: ${key}`);
+      const snapshot = { data, fetchedAt: Date.now(), stale: false };
+      await persistSet(`offline_${key}`, snapshot);
+      return snapshot;
     } catch (error) {
-      logWarning('Error fetching 27-day outlook:', error);
-      return [];
+      logWarning(`Error fetching NOAA forecast: ${key}`, error);
+      const saved = await persistGet<ForecastSnapshot<T>>(`offline_${key}`);
+      if (!saved || !Number.isFinite(saved.fetchedAt) || Date.now() - saved.fetchedAt > 4 * 3600000 ||
+          saved.fetchedAt > Date.now() || !valid(saved.data)) return null;
+      return { ...saved, stale: true };
     }
-  });
+  }, snapshot => snapshot !== null && !snapshot.stale);
+
+export const get27DayOutlookSnapshot = async (): Promise<ForecastSnapshot<DayOutlook[]> | null> => {
+  const snapshot = await forecastSnapshot('outlook-27d', async () => {
+    const text = await fetchText(`${NOAA_BASE_URL}/text/27-day-outlook.txt`, text =>
+      text.startsWith(':Product: 27-day') && (text.match(/^\d{4}\s+\w+\s+\d+\s+\d+\s+\d+\s+\d+[ \t]*$/gm)?.length ?? 0) >= 27);
+    const rows: DayOutlook[] = [];
+    for (const line of text.split('\n')) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith(':') || trimmed.startsWith('#')) continue;
+      // Format: "2026 May 18     105          21          5"
+      const m = trimmed.match(/^(\d{4})\s+(\w+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)$/);
+      if (!m) continue;
+      const year = parseInt(m[1], 10);
+      const month = MONTH_MAP[m[2]];
+      if (month === undefined) continue;
+      const day = parseInt(m[3], 10);
+      const date = new Date(year, month, day);
+      rows.push({
+        date,
+        radioFlux: parseInt(m[4], 10),
+        apIndex: parseInt(m[5], 10),
+        largestKp: parseInt(m[6], 10),
+      });
+    }
+    return rows;
+  }, rows => Array.isArray(rows) && rows.length >= 27);
+  // Preferences serializes Date objects. Restore them before the page uses getTime.
+  return snapshot ? { ...snapshot, data: snapshot.data.map(row => ({ ...row, date: new Date(row.date) })) } : null;
+};
+
+export const get27DayOutlook = async (): Promise<DayOutlook[]> =>
+  (await get27DayOutlookSnapshot())?.data ?? [];
 
 export interface SpaceWeatherOutlook {
+  fetchedAt?: number;
+  stale?: boolean;
   issuedAt: string;
   days: string[]; // e.g. ["May 14", "May 15", "May 16"]
   geomag: {
@@ -539,48 +562,46 @@ export interface SpaceWeatherOutlook {
   };
 }
 
-export const getSpaceWeatherOutlook = (): Promise<SpaceWeatherOutlook | null> =>
-  cached('outlook', TTL_FORECAST, async () => {
-    try {
-      const res = await fetch('https://services.swpc.noaa.gov/text/3-day-forecast.txt', { signal: AbortSignal.timeout(10_000) });
-      if (!res.ok) return null;
-      const text = await res.text();
+export const getSpaceWeatherOutlook = async (): Promise<SpaceWeatherOutlook | null> => {
+  const snapshot = await forecastSnapshot('outlook', async () => {
+    const text = await fetchText(`${NOAA_BASE_URL}/text/3-day-forecast.txt`, text =>
+      text.startsWith(':Product: 3-Day Forecast') && /:Issued:/.test(text) &&
+      /S1 or greater\s+[\d]+%\s+[\d]+%\s+[\d]+%/.test(text) &&
+      /R1-R2\s+[\d]+%\s+[\d]+%\s+[\d]+%/.test(text) &&
+      /R3 or greater\s+[\d]+%\s+[\d]+%\s+[\d]+%/.test(text));
+    // Issued timestamp
+    const issuedMatch = text.match(/:Issued:\s*(.+)/);
+    const issuedAt = issuedMatch ? issuedMatch[1].trim() : '';
 
-      // Issued timestamp
-      const issuedMatch = text.match(/:Issued:\s*(.+)/);
-      const issuedAt = issuedMatch ? issuedMatch[1].trim() : '';
+    // Extract day headers from the Kp table (e.g. "May 14  May 15  May 16")
+    const dayHeaderMatch = text.match(/^[ \t]*([A-Za-z]{3} \d{1,2})[ \t]+([A-Za-z]{3} \d{1,2})[ \t]+([A-Za-z]{3} \d{1,2})[ \t]*$/m);
+    const days = dayHeaderMatch ? [dayHeaderMatch[1], dayHeaderMatch[2], dayHeaderMatch[3]] : [];
 
-      // Extract day headers from the Kp table (e.g. "May 14  May 15  May 16")
-      const dayHeaderMatch = text.match(/(\w+ \d+)\s+(\w+ \d+)\s+(\w+ \d+)/);
-      const days = dayHeaderMatch ? [dayHeaderMatch[1], dayHeaderMatch[2], dayHeaderMatch[3]] : [];
+    // --- Section A: Geomagnetic rationale ---
+    const geomagRationale = extractRationale(text, 'A.');
 
-      // --- Section A: Geomagnetic rationale ---
-      const geomagRationale = extractRationale(text, 'A.');
+    // --- Section B: Solar Radiation ---
+    const s1Match = text.match(/S1 or greater\s+([\d]+)%\s+([\d]+)%\s+([\d]+)%/);
+    const s1Pct = s1Match ? [+s1Match[1], +s1Match[2], +s1Match[3]] : [0, 0, 0];
+    const solarRationale = extractRationale(text, 'B.');
 
-      // --- Section B: Solar Radiation ---
-      const s1Match = text.match(/S1 or greater\s+([\d]+)%\s+([\d]+)%\s+([\d]+)%/);
-      const s1Pct = s1Match ? [+s1Match[1], +s1Match[2], +s1Match[3]] : [0, 0, 0];
-      const solarRationale = extractRationale(text, 'B.');
+    // --- Section C: Radio Blackout ---
+    const r1r2Match = text.match(/R1-R2\s+([\d]+)%\s+([\d]+)%\s+([\d]+)%/);
+    const r3Match = text.match(/R3 or greater\s+([\d]+)%\s+([\d]+)%\s+([\d]+)%/);
+    const r1r2Pct = r1r2Match ? [+r1r2Match[1], +r1r2Match[2], +r1r2Match[3]] : [0, 0, 0];
+    const r3Pct = r3Match ? [+r3Match[1], +r3Match[2], +r3Match[3]] : [0, 0, 0];
+    const radioRationale = extractRationale(text, 'C.');
 
-      // --- Section C: Radio Blackout ---
-      const r1r2Match = text.match(/R1-R2\s+([\d]+)%\s+([\d]+)%\s+([\d]+)%/);
-      const r3Match = text.match(/R3 or greater\s+([\d]+)%\s+([\d]+)%\s+([\d]+)%/);
-      const r1r2Pct = r1r2Match ? [+r1r2Match[1], +r1r2Match[2], +r1r2Match[3]] : [0, 0, 0];
-      const r3Pct = r3Match ? [+r3Match[1], +r3Match[2], +r3Match[3]] : [0, 0, 0];
-      const radioRationale = extractRationale(text, 'C.');
-
-      return {
-        issuedAt,
-        days,
-        geomag: { rationale: geomagRationale },
-        solarRad: { s1Pct, rationale: solarRationale },
-        radioBlackout: { r1r2Pct, r3Pct, rationale: radioRationale },
-      };
-    } catch (error) {
-      logWarning('Error fetching space weather outlook:', error);
-      return null;
-    }
-  });
+    return {
+      issuedAt,
+      days,
+      geomag: { rationale: geomagRationale },
+      solarRad: { s1Pct, rationale: solarRationale },
+      radioBlackout: { r1r2Pct, r3Pct, rationale: radioRationale },
+    };
+  }, data => Boolean(data?.issuedAt) && Array.isArray(data.days) && data.days.length === 3);
+  return snapshot ? { ...snapshot.data, fetchedAt: snapshot.fetchedAt, stale: snapshot.stale } : null;
+};
 
 function extractRationale(text: string, section: string): string {
   // Find the section, then find "Rationale:" within it, up to the next section or end

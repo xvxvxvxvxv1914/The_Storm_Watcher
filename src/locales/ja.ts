@@ -1,4 +1,5 @@
 const ja: Record<string, string> = {
+  'data.cachedAt': '保存データ · 取得日時 {time}',
   // Navigation
   'nav.uv': 'UV指数',
   'nav.sun': '太陽',

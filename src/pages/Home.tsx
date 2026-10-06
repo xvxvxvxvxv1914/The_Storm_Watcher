@@ -1,5 +1,6 @@
+import CachedDataNotice from '../components/CachedDataNotice';
 import { useEffect, useRef, useState } from 'react';
-import { logError, logWarning } from '../utils/logger';
+import { logError } from '../utils/logger';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { AlertTriangle, Zap, Radio, Calendar, Globe, Bell, Camera, Trophy, Video, Share2, Copy, Twitter, ImageDown, Users } from 'lucide-react';
@@ -20,7 +21,7 @@ import { localizedPath } from '../utils/langUrl';
 import { useTranslatedPageMeta } from '../content/pageMeta';
 import StarField from '../components/StarField';
 import { Skeleton } from '../components/Skeleton';
-import { supabase } from '../lib/supabase';
+import { useCommunityPulse } from '../hooks/useCommunityPulse';
 
 const getScoreShareStatus = (score: number) => {
   if (score <= 25) return 'Quiet';
@@ -46,7 +47,7 @@ const Home = () => {
   const [shareOpen, setShareOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
-  const [pulseData, setPulseData] = useState<{ mood: string; symptom: string; count: number } | null>(null);
+  const { data: pulseData, error: pulseError, fetchedAt: pulseFetchedAt } = useCommunityPulse(retryCount);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [timeAgo, setTimeAgo] = useState('');
   const shareRef = useRef<HTMLDivElement>(null);
@@ -62,39 +63,6 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    const fetchPulse = async () => {
-      try {
-        const twentyFourHoursAgo = new Date();
-        twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
-
-        const { data, error } = await supabase
-          .from('mood_entries')
-          .select('mood_type, symptoms')
-          .gte('created_at', twentyFourHoursAgo.toISOString());
-
-        if (error) throw error;
-        if (data && data.length > 0) {
-          const moodCounts: Record<string, number> = {};
-          const symptomCounts: Record<string, number> = {};
-          
-          data.forEach(entry => {
-            moodCounts[entry.mood_type] = (moodCounts[entry.mood_type] || 0) + 1;
-            entry.symptoms?.forEach((s: string) => {
-              symptomCounts[s] = (symptomCounts[s] || 0) + 1;
-            });
-          });
-
-          const moodEntries = Object.entries(moodCounts).sort((a, b) => b[1] - a[1]);
-          const topMood = moodEntries.length > 0 ? moodEntries[0][0] : 'neutral';
-          const topSymptom = Object.entries(symptomCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || '';
-          
-          setPulseData({ mood: topMood, symptom: topSymptom, count: data.length });
-        }
-      } catch (err) {
-        logWarning('Error fetching pulse (non-critical):', err);
-      }
-    };
-
     const fetchAll = async () => {
       try {
         await Promise.all([
@@ -118,7 +86,6 @@ const Home = () => {
               setKpSparkData(historyData.slice(-24).map(d => d.Kp));
             }
           })(),
-          fetchPulse(),
         ]);
         setLoading(false);
         setLastUpdated(new Date());
@@ -479,6 +446,7 @@ const Home = () => {
                       <div className="text-xs text-[#64748b] uppercase tracking-widest font-bold mb-0.5">
                         {t('home.pulse.title')}
                       </div>
+                      {pulseError && pulseData && pulseFetchedAt && <CachedDataNotice fetchedAt={pulseFetchedAt} />}
                       {pulseData ? (
                         <>
                           <div className="text-white font-semibold text-sm leading-tight">
@@ -490,7 +458,7 @@ const Home = () => {
                         </>
                       ) : (
                         <div className="text-[#475569] text-xs italic">
-                          {t('home.pulse.noData')}
+                          {pulseError ? t('error.loadFailed') : t('home.pulse.noData')}
                         </div>
                       )}
                     </div>

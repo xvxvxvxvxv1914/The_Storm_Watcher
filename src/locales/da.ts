@@ -1,4 +1,5 @@
 const da: Record<string, string> = {
+  'data.cachedAt': 'Gemte data · hentet {time}',
   'nav.uv': 'UV',
   'nav.sun': 'Sol',
   'nav.sky': 'Nathimlen',

@@ -104,9 +104,9 @@ export default defineConfig(({ command }) => ({
     },
     proxy: {
       '/donki': {
-        target: 'https://kauai.ccmc.gsfc.nasa.gov',
+        target: 'https://ccmc.gsfc.nasa.gov',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/donki/, '/DONKI/WS/get'),
+        rewrite: (path) => path.replace(/^\/donki/, '/DONKI-API/get'),
       },
       '/api/niggg': {
         target: 'https://pagmag.ngic.bg',

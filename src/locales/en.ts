@@ -1,4 +1,5 @@
 const en: Record<string, string> = {
+  'data.cachedAt': 'Saved data · last fetched {time}',
   // Navigation
   'nav.uv': 'UV',
   'nav.sun': 'Sun',

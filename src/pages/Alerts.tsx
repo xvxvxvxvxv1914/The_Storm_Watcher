@@ -390,14 +390,12 @@ const Alerts = () => {
     const [noaaData, cmeData, flareData] = await Promise.allSettled([
       getAlerts(), getDonkiCme(), getDonkiFlares(),
     ]);
-    if (![noaaData, cmeData, flareData].some(r => r.status === 'fulfilled')) {
-      setFetchError(true); setLoading(false); return;
-    }
-    setFetchError(false);
+    const failed = [noaaData, cmeData, flareData].some(r => r.status === 'rejected');
+    setFetchError(failed);
     if (noaaData.status === 'fulfilled') setAlerts(noaaData.value || []);
     if (cmeData.status === 'fulfilled') setCmeEvents(cmeData.value || []);
     if (flareData.status === 'fulfilled') setFlareEvents(flareData.value || []);
-    setLastUpdated(new Date());
+    if (!failed) setLastUpdated(new Date());
     setLoading(false);
   }, []);
 
@@ -459,12 +457,12 @@ const Alerts = () => {
     </div>
   );
 
-  if (fetchError) return (
+  if (fetchError && feed.length === 0) return (
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="text-center glass-surface rounded-2xl p-10 border border-white/10 max-w-sm w-full">
         <AlertOctagon className="w-12 h-12 text-[#ef4444] mx-auto mb-4" />
         <h2 className={`font-semibold text-lg mb-2 ${theme === 'light' ? 'text-slate-900' : 'text-white'}`}>{t('alerts.fetchError') || 'Could not load alerts'}</h2>
-        <p className="text-[#64748b] text-sm mb-6">{t('alerts.fetchErrorDesc') || 'NOAA servers may be temporarily unavailable.'}</p>
+        <p className="text-[#64748b] text-sm mb-6">{t('error.loadFailed')}</p>
         <button onClick={() => fetchAlerts()} className="px-5 py-2.5 rounded-xl bg-[#ef4444]/20 border border-[#ef4444]/30 text-[#ef4444] text-sm font-medium hover:bg-[#ef4444]/30 transition-colors">
           {t('alerts.retry') || 'Try again'}
         </button>
@@ -518,7 +516,14 @@ const Alerts = () => {
         </div>
 
         {/* Hero */}
-        <HeroCard status={globalStatus} lastUpdated={lastUpdated} theme={theme} t={t} />
+        {fetchError ? (
+          <div role="status" className="mb-5 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4">
+            <p className="text-sm text-amber-500">{t('alerts.fetchError')}</p>
+            <button onClick={() => fetchAlerts({ silent: true })} className="mt-2 text-sm underline text-amber-500">
+              {t('alerts.retry')}
+            </button>
+          </div>
+        ) : <HeroCard status={globalStatus} lastUpdated={lastUpdated} theme={theme} t={t} />}
 
         {/* Filter chips */}
         <FilterChips active={activeFilter} onChange={setActiveFilter} counts={counts} theme={theme} t={t} />

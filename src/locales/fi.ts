@@ -1,4 +1,5 @@
 const fi: Record<string, string> = {
+  'data.cachedAt': 'Tallennetut tiedot · haettu {time}',
   'nav.uv': 'UV',
   'nav.sun': 'Aurinko',
   'nav.sky': 'Yötaivas',

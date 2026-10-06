@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { hasPlanAccess } from '../utils/planAccess';
@@ -125,5 +125,31 @@ describe('PlanGuard rendering', () => {
       </MemoryRouter>,
     );
     expect(screen.getByTestId('content')).toBeInTheDocument();
+  });
+});
+
+describe('unknown account plans', () => {
+  beforeEach(() => mockIsNative.mockReturnValue(false));
+  afterEach(() => vi.unstubAllEnvs());
+  it('shows a retry instead of an upgrade offer when the profile failed', () => {
+    setupMocks('free');
+    vi.stubEnv('VITE_PAYMENTS_ENABLED', 'true');
+    const retry = vi.fn();
+    mockUseAuth.mockReturnValue({ user: { id: 'u1' }, profile: null, loading: false, profileError: true, retryProfile: retry } as never);
+    render(<MemoryRouter><PlanGuard requiredPlan="pro"><div>Paid content</div></PlanGuard></MemoryRouter>);
+    expect(screen.getByText('error.retry')).toBeInTheDocument();
+    expect(screen.queryByText('pricing.tryProFree')).not.toBeInTheDocument();
+    expect(screen.queryByText('Paid content')).not.toBeInTheDocument();
+    vi.unstubAllEnvs();
+  });
+
+  it('waits for auth instead of showing a sign-in upgrade gate', () => {
+    setupMocks('free');
+    vi.stubEnv('VITE_PAYMENTS_ENABLED', 'true');
+    mockUseAuth.mockReturnValue({ user: null, profile: null, loading: true, retryProfile: vi.fn() } as never);
+    render(<MemoryRouter><PlanGuard requiredPlan="pro"><div>Paid content</div></PlanGuard></MemoryRouter>);
+    expect(screen.getByRole('status')).toHaveTextContent('app.loading');
+    expect(screen.queryByText('planguard.signInUpgrade')).not.toBeInTheDocument();
+    vi.unstubAllEnvs();
   });
 });
