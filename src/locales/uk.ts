@@ -1,4 +1,5 @@
 const uk: Record<string, string> = {
+  'data.cachedAt': 'Збережені дані · отримано {time}',
   'nav.uv': 'УФ',
   'nav.sun': 'Сонце',
   'nav.sky': 'Нічне небо',

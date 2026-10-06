@@ -1,4 +1,5 @@
 const no: Record<string, string> = {
+  'data.cachedAt': 'Lagrede data · hentet {time}',
   'nav.uv': 'UV',
   'nav.sun': 'Sol',
   'nav.sky': 'Nattehimmelen',

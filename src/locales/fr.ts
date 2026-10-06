@@ -1,4 +1,5 @@
 const fr: Record<string, string> = {
+  'data.cachedAt': 'Données enregistrées · récupérées le {time}',
   // Navigation
   'nav.uv': 'Indice UV',
   'nav.sun': 'Soleil',

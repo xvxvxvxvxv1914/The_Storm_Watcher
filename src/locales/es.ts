@@ -1,4 +1,5 @@
 const es: Record<string, string> = {
+  'data.cachedAt': 'Datos guardados · obtenidos el {time}',
   // Navigation
   'nav.uv': 'Índice UV',
   'nav.sun': 'Sol',

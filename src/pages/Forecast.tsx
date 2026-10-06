@@ -1,3 +1,4 @@
+import CachedDataNotice from '../components/CachedDataNotice';
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
@@ -11,7 +12,7 @@ import {
 import { Link } from 'react-router-dom';
 import { usePaymentGate } from '../hooks/usePaymentGate';
 import {
-  getKpForecast, getKpHistory3Day, get27DayOutlook, getStormStatus, getKpGradientStyle,
+  getKpForecast, getKpHistory3Day, get27DayOutlookSnapshot, getStormStatus, getKpGradientStyle,
   getSpaceWeatherOutlook, resolveKp, type SpaceWeatherOutlook, type DayOutlook,
 } from '../services/noaaApi';
 import { parseNoaaTime, noaaTimeSeconds } from '../utils/noaaTime';
@@ -45,6 +46,8 @@ const Forecast = () => {
   const chartH = useChartHeight(190, 300);
   const [forecastData, setForecastData] = useState<ForecastItem[]>([]);
   const [outlook27, setOutlook27] = useState<DayOutlook[]>([]);
+  const [outlook27Status, setOutlook27Status] = useState<{ stale: boolean; fetchedAt: number } | null>(null);
+  const [outlookUnavailable, setOutlookUnavailable] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [, setLastUpdated] = useState<Date>(new Date());
@@ -85,8 +88,24 @@ const Forecast = () => {
   const { pulling, pullY } = usePullToRefresh(fetchForecast);
 
   useEffect(() => {
-    getSpaceWeatherOutlook().then(data => { if (data) setOutlook(data); }).catch(() => {});
-    get27DayOutlook().then(data => { if (data && data.length > 0) setOutlook27(data); }).catch(() => {});
+    let disposed = false;
+    let pending = false;
+    const refresh = async () => {
+      if (pending) return;
+      pending = true;
+      try {
+        const [short, long] = await Promise.all([getSpaceWeatherOutlook(), get27DayOutlookSnapshot()]);
+        if (disposed) return;
+        setOutlook(short);
+        setOutlook27(long?.data ?? []);
+        setOutlook27Status(long ? { stale: long.stale, fetchedAt: long.fetchedAt } : null);
+        setOutlookUnavailable(!short || !long);
+      } finally { pending = false; }
+    };
+    void refresh();
+    const poll = setInterval(() => { if (document.visibilityState !== 'hidden') void refresh(); }, 300000);
+    window.addEventListener('online', refresh);
+    return () => { disposed = true; clearInterval(poll); window.removeEventListener('online', refresh); };
   }, []);
 
   useEffect(() => {
@@ -316,6 +335,10 @@ const Forecast = () => {
           </h1>
           <p className="text-[#94a3b8] text-base sm:text-lg">{t('forecast.subtitle')}</p>
         </div>
+
+        {outlookUnavailable && <p role="status" className="text-sm text-amber-400 mb-4">{t('error.loadFailed')}</p>}
+        {outlook?.stale && outlook.fetchedAt && <CachedDataNotice fetchedAt={outlook.fetchedAt} source="NOAA · 3d" />}
+        {outlook27Status?.stale && <CachedDataNotice fetchedAt={outlook27Status.fetchedAt} source="NOAA · 27d" />}
 
         {/* Hero Stats */}
         <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6 sm:mb-8">

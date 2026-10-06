@@ -1,4 +1,5 @@
 const zh: Record<string, string> = {
+  'data.cachedAt': '已保存的数据 · 获取时间 {time}',
   // Navigation
   'nav.uv': '紫外线指数',
   'nav.sun': '太阳',

@@ -5,6 +5,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { isNative } from '../utils/platform';
 import { hasPlanAccess } from '../utils/planAccess';
 import StarField from './StarField';
+import ProfileLoadStatus from './ProfileLoadStatus';
 
 type Plan = 'free' | 'pro' | 'premium';
 
@@ -17,7 +18,7 @@ interface PlanGuardProps {
 }
 
 const PlanGuard = ({ requiredPlan, children, fullPage = false }: PlanGuardProps) => {
-  const { user, profile } = useAuth();
+  const { user, profile, loading } = useAuth();
   const { t } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
@@ -32,6 +33,8 @@ const PlanGuard = ({ requiredPlan, children, fullPage = false }: PlanGuardProps)
     paymentsEnabled,
     native: isNative(),
   });
+
+  if (paymentsEnabled && !isNative() && !profile && (loading || user)) return <ProfileLoadStatus />;
 
   if (hasAccess) return <>{children}</>;
 

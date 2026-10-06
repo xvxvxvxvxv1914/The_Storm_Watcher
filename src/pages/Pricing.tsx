@@ -1,3 +1,4 @@
+import ProfileLoadStatus from '../components/ProfileLoadStatus';
 import { useState, useEffect } from 'react';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
@@ -50,7 +51,7 @@ const PREMIUM_FEATURE_KEYS = [
 ];
 
 export default function Pricing() {
-  const { user, profile, session } = useAuth();
+  const { user, profile, session, loading: authLoading } = useAuth();
   const { t } = useLanguage();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
@@ -134,6 +135,8 @@ export default function Pricing() {
 
   // suppress unused warning — session used implicitly via supabase.auth.getSession()
   void session;
+
+  if (!profile && (authLoading || user)) return <ProfileLoadStatus />;
 
   // ── Native IAP UI ─────────────────────────────────────────────────────────
   if (isNative()) {
