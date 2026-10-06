@@ -22,7 +22,6 @@ const meta: PageMetaTable = {
   "/hunt": {"title":"Polarlicht-Jagd — Sichtungen Melden & Abzeichen Verdienen | The Storm Watcher","description":"Melden Sie Polarlicht-Sichtungen, verdienen Sie Abzeichen und treten Sie auf der globalen Rangliste an."},
   "/livestream": {"title":"Aurora Livestream — Live Nordlicht Kameras | The Storm Watcher","description":"Live-Aurora-Kameras aus Norwegen, Island und Finnland. Echtzeit-Nordlicht-Streams rund um die Uhr."},
   "/calendar": {"title":"Aurora Kalender — Beste Nächte für Nordlichter | The Storm Watcher","description":"3-Nächte-Aurora-Vorschau mit Kp-Prognose und Bewölkung. Finden Sie Ihre beste Nacht für Nordlichter."},
-  "/aurora-map": {"title":"Aurora-Sichtbarkeitskarte — Wo Sind Nordlichter Sichtbar? | The Storm Watcher","description":"Live-Weltkarte mit Aurora-Sichtbarkeitszonen basierend auf dem aktuellen Kp-Index."},
 };
 
 export default meta;

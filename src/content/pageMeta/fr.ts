@@ -22,7 +22,6 @@ const meta: PageMetaTable = {
   "/hunt": {"title":"Chasse aux Aurores — Signalez des Observations | The Storm Watcher","description":"Signalez des observations d'aurores, gagnez des badges et affrontez d'autres chasseurs sur le classement mondial."},
   "/livestream": {"title":"Aurore en Direct — Caméras Aurores Boréales en Live | The Storm Watcher","description":"Regardez des caméras d'aurores en direct depuis la Norvège, l'Islande et la Finlande. Streams 24h/24."},
   "/calendar": {"title":"Calendrier des Aurores — Meilleures Nuits pour les Aurores Boréales | The Storm Watcher","description":"Prévision aurora sur 3 nuits avec prévision Kp et couverture nuageuse. Trouvez votre meilleure nuit."},
-  "/aurora-map": {"title":"Carte de Visibilité des Aurores — Où Voir les Aurores Boréales ? | The Storm Watcher","description":"Carte mondiale en direct des zones de visibilité des aurores selon l'indice Kp actuel."},
 };
 
 export default meta;

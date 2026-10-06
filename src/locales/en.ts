@@ -15,30 +15,10 @@ const en: Record<string, string> = {
   'nav.more': 'More',
   'nav.magneticEffects': 'Magnetic Storms & Health',
   'nav.faq': 'Aurora FAQ',
-  'nav.auroraMap': 'Aurora Map',
 
   // Viewing Window page
 
   // Aurora Map page
-  'auroraMap.meta.title': 'Aurora Visibility Map — The Storm Watcher',
-  'auroraMap.meta.description': 'Live world map showing aurora visibility zones based on the current Kp index.',
-  'auroraMap.title': 'Aurora Visibility Map',
-  'auroraMap.subtitle': 'Live aurora zones based on current Kp index. Updated every 3 minutes.',
-  'auroraMap.loading': 'Loading map…',
-  'auroraMap.note': 'Visibility calculated using dipole geomagnetic model. Actual aurora depends on cloud cover, light pollution, and local horizon.',
-  'auroraMap.legend.high': 'High (>75%)',
-  'auroraMap.legend.moderate': 'Moderate (55–75%)',
-  'auroraMap.legend.low': 'Low (25–55%)',
-  'auroraMap.legend.minimal': 'Minimal (<25%)',
-  'auroraMap.proCta.title': 'Want the full 3D Aurora Globe?',
-  'auroraMap.proCta.desc': 'Pro includes real-time OVATION aurora model on an interactive 3D globe, email alerts and more.',
-  'auroraMap.proCta.cta': 'Upgrade to Pro',
-  'auroraMap.lightPollution': 'Light Pollution',
-  'auroraMap.lightPollutionToggle': 'Toggle light pollution overlay (NASA VIIRS nighttime lights)',
-  'auroraMap.noLocation': 'No location set',
-  'auroraMap.setLocation': 'Set your location to see local visibility →',
-  'auroraMap.keyLocations': 'Key Locations',
-  'forecast.viewAuroraMap': 'See aurora visibility map →',
 
   // Mood Page
   'mood.title': 'How are you feeling today?',
@@ -125,8 +105,6 @@ const en: Record<string, string> = {
   'home.features2.title': 'Everything you need to track the storm',
   'home.feature.calendar.title': 'Aurora Calendar',
   'home.feature.calendar.desc': 'See which upcoming nights have the best aurora visibility based on solar forecasts and your location.',
-  'home.feature.map.title': 'Global Map + Aurora Oval',
-  'home.feature.map.desc': 'Live map showing the aurora oval in real time. See exactly where the northern lights are visible right now.',
   'home.feature.alerts.title': 'Push Alerts',
   'home.feature.alerts.desc': 'Get notified the moment a geomagnetic storm reaches your chosen threshold — before it peaks.',
   'home.feature.gallery.title': 'Community Photo Gallery',
@@ -908,7 +886,6 @@ const en: Record<string, string> = {
   'gallery.noInRange': 'No photos in this range',
   'pricing.free.tagline': 'Always free',
   'pricing.free.feat.realtime': 'Real-time Kp index & solar wind',
-  'pricing.free.feat.aurora': 'Aurora visibility map',
   'pricing.free.feat.forecast': '3-day Kp forecast',
   'pricing.free.feat.iss': 'ISS tracker',
   'pricing.free.feat.weather': 'UV index & sky conditions',

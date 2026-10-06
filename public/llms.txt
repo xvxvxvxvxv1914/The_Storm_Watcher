@@ -11,7 +11,6 @@ The Storm Watcher is a free PWA and mobile app (iOS/Android) for tracking space 
 - [Forecast](https://www.thestormwatcher.com/forecast): 7-day Kp forecast and solar activity outlook from NOAA
 - [Aurora](https://www.thestormwatcher.com/aurora): Aurora visibility forecast and OVATION 3D globe model
 - [Alerts](https://www.thestormwatcher.com/alerts): Real-time CME and solar flare alerts from NASA DONKI
-- [Aurora Map](https://www.thestormwatcher.com/aurora-map): Interactive aurora oval map with live Kp overlay
 - [UV Index](https://www.thestormwatcher.com/uv): Real-time UV index by location from Open-Meteo
 - [Sky Visibility](https://www.thestormwatcher.com/sky): Cloud cover and astronomical seeing conditions
 - [ISS Tracker](https://www.thestormwatcher.com/iss): Real-time International Space Station position and pass predictions

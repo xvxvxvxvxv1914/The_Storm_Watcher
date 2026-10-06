@@ -32,6 +32,7 @@ const LANG_PREFIXES = new Set([
 // "tonight's best hour" — `/sky` (Sky Visibility Tonight) is the closest live page.
 const REMOVED_ROUTES = new Map<string, string>([
   ['/viewing-window', '/sky'],
+  ['/aurora-map', '/aurora'],
 ]);
 
 export const config = {

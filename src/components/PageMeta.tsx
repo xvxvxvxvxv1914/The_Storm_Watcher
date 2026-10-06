@@ -18,7 +18,6 @@ const PAGE_SLUGS: Record<string, string> = {
   '/iss': 'iss',
   '/gallery': 'gallery',
   '/hunt': 'hunt',
-  '/aurora-map': 'aurora',
   '/livestream': 'livestream',
 };
 

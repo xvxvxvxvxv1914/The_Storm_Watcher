@@ -22,7 +22,6 @@ const meta: PageMetaTable = {
   "/hunt": {"title":"极光猎人 — 报告目击并获得徽章 | The Storm Watcher","description":"报告极光目击事件，获得成就徽章，在全球排行榜上与其他极光猎人竞争。"},
   "/livestream": {"title":"极光直播 — 北极光实时摄像头 | The Storm Watcher","description":"观看挪威、冰岛和芬兰的极光实时摄像头。24/7全天候实时北极光直播。"},
   "/calendar": {"title":"极光日历 — 观看北极光的最佳夜晚 | The Storm Watcher","description":"带Kp预报和云层覆盖的3夜极光展望。找到观看北极光的最佳夜晚。"},
-  "/aurora-map": {"title":"极光可见度地图 — 哪里能看到北极光？| The Storm Watcher","description":"根据当前Kp指数显示极光可见区域的实时世界地图。"},
 };
 
 export default meta;
