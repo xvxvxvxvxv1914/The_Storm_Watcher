@@ -14,7 +14,7 @@ const meta: PageMetaTable = {
   "/iss": {"title":"ISS 추적기 — 국제우주정거장 실시간 위치 | 스톰워처","description":"국제우주정거장을 실시간으로 추적하세요. 실시간 위치, 고도, 속도 및 상공 통과 시간."},
   "/faq": {"title":"오로라 FAQ — 오로라 가이드 | 스톰워처","description":"오로라, Kp 지수, 태양풍에 대한 모든 것. 우주 날씨 질문에 대한 전문가 답변."},
   "/magnetic-effects": {"title":"자기 폭풍과 인체 건강 — 스톰워처","description":"지자기 활동이 인체에 미치는 영향: 두통, 수면 장애, 기분 변화 및 대처 방법."},
-  "/pricing": {"title":"가격 — 스톰워처 Pro & Premium 플랜","description":"플랜을 선택하세요. 무료 오로라 모니터링 또는 고급 알림과 14일 무료 체험이 포함된 Pro/Premium."},
+  "/pricing": {"title":"출시 초기에는 모든 기능이 무료입니다 — The Storm Watcher","description":"이 초기 기간에는 모든 기능을 무료로 이용할 수 있습니다."},
   "/about": {"title":"소개 — 스톰워처","description":"실시간 우주 날씨 모니터링 및 오로라 예보 앱. 우리의 미션과 데이터 소스에 대해 알아보세요."},
   "/privacy": {"title":"개인정보처리방침 — 스톰워처","description":"스톰워처의 개인정보처리방침. 개인 데이터 수집, 사용 및 보호 방법을 확인하세요."},
   "/terms": {"title":"이용약관 — 스톰워처","description":"스톰워처 우주 날씨 모니터링 애플리케이션 이용약관."},

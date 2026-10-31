@@ -14,7 +14,7 @@ const SITE = 'https://www.thestormwatcher.com';
 export default function Referrals() {
   const { t } = useLanguage();
   const { user, profile } = useAuth();
-  const { referralProUntil } = usePaymentGate();
+  const { referralProUntil, paymentsEnabled } = usePaymentGate();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const [copied, setCopied] = useState(false);
@@ -22,6 +22,8 @@ export default function Referrals() {
 
   const code = profile?.referral_code ?? null;
   const link = code ? `${SITE}/?ref=${code}` : '';
+  const title = paymentsEnabled ? t('referrals.title') : t('freeAccess.referralsTitle');
+  const subtitle = paymentsEnabled ? t('referrals.subtitle') : t('freeAccess.referralsSubtitle');
 
   useEffect(() => {
     if (!user) return;
@@ -65,7 +67,7 @@ export default function Referrals() {
   return (
     <div className="min-h-screen text-white pt-20 pb-24" style={{ background: isDark ? '#000008' : '#eef2f8' }}>
       <StarField />
-      <PageMeta title={`${t('referrals.title')} — The Storm Watcher`} description={t('referrals.subtitle')} path="/referrals" />
+      <PageMeta title={`${title} — The Storm Watcher`} description={subtitle} path="/referrals" />
 
       <div className="max-w-2xl mx-auto px-4">
         {/* Header */}
@@ -73,13 +75,13 @@ export default function Referrals() {
           <div className="p-2.5 rounded-xl bg-[#10b981]/10 border border-[#10b981]/20">
             <Gift className="w-5 h-5 text-[#10b981]" />
           </div>
-          <h1 className="text-2xl font-bold">{t('referrals.title')}</h1>
+          <h1 className="text-2xl font-bold">{title}</h1>
         </div>
-        <p className="text-[#64748b] text-sm mb-8 ml-14">{t('referrals.subtitle')}</p>
+        <p className="text-[#64748b] text-sm mb-8 ml-14">{subtitle}</p>
 
         {!user ? (
           <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-center">
-            <p className="text-[#94a3b8] mb-4">{t('referrals.signInPrompt')}</p>
+            <p className="text-[#94a3b8] mb-4">{paymentsEnabled ? t('referrals.signInPrompt') : t('freeAccess.referralsSignIn')}</p>
             <Link to="/auth" className="inline-block px-5 py-2.5 rounded-xl bg-[#10b981] text-white text-sm font-semibold hover:bg-[#0d9a6f] transition-colors">
               {t('referrals.signIn')}
             </Link>
@@ -110,13 +112,13 @@ export default function Referrals() {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-3 mb-8">
+            <div className={`grid ${paymentsEnabled ? 'grid-cols-3' : 'grid-cols-1'} gap-3 mb-8`}>
               <Stat icon={<Users className="w-4 h-4" />} value={stats?.invited ?? 0} label={t('referrals.invited')} />
-              <Stat icon={<BadgeCheck className="w-4 h-4" />} value={stats?.subscribed ?? 0} label={t('referrals.subscribed')} />
-              <Stat icon={<Sparkles className="w-4 h-4" />} value={stats?.days ?? 0} label={t('referrals.proEarned')} />
+              {paymentsEnabled && <Stat icon={<BadgeCheck className="w-4 h-4" />} value={stats?.subscribed ?? 0} label={t('referrals.subscribed')} />}
+              {paymentsEnabled && <Stat icon={<Sparkles className="w-4 h-4" />} value={stats?.days ?? 0} label={t('referrals.proEarned')} />}
             </div>
 
-            {proUntilDate && (
+            {paymentsEnabled && proUntilDate && (
               <div className="rounded-xl border border-[#10b981]/30 bg-[#10b981]/10 px-4 py-3 mb-8 flex items-center gap-2 text-sm">
                 <Sparkles className="w-4 h-4 text-[#10b981] flex-shrink-0" />
                 <span className="text-[#cbd5e1]">{t('referrals.proActiveUntil')} <strong className="text-white">{proUntilDate}</strong></span>
@@ -124,6 +126,7 @@ export default function Referrals() {
             )}
 
             {/* How it works */}
+            {paymentsEnabled ? <>
             <h2 className="text-xs uppercase tracking-wider text-[#475569] font-semibold mb-3">{t('referrals.how')}</h2>
             <ol className="space-y-3">
               {[t('referrals.step1'), t('referrals.step2'), t('referrals.step3')].map((step, i) => (
@@ -133,6 +136,9 @@ export default function Referrals() {
                 </li>
               ))}
             </ol>
+            </> : (
+              <p className="text-sm text-[#94a3b8]">{t('freeAccess.referralsShare')}</p>
+            )}
           </>
         )}
       </div>

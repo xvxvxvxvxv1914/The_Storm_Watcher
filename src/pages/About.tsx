@@ -3,9 +3,11 @@ import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { Shield, Database, Users, AlertCircle, Heart, Code } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { usePaymentGate } from '../hooks/usePaymentGate';
 
 const About = () => {
   const { t } = useLanguage();
+  const { paymentsEnabled } = usePaymentGate();
 
   const stars = useMemo(() =>
     [...Array(50)].map((_, i) => ({
@@ -123,7 +125,7 @@ const About = () => {
             </div>
           </div>
 
-          {/* Free forever + built with */}
+          {/* Access + built with */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="glass-surface rounded-2xl p-8">
               <div className="flex items-start gap-4">
@@ -132,10 +134,10 @@ const About = () => {
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-white mb-2 uppercase tracking-wide">
-                    {t('about.freeTitle')}
+                    {t(paymentsEnabled ? 'about.freeTitle' : 'freeAccess.title')}
                   </h2>
                   <p className="text-[#94a3b8] text-sm leading-relaxed">
-                    {t('about.freeText')}
+                    {t(paymentsEnabled ? 'about.freeText' : 'freeAccess.description')}
                   </p>
                 </div>
               </div>

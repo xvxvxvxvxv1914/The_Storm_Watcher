@@ -14,7 +14,7 @@ const meta: PageMetaTable = {
   "/iss": {"title":"Rastreador de la ISS — Posición en Vivo de la Estación Espacial | The Storm Watcher","description":"Sigue la Estación Espacial Internacional en tiempo real. Posición, altitud, velocidad y próximos pases."},
   "/faq": {"title":"Preguntas Frecuentes sobre Auroras — Guía de la Aurora Boreal | The Storm Watcher","description":"Todo lo que necesitas saber sobre la Aurora Boreal, el índice Kp y cómo ver la aurora."},
   "/magnetic-effects": {"title":"Tormentas Magnéticas y Salud Humana — The Storm Watcher","description":"Cómo la actividad geomagnética afecta al cuerpo: dolores de cabeza, sueño, estado de ánimo y qué puedes hacer."},
-  "/pricing": {"title":"Precios — Planes Pro y Premium de The Storm Watcher","description":"Elige tu plan. Monitoreo de aurora gratuito o Pro/Premium con alertas avanzadas y prueba gratuita de 14 días."},
+  "/pricing": {"title":"Todas las funciones son gratuitas durante el lanzamiento — The Storm Watcher","description":"Todas las funciones están disponibles sin coste durante este periodo inicial."},
   "/about": {"title":"Acerca de — The Storm Watcher","description":"Aplicación de monitoreo de clima espacial y pronóstico de auroras en tiempo real. Conozca nuestra misión y fuentes de datos."},
   "/privacy": {"title":"Política de Privacidad — The Storm Watcher","description":"Política de privacidad de The Storm Watcher. Conozca cómo recopilamos y protegemos sus datos personales."},
   "/terms": {"title":"Términos de Servicio — The Storm Watcher","description":"Términos de servicio de la aplicación de monitoreo de clima espacial The Storm Watcher."},

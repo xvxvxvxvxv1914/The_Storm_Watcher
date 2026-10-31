@@ -34,18 +34,19 @@ test.describe('Happy paths', () => {
     await expect(kpCard).toContainText('4.2', { timeout: 10_000 });
   });
 
-  test('Settings → Kp threshold locked for free users, other settings save correctly', async ({ page }) => {
+  test('Settings → launch visitors can edit Kp thresholds and save settings', async ({ page }) => {
     await page.goto('/settings');
 
-    // Payments are enabled in e2e — free (anonymous) users see the threshold
-    // locked at Kp 5 with a Pro upgrade link instead of a range slider.
-    await expect(page.locator('input[type="range"]')).toBeHidden();
-    await expect(page.getByText(/Kp 5/i).first()).toBeVisible();
-    await expect(page.locator('a[href="/pricing"]').first()).toBeVisible();
+    const threshold = page.locator('input[type="range"]').first();
+    await expect(threshold).toBeVisible();
+    await expect(threshold).toHaveAttribute('min', '3');
+    await threshold.focus();
+    await threshold.press('ArrowLeft');
 
     // Other settings (units) are still editable and save works.
     await page.getByRole('button', { name: /^Save Settings$/ }).click();
     await expect(page.getByRole('button', { name: /^Saved!?$/ })).toBeVisible();
+    expect(await page.evaluate(() => JSON.parse(localStorage.getItem('tsw_settings') ?? '{}').kpThreshold)).toBe(4);
   });
 
   test('Onboarding tour appears on first dashboard visit and can be skipped', async ({ page }) => {

@@ -1,4 +1,10 @@
+import { FREE_ACCESS_ENABLED } from '../../supabase/functions/_shared/accessPolicy';
+
 type Plan = 'free' | 'pro' | 'premium';
+
+/** The launch policy takes precedence over older paid-build environment flags. */
+export const arePaymentsEnabled = (): boolean =>
+  !FREE_ACCESS_ENABLED && import.meta.env.VITE_PAYMENTS_ENABLED === 'true';
 
 export const PLAN_RANK: Record<Plan, number> = { free: 0, pro: 1, premium: 2 };
 

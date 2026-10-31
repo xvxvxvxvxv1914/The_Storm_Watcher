@@ -5,6 +5,7 @@ import { Video, ExternalLink, Globe, Youtube, CalendarClock, Radio, MapPin, Spar
 import { useLanguage } from '../contexts/LanguageContext';
 import { useKpLive } from '../hooks/useKpLive';
 import StarField from '../components/StarField';
+import { usePaymentGate } from '../hooks/usePaymentGate';
 
 type CameraKind = 'youtube' | 'webcam';
 
@@ -240,6 +241,7 @@ const CameraCard = ({ cam, t }: { cam: Camera; t: (k: string) => string }) => {
 
 export default function Livestream() {
   const { t } = useLanguage();
+  const { paymentsEnabled } = usePaymentGate();
   const kp = useKpLive();
   const condition = kpCondition(kp);
   const youtubeCams = CAMERAS.filter(c => c.kind === 'youtube');
@@ -311,7 +313,7 @@ export default function Livestream() {
         <div className="flex items-center gap-2 mb-4">
           <Radio className="w-5 h-5 text-emerald-400" />
           <h2 className="text-lg font-bold text-white">Community Streams</h2>
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 ml-1">Pro</span>
+          {paymentsEnabled && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 ml-1">Pro</span>}
         </div>
 
         <PlanGuard requiredPlan="pro">

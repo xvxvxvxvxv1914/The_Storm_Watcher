@@ -1,4 +1,14 @@
 const bg: Record<string, string> = {
+  // Temporary free launch access
+  'freeAccess.referralsTitle': "Покани приятели",
+  'freeAccess.referralsSignIn': "Влез в акаунта си, за да получиш своя личен линк за покана.",
+  'freeAccess.nav': "Безплатен достъп",
+  'freeAccess.label': "Пълен достъп",
+  'freeAccess.title': "Всички функции са безплатни в началния период",
+  'freeAccess.description': "Всички функции са достъпни безплатно през този начален период.",
+  'freeAccess.accountNote': "Някои лични функции и функции на общността все още изискват акаунт.",
+  'freeAccess.referralsSubtitle': "Покани приятели да следят космическото време. В момента всички функции са безплатни.",
+  'freeAccess.referralsShare': "Сподели своята покана с приятели. Не е необходим абонамент.",
   'data.cachedAt': 'Запазени данни · изтеглени на {time}',
   // Navigation
   'nav.uv': 'УВ Индекс',

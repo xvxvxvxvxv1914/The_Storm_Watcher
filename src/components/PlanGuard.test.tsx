@@ -10,6 +10,10 @@ vi.mock('../contexts/AuthContext', () => ({ useAuth: vi.fn() }));
 vi.mock('../contexts/LanguageContext', () => ({ useLanguage: vi.fn() }));
 vi.mock('../utils/platform', () => ({ isNative: vi.fn(() => false) }));
 vi.mock('./StarField', () => ({ default: () => null }));
+const launchPolicy = vi.hoisted(() => ({ free: false }));
+vi.mock('../../supabase/functions/_shared/accessPolicy', () => ({
+  get FREE_ACCESS_ENABLED() { return launchPolicy.free; },
+}));
 
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -18,6 +22,11 @@ import { isNative } from '../utils/platform';
 const mockUseAuth = vi.mocked(useAuth);
 const mockUseLanguage = vi.mocked(useLanguage);
 const mockIsNative = vi.mocked(isNative);
+
+beforeEach(() => {
+  launchPolicy.free = false;
+  mockIsNative.mockReturnValue(false);
+});
 
 function setupMocks(plan: string, subscriptionStatus = 'active', referralProUntil: string | null = null) {
   mockUseAuth.mockReturnValue({
@@ -106,12 +115,7 @@ describe('PlanGuard rendering', () => {
         </PlanGuard>
       </MemoryRouter>,
     );
-    // If payments enabled → lock shown; if env not patched → content shown.
-    // Both are valid runtime states; we assert the proFeature text appears in lock case.
-    const isLocked = screen.queryByTestId('content') === null;
-    if (isLocked) {
-      expect(screen.getByText('planguard.proFeature')).toBeInTheDocument();
-    }
+    expect(screen.getByText('planguard.proFeature')).toBeInTheDocument();
   });
 
   it('renders native bypass — content shows when isNative=true', () => {
@@ -125,6 +129,28 @@ describe('PlanGuard rendering', () => {
       </MemoryRouter>,
     );
     expect(screen.getByTestId('content')).toBeInTheDocument();
+  });
+});
+
+describe('free launch', () => {
+  beforeEach(() => { launchPolicy.free = true; });
+  afterEach(() => vi.unstubAllEnvs());
+
+  it.each(['pro', 'premium'] as const)('unlocks %s for guests even if the deployed payments flag is true', (requiredPlan) => {
+    setupMocks('free');
+    vi.stubEnv('VITE_PAYMENTS_ENABLED', 'true');
+    mockUseAuth.mockReturnValue({ user: null, profile: null, loading: true } as never);
+    render(<MemoryRouter><PlanGuard requiredPlan={requiredPlan} fullPage><div>Unlocked content</div></PlanGuard></MemoryRouter>);
+    expect(screen.getByText('Unlocked content')).toBeInTheDocument();
+    expect(screen.queryByText('planguard.signInUpgrade')).not.toBeInTheDocument();
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+  });
+
+  it('does not turn a missing account profile into a paywall', () => {
+    setupMocks('free');
+    mockUseAuth.mockReturnValue({ user: { id: 'u1' }, profile: null, loading: false, profileError: true } as never);
+    render(<MemoryRouter><PlanGuard requiredPlan="premium"><div>Unlocked content</div></PlanGuard></MemoryRouter>);
+    expect(screen.getByText('Unlocked content')).toBeInTheDocument();
   });
 });
 

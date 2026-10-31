@@ -1,4 +1,14 @@
 const zh: Record<string, string> = {
+  // Temporary free launch access
+  'freeAccess.referralsTitle': "邀请朋友",
+  'freeAccess.referralsSignIn': "登录以获取您的专属邀请链接。",
+  'freeAccess.nav': "免费使用",
+  'freeAccess.label': "完整访问权限",
+  'freeAccess.title': "上线初期所有功能均免费",
+  'freeAccess.description': "在此初期阶段，所有功能均可免费使用。",
+  'freeAccess.accountNote': "部分个人和社区功能仍需登录账号。",
+  'freeAccess.referralsSubtitle': "邀请朋友一起探索空间天气。目前所有功能均免费。",
+  'freeAccess.referralsShare': "与朋友分享您的邀请链接。无需订阅。",
   'data.cachedAt': '已保存的数据 · 获取时间 {time}',
   // Navigation
   'nav.uv': '紫外线指数',

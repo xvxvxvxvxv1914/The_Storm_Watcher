@@ -14,7 +14,7 @@ const meta: PageMetaTable = {
   "/iss": {"title":"ISS Tracker — Live Position der Internationalen Raumstation | The Storm Watcher","description":"Verfolgen Sie die ISS in Echtzeit. Live-Position, Höhe, Geschwindigkeit und bevorstehende Überflüge."},
   "/faq": {"title":"Polarlicht FAQ — Nordlichter Ratgeber | The Storm Watcher","description":"Alles, was Sie über Nordlichter, den Kp-Index und Sonnenwind wissen müssen. Expertenwissen zu Weltraumwetter."},
   "/magnetic-effects": {"title":"Magnetstürme & Menschliche Gesundheit — The Storm Watcher","description":"Wie geomagnetische Aktivität den Körper beeinflusst — Kopfschmerzen, Schlaf, Stimmung — und was Sie tun können."},
-  "/pricing": {"title":"Preise — The Storm Watcher Pro & Premium Pläne","description":"Wählen Sie Ihren Plan. Kostenloses Aurora-Monitoring oder Pro/Premium mit erweiterten Warnungen und 14-Tage-Test."},
+  "/pricing": {"title":"Zum Start sind alle Funktionen kostenlos — The Storm Watcher","description":"In dieser Anfangsphase stehen alle Funktionen kostenlos zur Verfügung."},
   "/about": {"title":"Über uns — The Storm Watcher","description":"Echtzeit-Weltraumwetter-Überwachung und Aurora-Prognose-App. Erfahren Sie mehr über unsere Mission und Datenquellen."},
   "/privacy": {"title":"Datenschutzrichtlinie — The Storm Watcher","description":"Datenschutzrichtlinie für The Storm Watcher. Erfahren Sie, wie wir Ihre persönlichen Daten erheben und schützen."},
   "/terms": {"title":"Nutzungsbedingungen — The Storm Watcher","description":"Nutzungsbedingungen für The Storm Watcher Weltraumwetter-Anwendung."},

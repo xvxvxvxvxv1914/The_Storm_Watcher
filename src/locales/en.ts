@@ -1,4 +1,14 @@
 const en: Record<string, string> = {
+  // Temporary free launch access
+  'freeAccess.referralsTitle': "Invite friends",
+  'freeAccess.referralsSignIn': "Sign in to get your personal invite link.",
+  'freeAccess.nav': "Free access",
+  'freeAccess.label': "Full access",
+  'freeAccess.title': "All features are free during launch",
+  'freeAccess.description': "All features are available at no cost during this initial period.",
+  'freeAccess.accountNote': "Some personal and community features still require an account.",
+  'freeAccess.referralsSubtitle': "Invite friends to explore space weather. All features are currently free.",
+  'freeAccess.referralsShare': "Share your invite link with friends. No subscription is required.",
   'data.cachedAt': 'Saved data · last fetched {time}',
   // Navigation
   'nav.uv': 'UV',

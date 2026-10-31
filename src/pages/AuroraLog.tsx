@@ -7,6 +7,7 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { logError } from '../utils/logger';
 import { Link } from 'react-router-dom';
+import { usePaymentGate } from '../hooks/usePaymentGate';
 
 interface Sighting {
   id: string;
@@ -56,16 +57,14 @@ const emptyForm = () => ({
 });
 
 const AuroraLog = () => {
-  const { user, profile } = useAuth();
+  const { user } = useAuth();
+  const { hasPro } = usePaymentGate();
   const [sightings, setSightings] = useState<Sighting[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-
-  const isPro = profile?.plan === 'pro' || profile?.plan === 'premium'
-    || profile?.subscription_status === 'trialing';
 
   const load = useCallback(async () => {
     if (!user) return;
@@ -123,7 +122,7 @@ const AuroraLog = () => {
     );
   }
 
-  if (!isPro) {
+  if (!hasPro) {
     return (
       <div className="min-h-screen pt-24 flex items-center justify-center px-4">
         <div className="glass-surface rounded-3xl p-10 max-w-md text-center border border-[#10b981]/20">

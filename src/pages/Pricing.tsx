@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import StarField from '../components/StarField';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { isNative, isMaterial } from '../utils/platform';
 import { Check, Zap, Star, CreditCard, Sparkles, Smartphone, RefreshCw } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -11,6 +11,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { supabase } from '../lib/supabase';
 import { useIAP } from '../hooks/useIAP';
+import { usePaymentGate } from '../hooks/usePaymentGate';
 
 type Billing = 'monthly' | 'yearly';
 
@@ -49,7 +50,57 @@ const PREMIUM_FEATURE_KEYS = [
   'pricing.premium.feat.earlyAccess',
 ];
 
+function FreePricing() {
+  const { user, profile } = useAuth();
+  const { t } = useLanguage();
+  const { theme } = useTheme();
+  const hasExistingSubscription = !!profile?.stripe_customer_id;
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 pt-24 pb-28"
+      style={{ background: theme === 'dark' ? 'transparent' : '#eef2f8' }}
+    >
+      <StarField />
+      <PageMeta title={`${t('freeAccess.title')} — The Storm Watcher`} description={t('freeAccess.description')} path="/pricing" />
+      <div className="glass-surface relative max-w-xl w-full rounded-3xl border border-emerald-500/20 p-6 sm:p-10 text-center">
+        <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center mx-auto mb-6">
+          <Sparkles className="w-8 h-8 text-emerald-500" />
+        </div>
+        <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">{t('freeAccess.title')}</h1>
+        <p className="text-[#94a3b8] leading-relaxed mb-6">{t('freeAccess.description')}</p>
+        <ul className="space-y-3 mb-8 text-left">
+          {['pricing.pro.feat.forecasts', 'pricing.pro.feat.alerts', 'pricing.premium.feat.export'].map(key => (
+            <li key={key} className="flex items-center gap-3 text-sm text-[#94a3b8]">
+              <Check className="w-4 h-4 shrink-0 text-emerald-500" />
+              {t(key)}
+            </li>
+          ))}
+        </ul>
+        <Link to="/dashboard" className="block w-full px-6 py-3 rounded-xl bg-emerald-700 font-bold hover:bg-emerald-800 transition-colors" style={{ color: '#ffffff' }}>
+          {t('nav.dashboard')}
+        </Link>
+        {!user && (
+          <Link to="/auth" state={{ from: '/dashboard' }} className="block mt-4 font-semibold text-emerald-500 hover:underline">
+            {t('auth.signIn')}
+          </Link>
+        )}
+        <p className="text-[#64748b] text-sm mt-5">{t('freeAccess.accountNote')}</p>
+        {user && hasExistingSubscription && (
+          <Link to="/profile" className="block text-sm text-[#94a3b8] underline mt-5">
+            {t('pricing.manageSubscription')}
+          </Link>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function Pricing() {
+  const { paymentsEnabled } = usePaymentGate();
+  return paymentsEnabled ? <PaidPricing /> : <FreePricing />;
+}
+
+function PaidPricing() {
   const { user, profile, session, loading: authLoading } = useAuth();
   const { t } = useLanguage();
   const { theme } = useTheme();

@@ -3,12 +3,14 @@ import { Clock, Zap, AlertCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { isNative } from '../utils/platform';
+import { usePaymentGate } from '../hooks/usePaymentGate';
 
 export default function TrialBanner() {
   const { profile } = useAuth();
   const { t } = useLanguage();
+  const { paymentsEnabled } = usePaymentGate();
 
-  if (isNative()) return null;
+  if (!paymentsEnabled || isNative()) return null;
 
   const status = profile?.subscription_status;
 

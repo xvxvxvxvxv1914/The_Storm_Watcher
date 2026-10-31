@@ -3,6 +3,25 @@
  * Used only at build time by prerender-meta.mjs — never bundled into the client.
  */
 
+import { build } from 'esbuild';
+import { fileURLToPath } from 'node:url';
+
+// Node 20 cannot import TypeScript directly. Use the same in-memory bundling
+// approach as prerender-meta.mjs so SEO follows the shared access policy too.
+async function loadLocalTs(relativePath) {
+  const result = await build({
+    entryPoints: [fileURLToPath(new URL(relativePath, import.meta.url))],
+    bundle: true,
+    format: 'esm',
+    platform: 'neutral',
+    write: false,
+    logLevel: 'silent',
+  });
+  return import('data:text/javascript;base64,' + Buffer.from(result.outputFiles[0].text).toString('base64'));
+}
+
+const { FREE_ACCESS_ENABLED } = await loadLocalTs('../supabase/functions/_shared/accessPolicy.ts');
+
 export const LANG_CODES = {
   en: 'en', bg: 'bg', de: 'de', es: 'es', fr: 'fr',
   ja: 'ja', ru: 'ru', zh: 'zh-Hans', da: 'da', fi: 'fi',
@@ -417,3 +436,15 @@ export const META = {
   blog_effects: { en: { title: 'Space Weather and Its Effects on Earth | The Storm Watcher', description: 'Space weather affects power grids, satellites, GPS, aviation, and more. Here\'s how solar activity shapes modern technology.' } },
   blog_iss: { en: { title: 'What is the ISS and How to Track It | The Storm Watcher', description: 'The International Space Station is the brightest object in the night sky after the Moon. Learn how to spot it and track it in real time.' } },
 };
+
+// Preserve the paid copy above for later; the active launch page and its
+// prerendered/localized metadata must make the same promise in every language.
+if (FREE_ACCESS_ENABLED) {
+  await Promise.all(Object.keys(LANG_CODES).map(async (lang) => {
+    const { default: locale } = await loadLocalTs(`../src/locales/${lang}.ts`);
+    const title = locale['freeAccess.title'];
+    const description = locale['freeAccess.description'];
+    if (!title || !description) throw new Error(`Missing free-access metadata for ${lang}`);
+    META.pricing[lang] = { title: `${title} — The Storm Watcher`, description };
+  }));
+}

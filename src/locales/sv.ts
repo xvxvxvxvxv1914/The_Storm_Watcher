@@ -1,4 +1,14 @@
 const sv: Record<string, string> = {
+  // Temporary free launch access
+  'freeAccess.referralsTitle': "Bjud in vänner",
+  'freeAccess.referralsSignIn': "Logga in för att få din personliga inbjudningslänk.",
+  'freeAccess.nav': "Gratis tillgång",
+  'freeAccess.label': "Full tillgång",
+  'freeAccess.title': "Alla funktioner är gratis under lanseringen",
+  'freeAccess.description': "Alla funktioner är tillgängliga utan kostnad under denna inledande period.",
+  'freeAccess.accountNote': "Vissa personliga funktioner och gemenskapsfunktioner kräver fortfarande ett konto.",
+  'freeAccess.referralsSubtitle': "Bjud in vänner att utforska rymdvädret. Alla funktioner är gratis just nu.",
+  'freeAccess.referralsShare': "Dela din inbjudningslänk med vänner. Ingen prenumeration krävs.",
   'data.cachedAt': 'Sparade data · hämtade {time}',
   'nav.uv': 'UV',
   'nav.sun': 'Sol',

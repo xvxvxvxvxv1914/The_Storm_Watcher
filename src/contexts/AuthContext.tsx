@@ -66,7 +66,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         try {
           const { data, error, status } = await supabase
             .from('profiles')
-            .select('id, email, full_name, avatar_url, plan, is_beta, weekly_digest, subscription_status, subscription_period_end, referral_code, referred_by, referral_pro_until, created_at, updated_at')
+            .select('id, email, full_name, avatar_url, plan, is_beta, weekly_digest, stripe_customer_id, subscription_status, subscription_period_end, referral_code, referred_by, referral_pro_until, created_at, updated_at')
             .eq('id', userId)
             .abortSignal(ctrl.signal)
             .maybeSingle();

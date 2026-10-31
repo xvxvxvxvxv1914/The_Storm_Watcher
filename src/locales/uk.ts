@@ -1,4 +1,14 @@
 const uk: Record<string, string> = {
+  // Temporary free launch access
+  'freeAccess.referralsTitle': "Запросити друзів",
+  'freeAccess.referralsSignIn': "Увійдіть, щоб отримати особисте посилання-запрошення.",
+  'freeAccess.nav': "Безкоштовний доступ",
+  'freeAccess.label': "Повний доступ",
+  'freeAccess.title': "На початковому етапі всі функції безкоштовні",
+  'freeAccess.description': "Усі функції доступні безкоштовно протягом цього початкового періоду.",
+  'freeAccess.accountNote': "Для деяких особистих функцій і функцій спільноти все ще потрібен обліковий запис.",
+  'freeAccess.referralsSubtitle': "Запросіть друзів стежити за космічною погодою. Наразі всі функції безкоштовні.",
+  'freeAccess.referralsShare': "Поділіться посиланням-запрошенням із друзями. Підписка не потрібна.",
   'data.cachedAt': 'Збережені дані · отримано {time}',
   'nav.uv': 'УФ',
   'nav.sun': 'Сонце',

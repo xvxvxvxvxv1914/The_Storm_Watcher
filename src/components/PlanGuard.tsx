@@ -3,7 +3,7 @@ import { Lock, Sparkles, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { isNative } from '../utils/platform';
-import { hasPlanAccess } from '../utils/planAccess';
+import { arePaymentsEnabled, hasPlanAccess } from '../utils/planAccess';
 import StarField from './StarField';
 import ProfileLoadStatus from './ProfileLoadStatus';
 
@@ -23,7 +23,7 @@ const PlanGuard = ({ requiredPlan, children, fullPage = false }: PlanGuardProps)
   const location = useLocation();
   const navigate = useNavigate();
 
-  const paymentsEnabled = import.meta.env.VITE_PAYMENTS_ENABLED === 'true';
+  const paymentsEnabled = arePaymentsEnabled();
   const userPlan: Plan = profile?.plan ?? 'free';
   const hasAccess = hasPlanAccess({
     requiredPlan,

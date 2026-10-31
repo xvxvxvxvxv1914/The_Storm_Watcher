@@ -1,4 +1,14 @@
 const ja: Record<string, string> = {
+  // Temporary free launch access
+  'freeAccess.referralsTitle': "友達を招待",
+  'freeAccess.referralsSignIn': "ログインすると、専用の招待リンクを取得できます。",
+  'freeAccess.nav': "無料アクセス",
+  'freeAccess.label': "全機能を利用可能",
+  'freeAccess.title': "公開初期はすべての機能を無料で利用できます",
+  'freeAccess.description': "この初期期間中は、すべての機能を無料でご利用いただけます。",
+  'freeAccess.accountNote': "一部の個人向け機能やコミュニティ機能には、引き続きアカウントが必要です。",
+  'freeAccess.referralsSubtitle': "友達を招待して宇宙天気を楽しみましょう。現在、すべての機能が無料です。",
+  'freeAccess.referralsShare': "招待リンクを友達と共有しましょう。サブスクリプションは不要です。",
   'data.cachedAt': '保存データ · 取得日時 {time}',
   // Navigation
   'nav.uv': 'UV指数',

@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
+import { usePaymentGate } from './usePaymentGate';
 
 export interface FavoriteLocation {
   id: string;
@@ -24,11 +25,12 @@ function saveLocalFavorites(items: FavoriteLocation[]) {
 }
 
 export function useFavoriteLocations() {
-  const { user, profile } = useAuth();
+  const { user } = useAuth();
+  const { hasPro, hasPremium } = usePaymentGate();
   const [favorites, setFavorites] = useState<FavoriteLocation[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const maxFavorites = profile?.plan === 'premium' ? Infinity : profile?.plan === 'pro' ? 10 : 3;
+  const maxFavorites = hasPremium ? Infinity : hasPro ? 10 : 3;
 
   useEffect(() => {
     if (!user) {

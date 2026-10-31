@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom';
 
-// Payments are ON by default in tests; override with vi.stubEnv('VITE_PAYMENTS_ENABLED', 'false') per test.
+// Exercise the launch policy even against a previously paid build setting.
+// Paid-mode regression tests explicitly mock the shared launch policy off.
 Object.assign(import.meta.env, { VITE_PAYMENTS_ENABLED: 'true' });
 
 /**

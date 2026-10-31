@@ -13,6 +13,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { supabase } from '../lib/supabase';
 import AvatarCropper from '../components/AvatarCropper';
 import StarField from '../components/StarField';
+import { usePaymentGate } from '../hooks/usePaymentGate';
 
 const PLAN_CONFIG = {
   free: {
@@ -68,6 +69,7 @@ const PLAN_PILLS: Array<{ key: keyof typeof PLAN_CONFIG; label: string }> = [
 export default function Profile() {
   const { user, profile, updateProfile, loading } = useAuth();
   const { t } = useLanguage();
+  const { paymentsEnabled } = usePaymentGate();
   const navigate = useNavigate();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
@@ -85,7 +87,8 @@ export default function Profile() {
   const [cropSrc, setCropSrc] = useState<string | null>(null);
 
   const plan = (profile?.plan ?? 'free') as keyof typeof PLAN_CONFIG;
-  const cfg = PLAN_CONFIG[plan] ?? PLAN_CONFIG.free;
+  const cfg = PLAN_CONFIG[paymentsEnabled ? plan : 'free'] ?? PLAN_CONFIG.free;
+  const accessLabel = paymentsEnabled ? cfg.label : t('freeAccess.label');
   const isPro = plan === 'pro';
   const isPremium = plan === 'premium';
   const isPaid = isPro || isPremium;
@@ -256,8 +259,8 @@ export default function Profile() {
                         style={{ boxShadow: `0 4px 16px ${cfg.color}50` }}
                       >
                         <PlanIcon className="w-3 h-3" />
-                        {cfg.label}
-                        {isTrialing && <span className="opacity-80">· Trial</span>}
+                        {accessLabel}
+                        {paymentsEnabled && isTrialing && <span className="opacity-80">· Trial</span>}
                       </div>
                       {memberSince && (
                         <span className="text-[#94a3b8] text-sm">
@@ -268,7 +271,7 @@ export default function Profile() {
                     </div>
 
                     {/* Plan switcher pills */}
-                    <div className={`inline-flex mt-4 p-1 rounded-full border ${isDark ? 'bg-white/[0.03] border-white/8' : 'bg-black/[0.04] border-black/10'}`}>
+                    {paymentsEnabled && <div className={`inline-flex mt-4 p-1 rounded-full border ${isDark ? 'bg-white/[0.03] border-white/8' : 'bg-black/[0.04] border-black/10'}`}>
                       {PLAN_PILLS.map(({ key, label }) => {
                         const active = plan === key;
                         return active ? (
@@ -293,7 +296,7 @@ export default function Profile() {
                           </Link>
                         );
                       })}
-                    </div>
+                    </div>}
                   </div>
                 </div>
 
@@ -305,9 +308,9 @@ export default function Profile() {
                   </div>
                   <div className="w-full lg:w-24 h-24 rounded-2xl glass-surface flex flex-col items-center justify-center">
                     <div className={`text-2xl lg:text-3xl font-bold bg-gradient-to-br ${cfg.gradient} bg-clip-text text-transparent`}>
-                      {cfg.label[0]}
+                      {paymentsEnabled ? cfg.label[0] : <CheckCircle2 className="w-7 h-7 text-emerald-500" />}
                     </div>
-                    <div className="text-[10px] text-[#64748b] uppercase tracking-wider mt-1">Plan</div>
+                    <div className="text-[10px] text-[#64748b] uppercase tracking-wider mt-1 text-center px-1">{paymentsEnabled ? t('profile.plan') : t('freeAccess.label')}</div>
                   </div>
                   <div className="w-full lg:w-24 h-24 rounded-2xl glass-surface flex flex-col items-center justify-center">
                     <Sparkles className="w-6 h-6 lg:w-7 lg:h-7" style={{ color: cfg.color }} />
@@ -350,8 +353,8 @@ export default function Profile() {
                           <Icon className="w-5 h-5 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-white text-sm font-bold leading-tight">{label}</p>
-                          <p className="text-[#64748b] text-xs mt-0.5">{sub}</p>
+                          <p className="text-white text-sm font-bold leading-tight">{to === '/pricing' && !paymentsEnabled ? t('freeAccess.nav') : label}</p>
+                          <p className="text-[#64748b] text-xs mt-0.5">{to === '/pricing' && !paymentsEnabled ? t('freeAccess.label') : sub}</p>
                         </div>
                       </div>
                     </Link>
@@ -419,9 +422,9 @@ export default function Profile() {
                   style={{ background: cfg.color }}
                 />
                 <div className="relative p-5">
-                  <div className="flex items-start justify-between mb-4">
+                  <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
                     <div className="flex-1 min-w-0">
-                      <p className="text-[#94a3b8] text-[10px] font-bold uppercase tracking-[0.3em] mb-3">Subscription</p>
+                      <p className="text-[#94a3b8] text-[10px] font-bold uppercase tracking-[0.3em] mb-3">{paymentsEnabled ? 'Subscription' : t('freeAccess.nav')}</p>
                       <div className="flex items-center gap-3">
                         <div
                           className={`w-10 h-10 rounded-xl bg-gradient-to-br ${cfg.gradient} flex items-center justify-center flex-shrink-0`}
@@ -431,7 +434,7 @@ export default function Profile() {
                         </div>
                         <div className="min-w-0">
                           <div className="flex items-center gap-2 leading-tight">
-                            <p className="text-white font-bold text-base">Storm Watcher {cfg.label}</p>
+                            <p className="text-white font-bold text-base">{paymentsEnabled ? `Storm Watcher ${cfg.label}` : accessLabel}</p>
                             {isBeta && (
                               <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
                                 style={{ background: '#7c3aed33', color: '#a78bfa', border: '1px solid #7c3aed44' }}>
@@ -439,19 +442,19 @@ export default function Profile() {
                               </span>
                             )}
                           </div>
-                          {isTrialing && trialDaysLeft !== null && (
+                          {paymentsEnabled && isTrialing && trialDaysLeft !== null && (
                             <p className="text-orange-400 text-xs mt-0.5 font-medium">{trialDaysLeft} days left in trial</p>
                           )}
                           {!isTrialing && isPaid && subscriptionEnd && (
                             <p className="text-[#64748b] text-xs mt-0.5">Renews {subscriptionEnd}</p>
                           )}
-                          {!isPaid && !isTrialing && (
+                          {paymentsEnabled && !isPaid && !isTrialing && (
                             <p className="text-[#64748b] text-xs mt-0.5">Free forever</p>
                           )}
                         </div>
                       </div>
                     </div>
-                    {(isPaid || isTrialing || isPastDue) ? (
+                    {(profile?.stripe_customer_id || isPaid || isTrialing || isPastDue) ? (
                       <button
                         onClick={openPortal}
                         disabled={portalLoading}
@@ -459,9 +462,9 @@ export default function Profile() {
                         style={{ boxShadow: `0 4px 16px ${cfg.color}40` }}
                       >
                         <CreditCard className="w-3 h-3" />
-                        {portalLoading ? '...' : 'Manage'}
+                        {portalLoading ? '...' : t('pricing.manageSubscription')}
                       </button>
-                    ) : (
+                    ) : paymentsEnabled ? (
                       <Link
                         to="/pricing"
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider text-white bg-gradient-to-r ${cfg.gradient} hover:opacity-90 transition-opacity flex-shrink-0`}
@@ -470,11 +473,16 @@ export default function Profile() {
                         <Zap className="w-3 h-3" />
                         Upgrade
                       </Link>
-                    )}
+                    ) : null}
                   </div>
 
                   <div className="space-y-2.5 pt-3 border-t border-white/8">
-                    {(PLAN_FEATURES[plan] ?? PLAN_FEATURES.free).map(f => (
+                    {!paymentsEnabled && <p className="text-sm text-[#94a3b8] leading-relaxed">{t('freeAccess.description')}</p>}
+                    {(paymentsEnabled ? (PLAN_FEATURES[plan] ?? PLAN_FEATURES.free) : [
+                      t('pricing.pro.feat.forecasts'),
+                      t('pricing.pro.feat.alerts'),
+                      t('pricing.premium.feat.export'),
+                    ]).map(f => (
                       <div key={f} className="flex items-center gap-2.5 text-sm text-[#cbd5e1]">
                         <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: cfg.color }} />
                         <span>{f}</span>

@@ -9,6 +9,7 @@ import StormWatchBanner from './StormWatchBanner';
 import { useKpLive } from '../hooks/useKpLive';
 import { switchLangUrl, persistLanguage, hreflangCode } from '../utils/langUrl';
 import { isMaterial } from '../utils/platform';
+import { usePaymentGate } from '../hooks/usePaymentGate';
 
 const Navigation = () => {
   const md3 = isMaterial();
@@ -26,6 +27,7 @@ const Navigation = () => {
   const { language, t } = useLanguage();
   const { user, profile, signOut } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { paymentsEnabled } = usePaymentGate();
 
   const handleLogout = async () => {
     await signOut();
@@ -82,7 +84,7 @@ const Navigation = () => {
     { to: '/iss',              label: t('nav.iss') },
     // Info
     { to: '/magnetic-effects', label: t('nav.magneticEffects') },
-    { to: '/referrals',        label: t('nav.referrals') || 'Refer & Earn' },
+    { to: '/referrals',        label: paymentsEnabled ? t('nav.referrals') : t('freeAccess.referralsTitle') },
     { to: '/faq',              label: t('nav.faq') },
   ];
 
@@ -321,7 +323,7 @@ const Navigation = () => {
                   : 'text-[#94a3b8] border-white/10 hover:text-white hover:border-white/20 hover:bg-white/5'
               }`}
             >
-              {t('nav.pricing') || 'Pricing'}
+              {paymentsEnabled ? t('nav.pricing') : t('freeAccess.nav')}
             </Link>
 
             {user ? (

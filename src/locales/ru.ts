@@ -1,4 +1,14 @@
 const ru: Record<string, string> = {
+  // Temporary free launch access
+  'freeAccess.referralsTitle': "Пригласить друзей",
+  'freeAccess.referralsSignIn': "Войдите, чтобы получить личную пригласительную ссылку.",
+  'freeAccess.nav': "Бесплатный доступ",
+  'freeAccess.label': "Полный доступ",
+  'freeAccess.title': "На начальном этапе все функции бесплатны",
+  'freeAccess.description': "Все функции доступны бесплатно в течение этого начального периода.",
+  'freeAccess.accountNote': "Для некоторых личных функций и функций сообщества по-прежнему нужен аккаунт.",
+  'freeAccess.referralsSubtitle': "Пригласите друзей следить за космической погодой. Сейчас все функции бесплатны.",
+  'freeAccess.referralsShare': "Поделитесь пригласительной ссылкой с друзьями. Подписка не требуется.",
   'data.cachedAt': 'Сохранённые данные · получены {time}',
   // Navigation
   'nav.uv': 'УФ-индекс',

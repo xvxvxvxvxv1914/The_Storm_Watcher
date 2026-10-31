@@ -14,7 +14,7 @@ const meta: PageMetaTable = {
   "/iss": {"title":"Suivi ISS — Position en Direct de la Station Spatiale | The Storm Watcher","description":"Suivez la Station Spatiale Internationale en temps réel. Position, altitude, vitesse et prochains passages."},
   "/faq": {"title":"FAQ Aurore — Guide des Aurores Boréales | The Storm Watcher","description":"Tout ce que vous devez savoir sur les aurores boréales, l'indice Kp et comment voir l'aurore."},
   "/magnetic-effects": {"title":"Tempêtes Magnétiques & Santé Humaine — The Storm Watcher","description":"Comment l'activité géomagnétique affecte le corps humain — maux de tête, sommeil, humeur — et quoi faire."},
-  "/pricing": {"title":"Tarifs — Plans Pro & Premium de The Storm Watcher","description":"Choisissez votre plan. Surveillance aurore gratuite ou Pro/Premium avec alertes avancées et 14 jours d'essai."},
+  "/pricing": {"title":"Toutes les fonctionnalités sont gratuites au lancement — The Storm Watcher","description":"Toutes les fonctionnalités sont accessibles gratuitement pendant cette période de lancement."},
   "/about": {"title":"À Propos — The Storm Watcher","description":"Application de surveillance météo spatiale et de prévision d'aurores. Découvrez notre mission et nos sources de données."},
   "/privacy": {"title":"Politique de Confidentialité — The Storm Watcher","description":"Politique de confidentialité de The Storm Watcher. Découvrez comment nous collectons et protégeons vos données."},
   "/terms": {"title":"Conditions d'utilisation — The Storm Watcher","description":"Conditions d'utilisation de l'application de surveillance météo spatiale The Storm Watcher."},

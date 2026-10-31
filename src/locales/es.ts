@@ -1,4 +1,14 @@
 const es: Record<string, string> = {
+  // Temporary free launch access
+  'freeAccess.referralsTitle': "Invita a tus amigos",
+  'freeAccess.referralsSignIn': "Inicia sesión para obtener tu enlace de invitación personal.",
+  'freeAccess.nav': "Acceso gratuito",
+  'freeAccess.label': "Acceso completo",
+  'freeAccess.title': "Todas las funciones son gratuitas durante el lanzamiento",
+  'freeAccess.description': "Todas las funciones están disponibles sin coste durante este periodo inicial.",
+  'freeAccess.accountNote': "Algunas funciones personales y de la comunidad siguen requiriendo una cuenta.",
+  'freeAccess.referralsSubtitle': "Invita a tus amigos a descubrir el clima espacial. Todas las funciones son gratuitas por ahora.",
+  'freeAccess.referralsShare': "Comparte tu enlace de invitación con tus amigos. No se requiere una suscripción.",
   'data.cachedAt': 'Datos guardados · obtenidos el {time}',
   // Navigation
   'nav.uv': 'Índice UV',

@@ -34,7 +34,7 @@ const Home = () => {
   const { t, language } = useLanguage();
   const { settings } = useSettings();
   const { user } = useAuth();
-  const { hasPro: hasPaidPlan } = usePaymentGate();
+  const { hasPro: hasPaidPlan, paymentsEnabled } = usePaymentGate();
   // kpStatus/kpStale let us distinguish "still loading" from "genuinely failed"
   // and from "showing a cached value" — so the homepage no longer flashes the
   // error card while the Kp fetch is merely in flight.
@@ -400,21 +400,21 @@ const Home = () => {
             {/* Native users already live in the app — skip the web funnel CTAs */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
               <Link
-                to={user || isNative() ? '/dashboard' : '/pricing'}
+                to={!paymentsEnabled || user || isNative() ? '/dashboard' : '/pricing'}
                 className="px-8 py-4 bg-gradient-to-r from-[#10b981] to-[#059669] text-white rounded-lg font-bold uppercase tracking-wider hover:scale-105 transition-transform glow-green"
               >
-                {user || isNative() ? t('home.hero.viewMap') : t('home.hero.getStarted')}
+                {!paymentsEnabled ? t('nav.dashboard') : user || isNative() ? t('home.hero.viewMap') : t('home.hero.getStarted')}
               </Link>
               {!user && !isNative() && (
                 <Link
-                  to="/dashboard"
+                  to={paymentsEnabled ? '/dashboard' : '/auth'}
                   className="px-8 py-4 glass-surface text-white rounded-lg font-bold uppercase tracking-wider hover:glow-orange transition-all border border-white/10"
                 >
-                  {t('home.hero.viewMap')}
+                  {paymentsEnabled ? t('home.hero.viewMap') : t('auth.signIn')}
                 </Link>
               )}
             </div>
-            {!isNative() && !hasPaidPlan && (
+            {paymentsEnabled && !isNative() && !hasPaidPlan && (
               <div className="flex justify-center mb-8">
                 <Link
                   to="/pricing"

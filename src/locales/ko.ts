@@ -1,4 +1,14 @@
 const ko: Record<string, string> = {
+  // Temporary free launch access
+  'freeAccess.referralsTitle': "친구 초대",
+  'freeAccess.referralsSignIn': "로그인하여 개인 초대 링크를 받으세요.",
+  'freeAccess.nav': "무료 이용",
+  'freeAccess.label': "모든 기능 이용",
+  'freeAccess.title': "출시 초기에는 모든 기능이 무료입니다",
+  'freeAccess.description': "이 초기 기간에는 모든 기능을 무료로 이용할 수 있습니다.",
+  'freeAccess.accountNote': "일부 개인 및 커뮤니티 기능은 여전히 계정이 필요합니다.",
+  'freeAccess.referralsSubtitle': "친구를 초대해 우주 날씨를 알아보세요. 현재 모든 기능이 무료입니다.",
+  'freeAccess.referralsShare': "초대 링크를 친구와 공유하세요. 구독은 필요하지 않습니다.",
   'data.cachedAt': '저장된 데이터 · 가져온 시간 {time}',
   // Navigation
   'nav.uv': 'UV',

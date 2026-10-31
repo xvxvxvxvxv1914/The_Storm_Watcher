@@ -1,4 +1,4 @@
-import { paidPlanFilter } from '../_shared/planAccess.ts';
+import { withPushPlanAccess } from '../_shared/planAccess.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 // @deno-types="npm:@types/web-push"
 import webpush from 'npm:web-push';
@@ -9,7 +9,8 @@ const NOAA_KP_URL = 'https://services.swpc.noaa.gov/json/planetary_k_index_1m.js
 const COOLDOWN_MS = 2 * 60 * 60 * 1000; // 2 hours between alerts per subscription
 
 /**
- * Push is a paid feature: Pro, Premium, or still inside a trial.
+ * Push is available to every plan during free access. When paid access returns,
+ * withPushPlanAccess restores the Pro/Premium/trial/referral requirement.
  *
  * Applied with `{ referencedTable: 'profiles' }` against a `profiles!inner(...)`
  * embed, so it filters the parent row by its profile.
@@ -438,14 +439,12 @@ Deno.serve(async (req: Request) => {
   let nativeSent = 0;
 
   // 2. Web push (existing push_subscriptions)
-  // Only send to Pro/Premium users — push notifications are a paid feature.
-  // Trialing users are also included (trialing = pro access).
-  const { data: subs, error: subsError } = await supabase
+  // The shared policy changes only plan eligibility, keeping user preferences.
+  const { data: subs, error: subsError } = await withPushPlanAccess(supabase
     .from('push_subscriptions')
     .select('id, endpoint, p256dh, auth, threshold_kp, bz_alerts_enabled, bz_threshold, last_bz_notified_at, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
     .lte('threshold_kp', currentKp)
-    .or(`last_notified_at.is.null,last_notified_at.lt.${cooldownCutoff}`)
-    .or(paidPlanFilter(new Date()), { referencedTable: 'profiles' });
+    .or(`last_notified_at.is.null,last_notified_at.lt.${cooldownCutoff}`));
 
   if (subsError) {
     console.error('DB query failed:', subsError.message);
@@ -487,12 +486,11 @@ Deno.serve(async (req: Request) => {
 
   // 3. Native push (device_push_tokens — iOS APNs + Android FCM)
   if (apnsEnabled || fcmEnabled) {
-    const { data: tokens, error: tokensError } = await supabase
+    const { data: tokens, error: tokensError } = await withPushPlanAccess(supabase
       .from('device_push_tokens')
       .select('id, token, platform, threshold_kp, bz_alerts_enabled, bz_threshold, last_notified_at, last_bz_notified_at, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
       .lte('threshold_kp', currentKp)
-      .or(`last_notified_at.is.null,last_notified_at.lt.${cooldownCutoff}`)
-      .or(paidPlanFilter(new Date()), { referencedTable: 'profiles' });
+      .or(`last_notified_at.is.null,last_notified_at.lt.${cooldownCutoff}`));
 
     if (tokensError) {
       console.error('Device tokens query failed:', tokensError.message);
@@ -609,21 +607,19 @@ Deno.serve(async (req: Request) => {
     const bzCooldownCutoff = cooldownCutoff;
 
     const [webRes, nativeRes] = await Promise.all([
-      supabase
+      withPushPlanAccess(supabase
         .from('push_subscriptions')
         .select('id, endpoint, p256dh, auth, bz_threshold, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
         .eq('bz_alerts_enabled', true)
         .gte('bz_threshold', bz)   // threshold is negative; Bz at or below it fires
-        .or(`last_bz_notified_at.is.null,last_bz_notified_at.lt.${bzCooldownCutoff}`)
-        .or(paidPlanFilter(new Date()), { referencedTable: 'profiles' }),
+        .or(`last_bz_notified_at.is.null,last_bz_notified_at.lt.${bzCooldownCutoff}`)),
       (apnsEnabled || fcmEnabled)
-        ? supabase
+        ? withPushPlanAccess(supabase
             .from('device_push_tokens')
             .select('id, token, platform, bz_threshold, tz_offset_min, profiles!inner(plan, subscription_status, quiet_start, quiet_end)')
             .eq('bz_alerts_enabled', true)
             .gte('bz_threshold', bz)
-            .or(`last_bz_notified_at.is.null,last_bz_notified_at.lt.${bzCooldownCutoff}`)
-            .or(paidPlanFilter(new Date()), { referencedTable: 'profiles' })
+            .or(`last_bz_notified_at.is.null,last_bz_notified_at.lt.${bzCooldownCutoff}`))
         : Promise.resolve({ data: [], error: null }),
     ]);
 

@@ -1,4 +1,14 @@
 const fi: Record<string, string> = {
+  // Temporary free launch access
+  'freeAccess.referralsTitle': "Kutsu ystäviä",
+  'freeAccess.referralsSignIn': "Kirjaudu sisään saadaksesi oman kutsulinkkisi.",
+  'freeAccess.nav': "Maksuton käyttö",
+  'freeAccess.label': "Kaikki ominaisuudet",
+  'freeAccess.title': "Kaikki ominaisuudet ovat maksuttomia julkaisuvaiheessa",
+  'freeAccess.description': "Kaikki ominaisuudet ovat käytettävissä maksutta tämän alkuvaiheen ajan.",
+  'freeAccess.accountNote': "Jotkin henkilökohtaiset ja yhteisön ominaisuudet vaativat edelleen käyttäjätilin.",
+  'freeAccess.referralsSubtitle': "Kutsu ystäviä tutustumaan avaruussäähän. Kaikki ominaisuudet ovat tällä hetkellä maksuttomia.",
+  'freeAccess.referralsShare': "Jaa kutsulinkkisi ystävillesi. Tilausta ei tarvita.",
   'data.cachedAt': 'Tallennetut tiedot · haettu {time}',
   'nav.uv': 'UV',
   'nav.sun': 'Aurinko',

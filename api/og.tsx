@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { ImageResponse } from '@vercel/og';
 import React from 'react';
+import { FREE_ACCESS_ENABLED } from '../supabase/functions/_shared/accessPolicy';
 
 export const config = { runtime: 'edge' };
 
@@ -62,7 +63,9 @@ export default async function handler(req: Request) {
     aurora:    { title: 'Aurora Forecast',     subtitle: 'Live OVATION aurora visibility map',          accent: '#10b981' },
     forecast:  { title: 'Solar Forecast',      subtitle: '3-day Kp outlook · solar wind · X-ray flux',  accent: '#f97316' },
     calendar:  { title: 'Aurora Calendar',     subtitle: '3-night viewing outlook with cloud cover',    accent: '#10b981' },
-    pricing:   { title: 'Storm Watcher Pro',   subtitle: 'Unlock aurora maps, alerts & more',           accent: '#7c3aed' },
+    pricing:   FREE_ACCESS_ENABLED
+      ? { title: 'Free access', subtitle: 'All features are free during launch', accent: '#10b981' }
+      : { title: 'Storm Watcher Pro', subtitle: 'Unlock aurora maps, alerts & more', accent: '#7c3aed' },
     mood:      { title: 'Cosmic Mood',         subtitle: 'Track how space weather affects you',         accent: '#ec4899' },
     alerts:    { title: 'Space Weather Alerts',subtitle: 'Real-time CME, solar flare & storm alerts',   accent: '#ef4444' },
     dashboard: { title: 'Live Dashboard',      subtitle: 'Kp index, solar wind, Bz & X-ray flux',      accent: '#f97316' },

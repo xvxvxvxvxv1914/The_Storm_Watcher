@@ -1,4 +1,14 @@
 const da: Record<string, string> = {
+  // Temporary free launch access
+  'freeAccess.referralsTitle': "Inviter venner",
+  'freeAccess.referralsSignIn': "Log ind for at få dit personlige invitationslink.",
+  'freeAccess.nav': "Gratis adgang",
+  'freeAccess.label': "Fuld adgang",
+  'freeAccess.title': "Alle funktioner er gratis i lanceringsperioden",
+  'freeAccess.description': "Alle funktioner er tilgængelige gratis i denne indledende periode.",
+  'freeAccess.accountNote': "Nogle personlige funktioner og fællesskabsfunktioner kræver stadig en konto.",
+  'freeAccess.referralsSubtitle': "Inviter venner til at udforske rumvejret. Alle funktioner er gratis i øjeblikket.",
+  'freeAccess.referralsShare': "Del dit invitationslink med venner. Der kræves intet abonnement.",
   'data.cachedAt': 'Gemte data · hentet {time}',
   'nav.uv': 'UV',
   'nav.sun': 'Sol',

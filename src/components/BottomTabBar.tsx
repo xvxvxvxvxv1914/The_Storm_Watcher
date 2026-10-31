@@ -13,6 +13,7 @@ import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { usePaymentGate } from '../hooks/usePaymentGate';
 import { switchLangUrl, persistLanguage, hreflangCode } from '../utils/langUrl';
 
 const hapticLight = () => Haptics.impact({ style: ImpactStyle.Light }).catch(() => {});
@@ -123,6 +124,7 @@ const BottomTabBar = () => {
   const { t, language } = useLanguage();
   const { user, profile, signOut } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { paymentsEnabled } = usePaymentGate();
 
   const isMoreActive = moreRoutes.some(r => location.pathname === r);
 
@@ -140,7 +142,7 @@ const BottomTabBar = () => {
   };
 
   const moreLinks = [
-    { to: '/pricing',          icon: CreditCard,    label: t('nav.pricing') || 'Pricing',            badge: 'bg-emerald-500' },
+    { to: '/pricing',          icon: CreditCard,    label: paymentsEnabled ? t('nav.pricing') : t('freeAccess.nav'), badge: 'bg-emerald-500' },
     // Priority (in desktop top menu, no room on mobile bottom bar)
     { to: '/alerts',           icon: AlertTriangle, label: t('nav.alerts'),                          badge: 'bg-red-500' },
     { to: '/calendar',         icon: CalendarDays,  label: t('nav.calendar') || 'Aurora Calendar',   badge: 'bg-emerald-600' },

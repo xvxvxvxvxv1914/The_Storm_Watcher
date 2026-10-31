@@ -14,7 +14,7 @@ const meta: PageMetaTable = {
   "/iss": {"title":"ISS-rakari — Staðsetning Alþjóðlegu Geimstöðvarinnar | The Storm Watcher","description":"Fylgstu með ISS í rauntíma. Staðsetning, hæð, hraði og komandi yfirflug yfir þinn stað."},
   "/faq": {"title":"Norðurljós Algengar Spurningar — Norðurljósahandbók | The Storm Watcher","description":"Allt sem þú þarft að vita um norðurljós, Kp-vísitölu og hvernig á að sjá norðurljósin."},
   "/magnetic-effects": {"title":"Seguleldur og Mannleg Heilsa — The Storm Watcher","description":"Hvernig segulmagn hefur áhrif á líkamann — höfuðverkur, svefn, skap — og hvað er hægt að gera."},
-  "/pricing": {"title":"Verðlag — The Storm Watcher Pro & Premium Áskriftir","description":"Veldu þinn áskriftarpakka. Ókeypis norðurljósaeftirlit eða Pro/Premium með háþróaðar viðvaranir og 14 daga prufutíma."},
+  "/pricing": {"title":"Allir eiginleikar eru ókeypis á upphafstímabilinu — The Storm Watcher","description":"Allir eiginleikar eru í boði án endurgjalds á þessu upphafstímabili."},
   "/about": {"title":"Um okkur — The Storm Watcher","description":"Rauntíma geimveðureftirlit og norðurljósaspá-app. Kynntu þér hlutverk okkar og gagnaveitu."},
   "/privacy": {"title":"Persónuverndarstefna — The Storm Watcher","description":"Persónuverndarstefna The Storm Watcher. Kynntu þér hvernig við söfnum og verndum persónuupplýsingar þínar."},
   "/terms": {"title":"Notkunarskilmálar — The Storm Watcher","description":"Notkunarskilmálar The Storm Watcher geimveðurforritin."},

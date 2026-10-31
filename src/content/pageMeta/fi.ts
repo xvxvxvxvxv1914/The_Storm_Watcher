@@ -14,7 +14,7 @@ const meta: PageMetaTable = {
   "/iss": {"title":"ISS-seuranta — Kansainvälisen Avaruusaseman Sijainti | The Storm Watcher","description":"Seuraa ISS:ää reaaliajassa. Sijainti, korkeus, nopeus ja tulevat ylilennot sijaintisi yllä."},
   "/faq": {"title":"Revontuli UKK — Revontulioppas | The Storm Watcher","description":"Kaikki mitä sinun täytyy tietää revontulista, Kp-indeksistä ja kuinka nähdä revontulet."},
   "/magnetic-effects": {"title":"Magneettiset Myrskyt ja Ihmisen Terveys — The Storm Watcher","description":"Kuinka geomagneettinen aktiivisuus vaikuttaa kehoon: päänsärky, uni, mieliala ja mitä tehdä."},
-  "/pricing": {"title":"Hinnoittelu — The Storm Watcher Pro & Premium Paketit","description":"Valitse pakettisi. Ilmainen revontuliseuranta tai Pro/Premium edistyneillä hälytyksillä ja 14 päivän ilmaisella kokeilulla."},
+  "/pricing": {"title":"Kaikki ominaisuudet ovat maksuttomia julkaisuvaiheessa — The Storm Watcher","description":"Kaikki ominaisuudet ovat käytettävissä maksutta tämän alkuvaiheen ajan."},
   "/about": {"title":"Tietoja — The Storm Watcher","description":"Reaaliaikainen avaruussään seuranta ja revontuliennustus-sovellus. Tutustu tehtäväämme ja tietolähteisiimme."},
   "/privacy": {"title":"Tietosuojakäytäntö — The Storm Watcher","description":"The Storm Watcherin tietosuojakäytäntö. Katso, kuinka keräämme ja suojaamme henkilökohtaisia tietojasi."},
   "/terms": {"title":"Käyttöehdot — The Storm Watcher","description":"The Storm Watcher -avaruussääsovelluksen käyttöehdot."},

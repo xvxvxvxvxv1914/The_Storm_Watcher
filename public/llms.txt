@@ -23,9 +23,9 @@ The Storm Watcher is a free PWA and mobile app (iOS/Android) for tracking space 
 - [Magnetic Effects](https://www.thestormwatcher.com/magnetic-effects): How geomagnetic storms affect humans and technology
 - [FAQ](https://www.thestormwatcher.com/faq): Frequently asked questions about space weather and the Kp index
 - [Blog](https://www.thestormwatcher.com/blog): Space weather articles and educational content
-- [Refer & Earn](https://www.thestormwatcher.com/referrals): Referral program — earn rewards by inviting friends
+- [Invite friends](https://www.thestormwatcher.com/referrals): Share a personal invite link with friends
 - [About](https://www.thestormwatcher.com/about): About The Storm Watcher and its data sources
-- [Pricing](https://www.thestormwatcher.com/pricing): Free, Pro (€3.99/mo), and Premium (€7.99/mo) plans
+- [Feature access](https://www.thestormwatcher.com/pricing): Current feature access, account requirements, and subscription availability
 
 ## Data Sources
 

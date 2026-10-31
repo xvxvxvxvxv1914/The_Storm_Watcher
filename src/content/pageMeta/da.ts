@@ -14,7 +14,7 @@ const meta: PageMetaTable = {
   "/iss": {"title":"ISS Tracker — Live Internationale Rumstations Position | The Storm Watcher","description":"Spor den Internationale Rumstation i realtid. Live position, højde, hastighed og kommende passeringer."},
   "/faq": {"title":"Nordlys FAQ — Nordlysguide | The Storm Watcher","description":"Alt du behøver at vide om nordlyset, Kp-indekset og hvordan du ser nordlyset."},
   "/magnetic-effects": {"title":"Magnetstorme & Menneskelig Sundhed — The Storm Watcher","description":"Hvordan geomagnetisk aktivitet påvirker kroppen — hovedpine, søvn, humør — og hvad du kan gøre."},
-  "/pricing": {"title":"Priser — The Storm Watcher Pro & Premium Planer","description":"Vælg din plan. Gratis nordlysovervågning eller Pro/Premium med avancerede advarsler og 14 dages gratis prøve."},
+  "/pricing": {"title":"Alle funktioner er gratis i lanceringsperioden — The Storm Watcher","description":"Alle funktioner er tilgængelige gratis i denne indledende periode."},
   "/about": {"title":"Om os — The Storm Watcher","description":"Realtids rumvejrovervågning og nordlysprognose app. Lær om vores mission og datakilder."},
   "/privacy": {"title":"Privatlivspolitik — The Storm Watcher","description":"Privatlivspolitik for The Storm Watcher. Lær, hvordan vi indsamler og beskytter dine personlige data."},
   "/terms": {"title":"Vilkår for Brug — The Storm Watcher","description":"Vilkår for brug af rumvejrovervågningsapplikationen The Storm Watcher."},

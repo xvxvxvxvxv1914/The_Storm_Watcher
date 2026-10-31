@@ -84,6 +84,22 @@ VITE_VAPID_PUBLIC_KEY=your_vapid_public_key
 VITE_DONKI_BASE_URL=your_donki_proxy_url  # for Capacitor builds
 ```
 
+## Free launch access
+
+All features are currently free, including Pro/Premium tools, unlimited saved
+locations, the personal aurora log and subscribed storm alerts. Signing in is
+still required for personal data and push subscriptions. No new Stripe checkout
+sessions can be started during this period; existing subscription management
+and webhooks remain available.
+
+The single shared switch is `FREE_ACCESS_ENABLED` in
+`supabase/functions/_shared/accessPolicy.ts`. It overrides older
+`VITE_PAYMENTS_ENABLED=true` deployment settings. To resume paid access, set the
+switch to `false`, enable `VITE_PAYMENTS_ENABLED=true` for the website build,
+then publish the website and redeploy `send-kp-alerts` together. The build
+regenerates localized pricing metadata for the selected mode. No profile plans
+or existing Stripe subscriptions are rewritten by this switch.
+
 ## iOS (Capacitor)
 
 ```bash

@@ -14,7 +14,7 @@ const meta: PageMetaTable = {
   "/iss": {"title":"Śledzenie ISS — Żywa Pozycja Międzynarodowej Stacji Kosmicznej | The Storm Watcher","description":"Śledź ISS w czasie rzeczywistym. Pozycja, wysokość, prędkość i nadchodzące przeloty nad twoją lokalizacją."},
   "/faq": {"title":"FAQ o Zorzach Polarnych — Przewodnik po Zorzach | The Storm Watcher","description":"Wszystko, co musisz wiedzieć o zorzach polarnych, indeksie Kp i jak zobaczyć zorzę."},
   "/magnetic-effects": {"title":"Burze Magnetyczne i Zdrowie Człowieka — The Storm Watcher","description":"Jak aktywność geomagnetyczna wpływa na organizm: bóle głowy, sen, nastrój i co można zrobić."},
-  "/pricing": {"title":"Cennik — Plany Pro i Premium The Storm Watcher","description":"Wybierz swój plan. Bezpłatne monitorowanie zorzy lub Pro/Premium z zaawansowanymi alertami i 14-dniowym bezpłatnym okresem."},
+  "/pricing": {"title":"W okresie startowym wszystkie funkcje są bezpłatne — The Storm Watcher","description":"W tym początkowym okresie wszystkie funkcje są dostępne bez opłat."},
   "/about": {"title":"O nas — The Storm Watcher","description":"Aplikacja do monitorowania pogody kosmicznej i prognoz zorzy polarnej w czasie rzeczywistym."},
   "/privacy": {"title":"Polityka Prywatności — The Storm Watcher","description":"Polityka prywatności The Storm Watcher. Dowiedz się, jak zbieramy i chronimy twoje dane osobowe."},
   "/terms": {"title":"Regulamin — The Storm Watcher","description":"Regulamin aplikacji monitorowania pogody kosmicznej The Storm Watcher."},

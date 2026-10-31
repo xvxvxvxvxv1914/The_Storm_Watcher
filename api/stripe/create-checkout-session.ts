@@ -1,14 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2026-04-22.dahlia' });
-
-const supabase = createClient(
-  process.env.VITE_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  { auth: { autoRefreshToken: false, persistSession: false } }
-);
+import { FREE_ACCESS_ENABLED } from '../../supabase/functions/_shared/accessPolicy.js';
 
 const ALLOWED_ORIGINS = [
   'https://thestormwatcher.com',
@@ -37,11 +30,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!ALLOWED_ORIGINS.includes(origin)) {
     return res.status(403).json({ error: 'Forbidden' });
   }
+  // Keep the server closed to new purchases while the application is free,
+  // including direct requests from an old browser tab. Existing subscribers
+  // can still manage their subscription through the separate portal endpoint.
+  if (FREE_ACCESS_ENABLED) {
+    return res.status(409).json({
+      code: 'FREE_ACCESS_ENABLED',
+      error: 'All features are currently free. New subscriptions are unavailable.',
+    });
+  }
   const appUrl = origin;
 
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) return res.status(401).json({ error: 'Unauthorized' });
 
+  const supabase = createClient(
+    process.env.VITE_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  );
   const { data: { user }, error: authError } = await supabase.auth.getUser(token);
   if (authError || !user) return res.status(401).json({ error: 'Unauthorized' });
 
@@ -63,6 +70,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   ]);
   if (!ALLOWED_PRICES.has(priceId)) return res.status(400).json({ error: 'Invalid price' });
 
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2026-04-22.dahlia' });
   const { data: profile } = await supabase
     .from('profiles')
     .select('stripe_customer_id, email, referred_by')

@@ -33,7 +33,7 @@ export default function LocationPicker({ lat, lon, locationName, onSelect, onReq
   const canAdd = !alreadySaved && favorites.length < maxFavorites && !!locationName;
 
   return (
-    <div className="relative inline-block" ref={ref}>
+    <div className={`relative inline-block ${open ? 'z-20' : ''}`} ref={ref}>
       <button
         onClick={() => setOpen(o => !o)}
         className="flex items-center gap-2 px-3 py-1.5 glass-surface rounded-full border border-white/10 text-sm text-[#94a3b8] hover:text-white hover:border-white/25 transition-colors"
@@ -44,7 +44,7 @@ export default function LocationPicker({ lat, lon, locationName, onSelect, onReq
       </button>
 
       {open && (
-        <div className="absolute left-0 mt-2 w-64 glass-surface rounded-xl shadow-2xl border border-white/10 py-2 z-50">
+        <div className="absolute left-0 mt-2 w-64 max-h-[min(20rem,60vh)] overflow-y-auto glass-surface rounded-xl shadow-2xl border border-white/10 py-2 z-50">
 
           {/* GPS option */}
           <button

@@ -2,10 +2,12 @@ import { Mail, MessageSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { usePaymentGate } from '../hooks/usePaymentGate';
 
 const Footer = () => {
   const { t } = useLanguage();
   const { theme } = useTheme();
+  const { paymentsEnabled } = usePaymentGate();
 
   const navGroups = [
     {
@@ -157,11 +159,11 @@ const Footer = () => {
                 <a
                   href="mailto:support@thestormwatcher.com"
                   className="flex items-center gap-2 text-sm text-[#a78bfa] hover:text-white transition-colors"
-                  title={t('footer.premiumSupport') || 'Priority support for Premium subscribers'}
+                  title={paymentsEnabled ? t('footer.premiumSupport') : undefined}
                 >
                   <Mail className="w-4 h-4" />
                   support@thestormwatcher.com
-                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#7c3aed]/20 text-[#a78bfa]">Premium</span>
+                  {paymentsEnabled && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#7c3aed]/20 text-[#a78bfa]">Premium</span>}
                 </a>
                 <a
                   href="mailto:partnerships@thestormwatcher.com"

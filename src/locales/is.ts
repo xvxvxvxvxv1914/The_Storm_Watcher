@@ -1,4 +1,14 @@
 const is_: Record<string, string> = {
+  // Temporary free launch access
+  'freeAccess.referralsTitle': "Bjóða vinum",
+  'freeAccess.referralsSignIn': "Skráðu þig inn til að fá persónulegan boðstengil.",
+  'freeAccess.nav': "Ókeypis aðgangur",
+  'freeAccess.label': "Fullur aðgangur",
+  'freeAccess.title': "Allir eiginleikar eru ókeypis á upphafstímabilinu",
+  'freeAccess.description': "Allir eiginleikar eru í boði án endurgjalds á þessu upphafstímabili.",
+  'freeAccess.accountNote': "Sumir persónulegir eiginleikar og samfélagseiginleikar krefjast enn aðgangs.",
+  'freeAccess.referralsSubtitle': "Bjóddu vinum að kynnast geimveðri. Allir eiginleikar eru ókeypis eins og er.",
+  'freeAccess.referralsShare': "Deildu boðstenglinum þínum með vinum. Engin áskrift er nauðsynleg.",
   'data.cachedAt': 'Vistuð gögn · sótt {time}',
   'nav.uv': 'UV',
   'nav.sun': 'Sól',

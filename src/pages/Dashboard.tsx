@@ -7,6 +7,7 @@ import { logError } from '../utils/logger';
 import { resolveLocation } from '../utils/geolocation';
 import { useVisibilityInterval } from '../hooks/useVisibilityInterval';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
+import { usePaymentGate } from '../hooks/usePaymentGate';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import TimeSeriesChart, { type TsPoint } from '../components/charts/TimeSeriesChart';
@@ -195,6 +196,7 @@ const isInNigggBbox = (lat: number, lon: number) =>
 const Dashboard = () => {
   const { t, language } = useLanguage();
   const { profile } = useAuth();
+  const { paymentsEnabled } = usePaymentGate();
   const location = useLocation();
   const navigate = useNavigate();
   const { settings } = useSettings();
@@ -540,7 +542,7 @@ const Dashboard = () => {
       <StarField />
 
       {/* Payment / Trial success toast */}
-      {showPaymentSuccess && (
+      {paymentsEnabled && showPaymentSuccess && (
         <div className="fixed bottom-24 lg:bottom-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-sm px-4">
           <div
             className="glass-surface rounded-2xl p-5 border text-center shadow-2xl animate-fade-in"
