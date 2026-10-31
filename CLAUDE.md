@@ -740,6 +740,8 @@ Article bodies are 89% of the post payload, so they are split from the metadata 
 - `src/data/blog/metadata.ts` — **generated**, committed. Run `node scripts/generate-blog-metadata.mjs` after changing a post's title, description or translations; `blogMetadata.test.ts` fails on drift (same arrangement as `scripts/blog-translations.json`).
 - `src/data/blog/index.ts` — every post, eagerly. **Never import it from a page** — it pulls all ten bodies (152 kB) into that chunk. It is for build-time consumers only: the prerender script, the metadata generator, the coverage tests. `CATEGORY_LABELS` lives in `categories.ts` for the same reason.
 
+**A translation is its body.** Every consumer (`loadPost`, `hasTranslation`, the prerender, the sitemap) reads an entry in `translations` as "this language has the article". Title-only entries with `content: []` shipped 28 URLs that showed a translated title over nothing, self-canonical and in the sitemap; they were removed on 2026-10-31. A language without a body has no entry and falls back to the English article with a canonical to it. `blogTranslations.test.ts` enforces this.
+
 `/blog` went from ~157 kB to ~22 kB; a short article from ~157 kB to ~29 kB. `BlogPost` distinguishes "still loading" (`undefined`) from "no such slug" (`null`) — collapsing them into one falsy check redirects every visitor to `/blog` before the body arrives, which `BlogPost.test.tsx` checks.
 
 The FAQ's `FAQPage` JSON-LD is **not** rendered by React — `scripts/prerender-meta.mjs` injects it into each prerendered `/faq` HTML variant in that page's own language, so it needs no JS to be crawled and the structured data matches the visible Q&A (the old client-side version always declared the English questions, even on `/de/faq`).

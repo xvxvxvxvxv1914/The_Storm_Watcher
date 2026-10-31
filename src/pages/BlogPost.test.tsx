@@ -60,6 +60,16 @@ describe('BlogPost — lazily loaded article bodies', () => {
     expect(await screen.findByRole('heading', { level: 1 })).not.toHaveTextContent(
       'What is the Kp Index? A Complete Guide');
   });
+
+  // Falling back has to mean the whole article. A translated title over no body
+  // is what 28 URLs served until 2026-10-31, in the sitemap and self-canonical.
+  it('shows the full English article when the language has no translation', async () => {
+    language = 'ko';
+    renderPost('how-to-see-northern-lights');
+    expect(await screen.findByRole('heading', { level: 1 }))
+      .toHaveTextContent('How to See the Northern Lights');
+    expect(screen.getAllByRole('heading', { level: 2 }).length).toBeGreaterThan(0);
+  });
 });
 
 describe('BlogPost — document language', () => {

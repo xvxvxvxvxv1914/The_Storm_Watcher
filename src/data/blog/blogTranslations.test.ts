@@ -26,4 +26,18 @@ describe('scripts/blog-translations.json', () => {
       expect((coverage[slug] ?? []).slice().sort()).toEqual(actual);
     },
   );
+
+  // Every consumer reads an entry here as "this language has the article":
+  // `content: []` passed the coverage check above and shipped 28 sitemap URLs
+  // with a translated title, a self-canonical and no article under them. A
+  // language without a body must have no entry, so it falls back to English.
+  it.each(blogPosts.map((p) => [p.slug, p] as const))(
+    '%s has a body for every translation',
+    (slug, post) => {
+      const titleOnly = Object.entries(post.translations ?? {})
+        .filter(([, t]) => t.content.length === 0)
+        .map(([lang]) => lang);
+      expect(titleOnly, `${slug} has translations without a body`).toEqual([]);
+    },
+  );
 });

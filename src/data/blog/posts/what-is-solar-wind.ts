@@ -99,7 +99,6 @@ const post: BlogPost = {
         { type: 'paragraph', text: 'Постоянният слънчев вятър е различен от изхвърлянето на коронална маса (CME). Слънчевият вятър е постоянен фонов радиационен поток. CME е внезапно, масивно изригване — облак от магнетизирана плазма с тегло милиард тона, изхвърлен с 1000–3000 km/s. Именно CME причиняват най-мощните геомагнитни бури.' },
       ],
     },
-    de: { title: 'Was ist Sonnenwind und warum ist er wichtig?', description: 'Sonnenwind ist ein ständiger Strom von Teilchen von der Sonne, der das Weltraumwetter auf der Erde antreibt. Erfahren Sie, wie er funktioniert.', content: [] },
   },
 };
 

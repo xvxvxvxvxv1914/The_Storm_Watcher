@@ -84,58 +84,6 @@ export const blogMeta: BlogPostMeta[] = [
       "de": {
         "title": "Wie man das Nordlicht sieht: Ein praktischer Leitfaden",
         "description": "Alles, was Sie wissen müssen, um die aurora borealis zu sehen — beste Orte, ideale Bedingungen, Timing und Ausrüstung."
-      },
-      "es": {
-        "title": "Cómo ver la aurora boreal: una guía práctica",
-        "description": "Todo lo que necesitas saber para ver la aurora borealis: mejores ubicaciones, condiciones ideales, horarios y equipo."
-      },
-      "fr": {
-        "title": "Comment voir les aurores boréales : Un guide pratique",
-        "description": "Tout ce que vous devez savoir pour voir l'aurora borealis — meilleurs endroits, conditions idéales, timing et équipement."
-      },
-      "ja": {
-        "title": "オーロラを見る方法：実践ガイド",
-        "description": "aurora borealis を見るために必要なすべて — 最適な場所、理想的な条件、時期、そして装備について。"
-      },
-      "ru": {
-        "title": "Как увидеть северное сияние: практическое руководство",
-        "description": "Все, что вам нужно знать, чтобы увидеть aurora borealis — лучшие места, идеальные условия, время и снаряжение."
-      },
-      "zh": {
-        "title": "如何观看北极光：实用指南",
-        "description": "观看 aurora borealis 所需了解的内容——最佳地点、理想条件、时机和装备。"
-      },
-      "da": {
-        "title": "Sådan ser du nordlys: En praktisk guide",
-        "description": "Alt hvad du behøver at vide for at se aurora borealis — bedste steder, ideelle betingelser, timing og udstyr."
-      },
-      "fi": {
-        "title": "Miten nähdä revontulet: Käytännön opas",
-        "description": "Kaikki mitä sinun tarvitsee tietää nähdäksesi aurora borealis -ilmiön — parhaat paikat, ihanteelliset olosuhteet, ajoitus ja varusteet."
-      },
-      "is": {
-        "title": "Hvernig á að sjá norðurljósin: Hagnýt leiðbeining",
-        "description": "Allt sem þú þarft að vita til að sjá aurora borealis — bestu staðirnir, kjöraðstæður, tímasetning og búnaður."
-      },
-      "ko": {
-        "title": "오로라 보는 방법: 실용 가이드",
-        "description": "aurora borealis 를 보기 위해 알아야 할 모든 것 — 최적의 장소, 이상적인 조건, 타이밍 및 장비."
-      },
-      "no": {
-        "title": "Hvordan se nordlys: En praktisk guide",
-        "description": "Alt du trenger å vite for å se aurora borealis — beste steder, ideelle forhold, timing og utstyr."
-      },
-      "pl": {
-        "title": "Jak zobaczyć zorzę polarną: Praktyczny przewodnik",
-        "description": "Wszystko, co musisz wiedzieć, aby zobaczyć aurora borealis — najlepsze lokalizacje, idealne warunki, czas i sprzęt."
-      },
-      "sv": {
-        "title": "Hur man ser norrsken: En praktisk guide",
-        "description": "Allt du behöver veta för att se aurora borealis — bästa platserna, ideala förhållanden, timing och utrustning."
-      },
-      "uk": {
-        "title": "Як побачити північне сяйво: практичний посібник",
-        "description": "Все, що вам потрібно знати, щоб побачити aurora borealis — найкращі локації, ідеальні умови, час та спорядження."
       }
     }
   },
@@ -151,10 +99,6 @@ export const blogMeta: BlogPostMeta[] = [
       "bg": {
         "title": "Какво е слънчев вятър и защо е важен?",
         "description": "Слънчевият вятър е постоянен поток от частици от Слънцето, който задвижва космическото време на Земята. Научете как работи."
-      },
-      "de": {
-        "title": "Was ist Sonnenwind und warum ist er wichtig?",
-        "description": "Sonnenwind ist ein ständiger Strom von Teilchen von der Sonne, der das Weltraumwetter auf der Erde antreibt. Erfahren Sie, wie er funktioniert."
       }
     }
   },
@@ -185,62 +129,6 @@ export const blogMeta: BlogPostMeta[] = [
       "bg": {
         "title": "Най-добрите места за виждане на aurora в Европа",
         "description": "От фиордите на Норвегия до лавовите полета на Исландия — окончателното ръководство за най-добрите локации за наблюдение на aurora в Европа."
-      },
-      "de": {
-        "title": "Die besten Orte, um die aurora in Europa zu sehen",
-        "description": "Von Norwegens Fjorden bis zu Islands Lavafeldern — der definitive Leitfaden zu den besten Orten für die aurora-Sichtung in Europa."
-      },
-      "es": {
-        "title": "Los mejores lugares para ver la aurora en Europa",
-        "description": "Desde los fiordos de Noruega hasta los campos de lava de Islandia: la guía definitiva de los mejores lugares para ver auroras en Europa."
-      },
-      "fr": {
-        "title": "Les meilleurs endroits pour voir l'aurora en Europe",
-        "description": "Des fjords de Norvège aux champs de lave d'Islande — le guide définitif des meilleurs lieux d'observation des aurora en Europe."
-      },
-      "ja": {
-        "title": "ヨーロッパでauroraを見るのに最適な場所",
-        "description": "ノルウェーのフィヨルドからアイスランドの溶岩地帯まで — ヨーロッパにおける最適なaurora観測地を実用的なコツと共にまとめた決定版ガイド。"
-      },
-      "ru": {
-        "title": "Лучшие места, чтобы увидеть aurora в Европе",
-        "description": "От фьордов Норвегии до лавовых полей Исландии — подробное руководство по лучшим местам для наблюдения за aurora в Европе."
-      },
-      "zh": {
-        "title": "欧洲最佳 aurora 观测地点",
-        "description": "从挪威的峡湾到冰岛的熔岩原——欧洲最佳 aurora 观测地点的终极指南，并附带针对每个地点的实用建议。"
-      },
-      "da": {
-        "title": "De bedste steder at se aurora i Europa",
-        "description": "Fra Norges fjorde til Islands lavafelter — den definitive guide til de bedste steder at se aurora i Europa."
-      },
-      "fi": {
-        "title": "Parhaat paikat nähdä aurora Euroopassa",
-        "description": "Norjan vuonoista Islannin laavakenttiin — lopullinen opas Euroopan parhaisiin aurora-katselupaikkoihin käytännön vinkeillä."
-      },
-      "is": {
-        "title": "Bestu staðirnir til að sjá aurora í Evrópu",
-        "description": "Frá fjörðum Noregs til hraunbreiða Íslands — endanlegur leiðarvísir um bestu staðina til að skoða aurora í Evrópu."
-      },
-      "ko": {
-        "title": "유럽에서 aurora를 보기 가장 좋은 장소",
-        "description": "노르웨이의 피오르드부터 아이슬란드의 용암 대지까지 — 유럽 최고의 aurora 관측 장소에 대한 최종 가이드와 실용적인 팁."
-      },
-      "no": {
-        "title": "De beste stedene å se aurora i Europa",
-        "description": "Fra Norges fjorder til Islands lavafelt — den definitive guiden til de beste stedene å se aurora i Europa."
-      },
-      "pl": {
-        "title": "Najlepsze miejsca na zobaczenie aurora w Europie",
-        "description": "Od fiordów Norwegii po pola lawowe Islandii — ostateczny przewodnik po najlepszych miejscach do obserwacji aurora w Europie."
-      },
-      "sv": {
-        "title": "Bästa platserna att se aurora i Europa",
-        "description": "Från Norges fjordar till Islands lavafält — den definitiva guiden till de bästa platserna att se aurora i Europa."
-      },
-      "uk": {
-        "title": "Найкращі місця, щоб побачити aurora в Європі",
-        "description": "Від фьордів Норвегії до лавових полів Ісландії — повне керівництво по найкращих місцях для спостереження за aurora в Європі."
       }
     }
   },
