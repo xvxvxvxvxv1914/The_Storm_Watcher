@@ -733,6 +733,8 @@ Long-form page content lives in `src/content/`, **one file per language**: `faq/
 
 Both are consumed **positionally** — FAQ answers map to categories by index (`faqCategories` in `src/pages/FAQ.tsx`), magnetic sections to icons by index (`sectionMeta` in `src/pages/MagneticEffects.tsx`) — so adding or reordering an entry means touching the same index in all 16 files. `src/content/contentCompleteness.test.ts` enforces the parity and pins the expected counts; `src/pages/longFormContent.test.tsx` asserts the loaders actually resolve (a broken loader renders a permanent skeleton, not a build error).
 
+**Здравните твърдения са омекотени и тест ги държи там (2026-11-01).** Страницата Magnetic Effects, картата на NIGGG и фактите в Mood твърдяха здравни ефекти като установени („пейсмейкърите да са внимателни“, „отложете операции“, „27% повече мигрени“) на 16 езика и без дисклеймър. Сега казват „някои хора съобщават…, данните са противоречиви“, а страницата започва с `effects.disclaimer` (`role="note"`; Mood го показва и под фактите). `src/content/healthClaims.test.ts` проверява английския по фрази и всеки език по структура (дисклеймър, преведен; без непотвърден процент в `mood.fact.*`; без списъци със съвети), а page тестът държи дисклеймъра преди първата секция. Доказано срещу пет счупени състояния. **Секция 1 на всеки magnetic файл (що е буря) е нарочно непипната.** 15-те превода са писани от Claude и **не са проверени от носители на езика**; българският е за преглед от собственика. Непипнато: `niggg.storm.detail`, `mood.anonymous`, `mood.aboutText2` (отиват към другите находки от одита).
+
 ### Blog data
 Article bodies are 89% of the post payload, so they are split from the metadata the list page renders:
 

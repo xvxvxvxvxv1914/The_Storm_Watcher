@@ -111,7 +111,6 @@ const DID_YOU_KNOW_KEYS = [
   'mood.fact.headaches',
   'mood.fact.sleep',
   'mood.fact.heartRate',
-  'mood.fact.intuition',
 ];
 
 // Mirrors the KpGauge bands (see src/components/KpGauge.tsx).
@@ -849,6 +848,7 @@ const Mood = () => {
                   />
                 ))}
               </div>
+              <p className={`text-[11px] leading-relaxed mt-3 ${textMuted}`}>{t('effects.disclaimer')}</p>
             </div>
           </div>
         </motion.div>

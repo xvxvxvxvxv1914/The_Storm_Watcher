@@ -13,7 +13,7 @@ const meta: PageMetaTable = {
   "/sky": {"title":"Visibilité du Ciel Ce Soir — Observation des Étoiles | The Storm Watcher","description":"Couverture nuageuse, conditions seeing et prévision d'aurores ce soir. Planifiez votre observation."},
   "/iss": {"title":"Suivi ISS — Position en Direct de la Station Spatiale | The Storm Watcher","description":"Suivez la Station Spatiale Internationale en temps réel. Position, altitude, vitesse et prochains passages."},
   "/faq": {"title":"FAQ Aurore — Guide des Aurores Boréales | The Storm Watcher","description":"Tout ce que vous devez savoir sur les aurores boréales, l'indice Kp et comment voir l'aurore."},
-  "/magnetic-effects": {"title":"Tempêtes Magnétiques & Santé Humaine — The Storm Watcher","description":"Comment l'activité géomagnétique affecte le corps humain — maux de tête, sommeil, humeur — et quoi faire."},
+  "/magnetic-effects": {"title":"Tempêtes Magnétiques & Santé Humaine — The Storm Watcher","description":"Ce que dit la recherche sur les tempêtes géomagnétiques et le bien-être : maux de tête, sommeil, humeur. Les preuves sont mitigées. Information générale, pas un avis médical."},
   "/pricing": {"title":"Toutes les fonctionnalités sont gratuites au lancement — The Storm Watcher","description":"Toutes les fonctionnalités sont accessibles gratuitement pendant cette période de lancement."},
   "/about": {"title":"À Propos — The Storm Watcher","description":"Application de surveillance météo spatiale et de prévision d'aurores. Découvrez notre mission et nos sources de données."},
   "/privacy": {"title":"Politique de Confidentialité — The Storm Watcher","description":"Politique de confidentialité de The Storm Watcher. Découvrez comment nous collectons et protégeons vos données."},

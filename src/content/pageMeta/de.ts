@@ -13,7 +13,7 @@ const meta: PageMetaTable = {
   "/sky": {"title":"Himmelsicht Heute Nacht — Sternbeobachtung & Polarlicht | The Storm Watcher","description":"Bewölkung, Seeing-Bedingungen und Aurora-Sichtbarkeit heute Nacht. Planen Sie Ihre Sternenbeobachtung."},
   "/iss": {"title":"ISS Tracker — Live Position der Internationalen Raumstation | The Storm Watcher","description":"Verfolgen Sie die ISS in Echtzeit. Live-Position, Höhe, Geschwindigkeit und bevorstehende Überflüge."},
   "/faq": {"title":"Polarlicht FAQ — Nordlichter Ratgeber | The Storm Watcher","description":"Alles, was Sie über Nordlichter, den Kp-Index und Sonnenwind wissen müssen. Expertenwissen zu Weltraumwetter."},
-  "/magnetic-effects": {"title":"Magnetstürme & Menschliche Gesundheit — The Storm Watcher","description":"Wie geomagnetische Aktivität den Körper beeinflusst — Kopfschmerzen, Schlaf, Stimmung — und was Sie tun können."},
+  "/magnetic-effects": {"title":"Magnetstürme & Menschliche Gesundheit — The Storm Watcher","description":"Was die Forschung über geomagnetische Stürme und das Wohlbefinden sagt: Kopfschmerzen, Schlaf, Stimmung. Die Belege sind uneinheitlich. Allgemeine Information, keine medizinische Beratung."},
   "/pricing": {"title":"Zum Start sind alle Funktionen kostenlos — The Storm Watcher","description":"In dieser Anfangsphase stehen alle Funktionen kostenlos zur Verfügung."},
   "/about": {"title":"Über uns — The Storm Watcher","description":"Echtzeit-Weltraumwetter-Überwachung und Aurora-Prognose-App. Erfahren Sie mehr über unsere Mission und Datenquellen."},
   "/privacy": {"title":"Datenschutzrichtlinie — The Storm Watcher","description":"Datenschutzrichtlinie für The Storm Watcher. Erfahren Sie, wie wir Ihre persönlichen Daten erheben und schützen."},

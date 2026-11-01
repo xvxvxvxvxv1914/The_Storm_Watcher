@@ -13,7 +13,7 @@ const meta: PageMetaTable = {
   "/sky": {"title":"Himmelsikt I Natt — Stjärnskådning & Norrsken | The Storm Watcher","description":"Molntäcke, seeingförhållanden och norrskenssynlighet i natt. Planera din stjärnskådning."},
   "/iss": {"title":"ISS-spårare — Live Position av Internationella Rymdstationen | The Storm Watcher","description":"Spåra ISS i realtid. Live position, höjd, hastighet och kommande passager."},
   "/faq": {"title":"Norrsken FAQ — Norrskensguide | The Storm Watcher","description":"Allt du behöver veta om norrsken, Kp-index och hur du ser norrsken."},
-  "/magnetic-effects": {"title":"Magnetstormar & Mänsklig Hälsa — The Storm Watcher","description":"Hur geomagnetisk aktivitet påverkar kroppen — huvudvärk, sömn, humör — och vad du kan göra."},
+  "/magnetic-effects": {"title":"Magnetstormar & Mänsklig Hälsa — The Storm Watcher","description":"Vad forskningen säger om geomagnetiska stormar och välbefinnande: huvudvärk, sömn, humör. Bevisen är blandade. Allmän information, inte medicinsk rådgivning."},
   "/pricing": {"title":"Alla funktioner är gratis under lanseringen — The Storm Watcher","description":"Alla funktioner är tillgängliga utan kostnad under denna inledande period."},
   "/about": {"title":"Om oss — The Storm Watcher","description":"Realtids rymdvädersövervakning och norrskensapp. Lär dig om vårt uppdrag och datakällor."},
   "/privacy": {"title":"Integritetspolicy — The Storm Watcher","description":"Integritetspolicy för The Storm Watcher. Lär dig hur vi samlar in och skyddar dina personuppgifter."},

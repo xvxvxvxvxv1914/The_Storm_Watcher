@@ -13,7 +13,7 @@ const meta: PageMetaTable = {
   "/sky": {"title":"Visibilidad del Cielo Esta Noche — Observación de Estrellas | The Storm Watcher","description":"Cobertura de nubes, condiciones de seeing y pronóstico de auroras esta noche."},
   "/iss": {"title":"Rastreador de la ISS — Posición en Vivo de la Estación Espacial | The Storm Watcher","description":"Sigue la Estación Espacial Internacional en tiempo real. Posición, altitud, velocidad y próximos pases."},
   "/faq": {"title":"Preguntas Frecuentes sobre Auroras — Guía de la Aurora Boreal | The Storm Watcher","description":"Todo lo que necesitas saber sobre la Aurora Boreal, el índice Kp y cómo ver la aurora."},
-  "/magnetic-effects": {"title":"Tormentas Magnéticas y Salud Humana — The Storm Watcher","description":"Cómo la actividad geomagnética afecta al cuerpo: dolores de cabeza, sueño, estado de ánimo y qué puedes hacer."},
+  "/magnetic-effects": {"title":"Tormentas Magnéticas y Salud Humana — The Storm Watcher","description":"Lo que dice la investigación sobre las tormentas geomagnéticas y el bienestar: dolor de cabeza, sueño, ánimo. La evidencia es dispar. Información general, no consejo médico."},
   "/pricing": {"title":"Todas las funciones son gratuitas durante el lanzamiento — The Storm Watcher","description":"Todas las funciones están disponibles sin coste durante este periodo inicial."},
   "/about": {"title":"Acerca de — The Storm Watcher","description":"Aplicación de monitoreo de clima espacial y pronóstico de auroras en tiempo real. Conozca nuestra misión y fuentes de datos."},
   "/privacy": {"title":"Política de Privacidad — The Storm Watcher","description":"Política de privacidad de The Storm Watcher. Conozca cómo recopilamos y protegemos sus datos personales."},

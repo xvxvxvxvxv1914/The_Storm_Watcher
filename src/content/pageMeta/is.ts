@@ -13,7 +13,7 @@ const meta: PageMetaTable = {
   "/sky": {"title":"Himinsjón I Kvöld — Stjörnuathugun og Norðurljós | The Storm Watcher","description":"Skýjahula, sjónarskilyrði og norðurljósa-spá í kvöld. Skipuleggðu stjörnuathugun þína."},
   "/iss": {"title":"ISS-rakari — Staðsetning Alþjóðlegu Geimstöðvarinnar | The Storm Watcher","description":"Fylgstu með ISS í rauntíma. Staðsetning, hæð, hraði og komandi yfirflug yfir þinn stað."},
   "/faq": {"title":"Norðurljós Algengar Spurningar — Norðurljósahandbók | The Storm Watcher","description":"Allt sem þú þarft að vita um norðurljós, Kp-vísitölu og hvernig á að sjá norðurljósin."},
-  "/magnetic-effects": {"title":"Seguleldur og Mannleg Heilsa — The Storm Watcher","description":"Hvernig segulmagn hefur áhrif á líkamann — höfuðverkur, svefn, skap — og hvað er hægt að gera."},
+  "/magnetic-effects": {"title":"Seguleldur og Mannleg Heilsa — The Storm Watcher","description":"Hvað rannsóknir segja um jarðsegulstorma og vellíðan: höfuðverkur, svefn, skap. Vísbendingar eru misvísandi. Almennar upplýsingar, ekki læknisráð."},
   "/pricing": {"title":"Allir eiginleikar eru ókeypis á upphafstímabilinu — The Storm Watcher","description":"Allir eiginleikar eru í boði án endurgjalds á þessu upphafstímabili."},
   "/about": {"title":"Um okkur — The Storm Watcher","description":"Rauntíma geimveðureftirlit og norðurljósaspá-app. Kynntu þér hlutverk okkar og gagnaveitu."},
   "/privacy": {"title":"Persónuverndarstefna — The Storm Watcher","description":"Persónuverndarstefna The Storm Watcher. Kynntu þér hvernig við söfnum og verndum persónuupplýsingar þínar."},

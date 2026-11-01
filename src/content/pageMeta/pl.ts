@@ -13,7 +13,7 @@ const meta: PageMetaTable = {
   "/sky": {"title":"Widoczność Nieba Tej Nocy — Obserwacja Gwiazd | The Storm Watcher","description":"Zachmurzenie, warunki seeing i prognoza zorzy polarnej tej nocy."},
   "/iss": {"title":"Śledzenie ISS — Żywa Pozycja Międzynarodowej Stacji Kosmicznej | The Storm Watcher","description":"Śledź ISS w czasie rzeczywistym. Pozycja, wysokość, prędkość i nadchodzące przeloty nad twoją lokalizacją."},
   "/faq": {"title":"FAQ o Zorzach Polarnych — Przewodnik po Zorzach | The Storm Watcher","description":"Wszystko, co musisz wiedzieć o zorzach polarnych, indeksie Kp i jak zobaczyć zorzę."},
-  "/magnetic-effects": {"title":"Burze Magnetyczne i Zdrowie Człowieka — The Storm Watcher","description":"Jak aktywność geomagnetyczna wpływa na organizm: bóle głowy, sen, nastrój i co można zrobić."},
+  "/magnetic-effects": {"title":"Burze Magnetyczne i Zdrowie Człowieka — The Storm Watcher","description":"Co badania mówią o burzach geomagnetycznych i samopoczuciu: bóle głowy, sen, nastrój. Dowody są niejednoznaczne. Informacje ogólne, nie porada medyczna."},
   "/pricing": {"title":"W okresie startowym wszystkie funkcje są bezpłatne — The Storm Watcher","description":"W tym początkowym okresie wszystkie funkcje są dostępne bez opłat."},
   "/about": {"title":"O nas — The Storm Watcher","description":"Aplikacja do monitorowania pogody kosmicznej i prognoz zorzy polarnej w czasie rzeczywistym."},
   "/privacy": {"title":"Polityka Prywatności — The Storm Watcher","description":"Polityka prywatności The Storm Watcher. Dowiedz się, jak zbieramy i chronimy twoje dane osobowe."},

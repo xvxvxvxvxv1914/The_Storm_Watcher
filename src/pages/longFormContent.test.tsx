@@ -67,4 +67,14 @@ describe('MagneticEffects — lazily loaded translations', () => {
     render(<MemoryRouter><MagneticEffects /></MemoryRouter>);
     expect(await screen.findByText('What Is a Geomagnetic Storm?')).toBeInTheDocument();
   });
+
+  it('states the medical disclaimer before the first section', async () => {
+    setLanguage('en');
+    render(<MemoryRouter><MagneticEffects /></MemoryRouter>);
+    const firstSection = await screen.findByText('What Is a Geomagnetic Storm?');
+    const note = screen.getByRole('note');
+    // `t` is the identity here, so the key proves which string the note renders.
+    expect(note).toHaveTextContent('effects.disclaimer');
+    expect(note.compareDocumentPosition(firstSection) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
 });

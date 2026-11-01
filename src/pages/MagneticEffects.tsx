@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
-import { Heart, Brain, Moon, AlertTriangle, Shield, Activity } from 'lucide-react';
+import { Heart, Brain, Moon, AlertTriangle, Shield, Activity, Info } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import StarField from '../components/StarField';
 import { Skeleton } from '../components/Skeleton';
@@ -44,7 +44,7 @@ export default function MagneticEffects() {
     <>
       <PageMeta
         title="Magnetic Storms & Human Health — The Storm Watcher"
-        description="How geomagnetic activity affects the human body — headaches, sleep, mood — and what you can do about it."
+        description="What research says about geomagnetic storms and well-being: headaches, sleep, mood. The evidence is mixed. General information, not medical advice."
         path="/magnetic-effects"
       />
       <BreadcrumbSchema crumbs={[{ name: 'Home', path: '/' }, { name: 'Magnetic Effects', path: '/magnetic-effects' }]} />
@@ -69,6 +69,12 @@ export default function MagneticEffects() {
                 <Skeleton className="h-6 w-full mx-auto" />
               </>
             )}
+          </div>
+
+          {/* Said before any claim is read, not left to Terms (which 8 languages see in English) */}
+          <div role="note" className="mb-8 flex items-start gap-3 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4">
+            <Info className="w-5 h-5 flex-shrink-0 mt-0.5 text-amber-500" aria-hidden="true" />
+            <p className="text-sm leading-relaxed text-white">{t('effects.disclaimer')}</p>
           </div>
 
           {/* Live Kp widget */}

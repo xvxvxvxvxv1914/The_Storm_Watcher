@@ -13,7 +13,7 @@ const meta: PageMetaTable = {
   "/sky": {"title":"今晚天空能见度 — 观星和极光条件 | The Storm Watcher","description":"今晚的云层覆盖、视宁度条件和极光观测预报。规划您的观星活动。"},
   "/iss": {"title":"国际空间站追踪器 — 实时位置 | The Storm Watcher","description":"实时追踪国际空间站。实时位置、高度、速度和上空过境时间。"},
   "/faq": {"title":"极光常见问题 — 北极光指南 | The Storm Watcher","description":"关于北极光、Kp指数和太阳风的完整指南。常见太空天气问题的专家解答。"},
-  "/magnetic-effects": {"title":"磁暴与人体健康 — The Storm Watcher","description":"地磁活动如何影响人体：头痛、睡眠障碍、情绪变化，以及应对措施。"},
+  "/magnetic-effects": {"title":"磁暴与人体健康 — The Storm Watcher","description":"关于地磁暴与身体状况，研究说了什么：头痛、睡眠、情绪。证据并不一致。一般性信息，并非医疗建议。"},
   "/pricing": {"title":"上线初期所有功能均免费 — The Storm Watcher","description":"在此初期阶段，所有功能均可免费使用。"},
   "/about": {"title":"关于我们 — The Storm Watcher","description":"实时太空天气监测和极光预报应用。了解我们的使命和数据来源。"},
   "/privacy": {"title":"隐私政策 — The Storm Watcher","description":"The Storm Watcher的隐私政策。了解我们如何收集、使用和保护您的个人数据。"},
