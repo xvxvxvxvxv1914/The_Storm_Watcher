@@ -47,7 +47,7 @@ const categoryIcons: Record<string, React.ReactNode> = {
 
 const FAQ = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const [langContent, setLangContent] = useState<FaqLangContent | null>(null);
 
   // The FAQPage JSON-LD is injected into the prerendered HTML at build time
@@ -80,7 +80,7 @@ const FAQ = () => {
 
       <div className="text-center mb-6 md:mb-12">
         <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4 uppercase tracking-wide">
-          Aurora FAQ
+          {t('nav.faq')}
         </h1>
         {langContent ? (
           <p className="text-[#94a3b8] text-lg max-w-xl mx-auto">

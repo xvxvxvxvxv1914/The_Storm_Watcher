@@ -8,7 +8,7 @@ import {
   LayoutDashboard, ArrowLeft, CheckCircle2, Sparkles,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useLanguage, languages } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { supabase } from '../lib/supabase';
 import AvatarCropper from '../components/AvatarCropper';
@@ -45,19 +45,19 @@ const PLAN_CONFIG = {
   },
 };
 
-const PLAN_FEATURES: Record<string, string[]> = {
-  free: ['Real-time Kp index & solar wind', '3-day Kp forecast', 'ISS tracker', 'UV index & sky conditions'],
-  pro: ['Extended 7-day Kp forecast', 'Aurora visibility % by location', '3D Aurora Globe', 'Push storm notifications', 'Up to 10 saved locations'],
-  premium: ['Everything in Pro', 'Unlimited saved locations', 'Custom Kp alert thresholds', 'CSV data export', 'Priority email support', 'Early beta access'],
+const PLAN_FEATURE_KEYS: Record<string, string[]> = {
+  free: ['pricing.free.feat.realtime', 'pricing.free.feat.forecast', 'pricing.free.feat.iss', 'pricing.free.feat.weather'],
+  pro: ['pricing.pro.feat.forecasts', 'pricing.pro.feat.visibility', 'pricing.pro.feat.basics', 'pricing.pro.feat.alerts', 'pricing.pro.feat.adfree'],
+  premium: ['pricing.premium.feat.everything', 'pricing.premium.feat.history', 'pricing.premium.feat.priority', 'pricing.premium.feat.export', 'pricing.premium.feat.iss', 'pricing.premium.feat.earlyAccess'],
 };
 
 const QUICK_LINKS = [
-  { to: '/dashboard',         icon: LayoutDashboard, label: 'Dashboard',    sub: 'Live readings',     from: '#10b981', to2: '#059669' },
-  { to: '/aurora',            icon: Sparkles,        label: 'Aurora',       sub: '3D Aurora Globe', from: '#a855f7', to2: '#7c3aed' },
-  { to: '/alerts',            icon: Bell,            label: 'Storm Alerts', sub: 'Push & SMS',        from: '#f97316', to2: '#ea580c' },
-  { to: '/settings',          icon: Settings,        label: 'Settings',     sub: 'Preferences',       from: '#06b6d4', to2: '#0891b2' },
-  { to: '/settings/language', icon: Globe,           label: 'Language',     sub: 'English (US)',      from: '#ec4899', to2: '#db2777' },
-  { to: '/pricing',           icon: Sparkles,        label: 'Plans',        sub: 'Compare tiers',     from: '#f97316', to2: '#fbbf24' },
+  { to: '/dashboard',         icon: LayoutDashboard, label: 'nav.dashboard',    sub: 'home.feature1.title',     from: '#10b981', to2: '#059669' },
+  { to: '/aurora',            icon: Sparkles,        label: 'nav.aurora',       sub: 'pricing.pro.feat.basics', from: '#a855f7', to2: '#7c3aed' },
+  { to: '/alerts',            icon: Bell,            label: 'nav.alerts', sub: 'pricing.pro.feat.alerts',        from: '#f97316', to2: '#ea580c' },
+  { to: '/settings',          icon: Settings,        label: 'nav.settings',     sub: 'settings.title',       from: '#06b6d4', to2: '#0891b2' },
+  { to: '/settings/language', icon: Globe,           label: 'nav.language',     sub: 'nav.language',      from: '#ec4899', to2: '#db2777' },
+  { to: '/pricing',           icon: Sparkles,        label: 'nav.pricing',        sub: 'profile.comparePlans',     from: '#f97316', to2: '#fbbf24' },
 ];
 
 const PLAN_PILLS: Array<{ key: keyof typeof PLAN_CONFIG; label: string }> = [
@@ -68,7 +68,7 @@ const PLAN_PILLS: Array<{ key: keyof typeof PLAN_CONFIG; label: string }> = [
 
 export default function Profile() {
   const { user, profile, updateProfile, loading } = useAuth();
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   const { paymentsEnabled } = usePaymentGate();
   const navigate = useNavigate();
   const { theme } = useTheme();
@@ -97,11 +97,11 @@ export default function Profile() {
   const isBeta = profile?.is_beta === true;
   const PlanIcon = cfg.icon;
 
-  const displayName = profile?.full_name || user?.email?.split('@')[0] || 'Profile';
+  const displayName = profile?.full_name || user?.email?.split('@')[0] || t('nav.profile');
   const initial = displayName.trim().charAt(0).toUpperCase() || 'U';
 
   const memberSince = profile?.created_at
-    ? new Date(profile.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long' })
+    ? new Date(profile.created_at).toLocaleDateString(language, { year: 'numeric', month: 'long' })
     : null;
 
   const daysAsMember = profile?.created_at
@@ -111,7 +111,7 @@ export default function Profile() {
   const periodEndRaw = profile?.subscription_period_end;
   const periodEndDate = periodEndRaw ? new Date(periodEndRaw) : null;
   const subscriptionEnd = periodEndDate && !isNaN(periodEndDate.getTime())
-    ? periodEndDate.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+    ? periodEndDate.toLocaleDateString(language, { year: 'numeric', month: 'short', day: 'numeric' })
     : null;
   const trialDaysLeft = isTrialing && periodEndDate
     ? Math.max(0, Math.ceil((periodEndDate.getTime() - Date.now()) / 86_400_000))
@@ -137,7 +137,7 @@ export default function Profile() {
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !user) return;
-    if (!file.type.startsWith('image/')) { setFormError('Please select an image file'); return; }
+    if (!file.type.startsWith('image/')) { setFormError(t('profile.imageRequired')); return; }
     const reader = new FileReader();
     reader.onload = () => setCropSrc(reader.result as string);
     reader.readAsDataURL(file);
@@ -156,7 +156,7 @@ export default function Profile() {
       const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path);
       await updateProfile({ avatar_url: `${publicUrl}?t=${Date.now()}` });
     } catch {
-      setFormError('Failed to upload photo');
+      setFormError(t('profile.avatarError'));
     } finally {
       setUploadingAvatar(false);
     }
@@ -171,7 +171,7 @@ export default function Profile() {
     setSuccess(false);
     setSaving(true);
     const trimmed = fullName.trim();
-    if (!trimmed) { setFormError('Name cannot be empty'); setSaving(false); return; }
+    if (!trimmed) { setFormError(t('profile.nameRequired')); setSaving(false); return; }
     const { error } = await updateProfile({ full_name: trimmed });
     setSaving(false);
     if (error) { setFormError(error.message); } else { setSuccess(true); setTimeout(() => setSuccess(false), 3000); }
@@ -203,9 +203,9 @@ export default function Profile() {
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center relative">
             <Link to="/dashboard" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm">
               <ArrowLeft className="w-4 h-4" />
-              <span>Back</span>
+              <span>{t('profile.back')}</span>
             </Link>
-            <span className="absolute left-1/2 -translate-x-1/2 text-white text-sm font-semibold tracking-[0.3em]">PROFILE</span>
+            <span className="absolute left-1/2 -translate-x-1/2 text-white text-sm font-semibold tracking-[0.3em]">{t('nav.profile')}</span>
           </div>
         </div>
 
@@ -260,12 +260,12 @@ export default function Profile() {
                       >
                         <PlanIcon className="w-3 h-3" />
                         {accessLabel}
-                        {paymentsEnabled && isTrialing && <span className="opacity-80">· Trial</span>}
+                        {paymentsEnabled && isTrialing && <span className="opacity-80">· {t('profile.trial')}</span>}
                       </div>
                       {memberSince && (
                         <span className="text-[#94a3b8] text-sm">
-                          Joined {memberSince}
-                          {isPastDue && <span className="ml-2 text-red-400 font-medium">· Past due</span>}
+                          {t('profile.memberSince')} {memberSince}
+                          {isPastDue && <span className="ml-2 text-red-400 font-medium">· {t('profile.pastDue')}</span>}
                         </span>
                       )}
                     </div>
@@ -304,7 +304,7 @@ export default function Profile() {
                 <div className="grid grid-cols-3 gap-2.5 lg:flex-shrink-0">
                   <div className="w-full lg:w-24 h-24 rounded-2xl glass-surface flex flex-col items-center justify-center">
                     <div className="text-2xl lg:text-3xl font-bold text-white">{daysAsMember ?? '—'}</div>
-                    <div className="text-[10px] text-[#64748b] uppercase tracking-wider mt-1">Days</div>
+                    <div className="text-[10px] text-[#64748b] uppercase tracking-wider mt-1">{t('mood.days')}</div>
                   </div>
                   <div className="w-full lg:w-24 h-24 rounded-2xl glass-surface flex flex-col items-center justify-center">
                     <div className={`text-2xl lg:text-3xl font-bold bg-gradient-to-br ${cfg.gradient} bg-clip-text text-transparent`}>
@@ -314,7 +314,7 @@ export default function Profile() {
                   </div>
                   <div className="w-full lg:w-24 h-24 rounded-2xl glass-surface flex flex-col items-center justify-center">
                     <Sparkles className="w-6 h-6 lg:w-7 lg:h-7" style={{ color: cfg.color }} />
-                    <div className="text-[10px] text-[#64748b] uppercase tracking-wider mt-1">Status</div>
+                    <div className="text-[10px] text-[#64748b] uppercase tracking-wider mt-1">{t('dashboard.status')}</div>
                   </div>
                 </div>
 
@@ -330,7 +330,7 @@ export default function Profile() {
 
               {/* Quick Access */}
               <div>
-                <p className="text-[#94a3b8] text-[10px] font-bold uppercase tracking-[0.3em] px-1 mb-3">Quick Access</p>
+                <p className="text-[#94a3b8] text-[10px] font-bold uppercase tracking-[0.3em] px-1 mb-3">{t('profile.quickAccess')}</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 lg:gap-3">
                   {QUICK_LINKS.map(({ to, icon: Icon, label, sub, from, to2 }) => (
                     <Link
@@ -353,8 +353,8 @@ export default function Profile() {
                           <Icon className="w-5 h-5 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-white text-sm font-bold leading-tight">{to === '/pricing' && !paymentsEnabled ? t('freeAccess.nav') : label}</p>
-                          <p className="text-[#64748b] text-xs mt-0.5">{to === '/pricing' && !paymentsEnabled ? t('freeAccess.label') : sub}</p>
+                          <p className="text-white text-sm font-bold leading-tight">{to === '/pricing' && !paymentsEnabled ? t('freeAccess.nav') : t(label)}</p>
+                          <p className="text-[#64748b] text-xs mt-0.5">{to === '/pricing' && !paymentsEnabled ? t('freeAccess.label') : to === '/settings/language' ? languages.find(item => item.code === language)?.name : t(sub)}</p>
                         </div>
                       </div>
                     </Link>
@@ -365,22 +365,22 @@ export default function Profile() {
               {/* Account info */}
               <div className="glass-surface rounded-2xl overflow-hidden">
                 <div className="px-5 pt-5 pb-1">
-                  <p className="text-[#94a3b8] text-[10px] font-bold uppercase tracking-[0.3em]">Account</p>
+                  <p className="text-[#94a3b8] text-[10px] font-bold uppercase tracking-[0.3em]">{t('profile.accountInfo')}</p>
                 </div>
                 <form onSubmit={handleSubmit} className="px-5 pb-5 pt-4 space-y-4">
                   <div>
-                    <label className="block text-[11px] text-[#94a3b8] mb-2 font-semibold uppercase tracking-wider">Display name</label>
+                    <label className="block text-[11px] text-[#94a3b8] mb-2 font-semibold uppercase tracking-wider">{t('profile.displayName')}</label>
                     <input
                       type="text"
                       value={fullName}
                       onChange={e => setFullName(e.target.value)}
                       maxLength={80}
                       className={`w-full px-4 py-3.5 rounded-xl text-sm focus:outline-none focus:border-emerald-500/40 transition-colors ${isDark ? 'bg-white/[0.04] border border-white/10 text-white placeholder-slate-700 focus:bg-white/[0.06]' : 'bg-black/[0.04] border border-black/10 text-slate-800 placeholder-slate-400 focus:bg-black/[0.06]'}`}
-                      placeholder="Your name"
+                      placeholder={t('profile.displayNamePlaceholder')}
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] text-[#94a3b8] mb-2 font-semibold uppercase tracking-wider">Email</label>
+                    <label className="block text-[11px] text-[#94a3b8] mb-2 font-semibold uppercase tracking-wider">{t('profile.email')}</label>
                     <input
                       type="email"
                       value={user?.email || ''}
@@ -394,7 +394,7 @@ export default function Profile() {
                   {success && (
                     <div className="px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-                      Changes saved successfully.
+                      {t('profile.saved')}
                     </div>
                   )}
                   <button
@@ -404,7 +404,7 @@ export default function Profile() {
                     style={{ boxShadow: '0 8px 24px #10b98140' }}
                   >
                     <Save className="w-4 h-4" />
-                    {saving ? 'Saving…' : 'Save changes'}
+                    {t(saving ? 'profile.saving' : 'profile.save')}
                   </button>
                 </form>
               </div>
@@ -424,7 +424,7 @@ export default function Profile() {
                 <div className="relative p-5">
                   <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
                     <div className="flex-1 min-w-0">
-                      <p className="text-[#94a3b8] text-[10px] font-bold uppercase tracking-[0.3em] mb-3">{paymentsEnabled ? 'Subscription' : t('freeAccess.nav')}</p>
+                      <p className="text-[#94a3b8] text-[10px] font-bold uppercase tracking-[0.3em] mb-3">{paymentsEnabled ? t('profile.subscription') : t('freeAccess.nav')}</p>
                       <div className="flex items-center gap-3">
                         <div
                           className={`w-10 h-10 rounded-xl bg-gradient-to-br ${cfg.gradient} flex items-center justify-center flex-shrink-0`}
@@ -443,13 +443,13 @@ export default function Profile() {
                             )}
                           </div>
                           {paymentsEnabled && isTrialing && trialDaysLeft !== null && (
-                            <p className="text-orange-400 text-xs mt-0.5 font-medium">{trialDaysLeft} days left in trial</p>
+                            <p className="text-orange-400 text-xs mt-0.5 font-medium">{t('profile.trialDaysLeft').replace('{days}', String(trialDaysLeft))}</p>
                           )}
                           {!isTrialing && isPaid && subscriptionEnd && (
-                            <p className="text-[#64748b] text-xs mt-0.5">Renews {subscriptionEnd}</p>
+                            <p className="text-[#64748b] text-xs mt-0.5">{t('profile.subscriptionEnds')} · {subscriptionEnd}</p>
                           )}
                           {paymentsEnabled && !isPaid && !isTrialing && (
-                            <p className="text-[#64748b] text-xs mt-0.5">Free forever</p>
+                            <p className="text-[#64748b] text-xs mt-0.5">{t('profile.freeForever')}</p>
                           )}
                         </div>
                       </div>
@@ -471,21 +471,21 @@ export default function Profile() {
                         style={{ boxShadow: `0 4px 16px ${cfg.color}40` }}
                       >
                         <Zap className="w-3 h-3" />
-                        Upgrade
+                        {t('profile.upgrade')}
                       </Link>
                     ) : null}
                   </div>
 
                   <div className="space-y-2.5 pt-3 border-t border-white/8">
                     {!paymentsEnabled && <p className="text-sm text-[#94a3b8] leading-relaxed">{t('freeAccess.description')}</p>}
-                    {(paymentsEnabled ? (PLAN_FEATURES[plan] ?? PLAN_FEATURES.free) : [
-                      t('pricing.pro.feat.forecasts'),
-                      t('pricing.pro.feat.alerts'),
-                      t('pricing.premium.feat.export'),
-                    ]).map(f => (
-                      <div key={f} className="flex items-center gap-2.5 text-sm text-[#cbd5e1]">
+                    {(paymentsEnabled ? (PLAN_FEATURE_KEYS[plan] ?? PLAN_FEATURE_KEYS.free) : [
+                      'pricing.pro.feat.forecasts',
+                      'pricing.pro.feat.alerts',
+                      'pricing.premium.feat.export',
+                    ]).map(key => (
+                      <div key={key} className="flex items-center gap-2.5 text-sm text-[#cbd5e1]">
                         <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: cfg.color }} />
-                        <span>{f}</span>
+                        <span>{t(key)}</span>
                       </div>
                     ))}
                   </div>
@@ -495,25 +495,25 @@ export default function Profile() {
               {/* Danger zone */}
               <div className="glass-surface rounded-2xl overflow-hidden">
                 <div className="p-5">
-                  <p className="text-red-400/80 text-[10px] font-bold uppercase tracking-[0.3em] mb-2">Danger Zone</p>
+                  <p className="text-red-400/80 text-[10px] font-bold uppercase tracking-[0.3em] mb-2">{t('profile.dangerZone')}</p>
                   {!confirmDelete ? (
                     <>
                       <p className="text-[#94a3b8] text-sm mb-4 leading-relaxed">
-                        Permanently delete your account, alerts and saved aurora locations.
+                        {t('profile.deleteWarning')}
                       </p>
                       <button
                         onClick={() => { setConfirmDelete(true); setDeleteEmailInput(''); }}
                         className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-red-500/30 text-red-400 text-sm font-bold uppercase tracking-wider hover:bg-red-500/10 transition-colors"
                       >
                         <Trash2 className="w-4 h-4" />
-                        Delete account
+                        {t('profile.deleteAccount')}
                       </button>
                     </>
                   ) : (
                     <div className="space-y-3">
-                      <p className="text-[#cbd5e1] text-sm leading-relaxed">This action cannot be undone. All your data will be permanently deleted.</p>
+                      <p className="text-[#cbd5e1] text-sm leading-relaxed">{t('profile.deleteConfirm')}</p>
                       <p className="text-[#64748b] text-xs">
-                        Type <span className="font-mono text-slate-400">{user?.email}</span> to confirm:
+                        {t('profile.deleteTypeEmail')}
                       </p>
                       <input
                         type="email"
@@ -539,7 +539,7 @@ export default function Profile() {
                               await supabase.auth.signOut();
                               navigate('/');
                             } catch {
-                              setFormError('Failed to delete account. Please try again.');
+                              setFormError(t('profile.deleteError'));
                               setDeleting(false);
                               setConfirmDelete(false);
                             }
@@ -547,13 +547,13 @@ export default function Profile() {
                           className="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-red-500 to-red-600 text-white text-sm font-bold uppercase tracking-wider hover:opacity-90 transition-opacity disabled:opacity-40"
                           style={{ boxShadow: '0 4px 16px #ef444440' }}
                         >
-                          {deleting ? 'Deleting…' : 'Delete everything'}
+                          {t(deleting ? 'profile.deleting' : 'profile.confirmDelete')}
                         </button>
                         <button
                           onClick={() => setConfirmDelete(false)}
                           className={`w-full px-4 py-3 rounded-xl text-sm font-medium transition-colors ${isDark ? 'bg-white/[0.04] border border-white/10 text-slate-300 hover:bg-white/[0.08]' : 'bg-black/[0.04] border border-black/10 text-slate-600 hover:bg-black/[0.07]'}`}
                         >
-                          Cancel
+                          {t('profile.cancel')}
                         </button>
                       </div>
                     </div>

@@ -4,6 +4,7 @@ import PageMeta from '../components/PageMeta';
 import StarField from '../components/StarField';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { supabase } from '../lib/supabase';
+import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { logError } from '../utils/logger';
 import { Link } from 'react-router-dom';
@@ -21,18 +22,18 @@ interface Sighting {
   created_at: string;
 }
 
-const INTENSITY_LABELS = ['', 'Faint glow', 'Visible arcs', 'Clear bands', 'Vivid curtains', 'Full corona'];
 const INTENSITY_COLORS = ['', '#4ade80', '#34d399', '#10b981', '#f97316', '#ef4444'];
 
 function IntensityPicker({ value, onChange }: { value: number; onChange: (v: number) => void }) {
+  const { t } = useLanguage();
   return (
-    <div className="flex gap-2">
+    <div className="flex flex-wrap gap-2">
       {[1, 2, 3, 4, 5].map(n => (
         <button
           key={n}
           type="button"
           onClick={() => onChange(n)}
-          aria-label={`Intensity ${n}: ${INTENSITY_LABELS[n]}`}
+          aria-label={`${t('log.intensity')} ${n}: ${t(`log.intensity.${n}`)}`}
           className="flex flex-col items-center gap-1 px-3 py-2 rounded-xl border transition-all"
           style={
             value === n
@@ -57,6 +58,7 @@ const emptyForm = () => ({
 });
 
 const AuroraLog = () => {
+  const { language, t } = useLanguage();
   const { user } = useAuth();
   const { hasPro } = usePaymentGate();
   const [sightings, setSightings] = useState<Sighting[]>([]);
@@ -115,8 +117,8 @@ const AuroraLog = () => {
       <div className="min-h-screen pt-24 flex items-center justify-center">
         <div className="text-center">
           <BookOpen className="w-16 h-16 text-[#10b981] mx-auto mb-4 opacity-50" />
-          <h2 className="text-2xl font-bold text-white mb-2">Sign in to access your Aurora Log</h2>
-          <Link to="/auth" className="text-[#10b981] hover:underline">Sign in →</Link>
+          <h2 className="text-2xl font-bold text-white mb-2">{t('log.signIn')}</h2>
+          <Link to="/auth" className="text-[#10b981] hover:underline">{t('auth.signIn')} →</Link>
         </div>
       </div>
     );
@@ -127,14 +129,14 @@ const AuroraLog = () => {
       <div className="min-h-screen pt-24 flex items-center justify-center px-4">
         <div className="glass-surface rounded-3xl p-10 max-w-md text-center border border-[#10b981]/20">
           <BookOpen className="w-16 h-16 text-[#10b981] mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-white mb-2">Aurora Personal Log</h2>
-          <p className="text-[#94a3b8] mb-6">Keep a diary of your aurora sightings — intensity, location, notes, and Kp at the time. Available on Pro.</p>
+          <h2 className="text-2xl font-bold text-white mb-2">{t('log.title')}</h2>
+          <p className="text-[#94a3b8] mb-6">{t('log.proDescription')}</p>
           <Link
             to="/pricing"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-white"
             style={{ background: 'linear-gradient(to right, #10b981, #059669)' }}
           >
-            Upgrade to Pro
+            {t('log.upgrade')}
           </Link>
         </div>
       </div>
@@ -153,32 +155,34 @@ const AuroraLog = () => {
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8 flex items-start justify-between gap-4">
+        <div className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row">
           <div>
             <h1 className="text-4xl sm:text-5xl font-bold text-white mb-2 uppercase tracking-tight">
-              Aurora <span className="gradient-emerald">Log</span>
+              <span className="gradient-emerald">{t('log.title')}</span>
             </h1>
-            <p className="text-[#94a3b8]">{sightings.length} sighting{sightings.length !== 1 ? 's' : ''} recorded</p>
+            <p className="text-[#94a3b8]">{t(sightings.length === 1 ? 'log.recordedOne' : 'log.recordedMany').replace('{count}', String(sightings.length))}</p>
           </div>
           <button
             onClick={() => setShowForm(v => !v)}
+            aria-label={t('log.add')}
             className="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-white transition-all hover:opacity-90 mt-1"
             style={{ background: 'linear-gradient(to right, #10b981, #059669)' }}
           >
             <Plus className="w-4 h-4" />
-            <span className="hidden sm:inline">Log sighting</span>
+            <span>{t('log.add')}</span>
           </button>
         </div>
 
         {/* Add form */}
         {showForm && (
           <form onSubmit={handleSubmit} className="glass-surface rounded-2xl p-6 border border-[#10b981]/30 mb-8 space-y-5">
-            <h2 className="text-lg font-bold text-white">New sighting</h2>
+            <h2 className="text-lg font-bold text-white">{t('log.new')}</h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-[#94a3b8] mb-1.5 uppercase tracking-wider">Date & time</label>
+                <label htmlFor="log-date" className="block text-xs font-semibold text-[#94a3b8] mb-1.5 uppercase tracking-wider">{t('log.date')}</label>
                 <input
+                  id="log-date"
                   type="datetime-local"
                   required
                   value={form.sighted_at}
@@ -187,44 +191,47 @@ const AuroraLog = () => {
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#94a3b8] mb-1.5 uppercase tracking-wider">Location</label>
+                <label htmlFor="log-location" className="block text-xs font-semibold text-[#94a3b8] mb-1.5 uppercase tracking-wider">{t('log.location')}</label>
                 <input
+                  id="log-location"
                   type="text"
                   value={form.location_name}
                   onChange={e => setForm(f => ({ ...f, location_name: e.target.value }))}
-                  placeholder="e.g. Lapland, Finland"
+                  placeholder={t('log.locationExample')}
                   className="w-full rounded-xl px-4 py-2.5 bg-white/5 border border-white/10 text-white placeholder-[#475569] focus:outline-none focus:border-[#f97316]/60 transition-colors"
                 />
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-[#94a3b8] mb-2 uppercase tracking-wider">Intensity</label>
+            <fieldset>
+              <legend className="block text-xs font-semibold text-[#94a3b8] mb-2 uppercase tracking-wider">{t('log.intensity')}</legend>
               <IntensityPicker value={form.intensity} onChange={v => setForm(f => ({ ...f, intensity: v }))} />
-              <p className="text-xs text-[#64748b] mt-1.5">{INTENSITY_LABELS[form.intensity]}</p>
-            </div>
+              <p className="text-xs text-[#64748b] mt-1.5">{t(`log.intensity.${form.intensity}`)}</p>
+            </fieldset>
 
             <div>
-              <label className="block text-xs font-semibold text-[#94a3b8] mb-1.5 uppercase tracking-wider">Kp index (optional)</label>
+              <label htmlFor="log-kp" className="block text-xs font-semibold text-[#94a3b8] mb-1.5 uppercase tracking-wider">{t('log.kp')}</label>
               <input
+                id="log-kp"
                 type="number"
                 min="0"
                 max="9"
                 step="0.1"
                 value={form.kp_at_sighting}
                 onChange={e => setForm(f => ({ ...f, kp_at_sighting: e.target.value }))}
-                placeholder="e.g. 6.3"
+                placeholder="6.3"
                 className="w-32 rounded-xl px-4 py-2.5 bg-white/5 border border-white/10 text-white placeholder-[#475569] focus:outline-none focus:border-[#f97316]/60 transition-colors"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#94a3b8] mb-1.5 uppercase tracking-wider">Notes</label>
+              <label htmlFor="log-notes" className="block text-xs font-semibold text-[#94a3b8] mb-1.5 uppercase tracking-wider">{t('log.notes')}</label>
               <textarea
+                id="log-notes"
                 rows={3}
                 value={form.notes}
                 onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-                placeholder="Colors, structure, duration, photos..."
+                placeholder={t('log.notesExample')}
                 className="w-full rounded-xl px-4 py-2.5 bg-white/5 border border-white/10 text-white placeholder-[#475569] focus:outline-none focus:border-[#f97316]/60 transition-colors resize-none"
               />
             </div>
@@ -236,14 +243,14 @@ const AuroraLog = () => {
                 className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-white transition-all hover:opacity-90 disabled:opacity-50"
                 style={{ background: 'linear-gradient(to right, #10b981, #059669)' }}
               >
-                {saving ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : 'Save'}
+                {saving ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : t('common.save')}
               </button>
               <button
                 type="button"
                 onClick={() => { setShowForm(false); setForm(emptyForm()); }}
                 className="px-5 py-2.5 rounded-xl font-bold text-[#64748b] hover:text-white transition-colors"
               >
-                Cancel
+                {t('profile.cancel')}
               </button>
             </div>
           </form>
@@ -259,8 +266,8 @@ const AuroraLog = () => {
         ) : sightings.length === 0 ? (
           <div className="glass-surface rounded-2xl p-12 border border-white/10 text-center">
             <div className="text-5xl mb-4">🌌</div>
-            <p className="text-[#94a3b8] text-lg">No sightings yet.</p>
-            <p className="text-[#475569] text-sm mt-1">Click "Log sighting" to record your first aurora.</p>
+            <p className="text-[#94a3b8] text-lg">{t('log.empty')}</p>
+            <p className="text-[#475569] text-sm mt-1">{t('log.emptyHint')}</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -272,17 +279,17 @@ const AuroraLog = () => {
                   style={{ background: INTENSITY_COLORS[s.intensity] + '33', border: `1.5px solid ${INTENSITY_COLORS[s.intensity]}66` }}
                 >
                   <span className="text-lg leading-none" style={{ color: INTENSITY_COLORS[s.intensity] }}>{s.intensity}</span>
-                  <span className="text-[9px] uppercase tracking-wider mt-0.5" style={{ color: INTENSITY_COLORS[s.intensity] + 'bb' }}>int.</span>
+                  <span className="text-[9px] uppercase tracking-wider mt-0.5" style={{ color: INTENSITY_COLORS[s.intensity] + 'bb' }}>{t('log.intensityShort')}</span>
                 </div>
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap mb-1">
                     <span className="text-white font-semibold">
-                      {new Date(s.sighted_at ?? s.created_at).toLocaleDateString('en', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      {new Date(s.sighted_at ?? s.created_at).toLocaleDateString(language, { day: 'numeric', month: 'short', year: 'numeric' })}
                     </span>
                     <span className="text-[#475569] text-sm">
-                      {new Date(s.sighted_at ?? s.created_at).toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit' })}
+                      {new Date(s.sighted_at ?? s.created_at).toLocaleTimeString(language, { hour: '2-digit', minute: '2-digit' })}
                     </span>
                     {s.kp_at_sighting != null && (
                       <span className="text-xs px-2 py-0.5 rounded-full bg-[#f97316]/15 text-[#f97316] font-bold">Kp {s.kp_at_sighting.toFixed(1)}</span>
@@ -300,13 +307,13 @@ const AuroraLog = () => {
                 {/* Delete */}
                 {deleteId === s.id ? (
                   <div className="flex-shrink-0 flex items-center gap-2">
-                    <button onClick={() => handleDelete(s.id)} className="text-xs text-[#ef4444] font-bold hover:underline">Confirm</button>
-                    <button onClick={() => setDeleteId(null)} className="text-xs text-[#475569] hover:text-white">Cancel</button>
+                    <button onClick={() => handleDelete(s.id)} className="text-xs text-[#ef4444] font-bold hover:underline">{t('log.confirm')}</button>
+                    <button onClick={() => setDeleteId(null)} className="text-xs text-[#475569] hover:text-white">{t('profile.cancel')}</button>
                   </div>
                 ) : (
                   <button
                     onClick={() => setDeleteId(s.id)}
-                    aria-label="Delete sighting"
+                    aria-label={t('log.delete')}
                     className="flex-shrink-0 p-2 rounded-lg text-[#374151] hover:text-[#ef4444] hover:bg-[#ef4444]/10 transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />

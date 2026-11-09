@@ -136,7 +136,7 @@ test.describe('Free launch access', () => {
   test('personal aurora logs still require an account', async ({ page }) => {
     await page.goto('/log');
     await expect(page.getByRole('heading', { name: 'Sign in to access your Aurora Log' })).toBeVisible();
-    await expect(page.locator('main').getByRole('link', { name: /Sign in/ })).toHaveAttribute('href', '/auth');
+    await expect(page.locator('main').getByRole('link', { name: /Sign in/i })).toHaveAttribute('href', '/auth');
     await expect(page.getByText('Upgrade to Pro', { exact: true })).toHaveCount(0);
   });
 

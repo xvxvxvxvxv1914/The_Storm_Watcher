@@ -25,7 +25,7 @@ const Footer = () => {
         { to: '/aurora',          label: t('nav.aurora') },
         { to: '/iss',             label: t('nav.iss') },
         { to: '/calendar',        label: t('nav.calendar') },
-        { to: '/log',             label: 'Aurora Log' },
+        { to: '/log',             label: t('log.title') },
         { to: '/sky',             label: t('nav.sky') },
         { to: '/sun',             label: t('nav.sun') },
         { to: '/uv',              label: t('nav.uv') },
@@ -34,7 +34,7 @@ const Footer = () => {
     {
       heading: t('footer.section.healthInfo'),
       links: [
-        { to: '/blog',             label: 'Blog' },
+        { to: '/blog',             label: t('nav.blog') },
         { to: '/gallery',          label: t('nav.gallery') },
         { to: '/hunt',             label: t('nav.hunt') },
         { to: '/livestream',       label: t('nav.livestream') },
@@ -48,7 +48,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="relative glass-surface border-t border-white/10 mt-16 pb-20 lg:pb-0" role="contentinfo" aria-label="Site footer">
+    <footer className="relative glass-surface border-t border-white/10 mt-16 pb-20 lg:pb-0" role="contentinfo" aria-label={t('footer.site')}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
         {/* Mobile: compact */}
@@ -95,7 +95,7 @@ const Footer = () => {
                   { to: '/uv',               label: t('nav.uv') },
                   { to: '/mood',             label: t('nav.mood') },
                   { to: '/magnetic-effects', label: t('nav.magneticEffectsShort') },
-                  { to: '/blog',             label: 'Blog' },
+                  { to: '/blog',             label: t('nav.blog') },
                   { to: '/faq',              label: t('nav.faq') },
                   { to: '/about',            label: t('nav.about') },
                   { to: '/contact',          label: t('footer.contact') || 'Contact' },

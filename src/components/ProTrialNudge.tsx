@@ -50,7 +50,7 @@ export default function ProTrialNudge() {
       <button
         onClick={dismiss}
         className="absolute top-3 right-3 p-1 rounded-lg text-[#475569] hover:text-white hover:bg-white/5 transition-colors"
-        aria-label="Dismiss"
+        aria-label={t('common.dismiss')}
       >
         <X className="w-4 h-4" />
       </button>

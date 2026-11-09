@@ -114,7 +114,7 @@ export default function Gallery() {
       return;
     }
     if (file.size > 25 * 1024 * 1024) {
-      setUploadError(t('gallery.fileTooLarge') || 'File too large — max 25 MB');
+      setUploadError(t('gallery.fileTooLarge'));
       return;
     }
     setSelectedFile(file);
@@ -278,7 +278,7 @@ export default function Gallery() {
                   value={description}
                   onChange={e => setDescription(e.target.value)}
                   maxLength={200}
-                  placeholder="Kp 7, amazing display over the lake…"
+                  placeholder={t('gallery.captionExample')}
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-[#475569] focus:outline-none focus:border-[#f97316]/50 focus:ring-1 focus:ring-[#f97316]/30 transition-colors text-sm"
                 />
               </div>
@@ -291,7 +291,7 @@ export default function Gallery() {
                   value={locationName}
                   onChange={e => setLocationName(e.target.value)}
                   maxLength={100}
-                  placeholder="Tromsø, Norway"
+                  placeholder={t('hunt.locationExample')}
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-[#475569] focus:outline-none focus:border-[#f97316]/50 focus:ring-1 focus:ring-[#f97316]/30 transition-colors text-sm"
                 />
               </div>
@@ -375,7 +375,7 @@ export default function Gallery() {
               to="/auth"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] text-white font-semibold text-sm hover:opacity-90 transition-opacity"
             >
-              Sign in to Upload
+              {t('gallery.signInToUpload')}
             </Link>
           )}
         </div>
@@ -424,8 +424,8 @@ export default function Gallery() {
                       <button
                         onClick={() => setPendingDelete(photo)}
                         className="ml-auto text-[#ef4444]/70 hover:text-[#ef4444] transition-colors"
-                        title="Delete photo"
-                        aria-label="Delete photo"
+                        title={t('gallery.deleteTitle')}
+                        aria-label={t('gallery.deleteTitle')}
                       >
                         <X className="w-3.5 h-3.5" />
                       </button>

@@ -605,7 +605,7 @@ const Dashboard = () => {
           <button
             onClick={handleShare}
             disabled={sharing || kpValue === null}
-            aria-label="Share storm score card"
+            aria-label={t('home.stormScore.share')}
             className="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 disabled:opacity-50 mt-1"
             style={{ background: 'linear-gradient(to right, #10b981, #059669)' }}
           >

@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import { Clock, ChevronRight, Rss } from 'lucide-react';
 // Metadata only — the list renders titles and descriptions, never article bodies.
 import { getLocalizedBlogMeta } from '../data/blog/loadPost';
-import { CATEGORY_LABELS } from '../data/blog/categories';
 import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { AnimatedPage } from '../components/AnimatedPage';
@@ -18,7 +17,7 @@ const CATEGORY_CONFIG: Record<string, { text: string; bg: string; glow: string; 
 };
 
 export default function Blog() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const posts = getLocalizedBlogMeta(language);
@@ -48,11 +47,11 @@ export default function Blog() {
             <div className="flex items-center justify-center gap-3 mb-4">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10">
                 <Rss size={13} className="text-emerald-400" />
-                <span className="text-emerald-300 text-xs font-medium tracking-wide uppercase">Space Weather Blog</span>
+                <span className="text-emerald-300 text-xs font-medium tracking-wide uppercase">{t('blog.label')}</span>
               </div>
               <a
                 href="/feed.xml"
-                title="RSS Feed"
+                title={t('blog.rss')}
                 className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border border-orange-500/30 bg-orange-500/10 hover:bg-orange-500/20 transition-colors"
               >
                 <Rss size={12} className="text-orange-400" />
@@ -60,13 +59,13 @@ export default function Blog() {
               </a>
             </div>
             <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3 leading-tight">
-              Guides for{' '}
+              {t('blog.guidesFor')}{' '}
               <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
-                Aurora Hunters
+                {t('blog.hunters')}
               </span>
             </h1>
             <p className="text-[#64748b] text-base max-w-lg mx-auto leading-relaxed">
-              Kp index, geomagnetic storms, solar flares, and forecasting tips — everything you need to catch the lights.
+              {t('blog.intro')}
             </p>
           </div>
 
@@ -92,11 +91,11 @@ export default function Blog() {
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2 mb-1.5">
                         <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${cat.text} ${cat.bg} ${cat.border}`}>
-                          {CATEGORY_LABELS[post.category]}
+                          {t(`blog.category.${post.category}`)}
                         </span>
                         <span className="text-[#475569] text-xs flex items-center gap-1">
                           <Clock size={11} />
-                          {post.readingTime} min read
+                          {t('blog.readTime').replace('{minutes}', String(post.readingTime))}
                         </span>
                       </div>
                       <h2 className="text-white font-semibold text-[15px] leading-snug mb-1 group-hover:text-emerald-400 transition-colors duration-200">

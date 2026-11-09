@@ -1,8 +1,9 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { langFromPath } from '../utils/langUrl';
+import { ALL_LANGS, langFromPath, persistLanguage } from '../utils/langUrl';
 
-type Language = 'en' | 'bg' | 'es' | 'fr' | 'de' | 'ru' | 'zh' | 'ja' | 'no' | 'fi' | 'sv' | 'is' | 'da' | 'pl' | 'uk' | 'ko';
+type Language = typeof ALL_LANGS[number];
+type Messages = Record<string, string>;
 
 interface LanguageContextType {
   language: Language;
@@ -14,7 +15,7 @@ export const LanguageContext = createContext<LanguageContextType | undefined>(un
 
 // Vite statically analyses the template so each locale becomes its own chunk
 // and is fetched only when the user selects it.
-const loaders: Record<Language, () => Promise<{ default: Record<string, string> }>> = {
+const loaders: Record<Language, () => Promise<{ default: Messages }>> = {
   en: () => import('../locales/en'),
   bg: () => import('../locales/bg'),
   es: () => import('../locales/es'),
@@ -34,52 +35,78 @@ const loaders: Record<Language, () => Promise<{ default: Record<string, string> 
 };
 
 // In-memory cache so switching languages twice doesn't re-fetch.
-const cache = new Map<Language, Record<string, string>>();
+const cache = new Map<Language, Messages>();
+
+const isLanguage = (value: string | null): value is Language =>
+  ALL_LANGS.some(language => language === value);
+
+const loadMessages = async (language: Language): Promise<Messages> => {
+  const cached = cache.get(language);
+  if (cached) return cached;
+  const { default: messages } = await loaders[language]();
+  cache.set(language, messages);
+  return messages;
+};
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  const [language, setLanguageState] = useState<Language>(() => {
+  const [requestedLanguage, setLanguageState] = useState<Language>(() => {
     // URL prefix wins — `/de/sky` must render in German regardless of the saved
     // preference, so the page matches its prerendered HTML and canonical.
     const fromUrl = langFromPath(window.location.pathname);
-    if (fromUrl) return fromUrl as Language;
-    const saved = localStorage.getItem('language');
-    if (saved) return saved as Language;
-    const supported: Language[] = ['en', 'bg', 'es', 'fr', 'de', 'ru', 'zh', 'ja', 'no', 'fi', 'sv', 'is', 'da', 'pl', 'uk', 'ko'];
+    if (isLanguage(fromUrl)) return fromUrl;
+    try {
+      const saved = localStorage.getItem('language');
+      if (isLanguage(saved)) return saved;
+    } catch { /* storage may be blocked */ }
     const nav = (navigator.language || navigator.languages?.[0] || 'en').slice(0, 2).toLowerCase();
-    return supported.includes(nav as Language) ? (nav as Language) : 'en';
+    return isLanguage(nav) ? nav : 'en';
   });
-  const [translations, setTranslations] = useState<Record<string, string>>(() => cache.get(language) ?? {});
+  const [loaded, setLoaded] = useState<{ language: Language; messages: Messages; fallback?: Messages }>();
+  const [loadFailed, setLoadFailed] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem('language', language);
-    document.documentElement.lang = language;
-
-    const cached = cache.get(language);
-    if (cached) {
-      setTranslations(cached);
-      return;
-    }
-
+    persistLanguage(requestedLanguage);
     let cancelled = false;
-    loaders[language]().then((mod) => {
+    // Load in parallel so missing local strings have an English fallback on first paint.
+    const localized = loadMessages(requestedLanguage);
+    const english = requestedLanguage === 'en' ? localized : loadMessages('en');
+    Promise.allSettled([localized, english]).then(([current, fallback]) => {
       if (cancelled) return;
-      cache.set(language, mod.default);
-      setTranslations(mod.default);
-    }).catch(() => {
-      // Fall back silently — t() returns the key as a sensible default.
+      if (current.status === 'fulfilled') {
+        document.documentElement.lang = requestedLanguage;
+        setLoaded({
+          language: requestedLanguage,
+          messages: current.value,
+          fallback: fallback.status === 'fulfilled' ? fallback.value : undefined,
+        });
+      } else if (fallback.status === 'fulfilled') {
+        document.documentElement.lang = 'en';
+        setLoaded({ language: 'en', messages: fallback.value });
+      } else {
+        setLoadFailed(true);
+      }
     });
 
     return () => { cancelled = true; };
-  }, [language]);
+  }, [requestedLanguage]);
 
   const setLanguage = (lang: Language) => {
-    setLanguageState(lang);
+    if (isLanguage(lang)) setLanguageState(lang);
   };
 
-  const t = (key: string): string => translations[key] || key;
+  if (!loaded) {
+    return loadFailed ? (
+      <p role="alert" className="p-6 text-center text-white">
+        Could not load the interface.{' '}
+        <button className="underline" onClick={() => window.location.reload()}>Reload</button>
+      </p>
+    ) : null;
+  }
+
+  const t = (key: string): string => loaded.messages[key] || loaded.fallback?.[key] || key;
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={{ language: loaded.language, setLanguage, t }}>
       {children}
     </LanguageContext.Provider>
   );

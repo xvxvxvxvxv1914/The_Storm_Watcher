@@ -169,8 +169,8 @@ const ISS = () => {
 
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-5xl font-bold text-white mb-2 uppercase tracking-tight">
-            <span className="gradient-solar">ISS</span> Tracker
+          <h1 className="text-3xl sm:text-5xl font-bold text-white mb-2 uppercase tracking-tight [overflow-wrap:anywhere]">
+            <span className="gradient-solar">{t('nav.iss')}</span>
           </h1>
           <p className="text-[#94a3b8] text-sm">{t('iss.subtitle')}</p>
           {locationName && (
@@ -187,7 +187,7 @@ const ISS = () => {
             <div className={`w-3 h-3 rounded-full ${posError ? 'bg-[#ef4444]' : 'bg-[#10b981] animate-pulse'}`} />
             <h2 className="text-xl font-bold text-white uppercase tracking-wide">{t('iss.livePosition')}</h2>
             <span className="text-[#64748b] text-xs">
-              {posError ? (t('iss.signalLost') || 'Signal lost — last known position') : t('iss.updates5s')}
+              {posError ? t('iss.signalLost') : t('iss.updates5s')}
             </span>
             {lastUpdated && (
               <span className="ml-auto text-xs text-[#475569]">{lastUpdated.toLocaleTimeString(language)}</span>

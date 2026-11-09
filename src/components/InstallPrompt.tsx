@@ -100,7 +100,7 @@ export default function InstallPrompt() {
         </button>
         <button
           onClick={handleDismiss}
-          aria-label="Dismiss"
+          aria-label={t('common.dismiss')}
           className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${
             isDark ? 'bg-white/8 text-white/60' : 'bg-black/6 text-slate-500'
           }`}

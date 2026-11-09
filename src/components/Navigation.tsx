@@ -139,7 +139,7 @@ const Navigation = () => {
         </div>
       ) : (
       /* Mobile: floating pill matching bottom tab bar */
-      <div className="lg:hidden flex items-center justify-between mx-3 mt-2 px-4 py-2.5 rounded-full" style={{
+      <div className="lg:hidden flex items-center justify-between gap-2 mx-3 mt-2 px-4 py-2.5 rounded-full" style={{
         background: theme === 'light' ? 'rgba(242,242,247,0.82)' : 'rgba(18,18,30,0.82)',
         backdropFilter: 'blur(10px) saturate(180%)',
         WebkitBackdropFilter: 'blur(10px) saturate(180%)',
@@ -152,10 +152,10 @@ const Navigation = () => {
           <img
             src="/logos/icon.svg"
             alt=""
-            className="w-14 h-14 -my-1.5"
+            className="w-11 h-11 sm:w-14 sm:h-14 shrink-0 -my-1.5"
             style={{ filter: 'drop-shadow(0 0 10px rgba(249,115,22,0.55)) drop-shadow(0 0 20px rgba(16,185,129,0.3))' }}
           />
-          <span className="text-[17px] font-extrabold tracking-tight">
+          <span className="text-sm sm:text-[17px] font-extrabold leading-tight tracking-tight">
             <span className={theme === 'light' ? 'text-slate-800' : 'text-[#f8fafc]'}>The </span>
             <span className="text-[#f97316]">Storm</span>
             <span className={theme === 'light' ? 'text-slate-800' : 'text-[#f8fafc]'}> Watcher</span>
@@ -167,7 +167,7 @@ const Navigation = () => {
           ) : (
             <Link
               to="/auth"
-              className="px-3 py-1 rounded-full bg-gradient-to-r from-[#f97316] to-[#fbbf24] text-white font-semibold text-xs"
+              className="px-3 py-1 rounded-full bg-gradient-to-r from-[#f97316] to-[#fbbf24] text-white text-center font-semibold text-xs [overflow-wrap:anywhere]"
             >
               {t('auth.signIn')}
             </Link>
@@ -179,12 +179,12 @@ const Navigation = () => {
       {/* Desktop: full-width glass bar */}
       <div className="hidden lg:block glass-surface">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-14 md:h-16">
+        <div className="flex items-center justify-between min-h-16">
 
           {/* Logo */}
           <Link
             to="/"
-            className="flex items-center gap-3 group"
+            className="flex shrink-0 items-center gap-3 group"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
             <>
@@ -202,13 +202,15 @@ const Navigation = () => {
 
           {/* Desktop nav */}
           <div className="hidden lg:flex items-center flex-1 min-w-0 ml-3 xl:ml-5 gap-2 xl:gap-3">
-            <div className="flex items-center gap-1 xl:gap-2">
+            <div className="flex min-w-0 items-center gap-1 xl:gap-2">
               {mainLinks.map((link) => (
                 <Link
                   key={link.to}
                   to={link.to}
-                  className={`relative px-2 xl:px-3 py-1 text-xs xl:text-sm font-semibold transition-colors whitespace-nowrap ${
-                    isActive(link.to) ? 'text-[#10b981]' : 'text-[#94a3b8] hover:text-white'
+                  className={`relative min-w-0 px-2 xl:px-3 py-1 text-center text-xs xl:text-sm font-semibold leading-tight transition-colors [overflow-wrap:anywhere] ${
+                    isActive(link.to)
+                      ? theme === 'light' ? 'text-emerald-700' : 'text-[#10b981]'
+                      : theme === 'light' ? 'text-slate-700 hover:text-slate-900' : 'text-[#94a3b8] hover:text-white'
                   }`}
                 >
                   {link.label}
@@ -218,13 +220,15 @@ const Navigation = () => {
                 </Link>
               ))}
 
-              <div className="relative" ref={moreMenuRef}>
+              <div className="relative shrink-0" ref={moreMenuRef}>
                 <button
                   onClick={() => setIsMoreOpen(!isMoreOpen)}
                   aria-expanded={isMoreOpen}
                   aria-haspopup="menu"
                   className={`relative flex items-center gap-1 px-2 xl:px-3 py-1 text-xs xl:text-sm font-semibold transition-colors whitespace-nowrap ${
-                    isMoreActive ? 'text-[#10b981]' : 'text-[#94a3b8] hover:text-white'
+                    isMoreActive
+                      ? theme === 'light' ? 'text-emerald-700' : 'text-[#10b981]'
+                      : theme === 'light' ? 'text-slate-700 hover:text-slate-900' : 'text-[#94a3b8] hover:text-white'
                   }`}
                 >
                   {t('nav.more')}
@@ -235,7 +239,7 @@ const Navigation = () => {
                 </button>
                 {isMoreOpen && (
                   <div
-                    className="absolute left-0 mt-3 w-96 rounded-xl shadow-2xl py-2 border border-[#10b981]/20"
+                    className="absolute right-0 mt-3 w-96 max-h-[calc(100dvh-5rem)] overflow-y-auto rounded-xl shadow-2xl py-2 border border-[#10b981]/20"
                     style={{
                       backgroundColor: 'var(--tsw-menu-bg)',
                       backdropFilter: 'blur(16px)',
@@ -247,7 +251,7 @@ const Navigation = () => {
                           key={link.to}
                           to={link.to}
                           onClick={() => setIsMoreOpen(false)}
-                          className={`block px-4 py-2 text-sm font-medium transition-colors ${
+                          className={`block px-4 py-2 text-sm font-medium transition-colors [overflow-wrap:anywhere] ${
                             isActive(link.to)
                               ? 'text-[#10b981] bg-[#10b981]/10'
                               : theme === 'dark'
@@ -287,7 +291,7 @@ const Navigation = () => {
               </button>
               {isLangMenuOpen && (
                 <div
-                  className="absolute right-0 mt-2 w-48 rounded-xl shadow-2xl py-2 border border-[#f97316]/20"
+                  className="absolute right-0 mt-2 w-48 max-h-[calc(100dvh-5rem)] overflow-y-auto rounded-xl shadow-2xl py-2 border border-[#f97316]/20"
                   style={{
                     backgroundColor: 'var(--tsw-menu-bg)',
                     backdropFilter: 'blur(16px)',
@@ -317,10 +321,10 @@ const Navigation = () => {
 
             <Link
               to="/pricing"
-              className={`shrink-0 px-2.5 xl:px-3 py-1.5 rounded-lg text-xs xl:text-sm font-semibold transition-colors border ${
+              className={`shrink-0 max-w-40 px-2.5 xl:px-3 py-1.5 rounded-lg text-center text-xs xl:text-sm font-semibold transition-colors border [overflow-wrap:anywhere] ${
                 isActive('/pricing')
-                  ? 'text-[#10b981] border-[#10b981]/40 bg-[#10b981]/10'
-                  : 'text-[#94a3b8] border-white/10 hover:text-white hover:border-white/20 hover:bg-white/5'
+                  ? theme === 'light' ? 'text-emerald-700 border-emerald-700/30 bg-emerald-700/10' : 'text-[#10b981] border-[#10b981]/40 bg-[#10b981]/10'
+                  : theme === 'light' ? 'text-slate-700 border-slate-300 hover:bg-slate-100' : 'text-[#94a3b8] border-white/10 hover:text-white hover:border-white/20 hover:bg-white/5'
               }`}
             >
               {paymentsEnabled ? t('nav.pricing') : t('freeAccess.nav')}
@@ -330,7 +334,7 @@ const Navigation = () => {
               <div data-tour="user-menu" className="relative shrink-0" ref={userMenuRef}>
                 <button
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  aria-label="User menu"
+                  aria-label={t('nav.userMenu')}
                   aria-expanded={isUserMenuOpen}
                   aria-haspopup="menu"
                   className="flex items-center gap-1.5 xl:gap-2 px-2.5 xl:px-4 py-2 rounded-lg bg-[#f97316]/10 text-[#f97316] hover:bg-[#f97316]/20 transition-colors"
@@ -349,8 +353,8 @@ const Navigation = () => {
                     }}
                   >
                     <div className={`px-4 py-2 border-b ${theme === 'dark' ? 'border-white/10' : 'border-slate-200'}`}>
-                      <p className={`text-sm font-medium ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>{profile?.full_name || t('nav.user')}</p>
-                      <p className={`text-xs mt-1 ${theme === 'dark' ? 'text-[#94a3b8]' : 'text-slate-500'}`}>{user.email}</p>
+                      <p className={`text-sm font-medium break-words ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>{profile?.full_name || t('nav.user')}</p>
+                      <p className={`text-xs mt-1 [overflow-wrap:anywhere] ${theme === 'dark' ? 'text-[#94a3b8]' : 'text-slate-500'}`}>{user.email}</p>
                     </div>
                     <Link to="/profile" onClick={() => setIsUserMenuOpen(false)} className={`w-full text-left px-4 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${theme === 'dark' ? 'text-[#94a3b8] hover:text-white hover:bg-white/5' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'}`}>
                       <User className="w-4 h-4" />{t('nav.profile')}

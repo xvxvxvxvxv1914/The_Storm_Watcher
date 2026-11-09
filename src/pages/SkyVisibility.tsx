@@ -142,7 +142,7 @@ const SkyVisibility = () => {
         {/* Header */}
         <div className="mb-10">
           <h1 className="text-5xl font-bold text-white mb-2 uppercase tracking-tight">
-            Sky <span className="gradient-solar">{t('sky.tonight')}</span>
+            {t('sky.title')} <span className="gradient-solar">{t('sky.tonight')}</span>
           </h1>
           <LocationPicker
             lat={currentLat}
@@ -189,7 +189,7 @@ const SkyVisibility = () => {
           </div>
           <div className="glass-surface rounded-2xl p-5 text-center border border-white/10">
             <Star className="w-6 h-6 text-[#7c3aed] mx-auto mb-2" />
-            <div className="text-xl font-bold text-white">{sky.auroraChance}</div>
+            <div className="text-xl font-bold text-white">{t(`sky.chance.${sky.auroraChance}`)}</div>
             <div className="text-[#64748b] text-xs mt-1 uppercase tracking-wider">{t('sky.auroraChance')}</div>
           </div>
           <div className="glass-surface rounded-2xl p-5 text-center border border-white/10">

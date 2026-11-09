@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import Cropper from 'react-easy-crop';
 import type { Area } from 'react-easy-crop';
 import { X, ZoomIn, ZoomOut, Check } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 async function getCroppedBlob(imageSrc: string, croppedAreaPixels: Area): Promise<Blob> {
   const image = await new Promise<HTMLImageElement>((resolve, reject) => {
@@ -39,6 +40,7 @@ interface Props {
 }
 
 export default function AvatarCropper({ imageSrc, onConfirm, onCancel }: Props) {
+  const { t } = useLanguage();
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
@@ -67,17 +69,17 @@ export default function AvatarCropper({ imageSrc, onConfirm, onCancel }: Props) 
       <div className="bg-[var(--tsw-surface-bg)] border border-black/10 rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-white/8">
-          <button onClick={onCancel} aria-label="Close" className="p-1.5 rounded-lg hover:bg-white/8 transition-colors text-slate-400 hover:text-white">
+          <button onClick={onCancel} aria-label={t('common.close')} className="p-1.5 rounded-lg hover:bg-white/8 transition-colors text-slate-400 hover:text-white">
             <X size={18} />
           </button>
-          <span className="text-white text-sm font-semibold">Adjust photo</span>
+          <span className="text-white text-sm font-semibold">{t('profile.adjustPhoto')}</span>
           <button
             onClick={handleConfirm}
             disabled={applying}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 transition-colors text-black text-xs font-bold disabled:opacity-50"
           >
             <Check size={14} />
-            {applying ? 'Saving…' : 'Apply'}
+            {t(applying ? 'profile.saving' : 'profile.applyPhoto')}
           </button>
         </div>
 
@@ -102,7 +104,7 @@ export default function AvatarCropper({ imageSrc, onConfirm, onCancel }: Props) 
 
         {/* Hint */}
         <p className="text-center text-[#475569] text-[11px] pt-3 px-5">
-          Drag to reposition · Pinch or use slider to zoom
+          {t('profile.cropHint')}
         </p>
 
         {/* Zoom slider */}

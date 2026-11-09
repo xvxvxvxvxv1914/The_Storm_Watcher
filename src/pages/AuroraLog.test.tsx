@@ -2,6 +2,9 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import AuroraLog from './AuroraLog';
+import en from '../locales/en';
+
+vi.mock('../contexts/LanguageContext', () => ({ useLanguage: () => ({ language: 'en', t: (key: string) => en[key] ?? key }) }));
 
 const state = vi.hoisted(() => ({ free: true, user: { id: 'free-user' } as { id: string } | null }));
 vi.mock('../../supabase/functions/_shared/accessPolicy', () => ({

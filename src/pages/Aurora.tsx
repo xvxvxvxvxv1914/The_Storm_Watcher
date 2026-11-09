@@ -350,8 +350,8 @@ const Aurora = () => {
               <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-[#64748b]">
                 <span>Bz <span className={bz < 0 ? 'text-[#10b981]' : 'text-[#94a3b8]'}>{bz.toFixed(1)} nT</span></span>
                 <span>Bt <span className="text-[#94a3b8]">{bt.toFixed(1)} nT</span></span>
-                <span>Wind <span className="text-[#94a3b8]">{Math.round(windSpeed)} km/s</span></span>
-                <span>Density <span className="text-[#94a3b8]">{windDensity.toFixed(1)} cm⁻³</span></span>
+                <span>{t('dashboard.solarWind')} <span className="text-[#94a3b8]">{Math.round(windSpeed)} km/s</span></span>
+                <span>{t('dashboard.density')} <span className="text-[#94a3b8]">{windDensity.toFixed(1)} cm⁻³</span></span>
               </div>
             </div>
           </div>
@@ -549,7 +549,7 @@ const Aurora = () => {
           
           <div className="w-full px-8 py-6" style={{ borderTop: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)' }}>
             <p className="text-sm leading-relaxed" style={{ color: '#94a3b8' }}>
-              {t('aurora.ovalDesc')} · Use your mouse to rotate and zoom the globe. Bright green indicates the base of the aurora, shifting into cyan, purple, and vibrant pink at the highest active intensities.
+              {t('aurora.ovalDesc')} · {t('aurora.globeControls')}
             </p>
           </div>
         </div>

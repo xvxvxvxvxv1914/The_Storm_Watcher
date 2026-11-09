@@ -7,6 +7,7 @@ import * as solar from 'solar-calculator';
 import { type AuroraOvationPoint } from '../services/noaaApi';
 import ErrorBoundary from './ErrorBoundary';
 import { Satellite } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 import { logError } from '../utils/logger';
 
 interface Props {
@@ -70,6 +71,7 @@ function sunPosAt(dt: number): [number, number] {
 }
 
 export default function ISSGlobe({ globeWidth, auroraData, issLat, issLng, userLat, userLng, theme, active = true }: Props) {
+  const { t } = useLanguage();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const globeRef = useRef<any>(null);
   const prevAuroraTextureRef = useRef<THREE.CanvasTexture | null>(null);
@@ -235,7 +237,7 @@ export default function ISSGlobe({ globeWidth, auroraData, issLat, issLng, userL
     <ErrorBoundary fallback={
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center">
         <Satellite className="w-10 h-10 text-[#f97316]/50" />
-        <p className="text-[#94a3b8] text-sm">Globe unavailable</p>
+        <p className="text-[#94a3b8] text-sm">{t('aurora.globeUnavailable')}</p>
       </div>
     }>
       <Globe

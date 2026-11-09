@@ -4,6 +4,7 @@ import PageMeta from '../components/PageMeta';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { supabase } from '../lib/supabase';
 import StarField from '../components/StarField';
+import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { logError } from '../utils/logger';
 
@@ -20,10 +21,10 @@ const WrappableEmail = ({ email }: { email: string }) => {
 };
 
 const CATEGORIES = [
-  { value: 'general',     label: 'General question' },
-  { value: 'bug',         label: 'Bug report' },
-  { value: 'partnership', label: 'Partnership / press' },
-  { value: 'support',     label: 'Account support' },
+  { value: 'general',     labelKey: 'contact.topic.general' },
+  { value: 'bug',         labelKey: 'contact.topic.bug' },
+  { value: 'partnership', labelKey: 'contact.topic.partnership' },
+  { value: 'support',     labelKey: 'contact.topic.support' },
 ];
 
 // Upper bounds mirror the DB-side CHECK constraint on contact_messages.
@@ -33,6 +34,7 @@ const MAX_EMAIL = 254;
 const MAX_MESSAGE = 5000;
 
 const Contact = () => {
+  const { t } = useLanguage();
   const { user } = useAuth();
   const [name, setName]         = useState('');
   const [email, setEmail]       = useState(user?.email ?? '');
@@ -67,7 +69,7 @@ const Contact = () => {
 
     if (dbError) {
       logError('Contact form submit failed', dbError);
-      setError('Something went wrong. Please try emailing us directly at contact@thestormwatcher.com');
+      setError(t('contact.error'));
     } else {
       setDone(true);
     }
@@ -87,19 +89,19 @@ const Contact = () => {
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-10">
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-3 uppercase tracking-tight">
-            Get in <span className="gradient-emerald">Touch</span>
+            <span className="gradient-emerald">{t('footer.contact')}</span>
           </h1>
           <p className="text-[#94a3b8] text-lg">
-            Questions, bug reports, or partnership ideas — we read every message.
+            {t('contact.intro')}
           </p>
         </div>
 
         {done ? (
           <div className="glass-surface rounded-3xl p-10 text-center border border-[#10b981]/30">
             <CheckCircle className="w-16 h-16 text-[#10b981] mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-white mb-2">Message sent!</h2>
+            <h2 className="text-2xl font-bold text-white mb-2">{t('contact.sent')}</h2>
             <p className="text-[#94a3b8]">
-              We'll get back to you at <span className="text-white">{email}</span> as soon as possible.
+              {t('contact.reply').replace('{email}', () => email)}
             </p>
           </div>
         ) : (
@@ -108,24 +110,26 @@ const Contact = () => {
             {/* Name + Email */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-[#94a3b8] mb-2 uppercase tracking-wider">
-                  Name
+                <label htmlFor="contact-name" className="block text-sm font-semibold text-[#94a3b8] mb-2 uppercase tracking-wider">
+                  {t('contact.name')}
                 </label>
                 <input
+                  id="contact-name"
                   type="text"
                   required
                   maxLength={MAX_NAME}
                   value={name}
                   onChange={e => setName(e.target.value)}
-                  placeholder="Your name"
+                  placeholder={t('profile.displayNamePlaceholder')}
                   className="w-full rounded-xl px-4 py-3 bg-white/5 border border-white/10 text-white placeholder-[#475569] focus:outline-none focus:border-[#10b981]/60 transition-colors"
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-[#94a3b8] mb-2 uppercase tracking-wider">
-                  Email
+                <label htmlFor="contact-email" className="block text-sm font-semibold text-[#94a3b8] mb-2 uppercase tracking-wider">
+                  {t('auth.email')}
                 </label>
                 <input
+                  id="contact-email"
                   type="email"
                   required
                   maxLength={MAX_EMAIL}
@@ -138,15 +142,16 @@ const Contact = () => {
             </div>
 
             {/* Category */}
-            <div>
-              <label className="block text-sm font-semibold text-[#94a3b8] mb-2 uppercase tracking-wider">
-                Topic
-              </label>
+            <fieldset>
+              <legend className="block text-sm font-semibold text-[#94a3b8] mb-2 uppercase tracking-wider">
+                {t('contact.topic')}
+              </legend>
               <div className="flex flex-wrap gap-2">
                 {CATEGORIES.map(c => (
                   <button
                     key={c.value}
                     type="button"
+                    aria-pressed={category === c.value}
                     onClick={() => setCategory(c.value)}
                     className={`px-4 py-2 rounded-full text-sm font-semibold transition-all border ${
                       category === c.value
@@ -154,24 +159,25 @@ const Contact = () => {
                         : 'bg-white/5 border-white/10 text-[#94a3b8] hover:bg-white/10 hover:text-white'
                     }`}
                   >
-                    {c.label}
+                    {t(c.labelKey)}
                   </button>
                 ))}
               </div>
-            </div>
+            </fieldset>
 
             {/* Message */}
             <div>
-              <label className="block text-sm font-semibold text-[#94a3b8] mb-2 uppercase tracking-wider">
-                Message
+              <label htmlFor="contact-message" className="block text-sm font-semibold text-[#94a3b8] mb-2 uppercase tracking-wider">
+                {t('contact.message')}
               </label>
               <textarea
+                id="contact-message"
                 required
                 rows={6}
                 maxLength={MAX_MESSAGE}
                 value={message}
                 onChange={e => setMessage(e.target.value)}
-                placeholder="Tell us what's on your mind..."
+                placeholder={t('contact.messagePlaceholder')}
                 className="w-full rounded-xl px-4 py-3 bg-white/5 border border-white/10 text-white placeholder-[#475569] focus:outline-none focus:border-[#10b981]/60 transition-colors resize-none"
               />
             </div>
@@ -204,13 +210,13 @@ const Contact = () => {
               ) : (
                 <>
                   <Send className="w-4 h-4" />
-                  Send message
+                  {t('contact.send')}
                 </>
               )}
             </button>
 
             <p className="text-center text-[#475569] text-xs">
-              Or email us directly at{' '}
+              {t('contact.emailUs')}{' '}
               <a href="mailto:contact@thestormwatcher.com" className="text-[#94a3b8] hover:text-white transition-colors">
                 contact@thestormwatcher.com
               </a>
@@ -221,9 +227,9 @@ const Contact = () => {
         {/* Contact cards */}
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
-            { icon: Mail, label: 'General', email: 'contact@thestormwatcher.com', color: '#10b981' },
-            { icon: Mail, label: 'Support', email: 'support@thestormwatcher.com', color: '#a78bfa' },
-            { icon: Mail, label: 'Partners', email: 'partnerships@thestormwatcher.com', color: '#f97316' },
+            { icon: Mail, labelKey: 'contact.general', email: 'contact@thestormwatcher.com', color: '#10b981' },
+            { icon: Mail, labelKey: 'footer.support', email: 'support@thestormwatcher.com', color: '#a78bfa' },
+            { icon: Mail, labelKey: 'contact.partners', email: 'partnerships@thestormwatcher.com', color: '#f97316' },
           ].map(item => (
             <a
               key={item.email}
@@ -232,7 +238,7 @@ const Contact = () => {
             >
               <item.icon className="w-5 h-5 flex-shrink-0" style={{ color: item.color }} />
               <div className="min-w-0">
-                <div className="text-xs font-bold text-white/50 uppercase tracking-wider">{item.label}</div>
+                <div className="text-xs font-bold text-white/50 uppercase tracking-wider">{t(item.labelKey)}</div>
                 <div className="text-xs text-[#94a3b8] break-words">
                   <WrappableEmail email={item.email} />
                 </div>

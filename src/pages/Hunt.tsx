@@ -159,7 +159,7 @@ export default function Hunt() {
         const elapsed = Date.now() - new Date(lastSighting.created_at).getTime();
         if (elapsed < COOLDOWN_MS) {
           setCooldownMs(COOLDOWN_MS - elapsed);
-          setSubmitError(t('hunt.cooldownActive') || `Please wait ${fmtCooldown(COOLDOWN_MS - elapsed)} before reporting again`);
+          setSubmitError(t('hunt.cooldownError'));
           setSubmitting(false);
           return;
         }
@@ -324,7 +324,7 @@ export default function Hunt() {
                 value={locationName}
                 onChange={e => setLocationName(e.target.value)}
                 maxLength={100}
-                placeholder="Tromsø, Norway"
+                placeholder={t('hunt.locationExample')}
                 className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-[#475569] focus:outline-none focus:border-[#f97316]/50 focus:ring-1 focus:ring-[#f97316]/30 transition-colors text-sm"
               />
             </div>
@@ -357,7 +357,7 @@ export default function Hunt() {
                 value={notes}
                 onChange={e => setNotes(e.target.value)}
                 maxLength={200}
-                placeholder="Visible to the naked eye, green curtains…"
+                placeholder={t('hunt.notesExample')}
                 className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-[#475569] focus:outline-none focus:border-[#f97316]/50 focus:ring-1 focus:ring-[#f97316]/30 transition-colors text-sm"
               />
             </div>

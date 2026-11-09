@@ -504,7 +504,7 @@ const Home = () => {
                   <button
                     onClick={() => setShareOpen(p => !p)}
                     className="flex items-center gap-1.5 px-3 py-2 rounded-xl glass-surface border border-white/10 text-[#94a3b8] hover:text-white hover:border-[#f97316]/40 transition-all text-sm font-medium"
-                    title="Share Storm Score"
+                    title={t('home.stormScore.share')}
                   >
                     <Share2 className="w-4 h-4" />
                     {t('home.stormScore.share')}

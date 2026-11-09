@@ -4,7 +4,6 @@ import { Clock, ArrowLeft, Info, AlertTriangle, Lightbulb, ChevronRight } from '
 // One post's body on demand, plus metadata for the "other articles" list —
 // never ../data/blog, which would pull all ten bodies into this chunk.
 import { loadPost, getLocalizedBlogMeta, hasTranslation } from '../data/blog/loadPost';
-import { CATEGORY_LABELS } from '../data/blog/categories';
 import ErrorCard from '../components/ErrorCard';
 import { Skeleton } from '../components/Skeleton';
 import type { BlogPost as BlogPostData, BlogSection } from '../data/blog/types';
@@ -74,7 +73,7 @@ function Section({ section }: { section: BlogSection }) {
 
 export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   // undefined = still loading, null = no such slug. The distinction matters:
@@ -177,7 +176,7 @@ export default function BlogPost() {
             className="inline-flex items-center gap-1.5 text-[#475569] hover:text-emerald-400 transition-colors mb-8 text-sm"
           >
             <ArrowLeft size={15} />
-            All articles
+            {t('blog.all')}
           </Link>
 
           <header className="mb-10">
@@ -189,11 +188,11 @@ export default function BlogPost() {
             </div>
             <div className="flex flex-wrap items-center gap-2 mb-3">
               <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${cat.text} ${cat.bg} ${cat.border}`}>
-                {CATEGORY_LABELS[post.category]}
+                {t(`blog.category.${post.category}`)}
               </span>
               <span className="text-[#475569] text-xs flex items-center gap-1">
                 <Clock size={11} />
-                {post.readingTime} min read
+                {t('blog.readTime').replace('{minutes}', String(post.readingTime))}
               </span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold text-white leading-tight mb-3">{post.title}</h1>
@@ -212,14 +211,14 @@ export default function BlogPost() {
               className="block rounded-2xl p-6 text-center border border-emerald-500/25 hover:border-emerald-500/40 transition-all duration-200"
               style={{ background: 'linear-gradient(135deg, #10b98110 0%, #05966908 100%)' }}
             >
-              <p className="text-emerald-400 font-semibold mb-1">Track Space Weather Live</p>
-              <p className="text-[#64748b] text-sm">Real-time Kp index, aurora forecasts, and storm alerts.</p>
+              <p className="text-emerald-400 font-semibold mb-1">{t('blog.track')}</p>
+              <p className="text-[#64748b] text-sm">{t('blog.trackDescription')}</p>
             </Link>
           </div>
 
           {otherPosts.length > 0 && (
             <div className="mt-8">
-              <h2 className="text-white font-semibold mb-4 text-base">More Articles</h2>
+              <h2 className="text-white font-semibold mb-4 text-base">{t('blog.more')}</h2>
               <div className="space-y-3">
                 {otherPosts.map((p) => {
                   const pCat = CATEGORY_CONFIG[p.category] ?? CATEGORY_CONFIG['guide'];

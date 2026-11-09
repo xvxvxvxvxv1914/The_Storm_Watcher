@@ -58,7 +58,7 @@ const MaterialDestination = ({
       <span
         className="flex items-center justify-center md-nav-indicator"
         style={{
-          width: 64,
+          width: 'min(64px, 100%)',
           height: 32,
           borderRadius: 999,
           background: active ? 'var(--md-primary-container)' : 'transparent',
@@ -71,7 +71,7 @@ const MaterialDestination = ({
         />
       </span>
       <span
-        className="text-center"
+        className="text-center max-w-full px-0.5 [overflow-wrap:anywhere]"
         style={{
           // M3 label-medium, and the weight — not the size — carries selection,
           // so the label never reflows when the active tab changes.
@@ -172,7 +172,7 @@ const BottomTabBar = () => {
         <nav
           className="lg:hidden fixed bottom-0 left-0 right-0 z-50 md-nav flex items-stretch"
           style={{ paddingBottom: 'env(safe-area-inset-bottom)', height: 'calc(80px + env(safe-area-inset-bottom))' }}
-          aria-label="Main navigation"
+          aria-label={t('nav.main')}
         >
           {tabs.map(({ to, icon: Icon, labelKey }) => (
             <MaterialDestination
@@ -189,7 +189,7 @@ const BottomTabBar = () => {
             icon={MoreHorizontal}
             label={t('nav.more') || 'More'}
             onSelect={() => { hapticLight(); setMoreOpen(true); }}
-            aria-label="Open more menu"
+            aria-label={t('nav.more')}
             aria-expanded={moreOpen}
             aria-haspopup="menu"
           />
@@ -201,10 +201,10 @@ const BottomTabBar = () => {
         // translateZ pins the bar to its own compositor layer — without it the
         // backdrop-filter flickers/vanishes over the WebGL globe on iOS.
         style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 12px)', transform: 'translateZ(0)' }}
-        aria-label="Main navigation"
+        aria-label={t('nav.main')}
       >
         <div
-          className="pointer-events-auto flex items-center"
+          className="pointer-events-auto flex items-stretch w-[calc(100%-1rem)] max-w-[24rem]"
           style={{
             background: theme === 'light' ? 'rgba(242,242,247,0.82)' : 'rgba(18,18,30,0.82)',
             backdropFilter: 'blur(10px) saturate(180%)',
@@ -225,15 +225,14 @@ const BottomTabBar = () => {
                 key={to}
                 to={to}
                 onClick={() => selectTab(active)}
-                className="flex flex-col items-center py-2.5 gap-0.5 active:scale-[0.88] transition-transform duration-100"
-                style={{ minWidth: 64, borderRadius: 80 }}
+                className="flex-1 min-w-0 flex flex-col items-center py-2.5 gap-0.5 rounded-full active:scale-[0.88] transition-transform duration-100"
               >
                 <Icon
                   className={active ? 'text-[#10b981]' : theme === 'light' ? 'text-slate-400' : 'text-[#7c8aa0]'}
                   size={24}
                   strokeWidth={active ? 2.5 : 1.8}
                 />
-                <span className={`text-[11px] ${active ? 'font-bold text-[#10b981]' : theme === 'light' ? 'font-medium text-slate-400' : 'font-medium text-[#7c8aa0]'}`}>
+                <span className={`max-w-full px-0.5 text-center text-[11px] leading-tight [overflow-wrap:anywhere] ${active ? 'font-bold text-[#10b981]' : theme === 'light' ? 'font-medium text-slate-600' : 'font-medium text-[#94a3b8]'}`}>
                   {t(labelKey)}
                 </span>
               </Link>
@@ -241,18 +240,17 @@ const BottomTabBar = () => {
           })}
           <button
             onClick={() => { hapticLight(); setMoreOpen(true); }}
-            aria-label="Open more menu"
+            aria-label={t('nav.more')}
             aria-expanded={moreOpen}
             aria-haspopup="menu"
-            className="flex flex-col items-center py-2.5 gap-0.5 active:scale-[0.88] transition-transform duration-100"
-            style={{ minWidth: 64 }}
+            className="flex-1 min-w-0 flex flex-col items-center py-2.5 gap-0.5 rounded-full active:scale-[0.88] transition-transform duration-100"
           >
             <MoreHorizontal
               className={isMoreActive ? 'text-[#10b981]' : theme === 'light' ? 'text-slate-400' : 'text-[#7c8aa0]'}
               size={24}
               strokeWidth={isMoreActive ? 2.5 : 1.8}
             />
-            <span className={`text-[11px] ${isMoreActive ? 'font-bold text-[#10b981]' : theme === 'light' ? 'font-medium text-slate-400' : 'font-medium text-[#7c8aa0]'}`}>
+            <span className={`max-w-full px-0.5 text-center text-[11px] leading-tight [overflow-wrap:anywhere] ${isMoreActive ? 'font-bold text-[#10b981]' : theme === 'light' ? 'font-medium text-slate-600' : 'font-medium text-[#94a3b8]'}`}>
               {t('nav.more') || 'More'}
             </span>
           </button>
@@ -284,7 +282,7 @@ const BottomTabBar = () => {
 
             <div className="flex items-center justify-between px-5 pb-3">
               <span className={`font-bold text-lg ${theme === 'light' ? 'text-slate-800' : 'text-white'}`}>{t('nav.more') || 'More'}</span>
-              <button onClick={() => { hapticLight(); setMoreOpen(false); }} aria-label="Close menu" className="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center">
+              <button onClick={() => { hapticLight(); setMoreOpen(false); }} aria-label={t('nav.closeMenu')} className="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center">
                 <X className={`w-4 h-4 ${theme === 'light' ? 'text-slate-500' : 'text-white/70'}`} />
               </button>
             </div>
@@ -301,8 +299,8 @@ const BottomTabBar = () => {
                     <span className={`w-8 h-8 rounded-xl ${badge} flex items-center justify-center shrink-0`}>
                       <Icon className="w-4 h-4 text-white" strokeWidth={2} />
                     </span>
-                    <span className={location.pathname === to ? 'text-[#10b981]' : theme === 'light' ? 'text-slate-700' : 'text-white'}>{label}</span>
-                    <ChevronRight className={`w-4 h-4 ml-auto ${theme === 'light' ? 'text-slate-400' : 'text-white/25'}`} />
+                    <span className={`min-w-0 text-left [overflow-wrap:anywhere] ${location.pathname === to ? (theme === 'light' ? 'text-emerald-700' : 'text-[#10b981]') : theme === 'light' ? 'text-slate-700' : 'text-white'}`}>{label}</span>
+                    <ChevronRight className={`w-4 h-4 ml-auto shrink-0 ${theme === 'light' ? 'text-slate-400' : 'text-white/25'}`} />
                   </button>
                 ))}
               </div>

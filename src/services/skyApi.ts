@@ -37,7 +37,7 @@ export interface SkyData {
   cloudCoverAvg: number;
   visibilityAvg: number;
   kp: number;
-  auroraChance: string;
+  auroraChance: 'veryHigh' | 'high' | 'moderate' | 'low' | 'veryLow';
   nightHours: SkyHour[];
   sunset: string;
   sunrise: string;
@@ -194,10 +194,10 @@ export const getSkyVisibility = (lat: number, lon: number, kp: number): Promise<
       score >= 25 ? 'fair' : 'poor';
 
     const auroraChance =
-      kp >= 7 ? 'Very High' :
-      kp >= 5 ? 'High' :
-      kp >= 4 ? 'Moderate' :
-      kp >= 3 ? 'Low' : 'Very Low';
+      kp >= 7 ? 'veryHigh' :
+      kp >= 5 ? 'high' :
+      kp >= 4 ? 'moderate' :
+      kp >= 3 ? 'low' : 'veryLow';
 
     const fmtTime = (d: Date) => formatOpenMeteoTime(d, timezone);
 

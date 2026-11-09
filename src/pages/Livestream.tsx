@@ -166,27 +166,27 @@ const CAMERAS: Camera[] = [
 ];
 
 function kpCondition(kp: number | null): { label: string; color: string; dot: string } {
-  if (kp === null) return { label: 'Loading…', color: 'text-[#64748b]', dot: 'bg-[#475569]' };
-  if (kp >= 7)  return { label: 'Geomagnetic storm — excellent aurora visibility', color: 'text-emerald-300', dot: 'bg-emerald-400' };
-  if (kp >= 5)  return { label: 'Active — good aurora at high latitudes', color: 'text-emerald-400', dot: 'bg-emerald-500' };
-  if (kp >= 3)  return { label: 'Moderate — possible in Norway, Iceland, Finland', color: 'text-amber-300', dot: 'bg-amber-400' };
-  if (kp >= 1)  return { label: 'Low — visible only at very high latitudes', color: 'text-orange-400', dot: 'bg-orange-500' };
-  return { label: 'Very low — unlikely to see aurora now', color: 'text-red-400', dot: 'bg-red-500' };
+  if (kp === null) return { label: 'app.loading', color: 'text-[#64748b]', dot: 'bg-[#475569]' };
+  if (kp >= 7)  return { label: 'livestream.kp.storm', color: 'text-emerald-300', dot: 'bg-emerald-400' };
+  if (kp >= 5)  return { label: 'livestream.kp.active', color: 'text-emerald-400', dot: 'bg-emerald-500' };
+  if (kp >= 3)  return { label: 'livestream.kp.moderate', color: 'text-amber-300', dot: 'bg-amber-400' };
+  if (kp >= 1)  return { label: 'livestream.kp.low', color: 'text-orange-400', dot: 'bg-orange-500' };
+  return { label: 'livestream.kp.veryLow', color: 'text-red-400', dot: 'bg-red-500' };
 }
 
-const KindBadge = ({ kind }: { kind: CameraKind }) => {
+const KindBadge = ({ kind, label }: { kind: CameraKind; label: string }) => {
   if (kind === 'youtube') {
     return (
       <span className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400">
         <Youtube className="w-3 h-3" />
-        YouTube
+        {label}
       </span>
     );
   }
   return (
     <span className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-300">
       <Globe className="w-3 h-3" />
-      Webcam
+      {label}
     </span>
   );
 };
@@ -198,7 +198,7 @@ const CameraCard = ({ cam, t }: { cam: Camera; t: (k: string) => string }) => {
       <div className="flex items-start justify-between mb-3 gap-2">
         <div className="flex items-center gap-2">
           <span className="text-2xl">{cam.flag}</span>
-          <KindBadge kind={cam.kind} />
+          <KindBadge kind={cam.kind} label={t(isYouTube ? 'livestream.kindYouTube' : 'livestream.kindWebcam')} />
         </div>
         <div className="flex gap-1 flex-wrap justify-end">
           {cam.tags.map(tag => (
@@ -271,10 +271,10 @@ export default function Livestream() {
       {/* Kp viewing conditions banner */}
       <div className="flex items-center gap-3 mb-6 glass-surface rounded-xl px-4 py-3 border border-white/10">
         <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 animate-pulse ${condition.dot}`} />
-        <span className="text-xs text-[#64748b]">Current viewing conditions:</span>
+        <span className="text-xs text-[#64748b]">{t('livestream.conditions')}</span>
         <span className={`text-xs font-semibold ${condition.color}`}>
           {kp !== null && <span className="mr-1">Kp {kp.toFixed(1)} —</span>}
-          {condition.label}
+          {t(condition.label)}
         </span>
       </div>
 
@@ -312,7 +312,7 @@ export default function Livestream() {
       <section className="mb-8">
         <div className="flex items-center gap-2 mb-4">
           <Radio className="w-5 h-5 text-emerald-400" />
-          <h2 className="text-lg font-bold text-white">Community Streams</h2>
+          <h2 className="text-lg font-bold text-white">{t('livestream.community')}</h2>
           {paymentsEnabled && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 ml-1">Pro</span>}
         </div>
 
@@ -321,14 +321,14 @@ export default function Livestream() {
             <div className="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <Sparkles className="w-6 h-6 text-emerald-400" />
             </div>
-            <h3 className="text-white font-bold text-lg mb-2">Share your aurora stream</h3>
+            <h3 className="text-white font-bold text-lg mb-2">{t('livestream.share')}</h3>
             <p className="text-[#64748b] text-sm mb-6 max-w-md mx-auto">
-              Are you streaming aurora from your location? Share your YouTube live link or webcam URL with the community.
+              {t('livestream.shareDescription')}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
               <input
                 type="url"
-                placeholder="YouTube or webcam URL…"
+                placeholder={t('livestream.urlPlaceholder')}
                 className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-[#475569] focus:outline-none focus:border-emerald-500/50"
                 disabled
               />
@@ -337,10 +337,10 @@ export default function Livestream() {
                 className="px-5 py-2.5 rounded-xl bg-emerald-500/20 text-emerald-400 text-sm font-semibold border border-emerald-500/30 flex items-center gap-2 cursor-not-allowed"
               >
                 <MapPin className="w-4 h-4" />
-                Submit stream
+                {t('livestream.submit')}
               </button>
             </div>
-            <p className="text-[#475569] text-xs mt-4">Feature coming soon — community streams will appear here in real time.</p>
+            <p className="text-[#475569] text-xs mt-4">{t('livestream.comingSoon')}</p>
           </div>
         </PlanGuard>
       </section>

@@ -113,7 +113,7 @@ const UV = () => {
         {/* Header */}
         <div className="mb-10">
           <h1 className="text-5xl font-bold text-white mb-2 uppercase tracking-tight">
-            UV <span className="gradient-solar">Index</span>
+            <span className="gradient-solar">{t('uv.title')}</span>
           </h1>
           <LocationPicker
             lat={currentLat}

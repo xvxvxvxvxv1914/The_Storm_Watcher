@@ -52,6 +52,7 @@ const LoadingFallback = () => {
 };
 
 function AppRoutes() {
+  const { t } = useLanguage();
   const { user, profile } = useAuth();
   const { theme } = useTheme();
   const navigate = useNavigate();
@@ -177,7 +178,7 @@ function AppRoutes() {
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-[#f97316] focus:text-white focus:rounded-lg focus:font-semibold"
       >
-        Skip to main content
+        {t('nav.skipToContent')}
       </a>
       <OfflineBanner />
       <Navigation />

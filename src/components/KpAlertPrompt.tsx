@@ -101,7 +101,7 @@ export default function KpAlertPrompt() {
         <button
           onClick={handleDismiss}
           className="text-[#475569] hover:text-white transition-colors flex-shrink-0"
-          aria-label="Dismiss"
+          aria-label={t('common.dismiss')}
         >
           <X className="w-4 h-4" />
         </button>
