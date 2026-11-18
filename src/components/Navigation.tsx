@@ -178,7 +178,10 @@ const Navigation = () => {
 
       {/* Desktop: full-width glass bar */}
       <div className="hidden lg:block glass-surface">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Full-bleed, not max-w-7xl: the cap pinned the row at 1280px, so on a
+          1440/1920 monitor the links stayed squeezed with screen space to spare.
+          The bar now grows with the viewport and the labels get the room. */}
+      <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between min-h-16">
 
           {/* Logo */}
@@ -194,7 +197,9 @@ const Navigation = () => {
                 className="w-14 h-14"
                 style={{ filter: 'drop-shadow(0 0 14px rgba(249,115,22,0.6)) drop-shadow(0 0 28px rgba(16,185,129,0.3))' }}
               />
-              <span className={`hidden xl:inline text-sm font-bold whitespace-nowrap ${theme === 'dark' ? 'gradient-solar' : 'text-slate-800'}`}>
+              {/* 2xl, not xl: this wordmark is 200px and at 1280-1535 it was the
+                  single biggest thing stealing room from the links themselves. */}
+              <span className={`hidden 2xl:inline text-sm font-bold whitespace-nowrap ${theme === 'dark' ? 'gradient-solar' : 'text-slate-800'}`}>
                 The Storm Watcher
               </span>
             </>
@@ -202,12 +207,15 @@ const Navigation = () => {
 
           {/* Desktop nav */}
           <div className="hidden lg:flex items-center flex-1 min-w-0 ml-3 xl:ml-5 gap-2 xl:gap-3">
-            <div className="flex min-w-0 items-center gap-1 xl:gap-2">
+            {/* mr-auto: now that the bar is full-bleed, this pins the links left
+                and pushes the actions to the right edge instead of leaving a
+                dead gap on wide screens. No effect when space is tight. */}
+            <div className="flex min-w-0 items-center gap-1 xl:gap-2 mr-auto">
               {mainLinks.map((link) => (
                 <Link
                   key={link.to}
                   to={link.to}
-                  className={`relative min-w-0 px-2 xl:px-3 py-1 text-center text-xs xl:text-sm font-semibold leading-tight transition-colors [overflow-wrap:anywhere] ${
+                  className={`relative shrink-0 whitespace-nowrap px-2 xl:px-3 py-1 text-center text-xs xl:text-sm font-semibold leading-tight transition-colors ${
                     isActive(link.to)
                       ? theme === 'light' ? 'text-emerald-700' : 'text-[#10b981]'
                       : theme === 'light' ? 'text-slate-700 hover:text-slate-900' : 'text-[#94a3b8] hover:text-white'
@@ -321,7 +329,7 @@ const Navigation = () => {
 
             <Link
               to="/pricing"
-              className={`shrink-0 max-w-40 px-2.5 xl:px-3 py-1.5 rounded-lg text-center text-xs xl:text-sm font-semibold transition-colors border [overflow-wrap:anywhere] ${
+              className={`shrink-0 whitespace-nowrap px-2.5 xl:px-3 py-1.5 rounded-lg text-center text-xs xl:text-sm font-semibold transition-colors border ${
                 isActive('/pricing')
                   ? theme === 'light' ? 'text-emerald-700 border-emerald-700/30 bg-emerald-700/10' : 'text-[#10b981] border-[#10b981]/40 bg-[#10b981]/10'
                   : theme === 'light' ? 'text-slate-700 border-slate-300 hover:bg-slate-100' : 'text-[#94a3b8] border-white/10 hover:text-white hover:border-white/20 hover:bg-white/5'
