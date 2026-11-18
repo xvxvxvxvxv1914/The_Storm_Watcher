@@ -50,7 +50,10 @@ export default async function handler(req: Request) {
         ),
         h('div', { style: { fontSize: '72px', marginBottom: '28px', lineHeight: 1 } }, emoji),
         h('div', { style: { fontSize: title.length > 60 ? '44px' : '56px', fontWeight: 800, color: 'white', lineHeight: 1.15, marginBottom: '28px', letterSpacing: '-0.02em', maxWidth: '900px' } }, title),
-        h('div', { style: { display: 'flex', alignItems: 'center', gap: '10px', background: `${accent}18`, border: `1px solid ${accent}44`, borderRadius: '10px', padding: '10px 20px', width: 'fit-content' } },
+        // alignSelf, not width:'fit-content' — satori rejects fit-content
+        // ("Expected a number, auto, or a percentage") and fell back to full
+        // width, so this pill stretched the whole card on every blog preview.
+        h('div', { style: { display: 'flex', alignItems: 'center', gap: '10px', background: `${accent}18`, border: `1px solid ${accent}44`, borderRadius: '10px', padding: '10px 20px', alignSelf: 'flex-start' } },
           h('span', { style: { color: accent, fontSize: '16px', fontWeight: 600 } }, 'Read article →'),
         ),
       ),
